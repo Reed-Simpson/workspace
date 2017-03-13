@@ -30,7 +30,6 @@ public abstract class ChessPiece {
 		if(board!=null) board.pieces.put(p, this);
 	}
 	
-	
 	public static ChessPiece create(Point p,ChessBoard b,boolean c,String type){
 		if(type.equals(Pawn.TYPE)){
 			return new Pawn(p,b,c);

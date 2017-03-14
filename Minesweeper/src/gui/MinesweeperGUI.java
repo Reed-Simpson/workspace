@@ -102,7 +102,7 @@ public class MinesweeperGUI extends JFrame{
 		this.add(setUpStatsPanel(),BorderLayout.SOUTH);
 		this.statistics=new RecordList();
 		this.statistics.load(defaultSaveFile);
-		System.out.println(new File(defaultSaveFile));
+		//System.out.println(new File(defaultSaveFile));
 
 		this.setVisible(true);
 		//		while(true){

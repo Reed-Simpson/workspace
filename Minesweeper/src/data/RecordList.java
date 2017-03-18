@@ -6,51 +6,62 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+import data.RecordList.Difficulty;
 
 public class RecordList{
-	public static final int TIMECATEGORY = 0;
-	public static final int CLICKSCATEGORY = 1;
-	public static final int BBBVCATEGORY = 2;
-	Record[][][] recordlist;
+	public enum Category{
+		TIME(0),CLICKS(1),BBBV(2);
+		private int value;
+		private Category(int value){this.value = value;}
+	};
+	public enum Difficulty{
+		EASY(0),MEDIUM(1),HARD(2),CUSTOM(3);
+		private int value;
+		private Difficulty(int value){this.value = value;}
+		public int value(){return value;};
+	};
+	ArrayList<Record> recordlist_easy = new ArrayList<Record>();
+	ArrayList<Record> recordlist_medium = new ArrayList<Record>();
+	ArrayList<Record> recordlist_hard = new ArrayList<Record>();
+	ArrayList<Record> recordlist_custom = new ArrayList<Record>();
 	int[] wins;
 	int[] losses;
-	public static final int NUMENTRIESLOGGED = 5;
 
 
 	public RecordList(){
-		recordlist = new Record[4][3][NUMENTRIESLOGGED];
 		wins = new int[4];
 		losses = new int[4];
 	}
-	
-	public int getWinCount(int difficulty){
-		return this.wins[difficulty];
+
+	public int getWinCount(Difficulty difficulty){
+		return this.wins[difficulty.value];
 	}
-	
-	public int getLossCount(int difficulty){
-		return this.losses[difficulty];
+
+	public int getLossCount(Difficulty difficulty){
+		return this.losses[difficulty.value];
 	}
-	
-	public boolean addRecord(long time, int clicks,int BBBV,int difficulty){
+
+	public boolean addRecord(long time, int clicks,int BBBV,Difficulty difficulty){
 		Record r = new Record(time,clicks,BBBV);
-		boolean result = false;
-		for(int category=0;category<3;category++){
-			Record r1 = r;
-			for(int i=0;i<NUMENTRIESLOGGED;i++){
-				if(recordlist[difficulty][category][i]==null){
-					recordlist[difficulty][category][i]=r1;
-					result=true;
-					break;
-				}else if(r1.compareTo(recordlist[difficulty][category][i], category)>=0){
-					Record r2 = recordlist[difficulty][category][i].clone();
-					recordlist[difficulty][category][i]=r1;
-					r1=r2;
-					result=true;
-				}
-			}
+		ArrayList<Record> theList = getRecordList(difficulty);
+		theList.add(r);
+
+		wins[difficulty.value]++;
+		return true;
+	}
+
+	private ArrayList<Record> getRecordList(Difficulty difficulty) {
+		ArrayList<Record> theList = null;
+		switch(difficulty){
+		case EASY: theList=recordlist_easy; break;
+		case MEDIUM: theList=recordlist_medium; break;
+		case HARD: theList=recordlist_hard; break;
+		case CUSTOM: theList=recordlist_custom; break;
 		}
-		wins[difficulty]++;
-		return result;
+		return theList;
 	}
 
 	public boolean addLoss(int difficulty){
@@ -60,35 +71,37 @@ public class RecordList{
 
 	public String toString(){
 		StringBuilder result = new StringBuilder();
-		for(int difficulty=0;difficulty<4;difficulty++){
-			result.append("Difficulty: "+difficulty+"\r\n");
-			for(int category=0;category<3;category++){
-				result.append("---Category: "+category+"\r\n");
-				for(int i=0;i<NUMENTRIESLOGGED;i++){
-					Record r = recordlist[difficulty][category][i];
-					if(r!=null)	result.append(r.toString()+"\r\n");
-				}
+		for(Difficulty difficulty:Difficulty.values()){
+			result.append("Difficulty: "+difficulty.value+"\r\n");
+			ArrayList<Record> theList = getRecordList(difficulty);
+			for(Record r:theList){
+				result.append(r.toString()+"\r\n");
 			}
 		}
 		return result.toString().trim();
 	}
 
-	public Object[][] getData(int difficulty,int category){
-		Object[][] result = new Object[NUMENTRIESLOGGED][3];
+	public Object[][] getData(Difficulty difficulty,Category category){
+		ArrayList<Record> theList = getRecordList(difficulty);
+		theList.sort(getComparator(category));
+		Object[][] result = new Object[theList.size()][3];
 		for(int i=0;i<result.length;i++){
-			Record r=recordlist[difficulty][category][i];
-			if(r==null){
-				result[i][0]="";
-				result[i][1]="";
-				result[i][2]="";
-			}else{
-				result[i][0]=new Integer((int) (r.time/1000000000)+1);
-				result[i][1]=new Integer(r.clicks);
-				result[i][2]=new Integer(r.BBBV);
-			}
+			Record r=theList.get(i);
+			result[i][0]=new Integer((int) (r.time/1000000000)+1);
+			result[i][1]=new Integer(r.clicks);
+			result[i][2]=new Integer(r.BBBV);
 		}
 
 		return result;
+	}
+	
+	private static Comparator<Record> getComparator(Category category){
+		switch(category){
+		case TIME: return new TimeComparator();
+		case CLICKS: return new ClicksComparator();
+		case BBBV: return new BBBVComparator();
+		default: return new TimeComparator();
+		}
 	}
 
 	public boolean save(String path){
@@ -100,7 +113,6 @@ public class RecordList{
 			try {
 				filePath.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -109,16 +121,13 @@ public class RecordList{
 		Writer writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"));
-			for(int difficulty=0;difficulty<4;difficulty++){
-				writer.write(wins[difficulty]+" "+losses[difficulty]+"\r\n");
-				for(int category=0;category<3;category++){
-					for(int i=0;i<NUMENTRIESLOGGED;i++){
-						Record r = recordlist[difficulty][category][i];
-						if(r!=null)writer.write(r.time+","+r.clicks+","+r.BBBV+"|");
-					}
-					if(category<2) writer.write("\r\n");
+			for(Difficulty difficulty:Difficulty.values()){
+				writer.write(wins[difficulty.value]+" "+losses[difficulty.value]+"\r\n");
+				ArrayList<Record> theList = getRecordList(difficulty);
+				for(Record r:theList){
+					writer.write(r.time+","+r.clicks+","+r.BBBV+"\r\n");
 				}
-				if(difficulty<3)writer.write("\r\n***\r\n");
+				if(difficulty!=Difficulty.CUSTOM)writer.write("\r\n***\r\n");
 			}
 			result=true;
 			//System.out.println("Saved to: "+path);
@@ -150,37 +159,34 @@ public class RecordList{
 			e.printStackTrace();
 		}
 
-		//System.out.println(content);
 		this.parseRecordList(content);
 		return result;
 	}
-	
+
 	private boolean parseRecordList(String content){
 		String[] difficulties = content.split("\r\n\\*\\*\\*\r\n");
-		for(int difficulty=0;difficulty<difficulties.length;difficulty++){
-			String[] categories = difficulties[difficulty].split("\r\n");
-			String[] stats = categories[0].split(" ");
-			this.wins[difficulty]=Integer.valueOf(stats[0]);
-			this.losses[difficulty]=Integer.valueOf(stats[1]);
-			for(int category=0;category<categories.length-1;category++){
-				String[] records = categories[category+1].split("\\|");
-				for(int i=0;i<records.length;i++){
-					this.parseRecord(records[i], difficulty, category, i);
-				}
+		for(Difficulty difficulty:Difficulty.values()){
+			String[] records = difficulties[difficulty.value].split("\r\n");
+			String[] stats = records[0].split(" ");
+			this.wins[difficulty.value]=Integer.valueOf(stats[0]);
+			this.losses[difficulty.value]=Integer.valueOf(stats[1]);
+			for(int i=1;i<records.length;i++){
+				this.parseRecord(records[i], difficulty, i);
 			}
 		}
 		return true;
 	}
-	
-	private boolean parseRecord(String record, int difficulty,int category, int i){
+
+	private boolean parseRecord(String record, Difficulty difficulty,int i){
 		if(!record.matches("\\d+,\\d+,\\d+")) return false;
 		String[] splitRecord = record.split(",");
 		Record r = new Record(Long.valueOf(splitRecord[0]),Integer.valueOf(splitRecord[1]),Integer.valueOf(splitRecord[2]));
-		this.recordlist[difficulty][category][i]=r;
+		ArrayList<Record> theList = getRecordList(difficulty);
+		theList.add(r);
 		return true;
 	}
 
-	private class Record implements Comparable<Record>{
+	private static class Record {
 		final long time;
 		final int clicks;
 		final int BBBV;
@@ -191,47 +197,51 @@ public class RecordList{
 			this.BBBV=BBBV;
 		}
 
-		public int compareTo(Record r) {
-			return this.compareTo(r, TIMECATEGORY);
-		}
-		public int compareTo(Record r, int category){
-			if(r==null) return Integer.MAX_VALUE;
-			int result;
-			if(category==TIMECATEGORY){
-				long temp = 2*(r.time-this.time);
-				if(temp>=(long)Integer.MAX_VALUE) result=Integer.MAX_VALUE;
-				else if(temp<=(long)Integer.MIN_VALUE) result=Integer.MIN_VALUE;
-				else result=(int)temp;
-				if(result==0){
-					if(this.BBBV>r.BBBV) result++;
-					else if(this.BBBV<r.BBBV) result--;
-					else if(r.clicks>this.clicks) result++;
-					else if(r.clicks<this.clicks) result--;
-				}
-			}else if(category==CLICKSCATEGORY){
-				result = 2*(r.clicks-this.clicks);
-				if(result==0){
-					if(this.BBBV>r.BBBV) result++;
-					else if(this.BBBV<r.BBBV) result--;
-					else if(r.time>this.time) result++;
-					else if(r.time<this.time) result--;
-				}
-			}else if(category==BBBVCATEGORY){
-				result = 2*(this.BBBV-r.BBBV);
-				if(r.time>this.time) result++;
-				else if(r.time<this.time) result--;
-				else if(r.clicks>this.clicks) result++;
-				else if(r.clicks<this.clicks) result--;
-			}else{
-				throw new IllegalArgumentException("Undefined Category");
-			}
-			return result;
-		}
 		public String toString(){
 			return "time: "+time+", 3BV: "+BBBV+", clicks: "+clicks;
 		}
 		public Record clone(){
 			return new Record(this.time,this.clicks,this.BBBV);
+		}
+	}
+
+	private static class TimeComparator implements Comparator<Record>{
+		@Override
+		public int compare(Record r1, Record r2) {
+			int result;
+			long temp = 2*(r1.time-r2.time);
+			if(temp>=(long)Integer.MAX_VALUE) result=Integer.MAX_VALUE;
+			else if(temp<=(long)Integer.MIN_VALUE) result=Integer.MIN_VALUE;
+			else result=(int)temp;
+			if(result==0){
+				if(r1.BBBV>r2.BBBV) result--;
+				else if(r1.BBBV<r2.BBBV) result++;
+				else if(r2.clicks>r1.clicks) result--;
+				else if(r2.clicks<r1.clicks) result++;
+			}
+			return result;
+		}
+	}
+	private static class ClicksComparator implements Comparator<Record>{
+		@Override
+		public int compare(Record r1, Record r2) {
+			int result = 2*(r1.clicks-r2.clicks);
+			if(r2.BBBV>r1.BBBV) result++;
+			else if(r2.BBBV<r1.BBBV) result--;
+			else if(r1.time>r2.time) result++;
+			else if(r1.time<r2.time) result--;
+			return result;
+		}
+	}
+	private static class BBBVComparator implements Comparator<Record>{
+		@Override
+		public int compare(Record r1, Record r2) {
+			int result = 2*(r2.BBBV-r1.BBBV);
+			if(r1.time>r2.time) result++;
+			else if(r1.time<r2.time) result--;
+			else if(r1.clicks>r2.clicks) result++;
+			else if(r1.clicks<r2.clicks) result--;
+			return result;
 		}
 	}
 }

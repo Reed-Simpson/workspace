@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,12 +32,11 @@ import javax.swing.Timer;
 
 import data.MinesweeperGame;
 import data.RecordList;
+import data.RecordList.Difficulty;
 
 
 public class MinesweeperGUI extends JFrame{
 	private static final long serialVersionUID = 1L;
-	private static final int XOFFSET = 7;
-	private static final int YOFFSET = 68;
 	//private static enum Difficulty {EASY, MEDIUM, HARD, CUSTOM}
 
 	/*
@@ -45,13 +45,12 @@ public class MinesweeperGUI extends JFrame{
 	private static final boolean GENEROUSMULLIGAN = false;
 	private static final int SCALE = 25;
 	private static final int GUI_UPDATE_INTERVAL = 200;
-	private static final int DEFAULTDIFFICULTY = 0;
+	private static final Difficulty DEFAULTDIFFICULTY = Difficulty.EASY;
 	private static final Font SYMBOLSFONT = loadFont("resources/Symbola.ttf");
 	private static final Font LETTERSFONT = new Font("Arial", Font.BOLD, SCALE-3);
 	private static final Character BOMBCHARACTER = '\u26EF';
 	private static final Character FLAGCHARACTER = '\u2691'; //'\u2690';
-	//private static final String defaultSaveFile = System.getenv("APPDATA") + "\\Minesweeper\\" + "Minesweeper.sav";
-	private static final String defaultSaveFile = System.getProperty("user.home")+ File.separator + "Minesweeper"+ File.separator + "Minesweeper.dat";
+	private static final String DEFAULTSAVEFILE = System.getProperty("user.home")+ File.separator + "Minesweeper"+ File.separator + "Minesweeper.dat";
 	/*
 	 * -------------------------------------------------------------
 	 */
@@ -66,7 +65,7 @@ public class MinesweeperGUI extends JFrame{
 	private JLabel mineLabel;
 	private ButtonGroup group;
 	private ButtonModel selectedDifficulty;
-	private int currentDifficulty;
+	private Difficulty currentDifficulty;
 	private int clickCount;
 	private RecordList statistics;
 	//private String saveFile;
@@ -90,33 +89,19 @@ public class MinesweeperGUI extends JFrame{
 	public MinesweeperGUI() throws InterruptedException{
 		super();
 		JMenuBar menuBar=setUpMenuBar(new JMenuBar());
+		this.panel = new Surface();
 
 		this.game=newGame(MinesweeperGUI.DEFAULTDIFFICULTY);
 		currentDifficulty=DEFAULTDIFFICULTY;
 
 		setUpFrame(this);
 
-		this.panel = new Surface();
 		this.add(this.panel,BorderLayout.CENTER);
 		this.add(menuBar, BorderLayout.NORTH);
 		this.add(setUpStatsPanel(),BorderLayout.SOUTH);
 		this.statistics=new RecordList();
-		this.statistics.load(defaultSaveFile);
-		//System.out.println(new File(defaultSaveFile));
-
+		this.statistics.load(DEFAULTSAVEFILE);
 		this.setVisible(true);
-		//		while(true){
-		//			String time = "  time: "+padding(String.valueOf(game.timeSeconds()),3)+"  ";
-		//			String clicks = "  clicks: "+padding(String.valueOf(clickCount),3)+"  ";
-		//			String mines;
-		//			if(game.lost) mines="  mines: 0/"+game.mines+"  ";
-		//			else if(game.won) mines="  mines: "+game.mines+"/"+game.mines+"  ";
-		//			else mines = "  mines: "+game.getNumFlags()+"/"+game.mines+"  ";
-		//			timerLabel.setText(time);
-		//			clickLabel.setText(clicks);
-		//			mineLabel.setText(mines);
-		//			Thread.sleep(200);
-		//		}
 		Timer timer = new Timer(GUI_UPDATE_INTERVAL, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -132,17 +117,18 @@ public class MinesweeperGUI extends JFrame{
 			}
 		});
 		timer.start();
+		this.pack();
+		this.setLocationRelativeTo(null);
 	}
 
 	private String padding(String s,int size){
-		while(s.length()<3){s=" "+s;}
+		while(s.length()<size){s=" "+s;}
 		return s;
 	}
 
 	private JFrame setUpFrame(JFrame frame){
 		frame.setTitle("Minesweeper!");
-		frame.setSize(SCALE*game.x()+XOFFSET, SCALE*game.y()+YOFFSET);
-		frame.setLocationRelativeTo(null);
+		//frame.setSize(SCALE*game.x()+XOFFSET, SCALE*game.y()+YOFFSET);
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
@@ -182,9 +168,9 @@ public class MinesweeperGUI extends JFrame{
 				if(group.isSelected(selectedDifficulty)) return;
 				int n = JOptionPane.showConfirmDialog(MinesweeperGUI.this, "Would you like to start a new game?", "New Game?", JOptionPane.YES_NO_OPTION);
 				if(n==JOptionPane.YES_OPTION){
-					MinesweeperGUI.this.game=newGame(0);
+					MinesweeperGUI.this.game=newGame(Difficulty.EASY);
 					selectedDifficulty=group.getSelection();
-					currentDifficulty=0;
+					currentDifficulty=Difficulty.EASY;
 					MinesweeperGUI.this.setLocationRelativeTo(null);
 				}
 				else group.setSelected(selectedDifficulty, true);
@@ -198,9 +184,9 @@ public class MinesweeperGUI extends JFrame{
 				if(group.isSelected(selectedDifficulty)) return;
 				int n = JOptionPane.showConfirmDialog(MinesweeperGUI.this, "Would you like to start a new game?", "New Game?", JOptionPane.YES_NO_OPTION);
 				if(n==JOptionPane.YES_OPTION){
-					MinesweeperGUI.this.game=newGame(1);
+					MinesweeperGUI.this.game=newGame(Difficulty.MEDIUM);
 					selectedDifficulty=group.getSelection();
-					currentDifficulty=1;
+					currentDifficulty=Difficulty.MEDIUM;
 					MinesweeperGUI.this.setLocationRelativeTo(null);
 				}
 				else group.setSelected(selectedDifficulty, true);
@@ -214,9 +200,9 @@ public class MinesweeperGUI extends JFrame{
 				if(group.isSelected(selectedDifficulty)) return;
 				int n = JOptionPane.showConfirmDialog(MinesweeperGUI.this, "Would you like to start a new game?", "New Game?", JOptionPane.YES_NO_OPTION);
 				if(n==JOptionPane.YES_OPTION){
-					MinesweeperGUI.this.game=newGame(2);
+					MinesweeperGUI.this.game=newGame(Difficulty.HARD);
 					selectedDifficulty=group.getSelection();
-					currentDifficulty=2;
+					currentDifficulty=Difficulty.HARD;
 					MinesweeperGUI.this.setLocationRelativeTo(null);
 				}
 				else group.setSelected(selectedDifficulty, true);
@@ -246,7 +232,7 @@ public class MinesweeperGUI extends JFrame{
 					int mines=Integer.parseInt(input[2]);
 					MinesweeperGUI.this.game=newGame(x,y,mines);
 					selectedDifficulty=group.getSelection();
-					currentDifficulty=3;
+					currentDifficulty=Difficulty.CUSTOM;
 					MinesweeperGUI.this.setLocationRelativeTo(null);
 				}catch(NumberFormatException e){
 					JOptionPane.showMessageDialog(MinesweeperGUI.this,"Error parsing inputs", "Inane error", JOptionPane.ERROR_MESSAGE);
@@ -306,7 +292,7 @@ public class MinesweeperGUI extends JFrame{
 			message="You Lost!";
 			icon=JOptionPane.ERROR_MESSAGE;
 		}
-		statistics.save(defaultSaveFile);
+		statistics.save(DEFAULTSAVEFILE);
 		int n = JOptionPane.showOptionDialog(this,
 				"Time: "+game.timeSeconds()+" seconds",
 				message,
@@ -316,7 +302,7 @@ public class MinesweeperGUI extends JFrame{
 				new Object[]{"Play Again","Exit"},  //the titles of buttons
 				"Play Again"); //default button title
 		if(n==JOptionPane.YES_OPTION){
-			this.game=newGame(3);
+			this.game=newGame(Difficulty.CUSTOM);
 		}else{
 			System.exit(0);
 		}
@@ -326,34 +312,32 @@ public class MinesweeperGUI extends JFrame{
 		MinesweeperGame game = new MinesweeperGame(x,y,mines);
 		this.clickCount=0;
 		this.BVLabel.setText("3BV: ??  ");
-		this.setSize(SCALE*x+XOFFSET, SCALE*y+YOFFSET);
-
+		//this.setSize(SCALE*x+XOFFSET, SCALE*y+YOFFSET);
+		this.panel.setPreferredSize(new Dimension(SCALE*game.x(),SCALE*game.y()));
 		this.setVisible(true);
 		this.validate();
 		this.repaint();
+		this.pack();
 		return game;
 	}
-	public MinesweeperGame newGame(int difficulty){
+	public MinesweeperGame newGame(Difficulty difficulty){
 		MinesweeperGame game;
-		if(difficulty==0){
-			game = newGame(9,9,10);
-		}else if(difficulty==1){
-			game = newGame(16,16,40);
-		}else if(difficulty==2){
-			game = newGame(30,16,99);
-		}else{
-			game = newGame(this.game.x(),this.game.y(),this.game.mines());
+		switch(difficulty){
+		case EASY: game = newGame(9,9,10); break;
+		case MEDIUM: game = newGame(16,16,40); break;
+		case HARD: game = newGame(30,16,99); break;
+		default: game = newGame(this.game.x(),this.game.y(),this.game.mines());
 		}
 		return game;
 	}
 	public void mulligan(int x, int y) {
 		if(GENEROUSMULLIGAN){
 			while(game.map(x,y)!=0){
-				this.game=newGame(3);
+				this.game=newGame(Difficulty.CUSTOM);
 			}
 		}else{
 			while(game.map(x,y)<0){
-				this.game=newGame(3);
+				this.game=newGame(Difficulty.CUSTOM);
 			}
 		}
 	}
@@ -391,23 +375,9 @@ public class MinesweeperGUI extends JFrame{
 			for(int i=0;i<game.y();i++){
 				for(int j=0;j<game.x();j++){
 					if(!game.revealed(j,i)&&!game.won()&&!game.lost()){
-						g2d.setColor(Color.lightGray);
-						g2d.fillRect(j*SCALE+1, i*SCALE+1, SCALE-1, SCALE-1);
-						if(game.flagged(j,i)){
-							g2d.setFont(SYMBOLSFONT.deriveFont((float)SCALE*3/4));
-							Character ch = FLAGCHARACTER;
-							if(!g2d.getFont().canDisplay(ch)) ch='F';
-							g2d.setColor(Color.magenta);
-							Point center = center(ch.toString(),g2d,1,2);
-							g2d.drawString(ch.toString(), j*SCALE+center.x, i*SCALE+center.y);
-						}
-					}else if(game.map(j,i)>0){
-						g2d.setFont(LETTERSFONT);
-						g2d.setColor(getColor(game.map(j,i)));
-						Point center = center(String.valueOf(game.map(j,i)),g2d,1,2);
-						g2d.drawString(String.valueOf(game.map(j,i)), j*SCALE+center.x, i*SCALE+center.y);
-					}else if(game.map(j,i)==0){
-						//draw nothing
+						drawUnrevealedSquare(g2d, j, i);
+					}else if(game.map(j,i)>=0){
+						drawRevealedSquare(g2d, j, i,game.map(j,i));
 					}else{
 						g2d.setFont(SYMBOLSFONT);
 						Character ch = BOMBCHARACTER;
@@ -419,6 +389,30 @@ public class MinesweeperGUI extends JFrame{
 				}
 			}
 
+		}
+
+		private void drawRevealedSquare(Graphics2D g2d, int x, int y, int value) {
+			if(value>0){
+				g2d.setFont(LETTERSFONT);
+				g2d.setColor(getColor(value));
+				Point center = center(String.valueOf(value),g2d,1,2);
+				g2d.drawString(String.valueOf(value), x*SCALE+center.x, y*SCALE+center.y);
+			}
+		}
+
+		private void drawUnrevealedSquare(Graphics2D g2d, int x, int y) {
+			g2d.setColor(Color.lightGray);
+			//int border = SCALE/10;
+			//g2d.fillRect(x*SCALE+1+border, y*SCALE+1+border, SCALE-1-border*2, SCALE-1-border*2);
+			g2d.fill3DRect(x*SCALE+1, y*SCALE+1, SCALE-1, SCALE-1,true);
+			if(game.flagged(x,y)){
+				g2d.setFont(SYMBOLSFONT.deriveFont((float)SCALE*5/8));
+				Character ch = FLAGCHARACTER;
+				if(!g2d.getFont().canDisplay(ch)) ch='F';
+				g2d.setColor(Color.magenta);
+				Point center = center(ch.toString(),g2d,1,2);
+				g2d.drawString(ch.toString(), x*SCALE+center.x, y*SCALE+center.y);
+			}
 		}
 
 		private Point center(String s,Graphics2D g,int xoffset,int yoffset){

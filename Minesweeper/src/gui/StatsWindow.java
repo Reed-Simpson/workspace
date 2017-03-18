@@ -15,6 +15,8 @@ import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
 import data.RecordList;
+import data.RecordList.Category;
+import data.RecordList.Difficulty;
 
 
 public class StatsWindow extends JDialog{
@@ -22,36 +24,36 @@ public class StatsWindow extends JDialog{
 	private static final String[] columns = {"Time","Clicks","3BV"};
 	
 	private RecordList records;
-	private int sortBy;
+	private Category sortBy;
 	private JPanel[] panels = new JPanel[4];
 	private JTabbedPane pane;
 
-	public StatsWindow(JFrame frame, RecordList records, int currentDifficulty) {
+	public StatsWindow(JFrame frame, RecordList records, Difficulty currentDifficulty) {
 		super(frame,"Statistics",true);
 		pane=new JTabbedPane();
-		sortBy=0;
+		sortBy=Category.TIME;
 		this.records=records;
 
-		addTab(pane,"Easy",0);
-		addTab(pane,"Medium",1);
-		addTab(pane,"Hard",2);
-		addTab(pane,"Custom",3);
+		addTab(pane,"Easy",Difficulty.EASY);
+		addTab(pane,"Medium",Difficulty.MEDIUM);
+		addTab(pane,"Hard",Difficulty.HARD);
+		addTab(pane,"Custom",Difficulty.CUSTOM);
 		
-		pane.setSelectedIndex(currentDifficulty);
-
+		pane.setSelectedIndex(currentDifficulty.value());
+		
 		this.add(pane);
-		this.setSize(300, 105+16*RecordList.NUMENTRIESLOGGED);
+		this.setSize(300, 105+16*5);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 	
-	private void addTab(JTabbedPane pane,String title,int difficulty){
+	private void addTab(JTabbedPane pane,String title,Difficulty difficulty){
 		JPanel panel = makePanel(difficulty);
-		panels[difficulty]=panel;
+		panels[difficulty.value()]=panel;
 		pane.add(title,panel);
 	}
 	
-	private JPanel makePanel(int difficulty){
+	private JPanel makePanel(Difficulty difficulty){
 		JPanel result = new JPanel();
 		result.setLayout(new BorderLayout());
 
@@ -61,7 +63,7 @@ public class StatsWindow extends JDialog{
 		return result;
 	}
 	
-	private JLabel makeLabel(int difficulty){
+	private JLabel makeLabel(Difficulty difficulty){
 		int wins = records.getWinCount(difficulty);
 		int losses = records.getLossCount(difficulty);
 		int winRate = (int) Math.round(((double) wins/(double)(wins+losses)*100));
@@ -69,13 +71,13 @@ public class StatsWindow extends JDialog{
 		return new JLabel(labelText);
 	}
 	
-	private JTable makeTable(int difficulty){
+	private JTable makeTable(Difficulty difficulty){
 		JTable result = new JTable(records.getData(difficulty, sortBy),columns);
 		JButton timeButton = new JButton("time");
 		timeButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setSort(0);
+				setSort(Category.TIME);
 				
 			}
 		});
@@ -83,23 +85,23 @@ public class StatsWindow extends JDialog{
 		clicksButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setSort(1);
+				setSort(Category.CLICKS);
 			}
 		});
 		JButton BBBVButton = new JButton("3BV");
 		BBBVButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setSort(2);
+				setSort(Category.BBBV);
 			}
 		});
 		JTableHeader header = result.getTableHeader();
 		header.setLayout(new BorderLayout());
-//		int x = header.getWidth()/3;
-//		int y = timeButton.getPreferredSize().height;
-//		timeButton.setPreferredSize(new Dimension(x, y));
-//		clicksButton.setPreferredSize(new Dimension(x, y));
-//		BBBVButton.setPreferredSize(new Dimension(x, y));
+		/*int x = header.getWidth()/3;
+		int y = timeButton.getPreferredSize().height;
+		timeButton.setPreferredSize(new Dimension(x, y));
+		clicksButton.setPreferredSize(new Dimension(x, y));
+		BBBVButton.setPreferredSize(new Dimension(x, y));*/
 		header.add(timeButton,BorderLayout.WEST);
 		header.add(clicksButton,BorderLayout.CENTER);
 		header.add(BBBVButton,BorderLayout.EAST);
@@ -108,12 +110,12 @@ public class StatsWindow extends JDialog{
 		return result;
 	}
 	
-	private void setSort(int sortBy){
+	private void setSort(Category sortBy){
 		this.sortBy=sortBy;
-		for(int difficulty=0;difficulty<4;difficulty++){
-			panels[difficulty].removeAll();
-			panels[difficulty].add(makeLabel(difficulty),BorderLayout.NORTH);
-			panels[difficulty].add(new JScrollPane(makeTable(difficulty)),BorderLayout.CENTER);
+		for(Difficulty difficulty:Difficulty.values()){
+			panels[difficulty.value()].removeAll();
+			panels[difficulty.value()].add(makeLabel(difficulty),BorderLayout.NORTH);
+			panels[difficulty.value()].add(new JScrollPane(makeTable(difficulty)),BorderLayout.CENTER);
 		}
 		panels[pane.getSelectedIndex()].validate();
 	}

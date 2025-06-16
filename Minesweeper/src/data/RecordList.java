@@ -9,8 +9,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import data.RecordList.Difficulty;
-
 public class RecordList{
 	public enum Category{
 		TIME(0),CLICKS(1),BBBV(2);

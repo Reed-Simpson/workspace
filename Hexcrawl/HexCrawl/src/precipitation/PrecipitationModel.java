@@ -1,0 +1,321 @@
+package precipitation;
+
+import java.awt.Color;
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import biome.BiomeModel;
+import general.Graph;
+import general.OpenSimplex2S;
+import general.Util;
+import io.SaveRecord;
+import map.AltitudeModel;
+
+public class PrecipitationModel {
+	public static final int LOCAL_WEIGHT_1 = 10;
+	public static final int LOCAL_WEIGHT_2 = 3;
+	public static final int EVAPORATION_WEIGHT = 3;
+	public static final int EVAPORATION_RANGE = 10;
+	public static final float DISTANCE_FACTOR = 3.0f;
+	public static final float CLOUD_HEIGHT = 0.8f;
+	public static final float GREEN_THRESH = 0.7f;
+	public static final float YELLOW_THRESH = 0.35f;
+	private static final int PRECIPITATION_SCALE = 12000; // max annual precipitation in mm
+	public static final int SEED_OFFSET = 1*Util.getOffsetX();
+	public static final int RIVERFLOWDISTANCE = 1;
+	public static final int RIVERRENDERDISTANCE = 7;
+	public static final int LAKEFLOWDISTANCE = 3;
+
+	private AltitudeModel grid;
+	private HashMap<Point,Float> evapCache;
+	private ConcurrentHashMap<Point,Point> flowCache;
+	private ConcurrentHashMap<Point,Point> riverCache;
+	private ConcurrentHashMap<Point,Float> volumeCache;
+	private ConcurrentHashMap<Point,Integer> lakes;
+	private ConcurrentHashMap<Point,Point> outletCache;
+	private SaveRecord record;
+
+	public PrecipitationModel(SaveRecord record, AltitudeModel grid) {
+		this.grid = grid;
+		this.record = record;
+		this.evapCache = new HashMap<Point,Float>();
+		this.flowCache = new ConcurrentHashMap<Point,Point>();
+		this.riverCache = new ConcurrentHashMap<Point,Point>();
+		this.volumeCache = new ConcurrentHashMap<Point,Float>();
+		this.lakes = new ConcurrentHashMap<Point,Integer>();
+		this.outletCache = new ConcurrentHashMap<Point,Point>();
+	}
+
+	public ConcurrentHashMap<Point,Integer> getLakes() {
+		return lakes;
+	}
+
+	public boolean isLake(Point p) {
+		return lakes.containsKey(p);
+	}
+
+	public float getPrecipitation(Point p) {
+		float evaporation = getEvaporationFactor(p);
+		float local = getLocalFactor(p);
+		return (LOCAL_WEIGHT_1+LOCAL_WEIGHT_2)*local/sumWeights()+(EVAPORATION_WEIGHT)*evaporation/sumWeights();
+	}
+	public float getPrecipitation(int x, int y) {
+		return getPrecipitation(new Point(x,y));
+	}
+
+
+	private float getEvaporationFactor(Point p) {
+		Float result = evapCache.get(p);
+		if(result == null) {
+			float sum = 0;
+			float count = 0;
+			for(int i=-EVAPORATION_RANGE;i<=EVAPORATION_RANGE;i++) {
+				int yStart = -EVAPORATION_RANGE-(i<0?i:0);
+				int yEnd = EVAPORATION_RANGE-(i>0?i:0);
+				for(int j=yStart;j<=yEnd;j++) {
+					int d = Util.getDist(new Point(0,0), new Point(i,j));
+					if(d==0)d=1;
+					double hexWeight = Math.pow(d,DISTANCE_FACTOR);
+					count+=hexWeight;
+					if(grid.getHeight(p.x+i, p.y+j)<=BiomeModel.WATER_HEIGHT) {
+						sum+=hexWeight;
+					}
+				}
+			}
+			result = sum/count;
+			evapCache.put(p, result);
+		}
+		return result;
+	}
+
+	private float getLocalFactor(Point p) {
+		float local1 = (OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET), Util.getNScale()*p.x, Util.getNScale()*p.y)+1)/2;
+		float local2 = (OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+1), Util.getLScale()*p.x, Util.getLScale()*p.y)+1)/2;
+		return (LOCAL_WEIGHT_1*local1+LOCAL_WEIGHT_2*local2)/(LOCAL_WEIGHT_1+LOCAL_WEIGHT_2);
+	}
+
+	private int sumWeights() {
+		return LOCAL_WEIGHT_1+LOCAL_WEIGHT_2+EVAPORATION_WEIGHT;
+	}
+
+	public static float precipitationTransformation(float precipitation) {
+		return precipitation*PRECIPITATION_SCALE;
+	}
+
+	public Color getColor(float precipitation) {
+		int gradiants = 10;
+		int r=255; int g=255;
+		if(precipitation>GREEN_THRESH) {
+			r=0;
+		}else if(precipitation>YELLOW_THRESH){
+			r= (int)(255*Math.ceil(gradiants*(GREEN_THRESH-precipitation)/(GREEN_THRESH-YELLOW_THRESH))/gradiants);
+		}else {
+			g= (int)(255*Math.ceil(gradiants*precipitation/YELLOW_THRESH)/gradiants);
+		}
+		//System.out.println(r+" "+g);
+		return new Color(r, g, 0);
+	}
+
+	public Point getFlow(Point p) {
+		if(grid.isWater(p)) return p;
+		if(flowCache.get(p)==null) {
+			long index = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+2), p.x, p.y));
+			float alt = grid.getHeight(p.x, p.y);
+			Point result = p;
+			Point result2 = p;
+			for(Point p1:Util.getNearbyPoints(p,RIVERFLOWDISTANCE)) {
+				float alt1=grid.getHeight(p1.x, p1.y);
+				if(alt1<alt ) {
+					result2=result;
+					result = p1;
+					alt=alt1;
+				}
+			}
+			if(index%2==0&&!isFlowingInto(result2,p)) {//chance of fudge is 1 in 2
+				//System.out.println("Fudging "+p+" from "+getFlow(result)+" to "+result2);
+				result = result2;
+			}
+			flowCache.put(p, result);
+			riverCache.put(p, result);
+		}
+		return flowCache.get(p);
+	}
+
+	public Point getFlow(int i, int j) {
+		return getFlow(new Point(i,j));
+	}
+
+	public Point getRiver(Point p) {
+		if(grid.isWater(p)) return p;
+		else return riverCache.get(p);
+	}
+
+	public void updateFlowVolume(Point p, float volume,int depth) {
+		if(grid.isWater(p)) return;
+		float precipitation = 0;
+		if(volumeCache.putIfAbsent(p, getPrecipitation(p))==null) {
+			precipitation=getPrecipitation(p);
+		}
+		if(volume+precipitation>0.000001f){
+			volumeCache.replace(p, volume+volumeCache.get(p));
+			Point p1 = getFlow(p);
+			if(p1!=p) updateFlowVolume(p1,volume+precipitation,depth+1);
+			else {
+				if(!lakes.contains(p)) {
+					Point outlet = generateLake(p);
+					updateFlowVolume(outlet, getFlowVolume(p),depth+1);
+				}
+			}
+		}
+	}
+
+	public Point generateLake(Point p) {
+		getFlow(p);
+		Graph<Point> lake = new Graph<Point>();
+		HashSet<Point> lakeBorder = new HashSet<Point>();
+		Point outlet = p;
+		Point drain = p;
+		float altitude = Float.MAX_VALUE;
+		while(isFlowingInto(drain, p)) {
+			lake.add(drain);
+			if(Util.getDist(outlet, drain)<=LAKEFLOWDISTANCE) {
+				addEdge(lake, outlet, drain);
+			}
+			outlet = drain;
+			lakes.put(outlet,0);
+			addEdges(lake,outlet);
+			drain = checkDrainage(outlet, lake);
+			if(drain==null) {
+				lakeBorder.remove(outlet);
+				findLakeBorders(lakeBorder, lake, outlet);
+				for(Point p1:lakeBorder) {
+					if(grid.getHeight(p1)<altitude) {
+						drain = p1;
+						altitude = grid.getHeight(p1);
+					}
+				}
+			}
+			altitude = Float.MAX_VALUE;
+		}
+		for(Point l:lake) {
+			HashSet<Point> cache = new HashSet<Point>();
+			updateFlowPath(l,outlet,lake,cache);
+			outletCache.put(l, outlet);
+			lakes.put(l,lake.size());
+		}
+		if(!isFlowingInto(drain, outlet)) {
+			riverCache.put(outlet, drain);
+			flowCache.put(outlet, drain);
+		}else {
+			flowCache.put(outlet, outlet);
+		}
+		return outlet;
+	}
+	private void addEdges(Graph<Point> lake, Point outlet) {
+		for(Point p:Util.getAdjacentPoints(outlet)) {
+			if(lake.contains(p)) {
+				addEdge(lake, outlet, p);
+			}
+		}
+	}
+	private void addEdge(Graph<Point> lake, Point p1,Point p2) {
+		lake.addEdge(p1, p2, getEdgeWeight(p2));
+		lake.addEdge(p2, p1, getEdgeWeight(p1));
+	}
+	private int getEdgeWeight(Point p) {
+		float alt = grid.getHeight(p);
+		return ((int) alt*1000000)%20;
+	}
+
+	private void updateFlowPath(Point l, Point outlet,Graph<Point> lake,HashSet<Point> cache) {
+		if(!cache.contains(l)) {
+			LinkedList<Point> path = lake.shortestPath(l, outlet);
+			Iterator<Point> iterator = path.iterator();
+			Point p = iterator.next();
+			Point next;
+			while(iterator.hasNext()) {
+				next = iterator.next();
+				flowCache.put(p, next);
+				riverCache.put(p, next);
+				if(!cache.add(p)) break;
+				p = next;
+			}
+		}
+	}
+
+	public Point findLakeBorders(Set<Point> lakeBorder,Graph<Point> lake,Point newLake) {
+		Point result = null;
+		for(Point p1:Util.getNearbyPoints(newLake,1)) {
+			if(!lakeBorder.contains(p1)&&!lake.contains(p1)) {
+				if(lakes.containsKey(p1)) {
+					if(result==null) result = p1;
+					lake.add(p1);
+					addEdges(lake,p1);
+					findLakeBorders(lakeBorder, lake, p1);
+				}else {
+					lakeBorder.add(p1);
+				}
+			}
+		}
+		return result;
+	}
+	private Point checkDrainage(Point p,Graph<Point> lake) {
+		Point result = p;
+		for(Point p1:Util.getNearbyPoints(p,LAKEFLOWDISTANCE)) {
+			if(!lake.contains(p1)&&grid.getHeight(p1)<grid.getHeight(result)&&!isFlowingInto(p1, p)) {
+				result=p1;
+			}
+		}
+		if(result.equals(p)) return null;
+		else return result;
+	}
+
+	private boolean isFlowingInto(Point p1,Point p2) {
+		while(p1!=p2&&getFlow(p1)!=p1) {
+			//System.out.println(p1+" is flowing into "+getFlow(p1));
+			p1=getFlow(p1);
+		}
+		return p1.equals(p2);
+	}
+
+	public float getFlowVolume(Point p) {
+		return (volumeCache.get(p)==null ? 0 : volumeCache.get(p));
+	}
+
+	public UpdateFlowVolumeThread getThread(Point p) {
+		return new UpdateFlowVolumeThread(p);
+	}
+
+	public float getLakeFlow(Point p) {
+		int lakeSize = lakes.get(p);
+		float flow = volumeCache.get(getOutlet(p));
+		return flow/lakeSize;
+	}
+	public boolean isOutlet(Point p) {
+		return isLake(p)&&!isLake(getFlow(p));
+	}
+	public Point getOutlet(Point p) {
+		if(isLake(p)) return outletCache.get(p);
+		else return getFlow(p);
+	}
+
+	public class UpdateFlowVolumeThread implements Runnable {
+		Point p;
+
+		public UpdateFlowVolumeThread(Point p) {
+			this.p = p;
+		}
+
+		@Override
+		public void run() {
+			updateFlowVolume(p, 0f,0);
+		}
+	}
+
+
+}

@@ -1,0 +1,95 @@
+package encounters;
+
+import general.Indexible;
+
+public class Encounter extends Indexible {
+	private String type;
+	private String focus;
+	private String[] action;
+	private String[] descriptor;
+	private String[] location;
+	private String[] character;
+	private String[] object;
+	private String[] hazard;
+	
+
+	public Encounter(float... floats) {
+		super(floats);
+	}
+	public String getFocus() {
+		return focus;
+	}
+	public String[] getLocation() {
+		return location;
+	}
+	public String[] getCharacter() {
+		return character;
+	}
+	public String[] getObject() {
+		return object;
+	}
+	public void setFocus(String focus) {
+		this.focus = focus;
+	}
+	public void setLocation(String[] location) {
+		this.location = location;
+	}
+	public void setCharacter(String[] character) {
+		this.character = character;
+	}
+	public void setObject(String[] object) {
+		this.object = object;
+	}
+	public String[] getHazard() {
+		return hazard;
+	}
+	public void setHazard(String[] hazard) {
+		this.hazard = hazard;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String[] getAction() {
+		return action;
+	}
+	public void setAction(String[] action) {
+		this.action = action;
+	}
+	public String[] getDescriptor() {
+		return descriptor;
+	}
+	public void setDescriptor(String[] descriptor) {
+		this.descriptor = descriptor;
+	}
+	
+	public String toString(int i) {
+		StringBuilder e1Text = new StringBuilder();
+		//e1Text.append("~~~~~ "+this.getType()+" Encounter #"+(i)+" ~~~~~\r\n");
+		e1Text.append("Focus: "+this.getFocus() +"\r\n");
+		e1Text.append("Action: "+parseArray(this.getAction()) + "\r\n");
+		e1Text.append("Descriptor: "+parseArray(this.getDescriptor()) + "\r\n");
+		e1Text.append("Location: "+parseArray(this.getLocation()) + "\r\n");
+		e1Text.append("Character: "+parseArray(this.getCharacter()) + "\r\n");
+		e1Text.append("Object: "+parseArray(this.getObject()));
+		if(hazard!=null) e1Text.append( "\r\nCatastrophic Event: "+parseArray(this.getHazard()) );
+		return e1Text.toString();
+	}
+	
+	private String parseArray(String[] arr) {
+		if(arr.length==0) return "";
+		else if(arr.length==1) return arr[0];
+		else if(arr.length==2) return arr[0]+" and "+arr[1];
+		else {
+			String result = "";
+			for(int i=0;i<arr.length-1;i++) {
+				result+=arr[i]+", ";
+			}
+			result+="and "+arr[arr.length-1];
+			return result;
+		}
+	}
+
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2025-06-14T15:09:07.723175900Z</date>
+  <millis>1749913747723</millis>
+  <nanos>175900</nanos>
+  <sequence>0</sequence>
+  <logger>HexCrawlGenerator</logger>
+  <level>SEVERE</level>
+  <class>general.MapFrame</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>test</message>
+</record>

@@ -9,18 +9,20 @@ import java.awt.Point;
 
 import javax.swing.JPanel;
 
-import control.MouseAdapter;
-import model.ChessBoard;
-import model.ChessPiece;
+import board.ChessBoard;
+import board.ChessPiece;
+import user.MouseAdapter;
 
 public class ChessboardPanel extends JPanel {
 	private static final long serialVersionUID = 7251905047371109577L;
 	public static final int scale = 50;
 	public static final Color COLOR1 = Color.WHITE;
 	public static final Color COLOR2 = Color.BLACK;
+	public static final Color BGCOLOR1 = Color.WHITE;
+	public static final Color BGCOLOR2 = Color.GRAY;
 	public static final Color HIGHLIGHT1 = Color.YELLOW;
-	public static final Color HIGHLIGHT2 = Color.BLUE;
-	public static final Color OUTLINE = Color.GRAY;
+	public static final Color HIGHLIGHT2 = Color.GREEN;
+	public static final Color OUTLINE = Color.DARK_GRAY;
 	public static final Font DEFAULTFONT = new Font("Monospaced", Font.BOLD, scale*4/5);
 	
 
@@ -48,8 +50,8 @@ public class ChessboardPanel extends JPanel {
         		Point t = new Point(j,i);
         		if(this.board.selected!=null&&t.equals(this.board.selected.pos)) g2.setColor(HIGHLIGHT1);
         		else if(this.board.selected!=null&&this.board.selected.threatens(t)) g2.setColor(HIGHLIGHT2);
-        		else if((i+j)%2==0) g2.setColor(COLOR1);
-        		else g2.setColor(COLOR2);
+        		else if((i+j)%2==0) g2.setColor(BGCOLOR1);
+        		else g2.setColor(BGCOLOR2);
         		ChessPiece p = board.get(t);
         		g2.fillRect(j*scale+1, i*scale+1, scale-1, scale-1);
         		if(p!=null){

@@ -3,7 +3,7 @@ package view;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import model.ChessBoard;
+import board.ChessBoard;
 
 public class Main {
 	

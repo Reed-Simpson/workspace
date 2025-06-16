@@ -16,8 +16,8 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 			"esoteric,expanding,hunted,incompetent,incorruptible,insane,insular,manipulative,martial,${personality},pious,popular,"+
 			"righteous,ruthless,secret,subversive,suppressed,threatened,thriving,unpopular,up-and-coming,wealthy,well-prepared,xenophobic";
 	private static WeightedTable<String> traits;
-	private static final String GOALS = "advise leader,avoid detection,awaken being,collect artifacts,construct base,control ${faction},control politics,create artifact,create monster,defeat ${faction},defend borders,defend leader,"+
-			"destroy artifacts,destroy being,destroy villain,enforce law,enrich members,entertain,exchange goods,hear rumors,indulge tastes,infiltrate ${faction},map the wilds,overthrow order,"+
+	private static final String GOALS = "advise leader,avoid detection,awaken being,collect artifacts,construct base,control ${faction index},control politics,create artifact,create monster,defeat ${faction index},defend borders,defend leader,"+
+			"destroy artifacts,destroy being,destroy villain,enforce law,enrich members,entertain,exchange goods,hear rumors,indulge tastes,infiltrate ${faction index},map the wilds,overthrow order,"+
 			"preserve lineage,preserve lore,produce goods,promote arts,promote craft,purge traitors,sell services,share knowledge,spread beliefs,summon evil,survive,transport goods";
 	private static WeightedTable<String> goals;
 

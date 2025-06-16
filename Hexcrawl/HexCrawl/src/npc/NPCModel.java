@@ -27,7 +27,7 @@ public class NPCModel {
 			"Hermit,Hunter,Messenger,Minstrel,Monk,Monster Hunter,Outlander,Tinker,Pilgrim,Poacher,Raider,Ranger,"+
 			"Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tinker,Tomb Raider,Trader,Trapper,Witch,Woodcutter";
 	private static WeightedTable<String> wilderness;
-	private static final String ASSETS = "Has authority,Avoids detection,Calls in favors,Is charming,Cooks the books,Erases the evidence,Excellent liar,Extremely Rich,Leader of ${faction},Member of ${faction},Feared,Has a fortified base,"+
+	private static final String ASSETS = "Has authority,Avoids detection,Calls in favors,Is charming,Cooks the books,Erases the evidence,Excellent liar,Extremely Rich,Leader of ${faction index},Member of ${faction index},Feared,Has a fortified base,"+
 			"Gorgeous,Hears rumors,Huge family,Huge library,Impersonator,Interrogator,Knows a guy,Knows a way in,Launders money,Learned,Local celebrity,Posesses local knowledge,"+
 			"Has loyal henchmen,Middling Oracle,Has nothing to lose,Owns the guards,Has a powerful spouse,Procures gear,Pulls the strings,Has a secret lab,Sells contraband,Smuggles goods,Has a spy network,War hero";
 	private static WeightedTable<String> assets;
@@ -35,9 +35,9 @@ public class NPCModel {
 			"${insanity},is jealous,leaves evidence,has many enemies,is misinformed,left a money trail,is a narcissist,needs medicine,is neurotic,is paranoid,is a partyer,has poor equipment,"+
 			"is overprotective,is scandalous,is softhearted,follows strict routines,is superstitous,is overly suspicious,has a temper,is overly trusting,has a vulnerable base,is wanted,is weak-willed,is widely despised";
 	private static WeightedTable<String> liabilities;
-	private static final String GOALS = "a better life,acceptance,to acquire ${item},to craft ${item},to destroy ${faction},to destroy ${item},enlightenment,fame,to found ${faction},freedom,glory,to impress ${relationship},"+
-			"infamy,to infiltrate ${faction},justice,to kidnap ${relationship},to lead ${faction},learning,to locate ${relationship},love,mastery,power,to reach location,to rescue ${relationship},"+
-			"to resolve a dispute,to restore ${faction},to reveal a secret,revenge,to sabotage ${faction},to serve a deity,to serve evil,to serve ${faction},to serve ideology,to serve leader,to help the Needy,wealth";
+	private static final String GOALS = "a better life,acceptance,to acquire ${item},to craft ${item},to destroy ${faction index},to destroy ${item},enlightenment,fame,to found ${faction},freedom,glory,to impress ${relationship},"+
+			"infamy,to infiltrate ${faction index},justice,to kidnap ${relationship},to lead ${faction index},learning,to locate ${relationship},love,mastery,power,to reach location,to rescue ${relationship},"+
+			"to resolve a dispute,to restore ${faction},to reveal a secret,revenge,to sabotage ${faction index},to serve a deity,to serve evil,to serve ${faction index},to serve ideology,to serve leader,to help the Needy,wealth";
 	private static WeightedTable<String> goals;
 	private static final String MISFORTUNES = "abandoned,addicted,arrested,blackmailed,burgled,challenged,condemned,crippled,cursed,defrauded,demoted,depressed,"+
 			"discredited,dismissed,disowned,exiled,famished,forgotten,framed,haunted,humiliated,impoverished,kidnapped,lost,"+
@@ -302,7 +302,9 @@ public class NPCModel {
 		npc.setLiability(getLiability(npc));
 	}
 	private void setGoal(int i, Point p, NPC npc) {
-		npc.setGoal(getGoal(npc));
+		Point capital = population.getAbsoluteFealty(p);
+		if(population.isCity(capital)) npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p,capital));
+		else npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p,null));
 	}
 	private void setMisfortune(int i, Point p, NPC npc) {
 		npc.setMisfortune(getMisfortune(npc));

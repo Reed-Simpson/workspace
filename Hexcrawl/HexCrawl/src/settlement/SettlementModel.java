@@ -8,17 +8,18 @@ import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
 import names.FactionNameGenerator;
+import view.InfoPanel;
 
 public class SettlementModel {
 	private static final int SEED_OFFSET = 10*Util.getOffsetX();
 	private static final int FACTIONTABLES = 20;
 	private static final int SETTLEMENTTABLES = 5;
 	//private static final int TABLECOUNT = FACTIONTABLES+5;
-	private static final String THEMES = "${animal},Aristocracy,Art,Bureaucracy,Castes,Catacombs,${city activity},${city event},Crime Families,Cruelty,${district},${domain},"+
-			"${faction},Festivals,Feuds,Intrigue,${lower class building},Martial Law,Meritocracy,${job},Opulence,${physical element},Pilgrimages,Piracy,"+
+	private static final String THEMES = "${animal},Aristocracy,Art,Bureaucracy,Castes,Catacombs,${city activity},${city event},Crime Families,Cruelty,${district index},${domain},"+
+			"${faction index},Festivals,Feuds,Intrigue,${lower class building},Martial Law,Meritocracy,${job},Opulence,${physical element},Pilgrimages,Piracy,"+
 			"Plutocracy,Poverty,Rituals,Slavery,Spices,Theocracy,Thievery,Trade,Tyranny,${upper class building},Wizardry,Xenophobia";
 	private static WeightedTable<String> themes;
-	private static final String EVENTS = "Assassination,Carnival,Conscription,Coronation,Coup,Cult Activity,Curfew,Discovery,Earthquake,${faction} War,Fashion Trend,Fire,"+
+	private static final String EVENTS = "Assassination,Carnival,Conscription,Coronation,Coup,Cult Activity,Curfew,Discovery,Earthquake,${faction index} War,Fashion Trend,Fire,"+
 			"Flood,Heavy Fog,Heavy Taxes,Holy Day,Hysteria,Inquisition,Insurrection,Invasion,Jailbreak,Mass Eviction,Mass Pardon,Negotiations,"+
 			"Plague,Proclamation,Prohibition,Public Games,Refugees,Rioting,Roundup,Scandal,Serial Killer,Shortage,Tournament,Trial";
 	private static WeightedTable<String> events;
@@ -154,7 +155,7 @@ public class SettlementModel {
 		result.setTheme(getTheme(result));
 		result.setLeadership(getLeadership(result));
 		result.setEvent(getEvent(result));
-		for(int k=0;k<6;k++) {
+		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
 			result.putDistrict(getDistrict(result));
 		}
 		return result;

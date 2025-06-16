@@ -15,8 +15,10 @@ import names.npc.HumanNameGenerator;
 import npc.NPCModel;
 import population.Species;
 import settlement.SettlementModel;
+import view.InfoPanel;
 
 public class Util {
+	private static final String RANDOMSTRING = "8juO5fJag55Ti6zIWB7y6CaMoQaLeF";
 	//scale is roughly 3 miles divided by scalar
 	private static double SCALAR_0 = 0.0001; // supercontinent scale
 	private static double SCALAR_1 = 0.001; // continent scale
@@ -97,6 +99,9 @@ public class Util {
 	}
 	public static String posString(Point pos,Point zero) {
 		Point p = normalizePos(pos,zero);
+		return posString(p);
+	}
+	public static String posString(Point p) {
 		return p.x+","+p.y;
 	}
 	public static String replace(String string,String match,String replacement) {
@@ -104,6 +109,26 @@ public class Util {
 		int i = string.indexOf(match);
 		if(i>-1) return string.substring(0,i)+replacement+string.substring(i+match.length());
 		else return string;
+	}
+	public static String formatTableResultPOS(String result,Indexible obj) {
+		return formatTableResultPOS(result, obj, null, null);
+	}
+	public static String formatTableResultPOS(String result,Indexible obj,Point p,Point capital) {
+		if(p!=null) {
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, p));
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, p));
+		}else {
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
+		}
+		if(capital!=null) {
+			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, p));
+			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, p));
+		}else {
+			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj));
+			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
+		}
+		return result;
 	}
 
 	public static String formatTableResult(String result,Indexible obj) {
@@ -202,12 +227,30 @@ public class Util {
 		if(result.contains("${inn prefix}")) result = Util.replace(result,"${inn prefix}",InnNameGenerator.getPrefix(obj));
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
 
+		//		if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj,"location",InfoPanel.POICOUNT));
+		//		if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj,"npc",InfoPanel.NPCCOUNT));
+		//		if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj,"faction",InfoPanel.FACTIONCOUNT));
+		//		if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj,"district",InfoPanel.DISTRICTCOUNT));
+
+
+		if(result.contains("${location index}")) result = Util.replace(result,"${location index}",RANDOMSTRING+"location");
+		if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",RANDOMSTRING+"npc");
+		if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",RANDOMSTRING+"faction");
+		if(result.contains("${district index}")) result = Util.replace(result,"${district index}",RANDOMSTRING+"district");
 		if(result.contains("${")) {
 			throw new IllegalStateException("Unable to process tag: "+result);
 		}
+		if(result.contains(RANDOMSTRING+"location")) result = Util.replace(result,RANDOMSTRING+"location","${location index}");
+		if(result.contains(RANDOMSTRING+"npc")) result = Util.replace(result,RANDOMSTRING+"npc","${npc index}");
+		if(result.contains(RANDOMSTRING+"faction")) result = Util.replace(result,RANDOMSTRING+"faction","${faction index}");
+		if(result.contains(RANDOMSTRING+"district")) result = Util.replace(result,RANDOMSTRING+"district","${district index}");
 		return result;
 	}
 
+	public static String getIndexString(Indexible obj,String type,int count,Point p) {
+		int index = obj.reduceTempId(count);
+		return "{"+type+":"+p.x+","+p.y+","+(index+1)+"}";
+	}
 	public static int[] getRemainder(int[] vals,int reduction) {
 		int[] remainder = new int[vals.length-reduction];
 		for(int i=0;i<remainder.length;i++) remainder[i] = vals[i+reduction];

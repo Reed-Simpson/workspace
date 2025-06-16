@@ -46,7 +46,8 @@ public class InfoPanel extends JTabbedPane{
 	public static final int NPCCOUNT = 20;
 	public static final int POICOUNT = 20;
 	public static final int DUNGEONCOUNT = 6;
-	private static final int FACTIONCOUNT = 6;
+	public static final int FACTIONCOUNT = 6;
+	public static final int DISTRICTCOUNT = 6;
 	private MapPanel panel;
 
 	private JLabel pos;

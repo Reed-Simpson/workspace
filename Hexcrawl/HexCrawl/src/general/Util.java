@@ -227,23 +227,12 @@ public class Util {
 		if(result.contains("${inn prefix}")) result = Util.replace(result,"${inn prefix}",InnNameGenerator.getPrefix(obj));
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
 
-		//		if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj,"location",InfoPanel.POICOUNT));
-		//		if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj,"npc",InfoPanel.NPCCOUNT));
-		//		if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj,"faction",InfoPanel.FACTIONCOUNT));
-		//		if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj,"district",InfoPanel.DISTRICTCOUNT));
-
-
-		if(result.contains("${location index}")) result = Util.replace(result,"${location index}",RANDOMSTRING+"location");
-		if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",RANDOMSTRING+"npc");
-		if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",RANDOMSTRING+"faction");
-		if(result.contains("${district index}")) result = Util.replace(result,"${district index}",RANDOMSTRING+"district");
+		String[] encode = {"location index","npc index","faction index","district index"};
+		for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 		if(result.contains("${")) {
 			throw new IllegalStateException("Unable to process tag: "+result);
 		}
-		if(result.contains(RANDOMSTRING+"location")) result = Util.replace(result,RANDOMSTRING+"location","${location index}");
-		if(result.contains(RANDOMSTRING+"npc")) result = Util.replace(result,RANDOMSTRING+"npc","${npc index}");
-		if(result.contains(RANDOMSTRING+"faction")) result = Util.replace(result,RANDOMSTRING+"faction","${faction index}");
-		if(result.contains(RANDOMSTRING+"district")) result = Util.replace(result,RANDOMSTRING+"district","${district index}");
+		for(String s:encode) {if(result.contains(RANDOMSTRING+s)) result = Util.replace(result,RANDOMSTRING+s,"${"+s+"}");}//decode
 		return result;
 	}
 

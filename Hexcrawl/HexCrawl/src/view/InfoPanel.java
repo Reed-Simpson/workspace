@@ -40,9 +40,11 @@ import threat.Threat;
 import threat.ThreatModel;
 
 public class InfoPanel extends JTabbedPane{
-	private static int WIDTH = 400;
+	private static int WIDTH = 450;
+	private static final int ENCOUNTERCOUNT = 20;
 	private static final int NPCCOUNT = 20;
-	private static final int POICOUNT = 6;
+	private static final int POICOUNT = 20;
+	private static final int DUNGEONCOUNT = 6;
 	private static final long serialVersionUID = 1515493859856133863L;
 	private MapPanel panel;
 
@@ -85,6 +87,8 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<JTextPane> encounterTexts;
 	private ArrayList<JTextPane> dungeonTexts;
 	private ArrayList<JTextPane> poiTexts;
+	private ArrayList<JTextPane> dEntranceTexts;
+	private JScrollPane dEntranceScrollPane;
 
 	public InfoPanel() {
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
@@ -162,7 +166,7 @@ public class InfoPanel extends JTabbedPane{
 		JPanel encounterPanel = new JPanel();
 		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
 		encounterTexts = new ArrayList<JTextPane>();
-		for(int i=0;i<NPCCOUNT;i++) {
+		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
 			JTextPane encounteri = new JTextPane();
 			//encounteri.setLineWrap(true);
@@ -210,25 +214,32 @@ public class InfoPanel extends JTabbedPane{
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
-		for(int i=0;i<POICOUNT;i++) {
-			poiPanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
+		poiScrollPane = new JScrollPane(poiPanel);
+		poiScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		detailsTabs.addTab("Locations", poiScrollPane);
+
+		JPanel dEntrancePanel = new JPanel();
+		dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
+		dEntranceTexts = new ArrayList<JTextPane>();
+		for(int i=0;i<DUNGEONCOUNT;i++) {
+			dEntrancePanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
 			JTextPane poii = new JTextPane();
 //			poii.setLineWrap(true);
 //			poii.setWrapStyleWord(true);
 			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
-			poii.addFocusListener(new DungeonFocusListener(poii,i));
+			poii.addFocusListener(new DungeonEntranceFocusListener(poii,i));
 			poii.setAlignmentX(LEFT_ALIGNMENT);
-			poiPanel.add(poii);
-			poiTexts.add(poii);
+			dEntrancePanel.add(poii);
+			dEntranceTexts.add(poii);
 		}
-		poiScrollPane = new JScrollPane(poiPanel);
-		poiScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("Locations", poiScrollPane);
+		dEntranceScrollPane = new JScrollPane(dEntrancePanel);
+		dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		detailsTabs.addTab("Dungeon", dEntranceScrollPane);
 		
 		JPanel dungeonPanel = new JPanel();
 		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
 		dungeonTexts = new ArrayList<JTextPane>();
-		for(int i=0;i<NPCCOUNT;i++) {
+		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
 			JTextPane encounteri = new JTextPane();
 //			encounteri.setLineWrap(true);
@@ -241,7 +252,7 @@ public class InfoPanel extends JTabbedPane{
 		}
 		dungeonScrollPane = new JScrollPane(dungeonPanel);
 		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("Dungeon", dungeonScrollPane);
+		detailsTabs.addTab("D.Encounters", dungeonScrollPane);
 
 		hexNote1 = new JTextArea();
 		hexNote1.setLineWrap(true);
@@ -437,15 +448,15 @@ public class InfoPanel extends JTabbedPane{
 				enableNPCTab(false);
 			}
 
-//			this.poi1.setText(getPOIText(pos, pos.equals(capital)));
-//			this.poi1.setCaretPosition(0);
 			for(int i = 0;i<POICOUNT;i++) {
 				this.poiTexts.get(i).setText(getPOIText(pos,i,pos.equals(capital)));
 			}
-			for(int i = 0;i<POICOUNT;i++) {
-				this.poiTexts.get(i+POICOUNT).setText(getDungeonText(pos,i));
-			}
 			this.poiTexts.get(0).setCaretPosition(0);
+			
+			for(int i = 0;i<DUNGEONCOUNT;i++) {
+				this.dEntranceTexts.get(i).setText(getDungeonText(pos,i));
+			}
+			this.dEntranceTexts.get(0).setCaretPosition(0);
 
 			for(int i = 0;i<NPCCOUNT;i++) {
 				this.dungeonTexts.get(i).setText(getDungeonEncounterText(pos,i));
@@ -524,6 +535,7 @@ public class InfoPanel extends JTabbedPane{
 		enableNPCTab(true);
 		enableLocationsTab(true);
 		enableDungeonTab(true);
+		enableDungeonEncounterTab(true);
 		if(detailsSelectedIndex>-1) {
 			detailsTabs.setSelectedIndex(detailsSelectedIndex);
 			detailsSelectedIndex = -1;
@@ -536,7 +548,8 @@ public class InfoPanel extends JTabbedPane{
 		enableNPCTab(false);
 		enableLocationsTab(false);
 		enableDungeonTab(false);
-		detailsTabs.setSelectedIndex(4);
+		enableDungeonEncounterTab(false);
+		detailsTabs.setSelectedIndex(5);
 	}
 
 	private void enableEncountersTab(boolean value) {
@@ -550,6 +563,9 @@ public class InfoPanel extends JTabbedPane{
 	}
 	private void enableDungeonTab(boolean value) {
 		detailsTabs.setEnabledAt(3, value);
+	}
+	private void enableDungeonEncounterTab(boolean value) {
+		detailsTabs.setEnabledAt(4, value);
 	}
 
 	private String getEncounterText(Point pos,int index) {
@@ -706,11 +722,11 @@ public class InfoPanel extends JTabbedPane{
 			else panel.getRecord().putLocation(p,index, text);
 		}
 	}
-	public class DungeonFocusListener implements FocusListener {
+	public class DungeonEntranceFocusListener implements FocusListener {
 		private final JTextPane poii;
 		int index;
 
-		private DungeonFocusListener(JTextPane poii, int i) {
+		private DungeonEntranceFocusListener(JTextPane poii, int i) {
 			this.poii = poii;
 			this.index = i;
 		}

@@ -219,47 +219,68 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putNote(Point p,String s) {
-		this.hasUnsavedData = true;
-		return this.notes.put(p, s);
+		String put = this.notes.put(p, s);
+		if(put!=null&&!put.equals(p)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
 	}
 	public String getNote(Point p) {
 		return this.notes.get(p);
 	}
 	public String removeNote(Point p) {
-		this.hasUnsavedData = true;
-		return this.notes.remove(p);
+		String remove = this.notes.remove(p);
+		if(remove!=null) {
+			this.hasUnsavedData = true;
+		}
+		return remove;
 	}
 
 	public String putThreat(Point p,String s) {
-		this.hasUnsavedData = true;
-		return this.threats.put(p, s);
+		String put = this.threats.put(p, s);
+		if(put!=null&&!put.equals(p)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
 	}
 	public String getThreat(Point p) {
 		return this.threats.get(p);
 	}
 	public String removeThreat(Point p) {
-		this.hasUnsavedData = true;
-		return this.threats.remove(p);
+		String remove = this.threats.remove(p);
+		if(remove!=null) {
+			this.hasUnsavedData = true;
+		}
+		return remove;
 	}
 
 	public String putCity(Point p,String s) {
-		this.hasUnsavedData = true;
-		return this.cities.put(p, s);
+		String put = this.cities.put(p, s);
+		if(put!=null&&!put.equals(p)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
 	}
 	public String getCity(Point p) {
 		return this.cities.get(p);
 	}
 	public String removeCity(Point p) {
-		this.hasUnsavedData = true;
-		return this.cities.remove(p);
+		String remove = this.cities.remove(p);
+		if(remove!=null) {
+			this.hasUnsavedData = true;
+		}
+		return remove;
 	}
 
 	public String putEncounter(Point p, int i,String s) {
-		this.hasUnsavedData = true;
 		if(!this.encounters2.containsKey(p)) this.encounters2.put(p, new ArrayList<String>());
 		ArrayList<String> encounters = this.encounters2.get(p);
 		while(encounters.size()<i+1) encounters.add(null);
-		return encounters.set(i, s);
+		String set = encounters.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String getEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.encounters2.get(p);
@@ -270,7 +291,11 @@ public class SaveRecord implements Serializable {
 		this.hasUnsavedData = true;
 		ArrayList<String> encounters = this.encounters2.get(p);
 		if(encounters==null||encounters.size()>=i) return null;
-		return encounters.set(i,null);
+		String set = encounters.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 
 	public String putNPC(Point p,int i,String s) {
@@ -278,7 +303,11 @@ public class SaveRecord implements Serializable {
 		if(!this.npcs2.containsKey(p)) this.npcs2.put(p, new ArrayList<String>());
 		ArrayList<String> npcs = this.npcs2.get(p);
 		while(npcs.size()<i+1) npcs.add(null);
-		return npcs.set(i, s);
+		String set = npcs.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String getNPC(Point p,int i) {
 		ArrayList<String> npcs = this.npcs2.get(p);
@@ -289,7 +318,11 @@ public class SaveRecord implements Serializable {
 		this.hasUnsavedData = true;
 		ArrayList<String> npcs = this.npcs2.get(p);
 		if(npcs==null||npcs.size()>=i) return null;
-		return npcs.set(i,null);
+		String set = npcs.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 
 	public String putLocation(Point p, int i,String s) {
@@ -297,7 +330,11 @@ public class SaveRecord implements Serializable {
 		if(!this.locations2.containsKey(p)) this.locations2.put(p, new ArrayList<String>());
 		ArrayList<String> location = this.locations2.get(p);
 		while(location.size()<i+1) location.add(null);
-		return location.set(i, s);
+		String set = location.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String getLocation(Point p, int i) {
 		ArrayList<String> location = this.locations2.get(p);
@@ -308,7 +345,11 @@ public class SaveRecord implements Serializable {
 		this.hasUnsavedData = true;
 		ArrayList<String> location = this.locations2.get(p);
 		if(location==null||location.size()>=i) return null;
-		return location.set(i,null);
+		String set = location.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 
 	public String putDungeon(Point p, int i,String s) {
@@ -316,7 +357,11 @@ public class SaveRecord implements Serializable {
 		if(!this.dungeons.containsKey(p)) this.dungeons.put(p, new ArrayList<String>());
 		ArrayList<String> location = this.dungeons.get(p);
 		while(location.size()<i+1) location.add(null);
-		return location.set(i, s);
+		String set = location.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String getDungeon(Point p, int i) {
 		ArrayList<String> location = this.dungeons.get(p);
@@ -327,7 +372,11 @@ public class SaveRecord implements Serializable {
 		this.hasUnsavedData = true;
 		ArrayList<String> location = this.dungeons.get(p);
 		if(location==null||location.size()>=i) return null;
-		return location.set(i,null);
+		String set = location.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 
 	public String putFaction(Point p, int i,String s) {
@@ -335,7 +384,11 @@ public class SaveRecord implements Serializable {
 		if(!this.factions.containsKey(p)) this.factions.put(p, new ArrayList<String>());
 		ArrayList<String> faction = this.factions.get(p);
 		while(faction.size()<i+1) faction.add(null);
-		return faction.set(i, s);
+		String set = faction.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String getFaction(Point p, int i) {
 		ArrayList<String> faction = this.factions.get(p);
@@ -346,7 +399,11 @@ public class SaveRecord implements Serializable {
 		this.hasUnsavedData = true;
 		ArrayList<String> faction = this.factions.get(p);
 		if(faction==null||faction.size()>=i) return null;
-		return faction.set(i,null);
+		String set = faction.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 
 	public String putDungeonEncounter(Point p, int i,String s) {
@@ -354,7 +411,11 @@ public class SaveRecord implements Serializable {
 		if(!this.dungeonEncounters2.containsKey(p)) this.dungeonEncounters2.put(p, new ArrayList<String>());
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
 		while(encounters.size()<i+1) encounters.add(null);
-		return encounters.set(i, s);
+		String set = encounters.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String getDungeonEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
@@ -365,7 +426,11 @@ public class SaveRecord implements Serializable {
 		this.hasUnsavedData = true;
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
 		if(encounters==null||encounters.size()>=i) return null;
-		return encounters.set(i,null);
+		String set = encounters.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 
 	public String putRegionName(Point p,String s) {

@@ -39,13 +39,13 @@ import settlement.SettlementModel;
 import threat.Threat;
 import threat.ThreatModel;
 
+@SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
-	private static int WIDTH = 450;
-	private static final int ENCOUNTERCOUNT = 20;
-	private static final int NPCCOUNT = 20;
-	private static final int POICOUNT = 20;
-	private static final int DUNGEONCOUNT = 6;
-	private static final long serialVersionUID = 1515493859856133863L;
+	private static final int WIDTH = 450;
+	public static final int ENCOUNTERCOUNT = 20;
+	public static final int NPCCOUNT = 20;
+	public static final int POICOUNT = 20;
+	public static final int DUNGEONCOUNT = 6;
 	private MapPanel panel;
 
 	private JLabel pos;

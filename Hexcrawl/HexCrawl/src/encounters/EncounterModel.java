@@ -11,6 +11,7 @@ import io.SaveRecord;
 import location.LocationModel;
 import population.PopulationModel;
 import settlement.SettlementModel;
+import view.InfoPanel;
 
 public class EncounterModel {
 	//STATIC CONSTANTS
@@ -135,10 +136,21 @@ public class EncounterModel {
 		this.record = record;
 		this.pop = pop;
 	}
-	
+
 	public String getLocation(Indexible e,boolean isCity) {
 		if(isCity) return SettlementModel.getBuilding(e);
 		else return LocationModel.getStructureOrLandmark(e);
+	}
+	public String getLocation(Indexible e,Point p) {
+		int index = e.reduceTempId(InfoPanel.POICOUNT);
+		return "{location:"+p.x+","+p.y+","+index+"}";
+	}
+	public String getChar(Indexible e,Point p) {
+		int index = e.reduceTempId(InfoPanel.NPCCOUNT);
+		return "{npc:"+p.x+","+p.y+","+index+"}";
+	}
+	private String getCityRoom( Indexible e) {
+		return SettlementModel.getRoom(e);
 	}
 	private String getDungeonRoom( Indexible e) {
 		return DungeonModel.getRoom(e);
@@ -160,7 +172,7 @@ public class EncounterModel {
 	public String getWildernessHazard( Indexible e) {
 		return LocationModel.getHazard(e);
 	}
-	public String getCityHazard( Indexible e) {
+	public String getCityEvent( Indexible e) {
 		return SettlementModel.getEvent(e);
 	}
 	public String getDungeonHazard( Indexible e) {
@@ -181,10 +193,12 @@ public class EncounterModel {
 		e.setFocus(getFocus(e));
 		e.setAction(new String[] {getVerb(e)+" "+getNoun(e),getActivity(e,isCity)});
 		e.setDescriptor(new String[] {getAdverb(e)+" "+getAdj(e)});
-		e.setLocation(new String[] {getLoc(e),getLoc(e),getLocation(e, isCity)});
-		e.setCharacter(new String[] {getChar(e),getChar(e)});
+		String location = getLocation(e, p);
+		if(isCity) location+="/"+getCityRoom(e);
+		e.setLocation(new String[] {getLoc(e),getLoc(e),location});
+		e.setCharacter(new String[] {getChar(e),getChar(e),getChar(e, p)});
 		e.setObject(new String[] {getObj(e),getObj(e),getDiscovery(e, isCity)});
-		if(isCity) e.setHazard(new String[] {getCityHazard(e)});
+		if(isCity) ;//e.setHazard(new String[] {getCityEvent(e)});
 		else e.setHazard(new String[] {getWildernessHazard(e)});
 		return e;
 	}

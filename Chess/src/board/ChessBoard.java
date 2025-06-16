@@ -1,11 +1,11 @@
-package model;
+package board;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import view.ChessboardPanel;
 
-public class ChessBoard {
+public class ChessBoard implements Cloneable {
 	public static int height = 8;
 	public static int width = 8;
 
@@ -115,7 +115,8 @@ public class ChessBoard {
 					special+=" - Stalemate!";
 				}
 			}
-			System.out.println(n.letter+" "+getNotation(px)+" "+getNotation(p)+special);
+			System.out.println(n.letter+" "+Move.getNotation(px)+" "+Move.getNotation(p)+special);
+			System.out.println(Move.printMoveList(getMoves(this.turnCount%2==0)));
 			n.hasMoved=true;
 			this.turnCount++;
 		}
@@ -132,9 +133,6 @@ public class ChessBoard {
 		return result;
 	}
 
-	public String getNotation(Point p){
-		return ((char) ('A'+p.x))+""+((char)('8'-p.y));
-	}
 
 	public ChessPiece get(Point p){
 		return pieces.get(p);
@@ -168,8 +166,8 @@ public class ChessBoard {
 		return new ChessboardPanel(this);
 	}
 
-	public void select(int x, int y, int scale) {
-		Point p = new Point(x/scale,y/scale);
+	public void select(int x, int y) {
+		Point p = new Point(x,y);
 		if(this.selected!=null){
 			if(this.selected.pos.equals(p)) this.selected=null;
 			else if(this.selected.threatens(p)){
@@ -180,5 +178,58 @@ public class ChessBoard {
 		}else{
 			this.selected = this.get(p);
 		}
+	}
+	
+	@Override
+	public ChessBoard clone() {
+		ChessBoard result;
+		try {
+			result = (ChessBoard) super.clone();
+			result.pieces = new HashMap<Point,ChessPiece>();
+			for(ChessPiece p:this.pieces.values()) {
+				ChessPiece newPiece = ChessPiece.create(p.pos, result, p.color, p.type);
+				result.pieces.put(newPiece.pos, newPiece);
+			}
+			if(this.selected!=null) {
+				result.selected = result.pieces.get(this.selected.pos);
+			}
+			result.kings = new ChessPiece[this.kings.length];
+			for(int i=0;i<this.kings.length;i++) {
+				result.kings[i]=result.pieces.get(this.kings[i].pos);
+			}
+			System.out.println(this.kings[0]+" "+this.kings[1]);
+			System.out.println(result.kings[0]);
+			if(this.enPassant!=null) {
+				result.enPassant=result.pieces.get(this.enPassant.pos);
+			}
+			
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return result;
+	}
+	
+	public ArrayList<Move> getMoves(Point p1){
+		ArrayList<Move> result = new ArrayList<Move>();
+		ChessPiece piece = this.pieces.get(p1);
+		if(piece!=null) {
+			for(int i=0;i<ChessBoard.height;i++){
+				for(int j=0;j<ChessBoard.width;j++){
+					Point p2 = new Point(j,i);
+					if(piece.threatens(p2)) {
+						result.add(new Move(p1,p2));
+					}
+				}
+			}
+		}
+        return result;
+	}
+	public ArrayList<Move> getMoves(boolean color){
+		ArrayList<Move> result = new ArrayList<Move>();
+		for(ChessPiece p:this.pieces.values()) {
+			if(p.getColor()==color) result.addAll(getMoves(p.getPos()));
+		}
+		return result;
 	}
 }

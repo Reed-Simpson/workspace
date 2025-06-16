@@ -1,11 +1,11 @@
-package control;
+package user;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JOptionPane;
 
-import model.ChessBoard;
+import board.ChessBoard;
 import view.ChessboardPanel;
 
 public class MouseAdapter implements MouseListener {
@@ -19,7 +19,7 @@ public class MouseAdapter implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		board.select(e.getX(),e.getY(),ChessboardPanel.scale);
+		board.select(e.getX()/ChessboardPanel.scale,e.getY()/ChessboardPanel.scale);
 		panel.repaint();
 		if(board.gameStatus!=null) JOptionPane.showMessageDialog(null, board.gameStatus);
 	}

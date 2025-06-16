@@ -1,4 +1,4 @@
-package model;
+package board;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +88,14 @@ public abstract class ChessPiece {
 			startingPieces.add(ChessPiece.create(new Point(7,6), null, false, Pawn.TYPE));
 		}
 		return startingPieces;
+	}
+
+	public boolean getColor() {
+		return this.color;
+	}
+
+	public Point getPos() {
+		return this.pos;
 	}
 	
 

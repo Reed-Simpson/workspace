@@ -193,8 +193,10 @@ public class SaveRecord implements Serializable {
 		return scale;
 	}
 	public void setScale(double scale) {
-		this.hasUnsavedData = true;
-		this.scale = scale;
+		if(scale!=this.scale) {
+			this.hasUnsavedData = true;
+			this.scale = scale;
+		}
 	}
 
 	public Point getZero() {
@@ -288,7 +290,6 @@ public class SaveRecord implements Serializable {
 		return encounters.get(i);
 	}
 	public String removeEncounter(Point p, int i) {
-		this.hasUnsavedData = true;
 		ArrayList<String> encounters = this.encounters2.get(p);
 		if(encounters==null||encounters.size()>=i) return null;
 		String set = encounters.set(i, null);
@@ -299,7 +300,6 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putNPC(Point p,int i,String s) {
-		this.hasUnsavedData = true;
 		if(!this.npcs2.containsKey(p)) this.npcs2.put(p, new ArrayList<String>());
 		ArrayList<String> npcs = this.npcs2.get(p);
 		while(npcs.size()<i+1) npcs.add(null);
@@ -315,7 +315,6 @@ public class SaveRecord implements Serializable {
 		return npcs.get(i);
 	}
 	public String removeNPC(Point p,int i) {
-		this.hasUnsavedData = true;
 		ArrayList<String> npcs = this.npcs2.get(p);
 		if(npcs==null||npcs.size()>=i) return null;
 		String set = npcs.set(i, null);
@@ -326,7 +325,6 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putLocation(Point p, int i,String s) {
-		this.hasUnsavedData = true;
 		if(!this.locations2.containsKey(p)) this.locations2.put(p, new ArrayList<String>());
 		ArrayList<String> location = this.locations2.get(p);
 		while(location.size()<i+1) location.add(null);
@@ -342,7 +340,6 @@ public class SaveRecord implements Serializable {
 		return location.get(i);
 	}
 	public String removeLocation(Point p, int i) {
-		this.hasUnsavedData = true;
 		ArrayList<String> location = this.locations2.get(p);
 		if(location==null||location.size()>=i) return null;
 		String set = location.set(i, null);
@@ -353,7 +350,6 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putDungeon(Point p, int i,String s) {
-		this.hasUnsavedData = true;
 		if(!this.dungeons.containsKey(p)) this.dungeons.put(p, new ArrayList<String>());
 		ArrayList<String> location = this.dungeons.get(p);
 		while(location.size()<i+1) location.add(null);
@@ -369,7 +365,6 @@ public class SaveRecord implements Serializable {
 		return location.get(i);
 	}
 	public String removeDungeon(Point p, int i) {
-		this.hasUnsavedData = true;
 		ArrayList<String> location = this.dungeons.get(p);
 		if(location==null||location.size()>=i) return null;
 		String set = location.set(i, null);
@@ -380,7 +375,6 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putFaction(Point p, int i,String s) {
-		this.hasUnsavedData = true;
 		if(!this.factions.containsKey(p)) this.factions.put(p, new ArrayList<String>());
 		ArrayList<String> faction = this.factions.get(p);
 		while(faction.size()<i+1) faction.add(null);
@@ -396,7 +390,6 @@ public class SaveRecord implements Serializable {
 		return faction.get(i);
 	}
 	public String removeFaction(Point p, int i) {
-		this.hasUnsavedData = true;
 		ArrayList<String> faction = this.factions.get(p);
 		if(faction==null||faction.size()>=i) return null;
 		String set = faction.set(i, null);
@@ -407,7 +400,6 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putDungeonEncounter(Point p, int i,String s) {
-		this.hasUnsavedData = true;
 		if(!this.dungeonEncounters2.containsKey(p)) this.dungeonEncounters2.put(p, new ArrayList<String>());
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
 		while(encounters.size()<i+1) encounters.add(null);
@@ -423,7 +415,6 @@ public class SaveRecord implements Serializable {
 		return encounters.get(i);
 	}
 	public String removeDungeonEncounter(Point p, int i) {
-		this.hasUnsavedData = true;
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
 		if(encounters==null||encounters.size()>=i) return null;
 		String set = encounters.set(i, null);
@@ -434,14 +425,20 @@ public class SaveRecord implements Serializable {
 	}
 
 	public String putRegionName(Point p,String s) {
-		this.hasUnsavedData = true;
-		return this.regionNames.put(p, s);
+		String put = this.regionNames.put(p, s);
+		if(put!=null&&!put.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
 	}
 	public String getRegionName(Point p) {
 		return this.regionNames.get(p);
 	}
 	public String removeRegionName(Point p) {
-		this.hasUnsavedData = true;
+		String put = this.regionNames.remove(p);
+		if(put!=null) {
+			this.hasUnsavedData = true;
+		}
 		return this.regionNames.remove(p);
 	}
 

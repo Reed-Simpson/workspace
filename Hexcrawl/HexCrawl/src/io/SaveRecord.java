@@ -39,6 +39,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> dungeonEncounters2;
 	private HashMap<Point,ArrayList<String>> locations2;
 	private HashMap<Point,ArrayList<String>> dungeons;
+	private HashMap<Point,ArrayList<String>> factions;
 	private DiceRoller roller;
 
 	public SaveRecord() {
@@ -60,6 +61,7 @@ public class SaveRecord implements Serializable {
 		this.dungeonEncounters2 = new HashMap<Point,ArrayList<String>>();
 		this.locations2 = new HashMap<Point,ArrayList<String>>();
 		this.dungeons = new HashMap<Point,ArrayList<String>>();
+		this.factions = new HashMap<Point,ArrayList<String>>();
 		
 		this.hasUnsavedData = true;
 	}
@@ -183,6 +185,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.dungeonEncounters2==null) loadedRecord.dungeonEncounters2 = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.locations2==null) loadedRecord.locations2 = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.dungeons==null) loadedRecord.dungeons = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.factions==null) loadedRecord.factions = new HashMap<Point,ArrayList<String>>();
 		}
 		return loadedRecord;
 	}
@@ -325,6 +328,25 @@ public class SaveRecord implements Serializable {
 		ArrayList<String> location = this.dungeons.get(p);
 		if(location==null||location.size()>=i) return null;
 		return location.set(i,null);
+	}
+
+	public String putFaction(Point p, int i,String s) {
+		this.hasUnsavedData = true;
+		if(!this.factions.containsKey(p)) this.factions.put(p, new ArrayList<String>());
+		ArrayList<String> faction = this.factions.get(p);
+		while(faction.size()<i+1) faction.add(null);
+		return faction.set(i, s);
+	}
+	public String getFaction(Point p, int i) {
+		ArrayList<String> faction = this.factions.get(p);
+		if(faction==null||faction.size()>=i) return null;
+		return faction.get(i);
+	}
+	public String removeFaction(Point p, int i) {
+		this.hasUnsavedData = true;
+		ArrayList<String> faction = this.factions.get(p);
+		if(faction==null||faction.size()>=i) return null;
+		return faction.set(i,null);
 	}
 
 	public String putDungeonEncounter(Point p, int i,String s) {

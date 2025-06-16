@@ -46,6 +46,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int NPCCOUNT = 20;
 	public static final int POICOUNT = 20;
 	public static final int DUNGEONCOUNT = 6;
+	private static final int FACTIONCOUNT = 6;
 	private MapPanel panel;
 
 	private JLabel pos;
@@ -89,6 +90,8 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<JTextPane> poiTexts;
 	private ArrayList<JTextPane> dEntranceTexts;
 	private JScrollPane dEntranceScrollPane;
+	private ArrayList<JTextPane> factionTexts;
+	private JScrollPane factionScrollPane;
 
 	public InfoPanel() {
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
@@ -328,6 +331,25 @@ public class InfoPanel extends JTabbedPane{
 		cityScrollPane = new JScrollPane(city1);
 		city1.setCaretPosition(0);
 		regionTabs.addTab("Parent City", cityScrollPane);
+		
+		JPanel factionPanel = new JPanel();
+		factionPanel.setLayout(new BoxLayout(factionPanel, BoxLayout.Y_AXIS));
+		factionTexts = new ArrayList<JTextPane>();
+		for(int i=0;i<FACTIONCOUNT;i++) {
+			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
+			JTextPane factioni = new JTextPane();
+//			encounteri.setLineWrap(true);
+//			encounteri.setWrapStyleWord(true);
+			factioni.setMaximumSize(new Dimension(WIDTH-20,9999));
+			factioni.addFocusListener(new FactionFocusListener(factioni,i));
+			factioni.setAlignmentX(LEFT_ALIGNMENT);
+			factionPanel.add(factioni);
+			factionTexts.add(factioni);
+		}
+		factionScrollPane = new JScrollPane(factionPanel);
+		factionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("Factions", factionScrollPane);
+		
 		regionPanel.add(regionTabs);
 
 		this.addTab("                        Region                        ", new JScrollPane(regionPanel));
@@ -466,12 +488,13 @@ public class InfoPanel extends JTabbedPane{
 			if(population.isCity(capital)) {
 				this.city1.setText(getCityText(capital));
 				this.city1.setCaretPosition(0);
-				regionTabs.setEnabledAt(0, true);
-				city1.setEnabled(true);
+
+				for(int i = 0;i<FACTIONCOUNT;i++) {
+					this.factionTexts.get(i).setText(getFactionText(pos,i));
+				}
+				this.factionTexts.get(0).setCaretPosition(0);
 			}else {
-				this.city1.setText("None");
-				regionTabs.setEnabledAt(0, false);
-				city1.setEnabled(false);
+				enableCityTabs(false);
 			}
 		}
 
@@ -540,6 +563,8 @@ public class InfoPanel extends JTabbedPane{
 			detailsTabs.setSelectedIndex(detailsSelectedIndex);
 			detailsSelectedIndex = -1;
 		}
+		
+		enableCityTabs(true);
 	}
 
 	private void zeroPopComponents() {
@@ -550,6 +575,8 @@ public class InfoPanel extends JTabbedPane{
 		enableDungeonTab(false);
 		enableDungeonEncounterTab(false);
 		detailsTabs.setSelectedIndex(5);
+		
+		enableCityTabs(false);
 	}
 
 	private void enableEncountersTab(boolean value) {
@@ -566,6 +593,16 @@ public class InfoPanel extends JTabbedPane{
 	}
 	private void enableDungeonEncounterTab(boolean value) {
 		detailsTabs.setEnabledAt(4, value);
+	}
+
+	private void enableCityTabs(boolean enabled) {
+		regionTabs.setEnabledAt(0, enabled);
+		regionTabs.setEnabledAt(1, enabled);
+		city1.setEnabled(enabled);
+		if(!enabled) {
+			this.city1.setText("None");
+			regionTabs.setSelectedIndex(0);
+		}
 	}
 
 	private String getEncounterText(Point pos,int index) {
@@ -599,12 +636,16 @@ public class InfoPanel extends JTabbedPane{
 		Settlement city = cities.getSettlement(capital);
 		StringBuilder c1Text = new StringBuilder();
 		c1Text.append(city.toString());
-		c1Text.append("~~~~~ Factions ~~~~~\r\n");
-		for(int i=0;i<6;i++) {
-			c1Text.append(cities.getFaction(i, capital).toString(i+1));
-		}
 		String string = c1Text.toString();
 		return string;
+	}
+	private String getFactionText(Point pos,int i) {
+		String factionText = panel.getRecord().getFaction(pos,i);
+		if(factionText==null) factionText = getDefaultFactionText(pos,i);
+		return factionText;
+	}
+	private String getDefaultFactionText(Point capital,int i) {
+		return panel.getSettlements().getFaction(i, capital).toString(i+1);
 	}
 
 	private String getPOIText(Point pos,int i, boolean isCity) {
@@ -757,6 +798,26 @@ public class InfoPanel extends JTabbedPane{
 			String defaultText = getDefaultDungeonEncounterText(p,index);
 			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeDungeonEncounter(p, index);
 			else panel.getRecord().putDungeonEncounter(p,index, text);
+		}
+	}
+	public class FactionFocusListener implements FocusListener {
+		private final JTextPane factioni;
+		int index;
+
+		private FactionFocusListener(JTextPane factioni, int i) {
+			this.factioni = factioni;
+			this.index = i;
+		}
+		@Override
+		public void focusGained(FocusEvent e) {}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			String text = factioni.getText();
+			Point p = panel.getSelectedGridPoint();
+			String defaultText = getDefaultFactionText(p,index);
+			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeFaction(p, index);
+			else panel.getRecord().putFaction(p,index, text);
 		}
 	}
 	public class HexNoteFocusListener implements FocusListener {

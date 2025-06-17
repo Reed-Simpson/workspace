@@ -10,6 +10,7 @@ public class Dungeon extends Indexible{
 	private String ruination;
 	private String reward;
 	private String[] trick;
+	private String monster;
 	
 	
 	
@@ -61,8 +62,15 @@ public class Dungeon extends Indexible{
 		//e1Text.append("Layout: "+this.getLayout() + "\r\n");
 		e1Text.append("Ruination: "+this.getRuination() + "\r\n");
 		e1Text.append("Reward: "+this.getReward() + "\r\n");
-		e1Text.append("Tricks: "+Util.parseArray(this.getTrick()));
+		e1Text.append("Tricks: "+Util.parseArray(this.getTrick()).toLowerCase()+"\r\n");
+		e1Text.append("Monster: "+this.getMonster());
 		return e1Text.toString();
+	}
+	public String getMonster() {
+		return monster;
+	}
+	public void setMonster(String monster) {
+		this.monster = monster;
 	}
 
 }

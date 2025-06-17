@@ -1,12 +1,18 @@
 package monster;
 
+import java.awt.Point;
+
+import dungeon.Dungeon;
 import general.Indexible;
+import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
+import io.SaveRecord;
 
 public class MonsterModel {
-	//private static final int SEED_OFFSET = 13*Util.getOffsetX();
-	//private static final int TABLECOUNT = 12;
+	@SuppressWarnings("unused")
+	private static final int SEED_OFFSET = 13*Util.getOffsetX();
+	private static final int TABLECOUNT = 3;
 	private static final String ANIMALS = "${aerial},${terrestrial},${aquatic}";
 	private static WeightedTable<String> animals;
 	private static final String AERIAL = "Albatross,Bat,Beetle,Bird of paradise,Butterfly,Condor,Crane,Crow,Dragonfly,Eagle,Falcon,Firefly,"+
@@ -113,7 +119,6 @@ public class MonsterModel {
 		if(weaknesses==null) populateAllTables();
 		return Util.formatTableResult(weaknesses.getByWeight(i),new Indexible(i/weaknesses.size()));
 	}
-	
 
 	public static String getAnimal(Indexible obj) {
 		if(animals==null) populateAllTables();
@@ -154,5 +159,30 @@ public class MonsterModel {
 	public static String getWeakness(Indexible obj) {
 		if(weaknesses==null) populateAllTables();
 		return Util.formatTableResult(weaknesses.getByWeight(obj),obj);
+	}
+	
+	public static String getMonster(Indexible obj) {
+		String animal = getAnimal(obj);
+		String feature = getFeature(obj);
+		String trait = getTrait(obj);
+		String ability = getAbility(obj);
+		String tactic = getTactic(obj);
+		String personality = getPersonality(obj);
+		String weakness = getWeakness(obj);
+		return trait+", "+(personality+" "+animal+"(s) with "+ability+" "+feature).toLowerCase()+". Uses "+(tactic+" tactics and has a weakness to "+weakness+".").toLowerCase();
+	}
+
+	private SaveRecord record;
+	
+	public MonsterModel(SaveRecord record) {
+		this.record = record;
+	}
+	
+	public Indexible getIndexible(Point p,int index) {
+		float[] floats = new float[TABLECOUNT];
+		for(int n=0;n<floats.length;n++) {
+			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+index*TABLECOUNT), p.x, p.y);
+		}
+		return new Indexible(floats);
 	}
 }

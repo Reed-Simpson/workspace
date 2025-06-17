@@ -7,6 +7,7 @@ import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
+import monster.MonsterModel;
 import population.PopulationModel;
 
 public class DungeonModel {
@@ -52,7 +53,7 @@ public class DungeonModel {
 			"Geysers,Magma,Magnetic Field,Mud Flow,Narrow Ledge,Narrow Passage,Poison Goo,Poison Plants,Precipice,Quicksand,Radiation,Rockslide,"+
 			"Rotten Ceiling,Rotten Floor,Sinkhole,Slippery Slope,Spider Webs,Spores,Steam Vents,Strong Winds,Tar Pit,Tight Passage,Toppling Object,Toxic Fumes";
 	private static WeightedTable<String> hazards;
-	private static final String TRAPEFFECTS = "Acid Pool,Adhesive,Alarm,Armor Melts,Bear Trap,Blinding Spray,Blunt Pendulum,Boling Tar,Collapsing Floor,Crocodile Pit,Crushing Walls,Deep Pit,"+
+	private static final String TRAPEFFECTS = "Acid Pool,Adhesive,Alarm,Armor Melts,Bear Trap,Blinding Spray,Blunt Pendulum,Boiling Tar,Collapsing Floor,Crocodile Pit,Crushing Walls,Deep Pit,"+
 			"Falling Cage,Falling Ceiling,Fills with Sand,Flooding,Giant Magnet,Hard Vacuum,Lava Flow,Lightning,Living Statues,Missile Fire,Monster Freed,Net Trap,"+
 			"Pendulum Blade,Poison Gas,Poison Needle,Quicksand,Rage Gas,Rolling Boulder,Room Freezes,Room on Fire,Sleeping Gas,Spiked Pit,Tombs Open,Wall Spikes";
 	private static WeightedTable<String> trapeffects;
@@ -168,6 +169,7 @@ public class DungeonModel {
 		result.setRuination(getRuination(result));
 		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,capital));
 		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
+		result.setMonster(MonsterModel.getMonster(result));
 		return result;
 	}
 }

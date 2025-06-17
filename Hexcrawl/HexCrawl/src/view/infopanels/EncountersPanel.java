@@ -57,9 +57,6 @@ public class EncountersPanel extends AbstractPanel{
 			writeStringToDocument(getEncounterText(pos,i), pane);
 		}
 		this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
-
-		// TODO Auto-generated method stub
-
 	}
 
 	private String getEncounterText(Point pos,int index) {

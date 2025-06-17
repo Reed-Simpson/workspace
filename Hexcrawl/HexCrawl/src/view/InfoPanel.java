@@ -150,11 +150,13 @@ public class InfoPanel extends JTabbedPane{
 			encounteri.addFocusListener(new EncounterFocusListener(encounteri,i));
 			encounteri.addMouseListener(new TextLinkMouseListener(encounteri, this));
 			encounteri.setAlignmentX(LEFT_ALIGNMENT);
+			encounteri.setCaret(new MyCaret());
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
 		}
 		JScrollPane encounterScrollPane = new JScrollPane(encounterPanel);
 		encounterScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		encounterScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		detailsTabs.addTab("Encounters", encounterScrollPane);
 
 		JPanel npcPanel = new JPanel();
@@ -169,6 +171,7 @@ public class InfoPanel extends JTabbedPane{
 			npci.addFocusListener(new NPCFocusListener2(npci,i));
 			npci.addMouseListener(new TextLinkMouseListener(npci, this));
 			npci.setAlignmentX(LEFT_ALIGNMENT);
+			npci.setCaret(new MyCaret());
 			npcPanel.add(npci);
 			npcTexts.add(npci);
 		}
@@ -189,6 +192,7 @@ public class InfoPanel extends JTabbedPane{
 			poii.addFocusListener(new POIFocusListener(poii,i));
 			poii.addMouseListener(new TextLinkMouseListener(poii,this));
 			poii.setAlignmentX(LEFT_ALIGNMENT);
+			poii.setCaret(new MyCaret());
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
@@ -208,6 +212,7 @@ public class InfoPanel extends JTabbedPane{
 			poii.addFocusListener(new DungeonEntranceFocusListener(poii,i));
 			poii.addMouseListener(new TextLinkMouseListener(poii,this));
 			poii.setAlignmentX(LEFT_ALIGNMENT);
+			poii.setCaret(new MyCaret());
 			dEntrancePanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
@@ -227,6 +232,7 @@ public class InfoPanel extends JTabbedPane{
 			encounteri.addFocusListener(new DungeonEncounterFocusListener(encounteri,i));
 			encounteri.addMouseListener(new TextLinkMouseListener(encounteri,this));
 			encounteri.setAlignmentX(LEFT_ALIGNMENT);
+			encounteri.setCaret(new MyCaret());
 			dungeonPanel.add(encounteri);
 			dungeonTexts.add(encounteri);
 		}
@@ -319,6 +325,7 @@ public class InfoPanel extends JTabbedPane{
 			factioni.addFocusListener(new FactionFocusListener(factioni,i));
 			factioni.addMouseListener(new TextLinkMouseListener(factioni,this));
 			factioni.setAlignmentX(LEFT_ALIGNMENT);
+			factioni.setCaret(new MyCaret());
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
 		}
@@ -424,6 +431,7 @@ public class InfoPanel extends JTabbedPane{
 					pane.setBackground(Color.WHITE);
 				}
 				writeStringToDocument(getEncounterText(pos,i), pane);
+
 			}
 			this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
 
@@ -709,32 +717,32 @@ public class InfoPanel extends JTabbedPane{
 			detailsTabs.setSelectedIndex(subtab);
 			switch(subtab) {
 			case ENCOUNTER_TAB_INDEX: {
-				encounterTexts.get(index).setCaretPosition(0);
 				selectedEncounter=index;
+				encounterTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case NPC_TAB_INDEX: {
-				npcTexts.get(index).setCaretPosition(0);
 				selectedNPC=index;
+				npcTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case LOCATION_TAB_INDEX: {
-				poiTexts.get(index).setCaretPosition(0);
 				selectedPOI=index;
+				poiTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case DUNGEON_TAB_INDEX: {
-				dEntranceTexts.get(index).setCaretPosition(0);
 				selectedDungeon=index;
+				dEntranceTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case DUNGEON_ENCOUNTER_TAB_INDEX: {
-				dungeonTexts.get(index).setCaretPosition(0);
 				selectedDEncounter=index;
+				dungeonTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
@@ -745,8 +753,8 @@ public class InfoPanel extends JTabbedPane{
 			switch(subtab) {
 			case CITY_TAB_INDEX: break;
 			case FACTION_TAB_INDEX: {
-				factionTexts.get(index).setCaretPosition(0);
 				selectedFaction=index;
+				factionTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}

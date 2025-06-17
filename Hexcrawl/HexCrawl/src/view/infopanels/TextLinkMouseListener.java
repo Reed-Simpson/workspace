@@ -27,8 +27,7 @@ public class TextLinkMouseListener implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {}
 
-	public void mouseClicked(MouseEvent e)
-	{
+	public void mouseClicked(MouseEvent e){
 		Element ele = encounteri.getStyledDocument().getCharacterElement(encounteri.viewToModel(e.getPoint()));
 		AttributeSet as = ele.getAttributes();
 		ChatLinkAction fla = (ChatLinkAction)as.getAttribute("linkact");

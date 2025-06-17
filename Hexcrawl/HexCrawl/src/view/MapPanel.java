@@ -508,24 +508,31 @@ public class MapPanel  extends JPanel{
 
 	private Color getColor1(int i,int j,HexData data) {
 		float height = grid.getHeight(i, j);
+		Point p = new Point(i,j);
 		if (height<BiomeModel.SHALLOWS_HEIGHT) {
 			return BiomeType.WATER.getColor();
 		}else if (height<BiomeModel.WATER_HEIGHT) {
 			return BiomeType.SHALLOWS.getColor();
+		} else if (precipitation.isLake(p)&&!HexData.BIOME.equals(data)) {
+			return BiomeType.LAKE.getColor();
+		}else if(showCities&&population.isCity(p)) {
+			return BiomeType.CITY.getColor();
+		}else if(showCities&&population.isTown(p)) {
+			return BiomeType.TOWN.getColor();
 		}else {
 			return null;
 		}
 	}
 	private Color getColor2(int i,int j,HexData data) {
 		Point p = new Point(i,j);
-		if(precipitation.isLake(p)&&!HexData.BIOME.equals(data)) {
-			return BiomeType.LAKE.getColor();
-		}else if(showCities&&population.isCity(p)) {
-			return BiomeType.CITY.getColor();
-		}else if(showCities&&population.isTown(p)) {
-			return BiomeType.TOWN.getColor();
-		}else if(HexData.MAGIC.equals(data)) {
+		if(HexData.MAGIC.equals(data)) {
 			return magic.getColor(i, j);
+		}else if(precipitation.isLake(p)&&!HexData.BIOME.equals(data)) {
+			return null;
+		}else if(showCities&&population.isCity(p)) {
+			return null;
+		}else if(showCities&&population.isTown(p)) {
+			return null;
 		}else if (grid.isWater(i, j)) {
 			return null;
 		}else if(HexData.PRECIPITATION.equals(data)) {
@@ -912,9 +919,9 @@ public class MapPanel  extends JPanel{
 	public SaveRecord getRecord() {
 		return record;
 	}
-	
+
 	@Override
-    public void repaint() {
+	public void repaint() {
 		super.repaint();
 	}
 

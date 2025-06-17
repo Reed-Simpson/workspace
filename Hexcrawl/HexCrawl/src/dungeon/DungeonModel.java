@@ -167,7 +167,7 @@ public class DungeonModel {
 		result.setLayout(getLayout(result));
 		result.setRuination(getRuination(result));
 		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,capital));
-		result.setTrick(getTrick(result));
+		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
 		return result;
 	}
 }

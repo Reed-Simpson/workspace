@@ -1,6 +1,7 @@
 package dungeon;
 
 import general.Indexible;
+import general.Util;
 
 public class Dungeon extends Indexible{
 	private String entrance;
@@ -8,7 +9,7 @@ public class Dungeon extends Indexible{
 	private String layout;
 	private String ruination;
 	private String reward;
-	private String trick;
+	private String[] trick;
 	
 	
 	
@@ -45,10 +46,10 @@ public class Dungeon extends Indexible{
 	public void setReward(String reward) {
 		this.reward = reward;
 	}
-	public String getTrick() {
+	public String[] getTrick() {
 		return trick;
 	}
-	public void setTrick(String trick) {
+	public void setTrick(String[] trick) {
 		this.trick = trick;
 	}
 	
@@ -56,11 +57,11 @@ public class Dungeon extends Indexible{
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ Dungeon #"+(i)+" ~~~~~\r\n");
 		e1Text.append("Entrance: "+this.getEntrance() +"\r\n");
-		e1Text.append("Form: "+this.getForm() + "\r\n");
-		e1Text.append("Layout: "+this.getLayout() + "\r\n");
+		e1Text.append("Layout & Form: "+this.getLayout()+" "+this.getForm() + "\r\n");
+		//e1Text.append("Layout: "+this.getLayout() + "\r\n");
 		e1Text.append("Ruination: "+this.getRuination() + "\r\n");
 		e1Text.append("Reward: "+this.getReward() + "\r\n");
-		e1Text.append("Trick: "+this.getTrick());
+		e1Text.append("Tricks: "+Util.parseArray(this.getTrick()));
 		return e1Text.toString();
 	}
 

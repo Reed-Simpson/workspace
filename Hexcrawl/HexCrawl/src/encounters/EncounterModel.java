@@ -205,12 +205,12 @@ public class EncounterModel {
 		Encounter e = new Encounter(floats);
 		e.setType("Dungeon");
 		e.setFocus(getFocus(e));
-		e.setAction(new String[] {getVerb(e)+" "+getNoun(e),getDungeonActivity(e)});
-		e.setDescriptor(new String[] {getAdverb(e)+" "+getAdj(e)});
-		e.setLocation(new String[] {LocationModel.getDescriptor(e),LocationModel.getDescriptor(e),getDungeonRoom(e)});
+		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getDungeonActivity(e)+'"'});
+		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
+		e.setLocation(new String[] {LocationModel.getDescriptor(e)+" and "+LocationModel.getDescriptor(e)+" "+getDungeonRoom(e)+" with "+getDungeonDetail(e)});
 		e.setCharacter(new String[] {getChar(e),getChar(e)});
-		e.setObject(new String[] {getObj(e),getObj(e),getDungeonDetail(e)});
-		e.setHazard(new String[] {getDungeonHazard(e)});
+		e.setObject(new String[] {getObj(e),getObj(e)});
+		e.setHazard(new String[] {getDungeonHazard(e),getTrap(e)});
 		return e;
 	}
 }

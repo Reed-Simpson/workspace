@@ -1,6 +1,7 @@
 package encounters;
 
 import general.Indexible;
+import general.Util;
 
 public class Encounter extends Indexible {
 	private String type;
@@ -69,27 +70,13 @@ public class Encounter extends Indexible {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ "+this.getType()+" Encounter #"+(i)+" ~~~~~\r\n");
 		e1Text.append("Focus: "+this.getFocus() +"\r\n");
-		e1Text.append("Action: "+parseArray(this.getAction()) + "\r\n");
-		e1Text.append("Descriptor: "+parseArray(this.getDescriptor()) + "\r\n");
-		e1Text.append("Location: "+parseArray(this.getLocation()) + "\r\n");
-		e1Text.append("Character: "+parseArray(this.getCharacter()) + "\r\n");
-		e1Text.append("Object: "+parseArray(this.getObject()));
-		if(hazard!=null) e1Text.append( "\r\nCatastrophic Event: "+parseArray(this.getHazard()) );
+		e1Text.append("Action: "+Util.parseArray(this.getAction()) + "\r\n");
+		e1Text.append("Descriptor: "+Util.parseArray(this.getDescriptor()) + "\r\n");
+		e1Text.append("Location: "+Util.parseArray(this.getLocation()) + "\r\n");
+		e1Text.append("Character: "+Util.parseArray(this.getCharacter()) + "\r\n");
+		e1Text.append("Object: "+Util.parseArray(this.getObject()));
+		if(hazard!=null) e1Text.append( "\r\nHazard: "+Util.parseArray(this.getHazard()) );
 		return e1Text.toString();
-	}
-	
-	private String parseArray(String[] arr) {
-		if(arr.length==0) return "";
-		else if(arr.length==1) return arr[0];
-		else if(arr.length==2) return arr[0]+" and "+arr[1];
-		else {
-			String result = "";
-			for(int i=0;i<arr.length-1;i++) {
-				result+=arr[i]+", ";
-			}
-			result+="and "+arr[arr.length-1];
-			return result;
-		}
 	}
 
 }

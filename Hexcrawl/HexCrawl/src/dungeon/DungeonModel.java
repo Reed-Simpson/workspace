@@ -7,6 +7,7 @@ import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
+import population.PopulationModel;
 
 public class DungeonModel {
 	private static final int SEED_OFFSET = 12*Util.getOffsetX();
@@ -24,12 +25,12 @@ public class DungeonModel {
 			"Organic,Oversized,Recursive,Repetitive,Sprawling,Suspended,Symbol Shape,Tall and Narrow,Themed Zones,Vertical,Winding,Ziggurat";
 	private static WeightedTable<String> layouts;
 	private static final String RUINATIONS = "Arcane Disaster,Army Invasion,Cannibalism,Civil War,Collapse,Crystal Growth,Curse,Degeneration,Earthquake,Eruption,Evil Unearthed,Experiments,"+
-			"Explosion,Famine,Fire,Flooding,Fungus,Haunting,Ice,${insanity},Lava Flow,Magical Sleep,Melted,Monster Attack,"+
-			"${mutation},Outsider Attack,Overgrowth,Petrification,Plague,Planar Overlay,Poison Gas,Resources Gone,Revolt,Risen Dead,Too Many Traps,War";
+			"Explosion,Famine,Fire,Flooding,Fungus,Haunting,Ice,Insanity:${insanity},Lava Flow,Magical Sleep,Melted,Monster Attack,"+
+			"Mutation:${mutation},Outsider Attack,Overgrowth,Petrification,Plague,Planar Overlay,Poison Gas,Resources Gone,Revolt,Risen Dead,Too Many Traps,War";
 	private static WeightedTable<String> ruinations;
-	private static final String REWARDS = "Ancient Lore,Animal Ally,Army,Blessing,Blueprints,Cultural Artifact,Enemy Weakness,Faction Ally,Forewarning,Guide,Holy Relic,Influential Ally,"+
-			"Instructions,Jewels,Key,Lost Formula,Machine,Magic ${item},Magical Ally,Map,Martial Ally,Masterpiece,Monster Ally,Oracle,"+
-			"Piles of Loot,Planar Portal,Prophecy,Renown,Spell,Transformation,Transport,${treasure item},Uncovered Plot,${rare material},Vision,Weapon";
+	private static final String REWARDS = "Ancient ${book} Lore,${animal} Ally,Army,Blessing,Blueprints,Cultural Artifact,Enemy Weakness,${faction index} Ally,Forewarning,Guide,Holy Relic of ${domain},Influential Ally ${npc index},"+
+			"Instructions,Jewels,Key,Lost Formula,Machine,Magic ${item},Magical Ally ${npc index},Map,Martial Ally ${npc index},Masterpiece,Monsterous ${animal} Ally,Oracle,"+
+			"Piles of Loot,Planar Portal,Prophecy,Renown,Spell ${spell},Transformation,Transport,${treasure item},Uncovered Plot,${rare material},Vision,Magic ${weapon}";
 	private static WeightedTable<String> rewards;
 	private static final String ACTIVITIES = "Besiege,Capture,${city activity},Collect,Construct,Control,Deliver,Demolish,Escape,Feed,Fortify,Guard,"+
 			"Hide,Hunt,Loot,Map,Mine,${monster tactic},Negotiate,Patrol,Perform Ritual,Purge,Question,Raid,"+
@@ -147,22 +148,25 @@ public class DungeonModel {
 
 
 	private SaveRecord record;
+	private PopulationModel population;
 
-	public DungeonModel(SaveRecord record) {
+	public DungeonModel(SaveRecord record,PopulationModel population) {
 		this.record = record;
+		this.population = population;
 	}
 
 	public Dungeon getDungeon(int i,Point p) {
+		Point capital = population.getAbsoluteFealty(p);
 		float[] floats = new float[TABLECOUNT];
 		for(int n=0;n<floats.length;n++) {
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Dungeon result = new Dungeon(floats);
-		result.setEntrance(getEntrance(result));
+		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p, null));
 		result.setForm(getForm(result));
 		result.setLayout(getLayout(result));
 		result.setRuination(getRuination(result));
-		result.setReward(getReward(result));
+		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,capital));
 		result.setTrick(getTrick(result));
 		return result;
 	}

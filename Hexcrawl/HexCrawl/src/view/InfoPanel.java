@@ -5,20 +5,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,9 +19,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -60,6 +49,8 @@ import view.infopanels.TextLinkMouseListener;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
+	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
+	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
 	private static final int FACTION_TAB_INDEX = 1;
 	private static final int CITY_TAB_INDEX = 0;
 	private static final int DUNGEON_ENCOUNTER_TAB_INDEX = 4;
@@ -114,7 +105,7 @@ public class InfoPanel extends JTabbedPane{
 	int selectedFaction;
 	int selectedEncounter;
 	boolean changeSelected;
-	private EncountersPanel encounterPanel;
+	//private EncountersPanel encounterPanel;
 	private ArrayList<JTextPane> encounterTexts;
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
@@ -129,8 +120,6 @@ public class InfoPanel extends JTabbedPane{
 
 		hexGeneralPanel = new HexPanelGeneralStatPanel(this);
 		hexPanel.add(hexGeneralPanel);
-		
-		hexPanel.add(getSeparator());
 		
 		demographicsPanel = new DemographicsPanel(this);
 		hexPanel.add(demographicsPanel);
@@ -183,8 +172,17 @@ public class InfoPanel extends JTabbedPane{
 		JPanel poiPanel = new JPanel();
 		poiPanel.setLayout(new BoxLayout(poiPanel, BoxLayout.Y_AXIS));
 		poiTexts = new ArrayList<JTextPane>();
-		for(int i=0;i<POICOUNT;i++) {
-			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i+1)+" ~~~~~"));
+		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
+		JTextPane inn = new JTextPane();
+		inn.setMaximumSize(new Dimension(WIDTH-20,9999));
+		inn.addFocusListener(new POIFocusListener(inn,0));
+		inn.addMouseListener(new TextLinkMouseListener(inn,this));
+		inn.setAlignmentX(LEFT_ALIGNMENT);
+		inn.setCaret(new MyCaret());
+		poiPanel.add(inn);
+		poiTexts.add(inn);
+		for(int i=1;i<POICOUNT;i++) {
+			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
 			JTextPane poii = new JTextPane();
 			//			poii.setLineWrap(true);
 			//			poii.setWrapStyleWord(true);
@@ -426,9 +424,9 @@ public class InfoPanel extends JTabbedPane{
 			for(int i = 0;i<this.encounterTexts.size();i++) {
 				JTextPane pane = this.encounterTexts.get(i);
 				if(i==selectedEncounter) {
-					pane.setBackground(Color.YELLOW);
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
-					pane.setBackground(Color.WHITE);
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
 				writeStringToDocument(getEncounterText(pos,i), pane);
 
@@ -440,9 +438,9 @@ public class InfoPanel extends JTabbedPane{
 				for(int i = 0;i<this.npcTexts.size();i++) {
 					JTextPane pane = this.npcTexts.get(i);
 					if(i==selectedNPC) {
-						pane.setBackground(Color.YELLOW);
+						pane.setBackground(TEXTHIGHLIGHTCOLOR);
 					}else {
-						pane.setBackground(Color.WHITE);
+						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
 					writeStringToDocument(getNPCText(pos,i), pane);
 				}
@@ -454,9 +452,9 @@ public class InfoPanel extends JTabbedPane{
 			for(int i = 0;i<this.poiTexts.size();i++) {
 				JTextPane pane = this.poiTexts.get(i);
 				if(i==selectedPOI) {
-					pane.setBackground(Color.YELLOW);
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
-					pane.setBackground(Color.WHITE);
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
 				writeStringToDocument(getPOIText(pos,i,pos.equals(capital)), pane);
 			}
@@ -465,9 +463,9 @@ public class InfoPanel extends JTabbedPane{
 			for(int i = 0;i<this.dEntranceTexts.size();i++) {
 				JTextPane pane = this.dEntranceTexts.get(i);
 				if(i==selectedDungeon) {
-					pane.setBackground(Color.YELLOW);
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
-					pane.setBackground(Color.WHITE);
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
 				writeStringToDocument(getDungeonText(pos,i), pane);
 			}
@@ -476,9 +474,9 @@ public class InfoPanel extends JTabbedPane{
 			for(int i = 0;i<this.dungeonTexts.size();i++) {
 				JTextPane pane = this.dungeonTexts.get(i);
 				if(i==selectedDEncounter) {
-					pane.setBackground(Color.YELLOW);
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
-					pane.setBackground(Color.WHITE);
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
 				writeStringToDocument(getDungeonEncounterText(pos,i), pane);
 			}
@@ -491,9 +489,9 @@ public class InfoPanel extends JTabbedPane{
 				for(int i = 0;i<this.factionTexts.size();i++) {
 					JTextPane pane = this.factionTexts.get(i);
 					if(i==selectedFaction) {
-						pane.setBackground(Color.YELLOW);
+						pane.setBackground(TEXTHIGHLIGHTCOLOR);
 					}else {
-						pane.setBackground(Color.WHITE);
+						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
 					writeStringToDocument(getFactionText(pos,i), pane);
 				}
@@ -659,11 +657,24 @@ public class InfoPanel extends JTabbedPane{
 
 	private String getPOIText(Point pos,int i, boolean isCity) {
 		String poiText = panel.getRecord().getLocation(pos,i);
-		if(poiText==null) poiText = getDefaultPOIText(pos,i,isCity);
+		if(poiText==null) {
+			if(i==0) poiText = getDefaultInnText(pos,i);
+			else poiText = getDefaultPOIText(pos,i,isCity);
+		}
 		return poiText;
 	}
 	private String getDefaultPOIText(Point pos,int i, boolean isCity) {
 		return panel.getPois().getPOI(i, pos,isCity);
+	}
+	private String getDefaultInnText(Point pos,int i) {
+		AltitudeModel grid = panel.getGrid();
+		PrecipitationModel precipitation = panel.getPrecipitation();
+		if(grid.isWater(pos)||precipitation.isLake(pos)) {
+			return "Inn: none";
+		}else {
+			LocationNameModel names = panel.getNames();
+			return "Inn: "+names.getInnName(pos)+"\r\nQuirk: "+names.getInnQuirk(pos);
+		}
 	}
 	private String getDungeonText(Point pos,int i) {
 		String poiText = panel.getRecord().getDungeon(pos,i);

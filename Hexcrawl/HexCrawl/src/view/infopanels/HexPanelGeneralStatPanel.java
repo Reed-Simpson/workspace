@@ -2,7 +2,6 @@ package view.infopanels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.text.DecimalFormat;
 
@@ -66,21 +65,15 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		dummy1.add(Box.createRigidArea(new Dimension(20,20)),BorderLayout.WEST);
 		dummy1.add(posData,BorderLayout.CENTER);
 		dummy1.setAlignmentX(LEFT_ALIGNMENT);
-		dummy1.add(getSeparator(),BorderLayout.SOUTH);
 		this.add(dummy1,BorderLayout.NORTH);
 
-		JPanel innPanel = new JPanel();
-		innPanel.setLayout(new BoxLayout(innPanel, BoxLayout.Y_AXIS));
+		JPanel roadsPanel = new JPanel();
+		roadsPanel.setLayout(new BoxLayout(roadsPanel, BoxLayout.Y_AXIS));
 		this.roads = new JLabel("Roads: ");
-		innPanel.add(roads);
-		this.innName = new JLabel("Inn: ");
-		innPanel.add(innName);
-		this.innText = new JLabel("Description");
-		innPanel.add(innText);
-		innPanel.add(getSeparator());
+		roadsPanel.add(roads);
 		JPanel dummy2 = new JPanel();
 		dummy2.setLayout(new BoxLayout(dummy2, BoxLayout.X_AXIS));
-		dummy2.add(innPanel);
+		dummy2.add(roadsPanel);
 		dummy2.setAlignmentX(RIGHT_ALIGNMENT);
 		this.add(dummy2,BorderLayout.CENTER);
 
@@ -96,7 +89,6 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		BiomeModel biomes = panel.getBiomes();
 		AltitudeModel grid = panel.getGrid();
 		PrecipitationModel precipitation = panel.getPrecipitation();
-		LocationNameModel names = panel.getNames();
 
 		this.setPos("Coords: "+Util.posString(pos,zero));
 
@@ -132,18 +124,11 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		if(grid.isWater(pos)||precipitation.isLake(pos))  this.setRoads("Roads: none");
 		else this.setRoads("Roads: "+panel.getEconomy().getRoadDescription(pos));
 		
-
-		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-			this.setInnName("Inn: none");
-			this.setInnDescription("");
-		}else {
-			this.setInnName("Inn: "+names.getInnName(pos));
-			this.setInnDescription("Quirk: "+names.getInnQuirk(pos));
-		}
 	}
 	
 	
 	
+	@SuppressWarnings("unused")
 	private JSeparator getSeparator() {
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		separator.setMaximumSize(new Dimension(9999,1));

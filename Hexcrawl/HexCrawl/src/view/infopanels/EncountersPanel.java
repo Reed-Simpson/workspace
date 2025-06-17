@@ -12,9 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextPane;
 
 import encounters.Encounter;
-import map.AltitudeModel;
-import npc.NPC;
-import precipitation.PrecipitationModel;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")

@@ -54,10 +54,26 @@ public class EconomicModel {
 	private void populateEdges(Point p) {
 		boolean pIsWater = grid.isWater(p)||precipitation.isLake(p);
 		for(Point p1:Util.getAdjacentPoints(p)) {
-			int weight = biomes.getBiome(p1).getTravel();
+			int weight = biomes.getBiome(p1).getTravel()*2;
 			boolean p1IsWater = grid.isWater(p1)||precipitation.isLake(p1);
-			if(p1IsWater!=pIsWater&&!population.isTown(p)&&!population.isTown(p1)) weight = 10;
-			if(travel.getEdgeWeight(p, p1)==-1) travel.addEdge(p, p1, 2*weight);
+			if(p1IsWater!=pIsWater&&!population.isTown(p)&&!population.isTown(p1)) weight = 10*2;
+			if(travel.getEdgeWeight(p, p1)==-1) travel.addEdge(p, p1, weight);
+		}
+		Point p1 = precipitation.getFlow(p);
+		if(p1!=null&&!p1.equals(p)) {
+			int distance = Util.getDist(p, p1);
+			float volume = precipitation.getFlowVolume(p);
+			int weight;
+			if(volume>81) weight = 3;
+			else if(volume>36) weight = 4;
+			else if(volume>9) weight = 5;
+			else if(volume>7) weight = 6;
+			else if(volume>4) weight = 7;
+			else if(volume>1) weight = 8;
+			else weight = 12;
+			if(!travel.contains(p1)) travel.add(p1);
+			if(travel.getEdgeWeight(p, p1)>weight*distance||travel.getEdgeWeight(p, p1)==-1) travel.addEdge(p, p1, weight*distance);
+			if(travel.getEdgeWeight(p1, p)>weight*distance||travel.getEdgeWeight(p, p1)==-1) travel.addEdge(p1, p, weight*distance);
 		}
 	}
 
@@ -140,13 +156,18 @@ public class EconomicModel {
 		boolean isCity = population.isCity(p);
 		for(Point town:nearbyTowns) {
 			int weight = 1;
-			if(isCity&&population.isCity(town)) {
-				weight = 2;
-			}
+			int maxdistance = 36;
 			LinkedList<Point> path = new LinkedList<Point>();
 			int distance = travel.shortestPath(p, town,path);
+			if(isCity&&population.isCity(town)) {
+				if(distance<maxdistance) weight = 2;
+				else maxdistance = 72;
+			}
 			Iterator<Point> iterator = path.iterator();
-			if(distance<=72) {
+			if(distance<=maxdistance) {
+				if(path.size()==0) {
+					System.err.println("no path found");break;
+				}
 				Point p1 = iterator.next();
 				while(iterator.hasNext()) {
 					Point next = iterator.next();

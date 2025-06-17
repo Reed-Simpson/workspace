@@ -718,31 +718,31 @@ public class InfoPanel extends JTabbedPane{
 			switch(subtab) {
 			case ENCOUNTER_TAB_INDEX: {
 				selectedEncounter=index;
-				encounterTexts.get(index).setCaretPosition(0);
+				//encounterTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case NPC_TAB_INDEX: {
 				selectedNPC=index;
-				npcTexts.get(index).setCaretPosition(0);
+				//npcTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case LOCATION_TAB_INDEX: {
 				selectedPOI=index;
-				poiTexts.get(index).setCaretPosition(0);
-				this.repaint();
+				poiTexts.get(index).grabFocus();
+				//poiTexts.get(index).setCaretPosition(0);
 				break;
 			}
 			case DUNGEON_TAB_INDEX: {
 				selectedDungeon=index;
-				dEntranceTexts.get(index).setCaretPosition(0);
+				//dEntranceTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
 			case DUNGEON_ENCOUNTER_TAB_INDEX: {
 				selectedDEncounter=index;
-				dungeonTexts.get(index).setCaretPosition(0);
+				//dungeonTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}
@@ -754,7 +754,7 @@ public class InfoPanel extends JTabbedPane{
 			case CITY_TAB_INDEX: break;
 			case FACTION_TAB_INDEX: {
 				selectedFaction=index;
-				factionTexts.get(index).setCaretPosition(0);
+				//factionTexts.get(index).setCaretPosition(0);
 				this.repaint();
 				break;
 			}

@@ -15,6 +15,7 @@ import names.npc.HumanNameGenerator;
 import npc.NPCModel;
 import population.Species;
 import settlement.SettlementModel;
+import threat.CreatureSubtype;
 import view.InfoPanel;
 
 public class Util {
@@ -227,7 +228,7 @@ public class Util {
 		if(result.contains("${inn prefix}")) result = Util.replace(result,"${inn prefix}",InnNameGenerator.getPrefix(obj));
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
 
-		String[] encode = {"location index","npc index","faction index","district index"};
+		String[] encode = {"location index","npc index","faction index","district index","subtype"};
 		for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 		if(result.contains("${")) {
 			throw new IllegalStateException("Unable to process tag: "+result);
@@ -239,6 +240,10 @@ public class Util {
 	public static String getIndexString(Indexible obj,String type,int count,Point p) {
 		int index = obj.reduceTempId(count);
 		return "{"+type+":"+p.x+","+p.y+","+(index+1)+"}";
+	}
+
+	public static String formatSubtype(String string,CreatureSubtype type) {
+		return Util.replace(string,"${subtype}",type.getName());
 	}
 	public static int[] getRemainder(int[] vals,int reduction) {
 		int[] remainder = new int[vals.length-reduction];

@@ -913,5 +913,10 @@ public class MapPanel  extends JPanel{
 	public SaveRecord getRecord() {
 		return record;
 	}
+	
+	@Override
+    public void repaint() {
+		super.repaint();
+	}
 
 }

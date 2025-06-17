@@ -32,7 +32,6 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 	private String getTitle(CreatureSubtype type, int... val) {
 		int[] remainder = Util.getRemainder(val, 1);
 		String title = Util.formatTableResult(getElementFromArray(TITLE, val[0]),new Indexible(remainder));
-		
 		return title;
 	}
 }

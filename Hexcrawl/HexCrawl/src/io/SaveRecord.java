@@ -286,12 +286,12 @@ public class SaveRecord implements Serializable {
 	}
 	public String getEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.encounters2.get(p);
-		if(encounters==null||encounters.size()>=i) return null;
+		if(encounters==null||encounters.size()<=i) return null;
 		return encounters.get(i);
 	}
 	public String removeEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.encounters2.get(p);
-		if(encounters==null||encounters.size()>=i) return null;
+		if(encounters==null||encounters.size()<=i) return null;
 		String set = encounters.set(i, null);
 		if(set!=null) {
 			this.hasUnsavedData = true;
@@ -311,12 +311,12 @@ public class SaveRecord implements Serializable {
 	}
 	public String getNPC(Point p,int i) {
 		ArrayList<String> npcs = this.npcs2.get(p);
-		if(npcs==null||npcs.size()>=i) return null;
+		if(npcs==null||npcs.size()<=i) return null;
 		return npcs.get(i);
 	}
 	public String removeNPC(Point p,int i) {
 		ArrayList<String> npcs = this.npcs2.get(p);
-		if(npcs==null||npcs.size()>=i) return null;
+		if(npcs==null||npcs.size()<=i) return null;
 		String set = npcs.set(i, null);
 		if(set!=null) {
 			this.hasUnsavedData = true;
@@ -336,12 +336,12 @@ public class SaveRecord implements Serializable {
 	}
 	public String getLocation(Point p, int i) {
 		ArrayList<String> location = this.locations2.get(p);
-		if(location==null||location.size()>=i) return null;
+		if(location==null||location.size()<=i) return null;
 		return location.get(i);
 	}
 	public String removeLocation(Point p, int i) {
 		ArrayList<String> location = this.locations2.get(p);
-		if(location==null||location.size()>=i) return null;
+		if(location==null||location.size()<=i) return null;
 		String set = location.set(i, null);
 		if(set!=null) {
 			this.hasUnsavedData = true;
@@ -361,12 +361,12 @@ public class SaveRecord implements Serializable {
 	}
 	public String getDungeon(Point p, int i) {
 		ArrayList<String> location = this.dungeons.get(p);
-		if(location==null||location.size()>=i) return null;
+		if(location==null||location.size()<=i) return null;
 		return location.get(i);
 	}
 	public String removeDungeon(Point p, int i) {
 		ArrayList<String> location = this.dungeons.get(p);
-		if(location==null||location.size()>=i) return null;
+		if(location==null||location.size()<=i) return null;
 		String set = location.set(i, null);
 		if(set!=null) {
 			this.hasUnsavedData = true;
@@ -386,12 +386,12 @@ public class SaveRecord implements Serializable {
 	}
 	public String getFaction(Point p, int i) {
 		ArrayList<String> faction = this.factions.get(p);
-		if(faction==null||faction.size()>=i) return null;
+		if(faction==null||faction.size()<=i) return null;
 		return faction.get(i);
 	}
 	public String removeFaction(Point p, int i) {
 		ArrayList<String> faction = this.factions.get(p);
-		if(faction==null||faction.size()>=i) return null;
+		if(faction==null||faction.size()<=i) return null;
 		String set = faction.set(i, null);
 		if(set!=null) {
 			this.hasUnsavedData = true;
@@ -411,12 +411,12 @@ public class SaveRecord implements Serializable {
 	}
 	public String getDungeonEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
-		if(encounters==null||encounters.size()>=i) return null;
+		if(encounters==null||encounters.size()<=i) return null;
 		return encounters.get(i);
 	}
 	public String removeDungeonEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
-		if(encounters==null||encounters.size()>=i) return null;
+		if(encounters==null||encounters.size()<=i) return null;
 		String set = encounters.set(i, null);
 		if(set!=null) {
 			this.hasUnsavedData = true;

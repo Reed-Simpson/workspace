@@ -25,7 +25,7 @@ import view.InfoPanel;
 						matcher.group(1),
 						Integer.valueOf(matcher.group(2)),
 						Integer.valueOf(matcher.group(3)),
-						Integer.valueOf(matcher.group(4)));
+						Integer.valueOf(matcher.group(4))-1);
 			}
 		}
 

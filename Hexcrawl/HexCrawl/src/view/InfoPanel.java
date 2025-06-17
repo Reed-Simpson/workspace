@@ -335,12 +335,17 @@ public class InfoPanel extends JTabbedPane{
 
 		this.addTab("                        Region                        ", new JScrollPane(regionPanel));
 
-		selectedNPC = 0;
-		selectedDEncounter = 0;
-		selectedDungeon = 0;
-		selectedPOI = 0;
-		selectedFaction = 0;
+		resetSelection();
 		changeSelected = true;
+	}
+
+	public void resetSelection() {
+		selectedEncounter = -1;
+		selectedNPC = -1;
+		selectedDEncounter = -1;
+		selectedDungeon = -1;
+		selectedPOI = -1;
+		selectedFaction = -1;
 	}
 
 	@Override
@@ -431,7 +436,7 @@ public class InfoPanel extends JTabbedPane{
 				writeStringToDocument(getEncounterText(pos,i), pane);
 
 			}
-			this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
+			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
 
 			if(transformedUniversalPopulation>0) {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
@@ -444,7 +449,7 @@ public class InfoPanel extends JTabbedPane{
 					}
 					writeStringToDocument(getNPCText(pos,i), pane);
 				}
-				this.npcTexts.get(selectedNPC).setCaretPosition(0);
+				if(selectedNPC>-1) this.npcTexts.get(selectedNPC).setCaretPosition(0);
 			}else {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, false);
 			}
@@ -458,7 +463,7 @@ public class InfoPanel extends JTabbedPane{
 				}
 				writeStringToDocument(getPOIText(pos,i,pos.equals(capital)), pane);
 			}
-			this.poiTexts.get(selectedPOI).setCaretPosition(0);
+			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
 
 			for(int i = 0;i<this.dEntranceTexts.size();i++) {
 				JTextPane pane = this.dEntranceTexts.get(i);
@@ -469,7 +474,7 @@ public class InfoPanel extends JTabbedPane{
 				}
 				writeStringToDocument(getDungeonText(pos,i), pane);
 			}
-			this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
+			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
 			for(int i = 0;i<this.dungeonTexts.size();i++) {
 				JTextPane pane = this.dungeonTexts.get(i);
@@ -480,7 +485,7 @@ public class InfoPanel extends JTabbedPane{
 				}
 				writeStringToDocument(getDungeonEncounterText(pos,i), pane);
 			}
-			this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
+			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
 			if(population.isCity(capital)) {
 				this.city1.setText(getCityText(capital));
@@ -495,7 +500,7 @@ public class InfoPanel extends JTabbedPane{
 					}
 					writeStringToDocument(getFactionText(pos,i), pane);
 				}
-				this.factionTexts.get(selectedFaction).setCaretPosition(0);
+				if(selectedFaction>-1) this.factionTexts.get(selectedFaction).setCaretPosition(0);
 			}else {
 				enableCityTabs(false);
 			}
@@ -786,15 +791,14 @@ public class InfoPanel extends JTabbedPane{
 			this.index = i;
 		}
 		public void focusGained(FocusEvent e) {
-			selectedEncounter = index;
 			InfoPanel.this.repaint();
 		}
 		public void focusLost(FocusEvent e) {
 			String text = encounteri.getText();
 			Point p = panel.getSelectedGridPoint();
-			String defaultText = getDefaultNPCText(p,index);
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeNPC(p,index);
-			else panel.getRecord().putNPC(p,index, text);
+			String defaultText = getDefaultEncounterText(p,index);
+			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeEncounter(p,index);
+			else panel.getRecord().putEncounter(p,index, text);
 		}
 	}
 	private final class NPCFocusListener2 implements FocusListener {
@@ -806,7 +810,6 @@ public class InfoPanel extends JTabbedPane{
 			this.index = i;
 		}
 		public void focusGained(FocusEvent e) {
-			selectedNPC = index;
 			InfoPanel.this.repaint();
 		}
 		public void focusLost(FocusEvent e) {
@@ -826,7 +829,6 @@ public class InfoPanel extends JTabbedPane{
 			this.index = i;
 		}
 		public void focusGained(FocusEvent e) {
-			selectedPOI = index;
 			InfoPanel.this.repaint();
 		}
 		public void focusLost(FocusEvent e) {
@@ -847,7 +849,6 @@ public class InfoPanel extends JTabbedPane{
 			this.index = i;
 		}
 		public void focusGained(FocusEvent e) {
-			selectedDungeon = index;
 			InfoPanel.this.repaint();
 		}
 		public void focusLost(FocusEvent e) {
@@ -868,7 +869,6 @@ public class InfoPanel extends JTabbedPane{
 		}
 		@Override
 		public void focusGained(FocusEvent e) {
-			selectedDEncounter = index;
 			InfoPanel.this.repaint();
 		}
 
@@ -891,7 +891,6 @@ public class InfoPanel extends JTabbedPane{
 		}
 		@Override
 		public void focusGained(FocusEvent e) {
-			selectedFaction=index;
 			InfoPanel.this.repaint();
 		}
 

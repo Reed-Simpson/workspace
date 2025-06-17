@@ -7,7 +7,6 @@ import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
-import population.PopulationModel;
 import settlement.SettlementModel;
 
 public class LocationModel {

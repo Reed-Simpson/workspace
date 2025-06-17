@@ -2,7 +2,6 @@ package monster;
 
 import java.awt.Point;
 
-import dungeon.Dungeon;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;

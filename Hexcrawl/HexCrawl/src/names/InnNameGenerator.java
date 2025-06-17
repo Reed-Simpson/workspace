@@ -76,17 +76,19 @@ public class InnNameGenerator extends NameGenerator{
 		return suffixes.getByWeight(obj);
 	}
 
-	@Override
-	public String getName(int... val) {
-		if(val.length<2) throw new IllegalArgumentException("Expected 2 or more values");
-		return "The "+getPrefix(val[0])+" "+getSuffix(val[1]);
+	public String getName(Indexible obj) {
+		return "The "+getPrefix(obj)+" "+getSuffix(obj);
 	}
-	public String getQuirk(int val) {
+	public String getQuirk(Indexible obj) {
 		if(quirks==null) {
 			quirks = new WeightedTable<String>();
 			populate(quirks, QUIRKS, ",");
 		}
-		return Util.formatTableResult(quirks.getByWeight(val),new Indexible(val/quirks.size()));
+		return Util.formatTableResult(quirks.getByWeight(obj),obj);
+	}
+	@Override
+	public String getName(int... val) {
+		return getName(new Indexible(val));
 	}
 	
 

@@ -658,7 +658,7 @@ public class InfoPanel extends JTabbedPane{
 	private String getPOIText(Point pos,int i, boolean isCity) {
 		String poiText = panel.getRecord().getLocation(pos,i);
 		if(poiText==null) {
-			if(i==0) poiText = getDefaultInnText(pos,i);
+			if(i==0) poiText = getDefaultInnText(pos);
 			else poiText = getDefaultPOIText(pos,i,isCity);
 		}
 		return poiText;
@@ -666,14 +666,14 @@ public class InfoPanel extends JTabbedPane{
 	private String getDefaultPOIText(Point pos,int i, boolean isCity) {
 		return panel.getPois().getPOI(i, pos,isCity);
 	}
-	private String getDefaultInnText(Point pos,int i) {
+	private String getDefaultInnText(Point pos) {
 		AltitudeModel grid = panel.getGrid();
 		PrecipitationModel precipitation = panel.getPrecipitation();
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			return "Inn: none";
 		}else {
 			LocationNameModel names = panel.getNames();
-			return "Inn: "+names.getInnName(pos)+"\r\nQuirk: "+names.getInnQuirk(pos);
+			return names.getInnText(pos);
 		}
 	}
 	private String getDungeonText(Point pos,int i) {

@@ -2,9 +2,11 @@ package names;
 
 import java.awt.Point;
 
+import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
 import io.SaveRecord;
+import location.LocationModel;
 
 public class LocationNameModel {
 	public static final int SEED_OFFSET = 4*Util.getOffsetX();
@@ -21,12 +23,22 @@ public class LocationNameModel {
 		float val = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i), p.x, p.y);
 		return Util.getIndexFromSimplex(val);
 	}
-	
-	public String getInnName(Point p) {
-		return innNames.getName(getIndexValue(p,0),getIndexValue(p,1));
+	public String getInnText(Point p) {
+		Indexible obj = new Indexible(getIndexValue(p,0),getIndexValue(p,1),getIndexValue(p,2),getIndexValue(p,3));
+		String innname = "Inn: "+getInnName(obj);
+		String innquirk = "\r\nQuirk: "+getInnQuirk(obj);
+		String inndescriptors = "\r\nDescriptors: "+getInnDescriptor(obj)+" and "+getInnDescriptor(obj);
+		return innname+innquirk+inndescriptors;
 	}
-	public String getInnQuirk(Point p) {
-		return innNames.getQuirk(getIndexValue(p,2));
+	
+	public String getInnName(Indexible obj) {
+		return innNames.getName(obj);
+	}
+	public String getInnQuirk(Indexible obj) {
+		return innNames.getQuirk(obj);
+	}
+	public String getInnDescriptor(Indexible obj) {
+		return LocationModel.getDescriptor(obj);
 	}
 	
 	public String getName(NameGenerator gen,Point p) {

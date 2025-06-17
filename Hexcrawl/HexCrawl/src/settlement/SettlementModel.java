@@ -131,7 +131,7 @@ public class SettlementModel {
 	}
 	public static String getDiscovery(Indexible obj) {
 		if(features==null) populateAllTables();
-		return getStreet(obj)+"/"+getFeature(obj);
+		return getFeature(obj);
 	}
 	public static String getLeadership(Indexible obj) {
 		if(leader==null) populateAllTables();

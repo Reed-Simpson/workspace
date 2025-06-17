@@ -268,7 +268,7 @@ public class Util {
 	}
 
 	public static int getIndexFromSimplex(float simplex) {
-		return (int) ((simplex+1)/2*1000000);
+		return Math.abs(Float.floatToRawIntBits(simplex));
 	}
 
 	public static Object getElementFromArray(Object[] array,int val) {

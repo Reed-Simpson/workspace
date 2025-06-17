@@ -36,10 +36,6 @@ public class EncounterModel {
 			"Hard,Harsh,Healthy,Heavy,Historical,Horrible,Important,Interesting,Juvenile,Lacking,Large,Lavish,Lean,Less,Lethal,Lively,Lonely,Lovely,Magnificent,Mature,"+
 			"Messy,Mighty,Military,Modern,Mundane,Mysterious,Natural,Normal,Odd,Old,Pale,Peaceful,Petite,Plain,Poor,Powerful,Protective,Quaint,Rare,Reassuring,"+
 			"Remarkable,Rotten,Rough,Ruined,Rustic,Scary,Shocking,Simple,Small,Smooth,Soft,Strong,Stylish,Unpleasant,Valuable,Vibrant,Warm,Watery,Weak,Young";
-	private static final String LOCATIONS = "Abandoned,Active,Artistic,Atmosphere,Beautiful,Bleak,Bright,Business,Calm,Charming,Clean,Cluttered,Cold,Colorful,Colorless,Confusing,Cramped,Creepy,Crude,Cute,Damaged,Dangrous,Dark,Delightful,Dirty,"+
-			"Domestic,Empty,Enclosed,Enormous,Entrance,Exclusive,Exposed,Extravagant,Familiar,Fancy,Festive,Foreboding,Fortunate,Fragrant,Frantic,Frightening,Full,Harmful,Helpful,Horrible,Important,Impressive,Inactive,Intense,Intriguing,"+
-			"Lively,Lonely,Long,Loud,Meaningful,Messy,Mobile,Modern,Mundane,Mysterious,Natural,New,Occupied,Odd,Official,Old,Open,Peaceful,Personal,Plain,Portal,Protected,Protection,Purposeful,Quiet,Reassuring,"+
-			"Remote,Resourceful,Ruined,Rustic,Safe,Services,Simple,Small,Spacious,Storage,Strange,Stylish,Suspicious,Tall,Threatening,Tranquil,Unexpected,Unpleasant,Unusual,Useful,Warm,Warning,Watery,Welcoming";
 	private static final String CHARACTERS = "Accompanied,Active,Aggressive,Ambush,Animal,Anxious,Armed,Beautiful,Bold,Busy,Calm,Careless,Casual,Cautious,Classy,Colorful,Combative,Crazy,Creepy,Curious,Dangerous,Deceitful,Defeated,"+
 			"Defiant,Delightful,Emotional,Energetic,Equipped,Excited,Expected,Familiar,Fast,Feeble,Feminine,Ferocious,Foe,Foolish,Fortunate,Fragrant,Frantic,Friend,Frightened,Frightening,Generous,Glad,Happy,Harmful,Helpful,Helpless,Hurt,"+
 			"Important,Inactive,Influential,Innocent,Intense,Knowledgeable,Large,Lonely,Loud,Loyal,Masculine,Mighty,Miserable,Multiple,Mundane,Mysterious,Natural,Odd,Official,Old,Passive,Peaceful,Playful,Powerful,Professional,"+
@@ -51,7 +47,6 @@ public class EncounterModel {
 	private static final int TABLECOUNT = 14;
 	private static WeightedTable<String> encounterChar;
 	private static WeightedTable<String> encounterObj;
-	private static WeightedTable<String> encounterLoc;
 	private static WeightedTable<String> encounterAdverb;
 	private static WeightedTable<String> encounterAdj;
 	private static WeightedTable<String> encounterFocus;
@@ -92,8 +87,6 @@ public class EncounterModel {
 		populate(encounterAdverb,ADVERB,",");
 		encounterAdj = new WeightedTable<String>();
 		populate(encounterAdj,ADJECTIVE,",");
-		encounterLoc = new WeightedTable<String>();
-		populate(encounterLoc,LOCATIONS,",");
 		encounterChar = new WeightedTable<String>();
 		populate(encounterChar,CHARACTERS,",");
 		encounterObj = new WeightedTable<String>();
@@ -114,10 +107,6 @@ public class EncounterModel {
 	public static String getAdj(Indexible e) {
 		if(encounterAdj==null) populateAllTables();
 		return encounterAdj.getByWeight(e);
-	}
-	public static String getLoc(Indexible e) {
-		if(encounterLoc==null) populateAllTables();
-		return encounterLoc.getByWeight(e);
 	}
 	public static String getChar(Indexible e) {
 		if(encounterChar==null) populateAllTables();
@@ -166,6 +155,9 @@ public class EncounterModel {
 		if(isCity) return SettlementModel.getDiscovery(e);
 		else return LocationModel.getDiscovery(e);
 	}
+	private String getStreet(Encounter e) {
+		return SettlementModel.getStreet(e);
+	}
 	private String getDungeonDetail( Indexible e) {
 		return DungeonModel.getDetail(e);
 	}
@@ -191,15 +183,18 @@ public class EncounterModel {
 		if(isCity) e.setType("City");
 		else e.setType("Wilderness");
 		e.setFocus(getFocus(e));
-		e.setAction(new String[] {getVerb(e)+" "+getNoun(e),getActivity(e,isCity)});
-		e.setDescriptor(new String[] {getAdverb(e)+" "+getAdj(e)});
-		String location = getLocation(e, p);
-		if(isCity) location+="/"+getCityRoom(e);
-		e.setLocation(new String[] {getLoc(e),getLoc(e),location});
+		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getActivity(e,isCity)+'"'});
+		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
 		e.setCharacter(new String[] {getChar(e),getChar(e),getChar(e, p)});
-		e.setObject(new String[] {getObj(e),getObj(e),getDiscovery(e, isCity)});
-		if(isCity) ;//e.setHazard(new String[] {getCityEvent(e)});
-		else e.setHazard(new String[] {getWildernessHazard(e)});
+		e.setObject(new String[] {getObj(e),getObj(e)});
+		if(isCity) {
+			e.setLocation(new String[] {getLocation(e, p),getCityRoom(e),getStreet(e),getDiscovery(e, isCity)});
+			//e.setHazard(new String[] {getCityEvent(e)});
+		}
+		else {
+			e.setLocation(new String[] {getLocation(e, p),getDiscovery(e, isCity)});
+			e.setHazard(new String[] {getWildernessHazard(e)});
+		}
 		return e;
 	}
 	public Encounter getDungeonEncounter(int i,Point p) {
@@ -212,7 +207,7 @@ public class EncounterModel {
 		e.setFocus(getFocus(e));
 		e.setAction(new String[] {getVerb(e)+" "+getNoun(e),getDungeonActivity(e)});
 		e.setDescriptor(new String[] {getAdverb(e)+" "+getAdj(e)});
-		e.setLocation(new String[] {getLoc(e),getLoc(e),getDungeonRoom(e)});
+		e.setLocation(new String[] {LocationModel.getDescriptor(e),LocationModel.getDescriptor(e),getDungeonRoom(e)});
 		e.setCharacter(new String[] {getChar(e),getChar(e)});
 		e.setObject(new String[] {getObj(e),getObj(e),getDungeonDetail(e)});
 		e.setHazard(new String[] {getDungeonHazard(e)});

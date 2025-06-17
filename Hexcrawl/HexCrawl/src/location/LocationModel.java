@@ -7,6 +7,7 @@ import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
+import population.PopulationModel;
 import settlement.SettlementModel;
 
 public class LocationModel {
@@ -44,6 +45,11 @@ public class LocationModel {
 			"Hemlock,Hogweed,Holly,Horse Chestnut,Hyacinth,Ivy,Jessamine,Kudu,Larkspur,Mandrake,Mangrove,Mistletoe,"+
 			"Moonflower,Nightshade,Oleander,Ragwort,Reindeer Lichen,Snakeweed,Spindle,Stinkhorn,Waxcap,Wine-Cap,Wolfsbane,Wormwood";
 	private static WeightedTable<String> poisons;
+	private static final String DESCRIPTORS = "Abandoned,Active,Artistic,Atmospheric,Beautiful,Bleak,Bright,Businesslike,Calm,Charming,Clean,Cluttered,Cold,Colorful,Colorless,Confusing,Cramped,Creepy,Crude,Cute,Damaged,Dangrous,Dark,Delightful,Dirty,"+
+			"Domestic,Empty,Enclosed,Enormous,Threshold,Exclusive,Exposed,Extravagant,Familiar,Fancy,Festive,Foreboding,Fortunate,Fragrant,Frantic,Frightening,Full,Harmful,Helpful,Horrible,Important,Impressive,Inactive,Intense,Intriguing,"+
+			"Liminal,Lively,Lonely,Long,Loud,Meaningful,Messy,Mobile,Modern,Mundane,Mysterious,Natural,New,Occupied,Odd,Official,Old,Open,Peaceful,Personal,Plain,Magically Connected,Protected,Protective,Purposeful,Quiet,Reassuring,"+
+			"Remote,Resourceful,Ruined,Rustic,Safe,Multifunctional,Simple,Small,Spacious,Storage,Strange,Stylish,Suspicious,Tall,Threatening,Tranquil,Unexpected,Unpleasant,Unusual,Useful,Warm,Warning,Watery,Welcoming";
+	private static WeightedTable<String> descriptors;
 	
 	private static void populate(WeightedTable<String> table,String values,String regex) {
 		for(String s:values.split(regex)) {
@@ -67,6 +73,8 @@ public class LocationModel {
 		populate(edibles,EDIBLE,",");
 		poisons = new WeightedTable<String>();
 		populate(poisons,POISON,",");
+		descriptors = new WeightedTable<String>();
+		populate(descriptors,DESCRIPTORS,",");
 	}
 	public static String getBiome(int i) {
 		if(biomes==null) populateAllTables();
@@ -104,6 +112,10 @@ public class LocationModel {
 	public static String getPoisonousPlant(int i) {
 		if(poisons==null) populateAllTables();
 		return poisons.getByWeight(i);
+	}
+	public static String getDescriptor(Indexible e) {
+		if(descriptors==null) populateAllTables();
+		return descriptors.getByWeight(e);
 	}
 	
 	
@@ -162,9 +174,14 @@ public class LocationModel {
 		return getStructure(getLocationDetailIndex(i*TABLECOUNT, p));
 	}
 	public String getPOI(int i,Point p,boolean isCity) {
-		int locationDetailIndex = getLocationDetailIndex(i*TABLECOUNT, p);
-		if(isCity) return SettlementModel.getBuilding(new Indexible(locationDetailIndex));
-		else return getStructure(locationDetailIndex);
+		Indexible obj = new Indexible(getLocationDetailIndex(i*TABLECOUNT, p));
+		String location;
+		if(isCity) location = SettlementModel.getBuilding(obj);
+		else location = getStructure(obj);
+		String descriptor1 = getDescriptor(obj);
+		String descriptor2 = getDescriptor(obj);
+		String proprietor = "\r\nProprietor: "+Util.formatTableResultPOS("${npc index}", obj, p, null);
+		return descriptor1+" and "+descriptor2+" "+location+proprietor;
 	}
 	public String getEdible(int i,Point p) {
 		if(edibles==null) populateAllTables();

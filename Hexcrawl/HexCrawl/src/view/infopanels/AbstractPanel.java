@@ -15,12 +15,14 @@ import view.InfoPanel;
 @SuppressWarnings("serial")
 public abstract class AbstractPanel extends JPanel{
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-	InfoPanel infopanel;
+	InfoPanel info;
 
 
-	public AbstractPanel(InfoPanel infopanel) {
-		this.infopanel=infopanel;
+	public AbstractPanel(InfoPanel info) {
+		this.info=info;
 	}
+	
+	public abstract void doPaint();
 
 	protected void writeStringToDocument(String string, JTextPane pane) {
 		StyledDocument doc = pane.getStyledDocument();
@@ -30,13 +32,13 @@ public abstract class AbstractPanel extends JPanel{
 			int closebrace = -1;
 			doc.insertString(doc.getLength(), "test", DEFAULT);
 			doc.insertString(doc.getLength(), "\r\ntest", DEFAULT);
-//			while(curlybrace>-1) {
-//				doc.insertString(doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
-//				closebrace = string.indexOf("}", curlybrace);
-//				insertLink(pane,string.substring(curlybrace, closebrace+1));
-//				curlybrace = string.indexOf("{", closebrace);
-//			}
-//			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
+			while(curlybrace>-1) {
+				doc.insertString(doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
+				closebrace = string.indexOf("}", curlybrace);
+				insertLink(pane,string.substring(curlybrace, closebrace+1));
+				curlybrace = string.indexOf("{", closebrace);
+			}
+			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -47,7 +49,7 @@ public abstract class AbstractPanel extends JPanel{
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
 		StyleConstants.setUnderline(regularBlue, true);
-		regularBlue.addAttribute("linkact", new ChatLinkAction(textLink, infopanel));
+		regularBlue.addAttribute("linkact", new ChatLinkAction(textLink, info));
 		doc.insertString(doc.getLength(), textLink, regularBlue);
 
 	}

@@ -1,16 +1,18 @@
-package view;
+package view.infopanels;
 import java.awt.event.ActionEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 
+import view.InfoPanel;
+
 @SuppressWarnings("serial")
 	public class ChatLinkAction extends AbstractAction    {
 		private String textLink;
 		private InfoPanel info;
 
-		ChatLinkAction(String textLink,InfoPanel info){
+		public ChatLinkAction(String textLink,InfoPanel info){
 			this.textLink = textLink;
 			this.info = info;
 		}

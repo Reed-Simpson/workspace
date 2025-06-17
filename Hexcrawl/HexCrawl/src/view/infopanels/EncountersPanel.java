@@ -1,4 +1,6 @@
-package view;
+package view.infopanels;
+
+import view.InfoPanel;
 
 @SuppressWarnings("serial")
 public class EncountersPanel extends AbstractPanel{

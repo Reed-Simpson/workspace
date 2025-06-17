@@ -1,4 +1,4 @@
-package view;
+package view.infopanels;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -6,6 +6,8 @@ import java.awt.event.MouseListener;
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
+
+import view.InfoPanel;
 
 
 public class TextLinkMouseListener implements MouseListener {

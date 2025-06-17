@@ -1,4 +1,4 @@
-package view;
+package view.infopanels;
 
 import java.awt.Color;
 
@@ -9,6 +9,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+
+import view.InfoPanel;
 
 @SuppressWarnings("serial")
 public abstract class AbstractPanel extends JPanel{

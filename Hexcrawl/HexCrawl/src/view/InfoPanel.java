@@ -52,6 +52,11 @@ import settlement.Settlement;
 import settlement.SettlementModel;
 import threat.Threat;
 import threat.ThreatModel;
+import view.infopanels.ChatLinkAction;
+import view.infopanels.DemographicsPanel;
+import view.infopanels.EncountersPanel;
+import view.infopanels.HexPanelGeneralStatPanel;
+import view.infopanels.TextLinkMouseListener;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
@@ -71,16 +76,9 @@ public class InfoPanel extends JTabbedPane{
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 	private MapPanel panel;
 
-	private JLabel pos;
-	private JLabel height;
-	private JLabel precipitation;
 	private JLabel biome;
-	private JLabel biome2;
-	private JTextArea demographics;
 	private JLabel magic;
-	private JLabel locationName;
 	private JLabel cityName;
-	private JLabel demoLabel;
 	//THREAT
 	private JTextArea threatText;
 	private JScrollPane threatScrollPane;
@@ -89,12 +87,9 @@ public class InfoPanel extends JTabbedPane{
 	private JPanel hexPanel;
 	private JPanel regionPanel;
 	private JLabel locationName2;
-	private JLabel innName;
-	private JLabel innText;
 	private JTextArea city1;
 	private JScrollPane cityScrollPane;
 	private JScrollPane poiScrollPane;
-	private JLabel roads;
 	private JScrollPane dungeonScrollPane;
 	private JTextArea hexNote1;
 	private JScrollPane hexNoteScrollPane;
@@ -121,77 +116,24 @@ public class InfoPanel extends JTabbedPane{
 	boolean changeSelected;
 	private EncountersPanel encounterPanel;
 	private ArrayList<JTextPane> encounterTexts;
+	private HexPanelGeneralStatPanel hexGeneralPanel;
+	private DemographicsPanel demographicsPanel;
 
 	public InfoPanel() {
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 		//Tab 1
 		this.hexPanel = new JPanel();
-		JPanel dummy0 = new JPanel();
-		dummy0.setLayout(new BorderLayout());
 		hexPanel.setPreferredSize(new Dimension(WIDTH,WIDTH));
 		hexPanel.setLayout(new BoxLayout(hexPanel, BoxLayout.Y_AXIS));
-		JPanel posData = new JPanel();
-		posData.setLayout(new BorderLayout());
+		
 
-		JPanel dummy1 = new JPanel();
-		dummy1.setLayout(new BorderLayout());
-		pos = new JLabel("0,0");
-		dummy1.add(pos,BorderLayout.NORTH);
-		//posData.add(pos);
-
-
-		JPanel regionNamePanelHEX = new JPanel();
-		regionNamePanelHEX.setLayout(new BorderLayout());
-		locationName = new JLabel("name");
-		regionNamePanelHEX.add(locationName,BorderLayout.NORTH);
-		biome2 = new JLabel("Grassland");
-		regionNamePanelHEX.add(biome2,BorderLayout.CENTER);
-		posData.add(regionNamePanelHEX,BorderLayout.NORTH);
-
-		height = new JLabel("0.5");
-		posData.add(height,BorderLayout.CENTER);
-
-		precipitation = new JLabel("0.5");
-		posData.add(precipitation,BorderLayout.SOUTH);
-
-		dummy1.add(Box.createRigidArea(new Dimension(20,20)),BorderLayout.WEST);
-		dummy1.add(posData,BorderLayout.CENTER);
-		dummy1.setAlignmentX(LEFT_ALIGNMENT);
-		dummy1.add(getSeparator(),BorderLayout.SOUTH);
-		dummy0.add(dummy1,BorderLayout.NORTH);
-
-		JPanel innPanel = new JPanel();
-		innPanel.setLayout(new BoxLayout(innPanel, BoxLayout.Y_AXIS));
-		this.roads = new JLabel("Roads: ");
-		innPanel.add(roads);
-		this.innName = new JLabel("Inn: ");
-		innPanel.add(innName);
-		this.innText = new JLabel("Description");
-		innPanel.add(innText);
-		innPanel.add(getSeparator());
-		JPanel dummy2 = new JPanel();
-		dummy2.setLayout(new BoxLayout(dummy2, BoxLayout.X_AXIS));
-		dummy2.add(innPanel);
-		dummy2.setAlignmentX(RIGHT_ALIGNMENT);
-		dummy0.add(dummy2,BorderLayout.CENTER);
-
-		demoLabel = new JLabel("Demographics: ");
-		JPanel dummy3 = new JPanel();
-		dummy3.setLayout(new BoxLayout(dummy3, BoxLayout.X_AXIS));
-		dummy3.setAlignmentX(RIGHT_ALIGNMENT);
-		dummy3.add(demoLabel);
-		dummy0.add(dummy3,BorderLayout.SOUTH);
-		hexPanel.add(dummy0);
-		demographics = new JTextArea();
-		demographics.setEditable(false);
-		demographics.setLineWrap(true);
-		demographics.setWrapStyleWord(true);
-		demographics.setHighlighter(null);
-		JScrollPane p = new JScrollPane(demographics);
-		p.setMinimumSize(new Dimension(9999,52));
-		p.setMaximumSize(new Dimension(9999,52));
-		p.setPreferredSize(new Dimension(9999,52));
-		hexPanel.add(p);
+		hexGeneralPanel = new HexPanelGeneralStatPanel(this);
+		hexPanel.add(hexGeneralPanel);
+		
+		hexPanel.add(getSeparator());
+		
+		demographicsPanel = new DemographicsPanel(this);
+		hexPanel.add(demographicsPanel);
 
 		detailsTabs = new JTabbedPane();
 
@@ -406,9 +348,10 @@ public class InfoPanel extends JTabbedPane{
 		PrecipitationModel precipitation = panel.getPrecipitation();
 		BiomeModel biomes = panel.getBiomes();
 		PopulationModel population = panel.getPopulation();
-		LocationNameModel names = panel.getNames();
 		Point zero = panel.getRecord().getZero();
-		this.pos.setText("Coords: "+Util.posString(pos,zero));
+		
+		hexGeneralPanel.dopaint();
+		demographicsPanel.doPaint();
 
 		Species species = population.getMajoritySpecies(pos.x, pos.y);
 		float pop = population.getUniversalPopulation(pos);
@@ -421,7 +364,6 @@ public class InfoPanel extends JTabbedPane{
 				String cityname = getRegionNameText(capital,true);
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
 				String cityText = "Parent City: here!";
-				this.locationName.setText("CITY NAME: ★ "+cityname+" ("+size.getName()+")");
 				this.locationName2.setText("CITY NAME: ★ ");
 				this.regionNameField.setText(cityname);
 				this.citySizeLabel.setText(" ("+size.getName()+")");
@@ -432,7 +374,6 @@ public class InfoPanel extends JTabbedPane{
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
 				String townname = getRegionNameText(pos,true);
 				String cityText = "Parent City: "+cityname;
-				this.locationName.setText("Town Name: ⬤ "+townname+" ("+size.getName()+")");
 				this.locationName2.setText("Town Name: ⬤ ");
 				this.regionNameField.setText(townname);
 				this.citySizeLabel.setText(" ("+size.getName()+")");
@@ -442,7 +383,6 @@ public class InfoPanel extends JTabbedPane{
 				if(!population.isCity(capital))cityname = "None";
 				String locationname = getRegionNameText(region,false);
 				String cityText = "Parent City: "+cityname;
-				this.locationName.setText("Region Name: "+locationname);
 				this.locationName2.setText("Region Name: ");
 				this.regionNameField.setText(locationname);
 				this.citySizeLabel.setText(null);
@@ -451,48 +391,28 @@ public class InfoPanel extends JTabbedPane{
 		}else {
 			String locationname = getRegionNameText(region,false);
 			String cityText = "Parent City: none";
-			this.locationName.setText("Region Name: "+locationname);
 			this.locationName2.setText("Region Name: ");
 			this.regionNameField.setText(locationname);
 			this.citySizeLabel.setText(null);
 			this.cityName.setText(cityText);
 		}
 
-		float altitudeTransformation = AltitudeModel.altitudeTransformation(grid.getHeight(pos));
-		String heightString = new DecimalFormat ("#0.0").format(altitudeTransformation);
-		this.height.setText("Average Altitude: "+heightString+" ft");
-
-		float precipitationTransformation = PrecipitationModel.precipitationTransformation(precipitation.getPrecipitation(pos));
-		String precipitationString = new DecimalFormat ("#0.0").format(precipitationTransformation);
-		this.precipitation.setText("Annual Precipitation: "+precipitationString+" mm");
-
 		String biome = getBiomeText(pos);
 		this.biome.setText("Biome Type: "+biome);
-		this.biome2.setText("Biome Type: "+biome);
 
 		String magics = panel.getMagic().getMagicType(pos).getName();
 		this.magic.setText("Magic Type: "+magics);
 
-
-		this.demographics.setText(getDemoString(pos));
 		this.threatText.setText(getThreatText(pos));
 
 		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
-		this.demoLabel.setText("Demographics: "+getDemoLabelText(pop, popScale,transformedUniversalPopulation));
-		if(grid.isWater(pos)||precipitation.isLake(pos))  this.roads.setText("Roads: none");
-		else this.roads.setText("Roads: "+panel.getEconomy().getRoadDescription(pos));
+		
 
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-			this.innName.setText("Inn: none");
-			this.innText.setText("");
 			this.city1.setText("None");
 
 			zeroPopComponents();
 		}else {
-
-			this.innName.setText("Inn: "+names.getInnName(pos));
-			this.innText.setText("Quirk: "+names.getInnQuirk(pos));
-
 			positivePopComponents();
 
 
@@ -626,7 +546,7 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 
-	private String getBiomeText(Point pos) {
+	public String getBiomeText(Point pos) {
 		BiomeModel biomes = panel.getBiomes();
 		MagicModel magic = panel.getMagic();
 		String biome = biomes.getBiome(pos).getName();
@@ -637,13 +557,6 @@ public class InfoPanel extends JTabbedPane{
 		return biome;
 	}
 
-	private String getDemoLabelText(float pop, int popScale, int transformedUniversalPopulation) {
-		if(transformedUniversalPopulation>0) {
-			return panel.getPopulation().demoTransformString(pop,pop, popScale);
-		}else {
-			return "None";
-		}
-	}
 
 	private String getThreatText(Point pos) {
 		Point center = panel.getThreats().getCenter(pos);
@@ -772,23 +685,6 @@ public class InfoPanel extends JTabbedPane{
 		this.panel = panel;
 	}
 
-	private String getDemoString(Point pos) {
-		PopulationModel population = panel.getPopulation();
-		int pop = population.getTransformedUniversalPopulation(pos);
-		LinkedHashMap<Species,Integer> demographics = population.getTransformedDemographics(pos);
-		String demoString = "";
-		for(Species s:demographics.keySet()) {
-			if(demographics.get(s)!=null&&demographics.get(s)>0) {
-				demoString+=s.name()+" "+population.demoTransformString(demographics.get(s),pop)+", ";
-			}
-		}
-		if(demoString.length()>2) {
-			demoString = demoString.substring(0, demoString.length()-2);
-		}else {
-			demoString = "none";
-		}
-		return demoString;
-	}
 	private JSeparator getSeparator() {
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		separator.setMaximumSize(new Dimension(9999,1));

@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.JTextPane;
 
-import general.Util;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")
@@ -29,8 +28,8 @@ import view.InfoPanel;
 						Integer.valueOf(matcher.group(2)),
 						Integer.valueOf(matcher.group(3)),
 						Integer.valueOf(matcher.group(4))-1);
-				Util.replace(tooltipText, "\r\n", "<br>");
-				textPane.setToolTipText("<html style=\"width:300px\">"+tooltipText+"");
+				tooltipText = tooltipText.replaceAll("\r\n", "<br>");
+				textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
 			}
 		}
 

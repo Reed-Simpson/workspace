@@ -21,6 +21,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.ToolTipManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -145,6 +146,7 @@ public class InfoPanel extends JTabbedPane{
 			encounteri.addMouseMotionListener(mouseAdapter);
 			encounteri.setAlignmentX(LEFT_ALIGNMENT);
 			encounteri.setCaret(new MyCaret());
+			encounteri.setContentType("text/html");
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
 		}
@@ -166,6 +168,7 @@ public class InfoPanel extends JTabbedPane{
 			npci.addMouseListener(new TextLinkMouseListener(npci));
 			npci.setAlignmentX(LEFT_ALIGNMENT);
 			npci.setCaret(new MyCaret());
+			npci.setContentType("text/html");
 			npcPanel.add(npci);
 			npcTexts.add(npci);
 		}
@@ -184,6 +187,7 @@ public class InfoPanel extends JTabbedPane{
 		inn.addMouseListener(new TextLinkMouseListener(inn));
 		inn.setAlignmentX(LEFT_ALIGNMENT);
 		inn.setCaret(new MyCaret());
+		inn.setContentType("text/html");
 		poiPanel.add(inn);
 		poiTexts.add(inn);
 		for(int i=1;i<POICOUNT;i++) {
@@ -196,6 +200,7 @@ public class InfoPanel extends JTabbedPane{
 			poii.addMouseListener(new TextLinkMouseListener(poii));
 			poii.setAlignmentX(LEFT_ALIGNMENT);
 			poii.setCaret(new MyCaret());
+			poii.setContentType("text/html");
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
@@ -216,6 +221,7 @@ public class InfoPanel extends JTabbedPane{
 			poii.addMouseListener(new TextLinkMouseListener(poii));
 			poii.setAlignmentX(LEFT_ALIGNMENT);
 			poii.setCaret(new MyCaret());
+			poii.setContentType("text/html");
 			dEntrancePanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
@@ -236,6 +242,7 @@ public class InfoPanel extends JTabbedPane{
 			encounteri.addMouseListener(new TextLinkMouseListener(encounteri));
 			encounteri.setAlignmentX(LEFT_ALIGNMENT);
 			encounteri.setCaret(new MyCaret());
+			encounteri.setContentType("text/html");
 			dungeonPanel.add(encounteri);
 			dungeonTexts.add(encounteri);
 		}
@@ -329,6 +336,7 @@ public class InfoPanel extends JTabbedPane{
 			factioni.addMouseListener(new TextLinkMouseListener(factioni));
 			factioni.setAlignmentX(LEFT_ALIGNMENT);
 			factioni.setCaret(new MyCaret());
+			factioni.setContentType("text/html");
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
 		}
@@ -342,6 +350,9 @@ public class InfoPanel extends JTabbedPane{
 
 		resetSelection();
 		changeSelected = true;
+
+		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+		toolTipManager.setDismissDelay(Integer.MAX_VALUE); 
 	}
 
 	public void resetSelection() {
@@ -519,7 +530,8 @@ public class InfoPanel extends JTabbedPane{
 	private void writeStringToDocument(String string, JTextPane pane) {
 		StyledDocument doc = pane.getStyledDocument();
 		try {
-			doc.remove(0, doc.getLength());//delete contents
+			pane.setText("<html>");
+			//doc.remove(0, doc.getLength());//delete contents
 			int curlybrace = string.indexOf("{");
 			int closebrace = -1;
 			while(curlybrace>-1) {
@@ -877,6 +889,11 @@ public class InfoPanel extends JTabbedPane{
 			result = getCityText(capital);break;
 		}
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
+		}
+		Matcher matcher;
+		matcher = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\})").matcher(result);
+		while(matcher.find()) {
+			result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
 		}
 		return result;
 	}

@@ -1,7 +1,7 @@
 package data.encounters;
 
 import data.Indexible;
-import data.Util;
+import util.Util;
 
 public class Encounter extends Indexible {
 	private String type;

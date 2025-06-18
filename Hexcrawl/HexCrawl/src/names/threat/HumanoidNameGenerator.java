@@ -1,12 +1,12 @@
 package names.threat;
 
 import data.Indexible;
-import data.Util;
 import data.magic.MagicModel;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.Threat;
 import data.threat.subtype.HumanoidType;
+import util.Util;
 
 public class HumanoidNameGenerator extends ThreatNameGenerator{
 	private static final String[] GOBLINOIDS = {"Goblin","Hobgoblin","Bugbear"};

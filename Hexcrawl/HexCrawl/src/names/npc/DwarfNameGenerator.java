@@ -1,9 +1,9 @@
 package names.npc;
 
 import data.Indexible;
-import data.Util;
 import data.population.Species;
 import names.IndexibleNameGenerator;
+import util.Util;
 
 public class DwarfNameGenerator extends IndexibleNameGenerator{
 	private static final String[] FIRST = {"Adrik","Alberich","Baern","Barendd","Brottor","Bruenor","Dain","Darrak","Delg","Eberk","Einkil","Fargrim","Flint",

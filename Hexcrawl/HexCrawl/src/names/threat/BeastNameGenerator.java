@@ -1,6 +1,5 @@
 package names.threat;
 
-import data.Util;
 import data.magic.MagicModel;
 import data.monster.MonsterModel;
 import data.npc.NPC;
@@ -9,6 +8,7 @@ import data.threat.CreatureType;
 import data.threat.Threat;
 import data.threat.subtype.BeastType;
 import data.threat.subtype.HumanoidType;
+import util.Util;
 
 public class BeastNameGenerator extends ThreatNameGenerator{
 	public static String getBeastAdj(int val) {

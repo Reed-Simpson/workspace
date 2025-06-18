@@ -26,10 +26,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import data.HexData;
-import data.Util;
 import io.AppData;
 import io.SaveRecord;
 import util.DiceRoller;
+import util.Util;
 
 public class MenuBar extends JMenuBar {
 	private static final long serialVersionUID = -6668894616915293306L;

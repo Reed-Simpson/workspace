@@ -5,12 +5,12 @@ import java.awt.Point;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Util;
 import data.WeightedTable;
 import data.population.PopulationModel;
 import data.population.Species;
 import io.SaveRecord;
 import names.threat.HumanoidNameGenerator;
+import util.Util;
 
 public class NPCModel extends DataModel {
 	//STATIC CONSTANTS

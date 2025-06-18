@@ -10,13 +10,13 @@ import data.Graph;
 import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Pair;
-import data.Util;
 import data.altitude.AltitudeModel;
 import data.population.PopulationModel;
 import data.precipitation.PrecipitationModel;
 import io.SaveRecord;
 import names.wilderness.WildernessNameGenerator;
+import util.Pair;
+import util.Util;
 
 public class BiomeModel extends DataModel {
 	private static final int TABLECOUNT = 2;

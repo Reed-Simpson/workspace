@@ -1,7 +1,7 @@
 package data.dungeon;
 
 import data.Indexible;
-import data.Util;
+import util.Util;
 
 public class Dungeon extends Indexible{
 	private String entrance;

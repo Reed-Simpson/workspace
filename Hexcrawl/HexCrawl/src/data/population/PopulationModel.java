@@ -16,12 +16,12 @@ import java.util.Map.Entry;
 import data.DataModel;
 import data.HexData;
 import data.OpenSimplex2S;
-import data.Util;
 import data.WeightedTable;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeType;
 import data.precipitation.PrecipitationModel;
 import io.SaveRecord;
+import util.Util;
 
 public class PopulationModel extends DataModel{
 	public static final int SEED_OFFSET = 2*Util.getOffsetX();

@@ -1,4 +1,4 @@
-package data;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -18,10 +18,6 @@ import javax.swing.JTabbedPane;
 
 import io.AppData;
 import io.SaveRecord;
-import view.InfoPanel;
-import view.MapPanel;
-import view.MenuBar;
-import view.RegionPanel;
 
 public class MapFrame extends JFrame{
 	private static final long serialVersionUID = 843200012193641481L;

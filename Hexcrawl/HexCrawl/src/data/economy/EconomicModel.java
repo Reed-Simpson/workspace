@@ -11,12 +11,12 @@ import data.DataModel;
 import data.Graph;
 import data.HexData;
 import data.OpenSimplex2S;
-import data.Util;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.population.PopulationModel;
 import data.precipitation.PrecipitationModel;
 import io.SaveRecord;
+import util.Util;
 
 public class EconomicModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;

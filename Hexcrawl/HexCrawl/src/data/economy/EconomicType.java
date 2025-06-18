@@ -2,7 +2,7 @@ package data.economy;
 
 import java.awt.Color;
 
-import data.Util;
+import util.Util;
 
 public enum EconomicType {
 	DESTITUTE(1, Color.BLACK), 

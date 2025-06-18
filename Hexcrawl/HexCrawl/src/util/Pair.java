@@ -1,4 +1,4 @@
-package data;
+package util;
 
 public class Pair<T,K> {
 	public T key1;

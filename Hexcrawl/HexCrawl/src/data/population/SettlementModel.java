@@ -5,11 +5,11 @@ import java.awt.Point;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Util;
 import data.WeightedTable;
 import data.npc.Faction;
 import io.SaveRecord;
 import names.FactionNameGenerator;
+import util.Util;
 import view.InfoPanel;
 
 public class SettlementModel extends DataModel{

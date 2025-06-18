@@ -1,9 +1,11 @@
-package data;
+package util;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.GenericTables;
+import data.Indexible;
 import data.dungeon.DungeonModel;
 import data.item.EquipmentModel;
 import data.location.LocationModel;

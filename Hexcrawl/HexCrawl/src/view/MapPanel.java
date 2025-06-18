@@ -23,12 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import controllers.DataController;
-import data.Counter;
 import data.Graph;
 import data.HexData;
-import data.MapFrame;
-import data.MyLogger;
-import data.ProgressBarDialog;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.biome.BiomeType;
@@ -45,6 +41,7 @@ import data.threat.ThreatModel;
 import io.AppData;
 import io.SaveRecord;
 import names.LocationNameModel;
+import util.Counter;
 
 public class MapPanel  extends JPanel{
 	private static final long serialVersionUID = 6922738675563657970L;

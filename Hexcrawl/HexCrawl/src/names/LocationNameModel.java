@@ -4,9 +4,9 @@ import java.awt.Point;
 
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Util;
 import data.location.LocationModel;
 import io.SaveRecord;
+import util.Util;
 
 public class LocationNameModel {
 	public static final int SEED_OFFSET = 4*Util.getOffsetX();

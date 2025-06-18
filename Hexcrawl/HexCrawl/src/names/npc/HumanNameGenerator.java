@@ -1,8 +1,8 @@
 package names.npc;
 
 import data.Indexible;
-import data.Util;
 import names.IndexibleNameGenerator;
+import util.Util;
 
 public class HumanNameGenerator extends IndexibleNameGenerator{
 	private static final String[] FIRST = {"Adrik","Alvyn","Aurora","Eldeth","Eldon","Farris","Kathra","Kellen","Lily","Nissa","Xinli","Zorra"};

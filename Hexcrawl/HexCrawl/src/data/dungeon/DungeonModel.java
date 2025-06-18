@@ -5,10 +5,10 @@ import java.awt.Point;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Util;
 import data.WeightedTable;
 import data.monster.MonsterModel;
 import io.SaveRecord;
+import util.Util;
 
 public class DungeonModel extends DataModel {
 	private static final int SEED_OFFSET = 12*Util.getOffsetX();

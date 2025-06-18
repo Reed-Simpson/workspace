@@ -13,10 +13,10 @@ import data.DataModel;
 import data.Graph;
 import data.HexData;
 import data.OpenSimplex2S;
-import data.Util;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import io.SaveRecord;
+import util.Util;
 
 public class PrecipitationModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;

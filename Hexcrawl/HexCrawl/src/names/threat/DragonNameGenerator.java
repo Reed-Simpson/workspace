@@ -2,8 +2,8 @@ package names.threat;
 
 import java.util.ArrayList;
 
-import data.Util;
 import data.threat.subtype.DragonType;
+import util.Util;
 
 public class DragonNameGenerator extends ThreatNameGenerator{
 	private static final String[] PART1 = {"Ar","Rel","Rok","Ruin","Dj","Tym","Har","Har","Xorv"};

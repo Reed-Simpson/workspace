@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import data.OpenSimplex2S;
-import data.Util;
+import util.Util;
 
 public class SimplexNoiseTest {
 	private static final int SIZE = 5000;

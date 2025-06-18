@@ -5,9 +5,9 @@ import java.awt.Point;
 
 import data.DataModel;
 import data.OpenSimplex2S;
-import data.Util;
 import data.biome.BiomeModel;
 import io.SaveRecord;
+import util.Util;
 
 public class AltitudeModel extends DataModel{
 	private static float SCALAR_VARIABILITY_1 = 0.5f;

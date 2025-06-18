@@ -5,10 +5,10 @@ import java.awt.Point;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Util;
 import data.WeightedTable;
 import data.population.SettlementModel;
 import io.SaveRecord;
+import util.Util;
 
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();

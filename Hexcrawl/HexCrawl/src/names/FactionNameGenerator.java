@@ -3,8 +3,8 @@ package names;
 import java.util.HashMap;
 
 import data.Indexible;
-import data.Util;
 import data.WeightedTable;
+import util.Util;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static HashMap<String,IndexibleNameGenerator> factionNameGenerators;

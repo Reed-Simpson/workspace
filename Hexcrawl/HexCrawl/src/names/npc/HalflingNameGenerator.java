@@ -1,9 +1,9 @@
 package names.npc;
 
 import data.Indexible;
-import data.Util;
 import data.population.Species;
 import names.IndexibleNameGenerator;
+import util.Util;
 
 public class HalflingNameGenerator extends IndexibleNameGenerator{
 	private static final String[] FIRST = {"Alton","Ander","Cade","Corrin","Eldon","Errich","Finnan","Garret","Lindal","Lyle","Merric","Milo","Osborn","Perrin","Reed","Roscoe","Wellby",

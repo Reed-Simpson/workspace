@@ -1,4 +1,4 @@
-package data;
+package view;
 
 public class MyLogger {
 	private long startTime;

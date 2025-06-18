@@ -1,8 +1,8 @@
 package data.npc;
 
 import data.Indexible;
-import data.Util;
 import data.population.Species;
+import util.Util;
 
 public class NPC extends Indexible{
 

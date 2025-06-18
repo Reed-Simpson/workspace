@@ -1,6 +1,8 @@
-package data;
+package util;
 
 import javax.swing.JProgressBar;
+
+import view.MyLogger;
 
 public class Counter {
 	private long counter = 0;

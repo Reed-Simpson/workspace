@@ -1,9 +1,9 @@
 package names.threat;
 
 import data.Indexible;
-import data.Util;
 import data.threat.CreatureSubtype;
 import data.threat.subtype.FiendType;
+import util.Util;
 
 public class FiendNameGenerator extends ThreatNameGenerator{
 	private static final String[] PART1 = {"Bo","Tze","Stragi","Peli","Pati","Plena","Omni","Andro","Ispny","Hagi","Sha","Tha","Si","Simo","Sany","Marcho","Opse","Sito","Mu","Bu","Nie","Deca",

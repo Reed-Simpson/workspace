@@ -2,7 +2,7 @@ package data.magic;
 
 import java.awt.Color;
 
-import data.Util;
+import util.Util;
 
 public enum MagicType {
 	DEADMAGIC(0.1f,"Dead Magic",Color.BLACK),

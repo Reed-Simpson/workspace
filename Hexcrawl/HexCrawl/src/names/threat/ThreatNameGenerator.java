@@ -1,8 +1,8 @@
 package names.threat;
 
-import data.Util;
 import data.threat.Threat;
 import names.NameGenerator;
+import util.Util;
 
 public abstract class ThreatNameGenerator extends NameGenerator{
 	

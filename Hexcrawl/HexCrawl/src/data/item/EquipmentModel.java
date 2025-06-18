@@ -1,8 +1,8 @@
 package data.item;
 
 import data.Indexible;
-import data.Util;
 import data.WeightedTable;
+import util.Util;
 
 public class EquipmentModel {
 	//private static final int SEED_OFFSET = 14*Util.getOffsetX();

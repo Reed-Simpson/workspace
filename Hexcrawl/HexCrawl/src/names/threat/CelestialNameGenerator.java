@@ -1,9 +1,9 @@
 package names.threat;
 
 import data.Indexible;
-import data.Util;
 import data.threat.CreatureSubtype;
 import data.threat.subtype.FiendType;
+import util.Util;
 
 public class CelestialNameGenerator extends ThreatNameGenerator{
 	private static final String[] TITLE = {"Whose ${form} is ${effect}","The ${personality} ${subtype} of ${domain}","The ${personality} Patron of ${job}",

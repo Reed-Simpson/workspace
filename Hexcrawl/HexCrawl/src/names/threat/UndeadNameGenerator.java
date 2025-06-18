@@ -1,6 +1,5 @@
 package names.threat;
 
-import data.Util;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.CreatureType;
@@ -8,6 +7,7 @@ import data.threat.Threat;
 import data.threat.subtype.AberrationType;
 import data.threat.subtype.DragonType;
 import data.threat.subtype.UndeadType;
+import util.Util;
 
 public class UndeadNameGenerator extends ThreatNameGenerator{
 	private static final String[] NIGHTWALKER = {"Death","End","Demise","Extinction","Ruin","Fatality","Mortality","Annihilation","Doom","Grave","Reaper",

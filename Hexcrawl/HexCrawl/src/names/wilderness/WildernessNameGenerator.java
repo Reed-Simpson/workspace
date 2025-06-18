@@ -1,10 +1,10 @@
 package names.wilderness;
 
 import data.Indexible;
-import data.Util;
 import data.WeightedTable;
 import data.biome.BiomeType;
 import names.IndexibleNameGenerator;
+import util.Util;
 
 public class WildernessNameGenerator extends IndexibleNameGenerator{
 

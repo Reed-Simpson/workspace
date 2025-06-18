@@ -28,7 +28,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import data.Util;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.encounters.Encounter;
@@ -44,6 +43,7 @@ import data.threat.Threat;
 import data.threat.ThreatModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
+import util.Util;
 import view.infopanels.ChatLinkAction;
 import view.infopanels.ChatLinkMouseoverAction;
 import view.infopanels.DemographicsPanel;

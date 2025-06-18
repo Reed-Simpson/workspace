@@ -8,10 +8,10 @@ import java.util.Set;
 
 import data.DataModel;
 import data.OpenSimplex2S;
-import data.Util;
 import data.npc.NPC;
 import data.npc.NPCModel;
 import io.SaveRecord;
+import util.Util;
 
 public class ThreatModel extends DataModel{
 	private static final int SEED_OFFSET = 7*Util.getOffsetX();

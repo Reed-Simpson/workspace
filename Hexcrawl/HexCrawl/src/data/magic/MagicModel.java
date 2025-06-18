@@ -6,9 +6,9 @@ import java.awt.Point;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Util;
 import data.WeightedTable;
 import io.SaveRecord;
+import util.Util;
 
 public class MagicModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;

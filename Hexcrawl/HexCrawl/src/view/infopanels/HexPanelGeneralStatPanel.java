@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import controllers.DataController;
-import data.Util;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.population.PopulationModel;
@@ -21,6 +20,7 @@ import data.population.Species;
 import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
+import util.Util;
 import view.InfoPanel;
 import view.MapPanel;
 

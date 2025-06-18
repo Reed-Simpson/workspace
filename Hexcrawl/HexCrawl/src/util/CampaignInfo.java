@@ -2,7 +2,7 @@ package util;
 
 import java.util.ArrayList;
 
-import npc.NPC;
+import data.npc.NPC;
 
 public class CampaignInfo {
 	ArrayList<NPC> characters;

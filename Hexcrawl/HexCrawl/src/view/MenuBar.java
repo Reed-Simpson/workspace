@@ -25,10 +25,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import general.Util;
+import data.HexData;
+import data.Util;
 import io.AppData;
 import io.SaveRecord;
-import map.HexData;
 import util.DiceRoller;
 
 public class MenuBar extends JMenuBar {

@@ -12,7 +12,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import map.HexData;
+import data.HexData;
 import view.infopanels.ChatLinkAction;
 import view.infopanels.ChatLinkMouseoverAction;
 

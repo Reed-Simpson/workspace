@@ -12,8 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import controllers.DataController;
-import population.PopulationModel;
-import population.Species;
+import data.population.PopulationModel;
+import data.population.Species;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")

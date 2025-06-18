@@ -11,7 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 
-import encounters.Encounter;
+import data.encounters.Encounter;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")

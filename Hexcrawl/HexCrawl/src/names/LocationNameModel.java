@@ -2,11 +2,11 @@ package names;
 
 import java.awt.Point;
 
-import general.Indexible;
-import general.OpenSimplex2S;
-import general.Util;
+import data.Indexible;
+import data.OpenSimplex2S;
+import data.Util;
+import data.location.LocationModel;
 import io.SaveRecord;
-import location.LocationModel;
 
 public class LocationNameModel {
 	public static final int SEED_OFFSET = 4*Util.getOffsetX();

@@ -1,6 +1,6 @@
 package names.npc;
 
-import general.Indexible;
+import data.Indexible;
 import names.IndexibleNameGenerator;
 
 public class ElfNameGenerator extends IndexibleNameGenerator{

@@ -2,9 +2,9 @@ package names;
 
 import java.util.HashMap;
 
-import general.Indexible;
-import general.Util;
-import general.WeightedTable;
+import data.Indexible;
+import data.Util;
+import data.WeightedTable;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static HashMap<String,IndexibleNameGenerator> factionNameGenerators;

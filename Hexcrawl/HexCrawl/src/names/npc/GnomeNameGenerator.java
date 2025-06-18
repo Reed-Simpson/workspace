@@ -1,9 +1,9 @@
 package names.npc;
 
-import general.Indexible;
-import general.Util;
+import data.Indexible;
+import data.Util;
+import data.population.Species;
 import names.IndexibleNameGenerator;
-import population.Species;
 
 public class GnomeNameGenerator extends IndexibleNameGenerator{
 	private static final String[] FIRST = {"Cricket","Daisy","Dimble","Ellywick","Erky","Fiddlestyx","Fonkin","Golly","Mimsy","Pumpkin","Quarrel","Sybilwick"};

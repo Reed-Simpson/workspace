@@ -1,14 +1,14 @@
 package names.threat;
 
-import general.Util;
-import magic.MagicModel;
-import monster.MonsterModel;
-import npc.NPC;
-import population.Species;
-import threat.CreatureType;
-import threat.Threat;
-import threat.subtype.BeastType;
-import threat.subtype.HumanoidType;
+import data.Util;
+import data.magic.MagicModel;
+import data.monster.MonsterModel;
+import data.npc.NPC;
+import data.population.Species;
+import data.threat.CreatureType;
+import data.threat.Threat;
+import data.threat.subtype.BeastType;
+import data.threat.subtype.HumanoidType;
 
 public class BeastNameGenerator extends ThreatNameGenerator{
 	public static String getBeastAdj(int val) {

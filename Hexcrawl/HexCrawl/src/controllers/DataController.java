@@ -1,21 +1,21 @@
 package controllers;
 
-import biome.BiomeModel;
-import dungeon.DungeonModel;
-import economy.EconomicModel;
-import encounters.EncounterModel;
-import general.DataModel;
+import data.DataModel;
+import data.HexData;
+import data.altitude.AltitudeModel;
+import data.biome.BiomeModel;
+import data.dungeon.DungeonModel;
+import data.economy.EconomicModel;
+import data.encounters.EncounterModel;
+import data.location.LocationModel;
+import data.magic.MagicModel;
+import data.npc.NPCModel;
+import data.population.PopulationModel;
+import data.population.SettlementModel;
+import data.precipitation.PrecipitationModel;
+import data.threat.ThreatModel;
 import io.SaveRecord;
-import location.LocationModel;
-import magic.MagicModel;
-import map.AltitudeModel;
-import map.HexData;
 import names.LocationNameModel;
-import npc.NPCModel;
-import population.PopulationModel;
-import precipitation.PrecipitationModel;
-import settlement.SettlementModel;
-import threat.ThreatModel;
 
 public class DataController {
 	
@@ -74,51 +74,39 @@ public class DataController {
 	public AltitudeModel getGrid() {
 		return this.grid;
 	}
-
 	public PrecipitationModel getPrecipitation() {
 		return this.precipitation;
 	}
-
 	public BiomeModel getBiomes() {
 		return this.biomes;
 	}
-
 	public PopulationModel getPopulation() {
 		return this.population;
 	}
-
 	public MagicModel getMagic() {
 		return this.magic;
 	}
-
 	public LocationNameModel getNames() {
 		return this.names;
 	}
-
 	public ThreatModel getThreats() {
 		return this.threats;
 	}
-
 	public EncounterModel getEncounters() {
 		return this.encounters;
 	}
-
 	public NPCModel getNpcs() {
 		return npcs;
 	}
-
 	public SettlementModel getSettlements() {
 		return settlements;
 	}
-
 	public LocationModel getPois() {
 		return pois;
 	}
-
 	public EconomicModel getEconomy() {
 		return economy;
 	}
-
 	public DungeonModel getDungeon() {
 		return dungeons;
 	}

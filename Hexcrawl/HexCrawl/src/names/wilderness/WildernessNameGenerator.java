@@ -1,9 +1,9 @@
 package names.wilderness;
 
-import biome.BiomeType;
-import general.Indexible;
-import general.Util;
-import general.WeightedTable;
+import data.Indexible;
+import data.Util;
+import data.WeightedTable;
+import data.biome.BiomeType;
 import names.IndexibleNameGenerator;
 
 public class WildernessNameGenerator extends IndexibleNameGenerator{

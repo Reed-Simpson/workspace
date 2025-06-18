@@ -1,6 +1,6 @@
 package names.threat;
 
-import threat.subtype.ElementalType;
+import data.threat.subtype.ElementalType;
 
 public class ElementalNameGenerator extends ThreatNameGenerator{
 	private static final String[] FIRE = {"Fueg","Blyz","Smoldr","Ign","Scald"};

@@ -11,16 +11,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import biome.BiomeModel;
 import controllers.DataController;
-import general.Util;
-import map.AltitudeModel;
+import data.Util;
+import data.altitude.AltitudeModel;
+import data.biome.BiomeModel;
+import data.population.PopulationModel;
+import data.population.SettlementSize;
+import data.population.Species;
+import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
-import population.PopulationModel;
-import population.SettlementSize;
-import population.Species;
-import precipitation.PrecipitationModel;
 import view.InfoPanel;
 import view.MapPanel;
 

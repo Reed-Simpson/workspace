@@ -1,7 +1,7 @@
 package names.npc;
 
-import general.Indexible;
-import general.Util;
+import data.Indexible;
+import data.Util;
 import names.IndexibleNameGenerator;
 
 public class HumanNameGenerator extends IndexibleNameGenerator{

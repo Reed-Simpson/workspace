@@ -1,6 +1,6 @@
 package names;
 
-import general.Indexible;
+import data.Indexible;
 
 public abstract class IndexibleNameGenerator extends NameGenerator{
 	public abstract String getName(Indexible obj);

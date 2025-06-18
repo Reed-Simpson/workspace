@@ -1,8 +1,8 @@
 package names;
 
-import general.Indexible;
-import general.Util;
-import general.WeightedTable;
+import data.Indexible;
+import data.Util;
+import data.WeightedTable;
 
 public class InnNameGenerator extends NameGenerator{
 	private static final String PREFIXES = "Bellowing,Blazing,Bleak,Blessed,Bloody,Crimson,Cunning,Copper,Dancing,Dead,Drunken,Flying,"+//Maze rats

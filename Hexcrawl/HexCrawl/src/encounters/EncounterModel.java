@@ -11,7 +11,6 @@ import io.SaveRecord;
 import location.LocationModel;
 import population.PopulationModel;
 import settlement.SettlementModel;
-import view.InfoPanel;
 
 public class EncounterModel {
 	//STATIC CONSTANTS
@@ -131,12 +130,10 @@ public class EncounterModel {
 		else return LocationModel.getStructureOrLandmark(e);
 	}
 	public String getLocation(Indexible e,Point p) {
-		int index = e.reduceTempId(InfoPanel.POICOUNT);
-		return "{location:"+p.x+","+p.y+","+index+"}";
+		return Util.formatTableResultPOS("${location index}", e,p);
 	}
 	public String getChar(Indexible e,Point p) {
-		int index = e.reduceTempId(InfoPanel.NPCCOUNT);
-		return "{npc:"+p.x+","+p.y+","+index+"}";
+		return Util.formatTableResultPOS("${npc index}", e,p);
 	}
 	private String getCityRoom( Indexible e) {
 		return SettlementModel.getRoom(e);

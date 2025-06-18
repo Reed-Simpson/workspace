@@ -296,17 +296,13 @@ public class NPCModel {
 		npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));
 	}
 	private void setAsset(int i, Point p, NPC npc) {
-		Point capital = population.getAbsoluteFealty(p);
-		if(population.isCity(capital)) npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p,capital));
-		else npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p,null));
+		npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p));
 	}
 	private void setLiability(int i, Point p, NPC npc) {
 		npc.setLiability(getLiability(npc));
 	}
 	private void setGoal(int i, Point p, NPC npc) {
-		Point capital = population.getAbsoluteFealty(p);
-		if(population.isCity(capital)) npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p,capital));
-		else npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p,null));
+		npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p));
 	}
 	private void setMisfortune(int i, Point p, NPC npc) {
 		npc.setMisfortune(getMisfortune(npc));

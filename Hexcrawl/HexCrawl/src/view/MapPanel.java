@@ -116,7 +116,7 @@ public class MapPanel  extends JPanel{
 		this.threats = new ThreatModel(record,npcs);
 		this.settlements = new SettlementModel(record);
 		this.pois = new LocationModel(record);
-		this.dungeons = new DungeonModel(record,population);
+		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);
 		//this.recenter(record.getPos());
 		this.printLoadingInfo = false;

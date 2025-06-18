@@ -44,9 +44,9 @@ public class Faction extends Indexible {
 		this.name = name;
 	}
 	
-	public String toString(int i) {
+	public String toString() {
 		StringBuilder c1Text = new StringBuilder();
-		c1Text.append("Factions #"+i+": "+this.getName()+"\r\n");
+		c1Text.append(this.getName()+"\r\n");
 		c1Text.append("   Type: "+this.getType()+"\r\n");
 		c1Text.append("   Trait: "+this.getTrait()+"\r\n");
 		c1Text.append("   Goal: "+this.getGoal()+"\r\n");

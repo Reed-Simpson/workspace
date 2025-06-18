@@ -179,7 +179,7 @@ public class LocationModel {
 		else location = getStructure(obj);
 		String descriptor1 = getDescriptor(obj);
 		String descriptor2 = getDescriptor(obj);
-		String proprietor = "\r\nProprietor: "+Util.formatTableResultPOS("${npc index}", obj, p, null);
+		String proprietor = "\r\nProprietor: "+Util.formatTableResultPOS("${npc index}", obj, p);
 		return descriptor1+" and "+descriptor2+" "+location+proprietor;
 	}
 	public String getEdible(int i,Point p) {

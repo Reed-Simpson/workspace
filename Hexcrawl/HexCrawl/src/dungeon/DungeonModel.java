@@ -8,7 +8,6 @@ import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
 import monster.MonsterModel;
-import population.PopulationModel;
 
 public class DungeonModel {
 	private static final int SEED_OFFSET = 12*Util.getOffsetX();
@@ -149,25 +148,22 @@ public class DungeonModel {
 
 
 	private SaveRecord record;
-	private PopulationModel population;
 
-	public DungeonModel(SaveRecord record,PopulationModel population) {
+	public DungeonModel(SaveRecord record) {
 		this.record = record;
-		this.population = population;
 	}
 
 	public Dungeon getDungeon(int i,Point p) {
-		Point capital = population.getAbsoluteFealty(p);
 		float[] floats = new float[TABLECOUNT];
 		for(int n=0;n<floats.length;n++) {
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Dungeon result = new Dungeon(floats);
-		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p, null));
+		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p));
 		result.setForm(getForm(result));
 		result.setLayout(getLayout(result));
 		result.setRuination(getRuination(result));
-		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,capital));
+		result.setReward(Util.formatTableResultPOS(getReward(result),result,p));
 		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
 		result.setMonster(MonsterModel.getMonster(result));
 		return result;

@@ -31,7 +31,7 @@ public class EncountersPanel extends AbstractPanel{
 			//			npci.setWrapStyleWord(true);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
 			encounteri.addFocusListener(new EncounterFocusListener(encounteri,i));
-			encounteri.addMouseListener(new TextLinkMouseListener(encounteri, info));
+			encounteri.addMouseListener(new TextLinkMouseListener(encounteri));
 			encounteri.setAlignmentX(LEFT_ALIGNMENT);
 			this.add(encounteri);
 			encounterTexts.add(encounteri);

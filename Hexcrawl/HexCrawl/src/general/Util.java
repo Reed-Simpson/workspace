@@ -112,20 +112,17 @@ public class Util {
 		else return string;
 	}
 	public static String formatTableResultPOS(String result,Indexible obj) {
-		return formatTableResultPOS(result, obj, null, null);
+		return formatTableResultPOS(result, obj, null);
 	}
-	public static String formatTableResultPOS(String result,Indexible obj,Point p,Point capital) {
+	public static String formatTableResultPOS(String result,Indexible obj,Point p) {
 		if(p!=null) {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, p));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, p));
-		}else {
-			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
-			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
-		}
-		if(capital!=null) {
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, p));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, p));
 		}else {
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
 		}

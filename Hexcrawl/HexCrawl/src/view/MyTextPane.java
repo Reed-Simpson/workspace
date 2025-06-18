@@ -27,15 +27,18 @@ public class MyTextPane extends JTextPane {
 	private String rawText;
 	private DataController controller;
 	private int index;
+	HexData type;
 
 	
-	public MyTextPane(InfoPanel info,DataController controller,int index) {
+	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
-		this.controller = controller;
+		this.controller = info.getPanel().getController();
+		this.index = index;
+		this.type = type;
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setCaret(new NoScrollCaret());
 		this.setContentType("text/html");
-		this.addFocusListener(new TextFocusListener(HexData.ENCOUNTER));
+		this.addFocusListener(new TextFocusListener(type));
 		TextLinkMouseListener mouseAdapter = new TextLinkMouseListener(this);
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
@@ -82,14 +85,11 @@ public class MyTextPane extends JTextPane {
 
 
 	private final class TextFocusListener implements FocusListener {
-		HexData type;
 
 		private TextFocusListener(HexData type) {
-			this.type = type;
 		}
 		public void focusGained(FocusEvent e) {
 			System.out.println("focus gained");
-			info.repaint();
 		}
 		public void focusLost(FocusEvent e) {
 			System.out.println("focus lost");

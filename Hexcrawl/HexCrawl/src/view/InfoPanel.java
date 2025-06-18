@@ -28,6 +28,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import data.HexData;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.encounters.Encounter;
@@ -95,12 +96,13 @@ public class InfoPanel extends JTabbedPane{
 	private JTabbedPane regionTabs;
 	private JTextField regionNameField;
 	private JLabel citySizeLabel;
-	private ArrayList<JTextPane> npcTexts;
-	private ArrayList<JTextPane> dungeonTexts;
-	private ArrayList<JTextPane> poiTexts;
-	private ArrayList<JTextPane> dEntranceTexts;
+	private ArrayList<MyTextPane> encounterTexts;
+	private ArrayList<MyTextPane> npcTexts;
+	private ArrayList<MyTextPane> dungeonTexts;
+	private ArrayList<MyTextPane> poiTexts;
+	private ArrayList<MyTextPane> dEntranceTexts;
 	private JScrollPane dEntranceScrollPane;
-	private ArrayList<JTextPane> factionTexts;
+	private ArrayList<MyTextPane> factionTexts;
 	private JScrollPane factionScrollPane;
 	int selectedNPC;
 	int selectedDungeon;
@@ -110,7 +112,6 @@ public class InfoPanel extends JTabbedPane{
 	int selectedEncounter;
 	boolean changeSelected;
 	//private EncountersPanel encounterPanel;
-	private ArrayList<MyTextPane> encounterTexts;
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
 
@@ -137,7 +138,7 @@ public class InfoPanel extends JTabbedPane{
 		encounterTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
-			MyTextPane encounteri = new MyTextPane(this, panel.getController(),i);
+			MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
@@ -149,18 +150,18 @@ public class InfoPanel extends JTabbedPane{
 
 		JPanel npcPanel = new JPanel();
 		npcPanel.setLayout(new BoxLayout(npcPanel, BoxLayout.Y_AXIS));
-		npcTexts = new ArrayList<JTextPane>();
+		npcTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<NPCCOUNT;i++) {
 			npcPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
-			JTextPane npci = new JTextPane();
+			MyTextPane npci = new MyTextPane(this, i, HexData.NPC);
 			//			npci.setLineWrap(true);
 			//			npci.setWrapStyleWord(true);
 			npci.setMaximumSize(new Dimension(WIDTH-20,9999));
-			npci.addFocusListener(new NPCFocusListener2(npci,i));
-			npci.addMouseListener(new TextLinkMouseListener(npci));
-			npci.setAlignmentX(LEFT_ALIGNMENT);
-			npci.setCaret(new MyCaret());
-			npci.setContentType("text/html");
+//			npci.addFocusListener(new NPCFocusListener2(npci,i));
+//			npci.addMouseListener(new TextLinkMouseListener(npci));
+//			npci.setAlignmentX(LEFT_ALIGNMENT);
+//			npci.setCaret(new MyCaret());
+//			npci.setContentType("text/html");
 			npcPanel.add(npci);
 			npcTexts.add(npci);
 		}
@@ -171,28 +172,28 @@ public class InfoPanel extends JTabbedPane{
 
 		JPanel poiPanel = new JPanel();
 		poiPanel.setLayout(new BoxLayout(poiPanel, BoxLayout.Y_AXIS));
-		poiTexts = new ArrayList<JTextPane>();
+		poiTexts = new ArrayList<MyTextPane>();
 		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
-		JTextPane inn = new JTextPane();
+		MyTextPane inn = new MyTextPane(this, 0, HexData.LOCATION);
 		inn.setMaximumSize(new Dimension(WIDTH-20,9999));
-		inn.addFocusListener(new POIFocusListener(inn,0));
-		inn.addMouseListener(new TextLinkMouseListener(inn));
-		inn.setAlignmentX(LEFT_ALIGNMENT);
-		inn.setCaret(new MyCaret());
-		inn.setContentType("text/html");
+//		inn.addFocusListener(new POIFocusListener(inn,0));
+//		inn.addMouseListener(new TextLinkMouseListener(inn));
+//		inn.setAlignmentX(LEFT_ALIGNMENT);
+//		inn.setCaret(new MyCaret());
+//		inn.setContentType("text/html");
 		poiPanel.add(inn);
 		poiTexts.add(inn);
 		for(int i=1;i<POICOUNT;i++) {
 			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
-			JTextPane poii = new JTextPane();
+			MyTextPane poii = new MyTextPane(this, i, HexData.LOCATION);
 			//			poii.setLineWrap(true);
 			//			poii.setWrapStyleWord(true);
 			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
-			poii.addFocusListener(new POIFocusListener(poii,i));
-			poii.addMouseListener(new TextLinkMouseListener(poii));
-			poii.setAlignmentX(LEFT_ALIGNMENT);
-			poii.setCaret(new MyCaret());
-			poii.setContentType("text/html");
+//			poii.addFocusListener(new POIFocusListener(poii,i));
+//			poii.addMouseListener(new TextLinkMouseListener(poii));
+//			poii.setAlignmentX(LEFT_ALIGNMENT);
+//			poii.setCaret(new MyCaret());
+//			poii.setContentType("text/html");
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
@@ -202,18 +203,18 @@ public class InfoPanel extends JTabbedPane{
 
 		JPanel dEntrancePanel = new JPanel();
 		dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
-		dEntranceTexts = new ArrayList<JTextPane>();
+		dEntranceTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<DUNGEONCOUNT;i++) {
 			dEntrancePanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
-			JTextPane poii = new JTextPane();
+			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
 			//			poii.setLineWrap(true);
 			//			poii.setWrapStyleWord(true);
 			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
-			poii.addFocusListener(new DungeonEntranceFocusListener(poii,i));
-			poii.addMouseListener(new TextLinkMouseListener(poii));
-			poii.setAlignmentX(LEFT_ALIGNMENT);
-			poii.setCaret(new MyCaret());
-			poii.setContentType("text/html");
+//			poii.addFocusListener(new DungeonEntranceFocusListener(poii,i));
+//			poii.addMouseListener(new TextLinkMouseListener(poii));
+//			poii.setAlignmentX(LEFT_ALIGNMENT);
+//			poii.setCaret(new MyCaret());
+//			poii.setContentType("text/html");
 			dEntrancePanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
@@ -223,18 +224,18 @@ public class InfoPanel extends JTabbedPane{
 
 		JPanel dungeonPanel = new JPanel();
 		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
-		dungeonTexts = new ArrayList<JTextPane>();
+		dungeonTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
 			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
-			JTextPane encounteri = new JTextPane();
+			MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
 			//			encounteri.setLineWrap(true);
 			//			encounteri.setWrapStyleWord(true);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
-			encounteri.addFocusListener(new DungeonEncounterFocusListener(encounteri,i));
-			encounteri.addMouseListener(new TextLinkMouseListener(encounteri));
-			encounteri.setAlignmentX(LEFT_ALIGNMENT);
-			encounteri.setCaret(new MyCaret());
-			encounteri.setContentType("text/html");
+//			encounteri.addFocusListener(new DungeonEncounterFocusListener(encounteri,i));
+//			encounteri.addMouseListener(new TextLinkMouseListener(encounteri));
+//			encounteri.setAlignmentX(LEFT_ALIGNMENT);
+//			encounteri.setCaret(new MyCaret());
+//			encounteri.setContentType("text/html");
 			dungeonPanel.add(encounteri);
 			dungeonTexts.add(encounteri);
 		}
@@ -317,18 +318,18 @@ public class InfoPanel extends JTabbedPane{
 
 		JPanel factionPanel = new JPanel();
 		factionPanel.setLayout(new BoxLayout(factionPanel, BoxLayout.Y_AXIS));
-		factionTexts = new ArrayList<JTextPane>();
+		factionTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<FACTIONCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
-			JTextPane factioni = new JTextPane();
+			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);;
 			//			encounteri.setLineWrap(true);
 			//			encounteri.setWrapStyleWord(true);
 			factioni.setMaximumSize(new Dimension(WIDTH-20,9999));
-			factioni.addFocusListener(new FactionFocusListener(factioni,i));
-			factioni.addMouseListener(new TextLinkMouseListener(factioni));
-			factioni.setAlignmentX(LEFT_ALIGNMENT);
-			factioni.setCaret(new MyCaret());
-			factioni.setContentType("text/html");
+//			factioni.addFocusListener(new FactionFocusListener(factioni,i));
+//			factioni.addMouseListener(new TextLinkMouseListener(factioni));
+//			factioni.setAlignmentX(LEFT_ALIGNMENT);
+//			factioni.setCaret(new MyCaret());
+//			factioni.setContentType("text/html");
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
 		}
@@ -450,13 +451,13 @@ public class InfoPanel extends JTabbedPane{
 			if(transformedUniversalPopulation>0) {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
 				for(int i = 0;i<this.npcTexts.size();i++) {
-					JTextPane pane = this.npcTexts.get(i);
+					MyTextPane pane = this.npcTexts.get(i);
 					if(i==selectedNPC) {
 						pane.setBackground(TEXTHIGHLIGHTCOLOR);
 					}else {
 						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
-					writeStringToDocument(getNPCText(pos,i), pane);
+					pane.setText(getNPCText(pos,i));
 				}
 				if(selectedNPC>-1) this.npcTexts.get(selectedNPC).setCaretPosition(0);
 			}else {
@@ -464,35 +465,35 @@ public class InfoPanel extends JTabbedPane{
 			}
 
 			for(int i = 0;i<this.poiTexts.size();i++) {
-				JTextPane pane = this.poiTexts.get(i);
+				MyTextPane pane = this.poiTexts.get(i);
 				if(i==selectedPOI) {
 					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				writeStringToDocument(getPOIText(pos,i,pos.equals(capital)), pane);
+				pane.setText(getPOIText(pos,i,pos.equals(capital)));
 			}
 			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
 
 			for(int i = 0;i<this.dEntranceTexts.size();i++) {
-				JTextPane pane = this.dEntranceTexts.get(i);
+				MyTextPane pane = this.dEntranceTexts.get(i);
 				if(i==selectedDungeon) {
 					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				writeStringToDocument(getDungeonText(pos,i), pane);
+				pane.setText(getDungeonText(pos,i));
 			}
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
 			for(int i = 0;i<this.dungeonTexts.size();i++) {
-				JTextPane pane = this.dungeonTexts.get(i);
+				MyTextPane pane = this.dungeonTexts.get(i);
 				if(i==selectedDEncounter) {
 					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				writeStringToDocument(getDungeonEncounterText(pos,i), pane);
+				pane.setText(getDungeonEncounterText(pos,i));
 			}
 			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
@@ -501,13 +502,13 @@ public class InfoPanel extends JTabbedPane{
 				//this.city1.setCaretPosition(0);
 
 				for(int i = 0;i<this.factionTexts.size();i++) {
-					JTextPane pane = this.factionTexts.get(i);
+					MyTextPane pane = this.factionTexts.get(i);
 					if(i==selectedFaction) {
 						pane.setBackground(TEXTHIGHLIGHTCOLOR);
 					}else {
 						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
-					writeStringToDocument(getFactionText(pos,i), pane);
+					pane.setText(getFactionText(pos,i));
 				}
 				if(selectedFaction>-1) this.factionTexts.get(selectedFaction).setCaretPosition(0);
 			}else {
@@ -520,35 +521,6 @@ public class InfoPanel extends JTabbedPane{
 		changeSelected = true;
 	}
 
-	private void writeStringToDocument(String string, JTextPane pane) {
-		StyledDocument doc = pane.getStyledDocument();
-		try {
-			pane.setText("<html>");
-			//doc.remove(0, doc.getLength());//delete contents
-			int curlybrace = string.indexOf("{");
-			int closebrace = -1;
-			while(curlybrace>-1) {
-				doc.insertString(doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
-				closebrace = string.indexOf("}", curlybrace);
-				insertLink(pane,string.substring(curlybrace, closebrace+1));
-				curlybrace = string.indexOf("{", closebrace);
-			}
-			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void insertLink(JTextPane pane, String link) throws BadLocationException {
-		StyledDocument doc = pane.getStyledDocument();
-		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
-		StyleConstants.setForeground(regularBlue, Color.BLUE);
-		StyleConstants.setUnderline(regularBlue, true);
-		regularBlue.addAttribute("linkact", new ChatLinkAction(link, this));
-		regularBlue.addAttribute("linkmouseover", new ChatLinkMouseoverAction(link, pane,this));
-		String linkText = getLinkText(link);
-		doc.insertString(doc.getLength(), linkText, regularBlue);
-	}
 	private String removeLinks(String string) {
 		StringBuilder sb = new StringBuilder();
 		int curlybrace = string.indexOf("{");

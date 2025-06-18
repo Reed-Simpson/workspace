@@ -70,14 +70,23 @@ public class DataController {
 		case DUNGEON: return dungeons;
 		case D_ENCOUNTER: return encounters;
 		case FACTION: return settlements;
-		case DISTRICT: return settlements;
+		case CITY: return settlements;
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
+	}
+	public String getText(HexData type,Point p,int i) {
+		String recordText = getData(type, p, i);
+		if(recordText==null) recordText = getDefaultText(type, p,i);
+		return recordText;
 	}
 	public String getDefaultText(HexData type,Point p,int i) {
 		String value;
 		switch(type) {
-		case LOCATION: value = pois.getPOI(i, p,population.isCity(p)); break;
+		case LOCATION: {
+			if(i==0) value = getDefaultInnText(p);
+			else value = pois.getPOI(i, p,population.isCity(p));
+			break;
+		}
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getFaction(i, capital).toString(); break;
@@ -91,37 +100,95 @@ public class DataController {
 		System.out.println(value);
 		return value.toString();
 	}
+	private String getDefaultInnText(Point pos) {
+		if(grid.isWater(pos)||precipitation.isLake(pos)) {
+			return "Inn: none";
+		}else {
+			return names.getInnText(pos);
+		}
+	}
 	public boolean isDefaultText(HexData type,String text,Point p,int index) {
 		String defaultText = this.getDefaultText(type, p,index);
 		System.out.println(type.getText()+" text check: "+text.equals(defaultText));
 		return text==null||"".equals(text)||text.equals(defaultText);
 	}
+	public String getData(HexData type,Point p, int i) {
+		switch(type) {
+		case THREAT: {
+			Point center = threats.getCenter(p);
+			return record.getThreat(center);
+		}
+		case ENCOUNTER: return record.getEncounter(p, i);
+		case NPC: return record.getNPC(p, i);
+		case LOCATION: return record.getLocation(p, i);
+		case DUNGEON: return record.getDungeon(p, i);
+		case D_ENCOUNTER: return record.getDungeonEncounter(p, i);
+		case FACTION: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getFaction(capital, i);
+		}
+		case CITY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getCity(capital);
+		}
+		case BIOME: {
+			Point region = biomes.getAbsoluteRegion(p);
+			return record.getRegionName(region);
+		}
+		case NONE: return record.getNote(p);
+		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
+		}
+	}
 	public String removeData(HexData type,Point p, int i) {
 		switch(type) {
-		case THREAT: return record.removeThreat(p);
+		case THREAT: {
+			Point center = threats.getCenter(p);
+			return record.removeThreat(center);
+		}
 		case ENCOUNTER: return record.removeEncounter(p, i);
 		case NPC: return record.removeNPC(p, i);
 		case LOCATION: return record.removeLocation(p, i);
 		case DUNGEON: return record.removeDungeon(p, i);
 		case D_ENCOUNTER: return record.removeDungeonEncounter(p, i);
-		case FACTION: return record.removeFaction(p, i);
-		case DISTRICT: return record.removeCity(p);
-		case BIOME: return record.removeRegionName(p);
+		case FACTION: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeFaction(capital, i);
+		}
+		case CITY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeCity(capital);
+		}
+		case BIOME: {
+			Point region = biomes.getAbsoluteRegion(p);
+			return record.removeRegionName(region);
+		}
 		case NONE: return record.removeNote(p);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
 	public String putData(HexData type,Point p, int i,String s) {
 		switch(type) {
-		case THREAT: return record.putThreat(p, s);
+		case THREAT: {
+			Point center = threats.getCenter(p);
+			return record.putThreat(center, s);
+		}
 		case ENCOUNTER: return record.putEncounter(p, i, s);
 		case NPC: return record.putNPC(p, i, s);
 		case LOCATION: return record.putLocation(p, i, s);
 		case DUNGEON: return record.putDungeon(p, i, s);
 		case D_ENCOUNTER: return record.putDungeonEncounter(p, i, s);
-		case FACTION: return record.putFaction(p, i, s);
-		case DISTRICT: return record.putCity(p, s);
-		case BIOME: return record.putRegionName(p, s);
+		case FACTION: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.putFaction(capital, i, s);
+		}
+		case CITY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.putCity(capital, s);
+		}
+		case BIOME: {
+			Point region = biomes.getAbsoluteRegion(p);
+			return record.putRegionName(region, s);
+		}
 		case NONE: return record.putNote(p, s);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}

@@ -3,17 +3,17 @@ package magic;
 import java.awt.Color;
 import java.awt.Point;
 
+import general.DataModel;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
 
-public class MagicModel {
+public class MagicModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;
 	public static final int LOCAL_WEIGHT_2 = 1;
 	public static final int SEED_OFFSET = 3*Util.getOffsetX();
-	private SaveRecord record;
 	private static final String WEIRDNESS = "Ashen,Blasted,Blighted,Broken,Consuming,Corrupted,Creeping,Desolate,${dungeon ruination},Eternal,${ethereal effect},Forsaken,"+
 			"Frozen,Haunted,Howling,Jagged,Lonely,Misty,Perilous,Petrified,Phantasmal,Ravenous,Savage,Shadowy,"+
 			"Shifting,Shivering,Sinister,Sinking,Smoldering,Sweltering,Thorny,Thundering,Torrential,${physical effect},Wandering,Withered";
@@ -69,11 +69,7 @@ public class MagicModel {
 	private static final String BARDS = "Bard of Creation,Bard of Eloquence,Bard of Glamour,Bard of Lore,Bard of Spirits,Bard of Swords,Bard of Valour,Bard of Whispers";
 	private static WeightedTable<String> bards;
 
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
+
 	private static void populateAllTables() {
 		weirdness = new WeightedTable<String>();
 		populate(weirdness, WEIRDNESS, ",");
@@ -296,7 +292,7 @@ public class MagicModel {
 	
 	
 	public MagicModel(SaveRecord record) {
-		this.record = record;
+		super(record);
 	}
 	
 	private float getMagicValue(Point p) {
@@ -348,5 +344,9 @@ public class MagicModel {
 	}
 	public String getWeirdness(Point p) {
 		return getWeirdness(getWeirdnessIndex(0, p));
+	}
+	@Override
+	public Float getDefaultValue(Point p, int i) {
+		return getMagicValue(p);
 	}
 }

@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.awt.Point;
 
 import biome.BiomeModel;
+import general.DataModel;
 import general.OpenSimplex2S;
 import general.Util;
 import io.SaveRecord;
 
-public class AltitudeModel {
+public class AltitudeModel extends DataModel{
 	private static float SCALAR_VARIABILITY_1 = 0.5f;
 	private static int WEIGHT_0 = 1;
 	private static int WEIGHT_1 = 10;
@@ -18,10 +19,9 @@ public class AltitudeModel {
 	private static float WEIGHT_VARIABILITY_2 = 0.90f;
 	private static float WEIGHT_VARIABILITY_3 = 0.90f;
 	private static int ALTITUDE_SCALE = 15000; // max altitude in feet
-	private SaveRecord record;
 	
 	public AltitudeModel(SaveRecord record) {
-		this.record = record;
+		super(record);
 	}
 
 	public float getHeight(int x,int y) {
@@ -93,6 +93,11 @@ public class AltitudeModel {
 			result.translate(dx, dy);
 		}
 		return result;
+	}
+
+	@Override
+	public Float getDefaultValue(Point p,int i) {
+		return getHeight(p);
 	}
 	
 	

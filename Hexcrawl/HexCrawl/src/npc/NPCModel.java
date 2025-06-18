@@ -2,6 +2,7 @@ package npc;
 
 import java.awt.Point;
 
+import general.DataModel;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
@@ -11,7 +12,7 @@ import names.threat.HumanoidNameGenerator;
 import population.PopulationModel;
 import population.Species;
 
-public class NPCModel {
+public class NPCModel extends DataModel {
 	//STATIC CONSTANTS
 	private static final int SEED_OFFSET = 9*Util.getOffsetX();
 	private static final int TABLECOUNT = 10;
@@ -20,8 +21,8 @@ public class NPCModel {
 			"Musician,Noble,Painter,Priest,Scholar,Scribe,Sculptor,Shipwright,Soldier,Tailor,Taxidermist,Wigmaker";
 	private static WeightedTable<String> civilized;
 	private static final String UNDERWORLD = "Alchemist,Animal-breeder,Assassin,Acrobat,Beggar,Burglar,Chimneysweep,Con Man,Cultist,Cutpurse,Deserter,Ditchdigger,"+
-			"Fence,Forger,Fortuneseller,Galley Slave,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Lamplighter,Mercenary,"+
-			"Poet,Poisoner,Privateer,Rat-Catcher,Sailor,Slave,Smuggler,Spy,Urchin,Userer,Vagabond,Wizard";
+			"Fence,Forger,Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Laborer,Lamplighter,Mercenary,"+
+			"Poet,Poisoner,Privateer,Rat-Catcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,Vagabond,Wizard";
 	private static WeightedTable<String> underworld;
 	private static final String WILDERNESS = "Apiarist,Bandit,Caravan Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisherman,Forager,Fugative,Hedge Wizard,"+
 			"Hermit,Hunter,Messenger,Minstrel,Monk,Monster Hunter,Outlander,Tinker,Pilgrim,Poacher,Raider,Ranger,"+
@@ -92,11 +93,6 @@ public class NPCModel {
 			"schemes,secrets,storms,summer,sun,the forge,the sea,the wild,time,underworld,wealth,winter";
 	private static WeightedTable<String> domains;
 
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	private static void populateAllTables() {
 		civilized = new WeightedTable<String>();
 		populate(civilized,CIVILIZED,",");
@@ -159,8 +155,8 @@ public class NPCModel {
 			else return getWilderness(obj);//10%
 		}else if(isTown) {
 			if(id<4) return getCivilized(obj);//40%
-			else if(id<6) return getUnderworld(obj);//20%
-			else return getWilderness(obj);//40%
+			else if(id<5) return getUnderworld(obj);//10%
+			else return getWilderness(obj);//50%
 		}else {
 			if(id<1) return getCivilized(obj);//10%
 			else if(id<2) return getUnderworld(obj);//10%
@@ -240,10 +236,9 @@ public class NPCModel {
 
 	//NON_STATIC CODE
 	private PopulationModel population;
-	private SaveRecord record;
 
 	public NPCModel(SaveRecord record,PopulationModel population) {
-		this.record = record;
+		super(record);
 		this.population = population;
 	}
 
@@ -362,6 +357,10 @@ public class NPCModel {
 	public Species getNPCSpecies(Indexible obj) {
 		Species[] species = Species.getAbeirNPCSpecies();
 		return (Species) Util.getElementFromArray(species, obj);
+	}
+	@Override
+	public NPC getDefaultValue(Point p, int i) {
+		return getNPC(i, p);
 	}
 
 }

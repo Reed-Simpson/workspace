@@ -2,6 +2,7 @@ package dungeon;
 
 import java.awt.Point;
 
+import general.DataModel;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
@@ -9,7 +10,7 @@ import general.WeightedTable;
 import io.SaveRecord;
 import monster.MonsterModel;
 
-public class DungeonModel {
+public class DungeonModel extends DataModel {
 	private static final int SEED_OFFSET = 12*Util.getOffsetX();
 	private static final int TABLECOUNT = 12;
 	private static final String ENTRANCES = "Library,Beaver Dam,Behind Waterfall,Chalk Rectangle,Chest Bottom,Chimney,Cupboard,Dolmen Shadow,Down a Well,Firey Pit,Fog Road,Forest Spring,"+
@@ -61,11 +62,6 @@ public class DungeonModel {
 			"Remove,Retrieve,Rudeness,Shut,Sit,Sleep,Slide,Touch,Turn,Unbalance,Unearth,Write";
 	private static WeightedTable<String> traptriggers;
 
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	private static void populateAllTables() {
 		entrances = new WeightedTable<String>();
 		populate(entrances,ENTRANCES,",");
@@ -147,10 +143,9 @@ public class DungeonModel {
 	}
 
 
-	private SaveRecord record;
 
 	public DungeonModel(SaveRecord record) {
-		this.record = record;
+		super(record);
 	}
 
 	public Dungeon getDungeon(int i,Point p) {
@@ -167,5 +162,9 @@ public class DungeonModel {
 		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
 		result.setMonster(MonsterModel.getMonster(result));
 		return result;
+	}
+	@Override
+	public Dungeon getDefaultValue(Point p, int i) {
+		return getDungeon(i, p);
 	}
 }

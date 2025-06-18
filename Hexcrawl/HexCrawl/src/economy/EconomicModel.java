@@ -8,20 +8,21 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import biome.BiomeModel;
+import general.DataModel;
 import general.Graph;
 import general.OpenSimplex2S;
 import general.Util;
 import io.SaveRecord;
 import map.AltitudeModel;
+import map.HexData;
 import population.PopulationModel;
 import precipitation.PrecipitationModel;
 
-public class EconomicModel {
+public class EconomicModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;
 	public static final int LOCAL_WEIGHT_2 = 1;
 	public static final int SEED_OFFSET = 5*Util.getOffsetX();
 	private static final int ROAD_DISTANCE = 16;
-	private SaveRecord record;
 	private PopulationModel population;
 	private BiomeModel biomes;
 	private PrecipitationModel precipitation;
@@ -31,11 +32,14 @@ public class EconomicModel {
 	private HashSet<Point> roadsCache;
 
 	public EconomicModel(SaveRecord record, PopulationModel population,BiomeModel biomes,PrecipitationModel precipitation,AltitudeModel grid) {
-		this.record = record;
+		super(record);
 		this.population = population;
 		this.biomes = biomes;
 		this.precipitation = precipitation;
 		this.grid = grid;
+		resetCache();
+	}
+	private void resetCache() {
 		this.travel = new Graph<Point>();
 		this.roads = new Graph<Point>();
 		this.roadsCache = new HashSet<Point>();
@@ -188,5 +192,10 @@ public class EconomicModel {
 
 	public Graph<Point> getRoads(){
 		return this.roads;
+	}
+
+	@Override
+	public Float getDefaultValue(Point p, int i) {
+		return getLocalFactor(p);
 	}
 }

@@ -2,6 +2,7 @@ package settlement;
 
 import java.awt.Point;
 
+import general.DataModel;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
@@ -10,7 +11,7 @@ import io.SaveRecord;
 import names.FactionNameGenerator;
 import view.InfoPanel;
 
-public class SettlementModel {
+public class SettlementModel extends DataModel{
 	private static final int SEED_OFFSET = 10*Util.getOffsetX();
 	private static final int FACTIONTABLES = 20;
 	private static final int SETTLEMENTTABLES = 5;
@@ -57,11 +58,7 @@ public class SettlementModel {
 	private static WeightedTable<String> government;
 
 
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
+
 	private static void populateAllTables() {
 		themes = new WeightedTable<String>();
 		populate(themes,THEMES,",");
@@ -140,10 +137,9 @@ public class SettlementModel {
 
 
 	//NON_STATIC CODE
-	private SaveRecord record;
 
 	public SettlementModel(SaveRecord record) {
-		this.record = record;
+		super(record);
 	}
 	
 	public Settlement getSettlement(Point p) {
@@ -175,6 +171,10 @@ public class SettlementModel {
 		result.setTrait(trait);
 		result.setGoal(goal);
 		return result;
+	}
+	@Override
+	public Settlement getDefaultValue(Point p, int i) {
+		return getSettlement(p);
 	}
 
 }

@@ -14,23 +14,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import biome.BiomeType;
+import general.DataModel;
 import general.OpenSimplex2S;
 import general.Util;
 import general.WeightedTable;
 import io.SaveRecord;
 import map.AltitudeModel;
+import map.HexData;
 import precipitation.PrecipitationModel;
 
-public class PopulationModel {
+public class PopulationModel extends DataModel{
 	public static final int SEED_OFFSET = 2*Util.getOffsetX();
 	private static final int INFLUENCE_RADIUS = 8;
 	private static final int INDEX_STEP = 2;
 	private AltitudeModel grid;
 	private PrecipitationModel precipitation;
 	private HashMap<Point,LinkedHashMap<Species,Float>> cache;
-	private DecimalFormat populationStringFormat;
-	private DecimalFormat populationPercentStringFormat;
-	private SaveRecord record;
+	private DecimalFormat populationStringFormat = new DecimalFormat ("##,##0");
+	private DecimalFormat populationPercentStringFormat = new DecimalFormat("#0.00%");
 
 	public float getPopulation(int x,int y, Species species) {
 		Point p = new Point(x,y);
@@ -42,12 +43,13 @@ public class PopulationModel {
 	}
 
 	public PopulationModel(SaveRecord record, AltitudeModel grid, PrecipitationModel precipitation) {
-		this.record = record;
+		super(record);
 		this.grid = grid;
 		this.precipitation = precipitation;
+		resetCache();
+	}
+	private void resetCache() {
 		this.cache = new HashMap<Point,LinkedHashMap<Species,Float>>();
-		this.populationStringFormat = new DecimalFormat ("##,##0");
-		this.populationPercentStringFormat = new DecimalFormat("#0.00%");
 	}
 
 	public LinkedHashMap<Species,Float> getDemographics(Point p) {
@@ -294,6 +296,11 @@ public class PopulationModel {
 			radius++;
 		}
 		return p;
+	}
+
+	@Override
+	public Integer getDefaultValue(Point p, int i) {
+		return getTransformedUniversalPopulation(p);
 	}
 
 

@@ -73,7 +73,7 @@ public class SaveRecord implements Serializable {
 	}
 
 	public void initialize(AltitudeModel grid, PopulationModel population) {
-		boolean forceCity = true;
+		boolean forceCity = false;
 		if(forceCity) {
 			this.setPos(population.findCity(this.getPos()));
 		}else {

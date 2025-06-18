@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 
 import biome.BiomeModel;
 import biome.BiomeType;
+import controllers.DataController;
 import dungeon.DungeonModel;
 import economy.EconomicModel;
 import encounters.EncounterModel;
@@ -55,7 +56,6 @@ public class MapPanel  extends JPanel{
 	private static final int LOG_THRESHOLD = 500;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
-	private AltitudeModel grid;
 	private InfoPanel infoPanel;
 	private Point center; //center represents the pixel offset from 0,0
 	private Point mouseover;
@@ -63,18 +63,6 @@ public class MapPanel  extends JPanel{
 	private boolean isDragging = false;
 	private int dragOffsetX, dragOffsetY;
 	private HexData displayData;
-	private PrecipitationModel precipitation;
-	private BiomeModel biomes;
-	private PopulationModel population;
-	private MagicModel magic;
-	private LocationNameModel names;
-	private EconomicModel economy;
-	private ThreatModel threats;
-	private EncounterModel encounters;
-	private NPCModel npcs;
-	private SettlementModel settlements;
-	private LocationModel pois;
-	private DungeonModel dungeons;
 	private SaveRecord record;
 	private boolean showRivers;
 	private boolean showCities;
@@ -86,6 +74,7 @@ public class MapPanel  extends JPanel{
 	private HexData displayRegion;
 	private ArrayList<Point> previous;
 	int previousIndex;
+	private DataController controller;
 
 	public MapPanel(MapFrame frame, SaveRecord record,InfoPanel infoPanel, ProgressBarDialog dialog) {
 		this.frame = frame;
@@ -105,19 +94,7 @@ public class MapPanel  extends JPanel{
 
 	public void reloadFromSaveRecord(SaveRecord record) {
 		this.record = record;
-		this.grid=new AltitudeModel(record);
-		this.precipitation = new PrecipitationModel(record,grid);
-		this.population = new PopulationModel(record, grid, precipitation);
-		this.magic = new MagicModel(record);
-		this.biomes = new BiomeModel(record, grid, precipitation,population);
-		this.economy = new EconomicModel(record,population,biomes,precipitation,grid);
-		this.names = new LocationNameModel(record);
-		this.npcs = new NPCModel(record, population);
-		this.threats = new ThreatModel(record,npcs);
-		this.settlements = new SettlementModel(record);
-		this.pois = new LocationModel(record);
-		this.dungeons = new DungeonModel(record);
-		this.encounters = new EncounterModel(record,population);
+		this.controller = new DataController(record);
 		//this.recenter(record.getPos());
 		this.printLoadingInfo = false;
 		this.scale = record.getScale();
@@ -125,9 +102,9 @@ public class MapPanel  extends JPanel{
 		if(!record.isInitialized()) {
 			initializing = true;
 			this.recenter(record.getPos(),false);
-			record.initialize(grid,population);
+			record.initialize(controller.getGrid(),controller.getPopulation());
 			calculateRivers((int) scale);
-			record.initialize(grid,population);
+			record.initialize(controller.getGrid(),controller.getPopulation());
 			initializing = false;
 		}
 		recenter(record.getPos(),true);
@@ -192,9 +169,6 @@ public class MapPanel  extends JPanel{
 			previous.add(getSelectedGridPoint());
 			previousIndex=previous.size()-1;
 		}
-	}
-	public AltitudeModel getGrid() {
-		return this.grid;
 	}
 	public double getScale() {
 		return this.scale;
@@ -262,7 +236,7 @@ public class MapPanel  extends JPanel{
 		}
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
-				if(!grid.isWater(i,j)) {
+				if(!controller.getGrid().isWater(i,j)) {
 					Color color1 = getColor1(i,j,displayData);
 					Color color2 = getColor2(i,j,displayData);
 					if(color1==null) {
@@ -272,7 +246,7 @@ public class MapPanel  extends JPanel{
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
 					if(borderColor!=null) {
 						g2.setColor(borderColor);
-						Character c = biomes.getBiome(i, j).getCh();
+						Character c = controller.getBiomes().getBiome(i, j).getCh();
 						if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
 					}
 				}
@@ -295,7 +269,7 @@ public class MapPanel  extends JPanel{
 		}
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
-				if(grid.isWater(i,j)) {
+				if(controller.getGrid().isWater(i,j)) {
 					Color color1 = getColor1(i,j,displayData);
 					Color color2 = getColor2(i,j,displayData);
 					if(color1==null) {
@@ -305,7 +279,7 @@ public class MapPanel  extends JPanel{
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
 					if(borderColor!=null) {
 						g2.setColor(borderColor);
-						Character c = biomes.getBiome(i, j).getCh();
+						Character c = controller.getBiomes().getBiome(i, j).getCh();
 						if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
 					}
 				}
@@ -345,7 +319,7 @@ public class MapPanel  extends JPanel{
 				for(int j=p2.y;j<p1.y;j+=step) {
 					g2.setColor(borderColor);
 					g2.setFont(g2.getFont().deriveFont(displayScale));
-					Character c = biomes.getBiome(i, j).getCh();
+					Character c = controller.getBiomes().getBiome(i, j).getCh();
 					if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x, getScreenPos(i,j).y);
 				}
 				if(printLoadingInfo) counter.increment();
@@ -393,8 +367,8 @@ public class MapPanel  extends JPanel{
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
-				if(!grid.isWater(i,j)) {
-					precipitation.getFlow(new Point(i,j));
+				if(!controller.getGrid().isWater(i,j)) {
+					controller.getPrecipitation().getFlow(new Point(i,j));
 				}
 			}
 			if(printLoadingInfo) counter.increment();
@@ -413,8 +387,8 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
-				if(!grid.isWater(i,j)&&p.equals(precipitation.getFlow(p))) {
-					precipitation.generateLake(p);
+				if(!controller.getGrid().isWater(i,j)&&p.equals(controller.getPrecipitation().getFlow(p))) {
+					controller.getPrecipitation().generateLake(p);
 				}
 			}
 			if(printLoadingInfo) counter.increment();
@@ -428,9 +402,9 @@ public class MapPanel  extends JPanel{
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
-				if(!grid.isWater(i,j)) {
+				if(!controller.getGrid().isWater(i,j)) {
 					//System.out.println(i+","+j);
-					precipitation.updateFlowVolume(new Point(i,j), 0, 0);
+					controller.getPrecipitation().updateFlowVolume(new Point(i,j), 0, 0);
 					//					UpdateFlowVolumeThread thread = precipitation.getThread(new Point(i,j));
 					//					thread.run();
 				}
@@ -455,10 +429,10 @@ public class MapPanel  extends JPanel{
 		}
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
-				if(!grid.isWater(i,j)) {
+				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
-					Point pr = precipitation.getRiver(p);
-					float volume = precipitation.getFlowVolume(p);
+					Point pr = controller.getPrecipitation().getRiver(p);
+					float volume = controller.getPrecipitation().getFlowVolume(p);
 					int width = (int) (Math.sqrt(volume)/15.0*displayScale);
 					if(width>displayScale) width = displayScale;
 					if(width>1) this.drawRiver(g2, getScreenPos(i,j), getScreenPos(pr), width);
@@ -484,15 +458,15 @@ public class MapPanel  extends JPanel{
 		}else if(HexData.MAGIC.equals(displayRegion)) {
 			//region = magic.getRegion(p);
 		}else if(HexData.THREAT.equals(displayRegion)) {
-			region = threats.getRegion(p);
+			region = controller.getThreats().getRegion(p);
 		}else if(HexData.PRECIPITATION.equals(displayRegion)) {
 			//region = precipitation.getRegion(p);
 		}else if(HexData.ECONOMY.equals(displayRegion)) {
 			//region = economy.getRegion(p);
-		}else if (HexData.BIOME.equals(displayRegion)||precipitation.isLake(p)) {
-			region = biomes.getRegion(p);
+		}else if (HexData.BIOME.equals(displayRegion)||controller.getPrecipitation().isLake(p)) {
+			region = controller.getBiomes().getRegion(p);
 		}else if(HexData.POPULATION.equals(displayRegion)) {
-			region = population.getRegion(p);
+			region = controller.getPopulation().getRegion(p);
 		}else {
 			//do nothing
 		}
@@ -507,17 +481,17 @@ public class MapPanel  extends JPanel{
 	}
 
 	private Color getColor1(int i,int j,HexData data) {
-		float height = grid.getHeight(i, j);
+		float height = controller.getGrid().getHeight(i, j);
 		Point p = new Point(i,j);
 		if (height<BiomeModel.SHALLOWS_HEIGHT) {
 			return BiomeType.WATER.getColor();
 		}else if (height<BiomeModel.WATER_HEIGHT) {
 			return BiomeType.SHALLOWS.getColor();
-		} else if (precipitation.isLake(p)&&!HexData.BIOME.equals(data)) {
+		} else if (controller.getPrecipitation().isLake(p)&&!HexData.BIOME.equals(data)) {
 			return BiomeType.LAKE.getColor();
-		}else if(showCities&&population.isCity(p)) {
+		}else if(showCities&&controller.getPopulation().isCity(p)) {
 			return BiomeType.CITY.getColor();
-		}else if(showCities&&population.isTown(p)) {
+		}else if(showCities&&controller.getPopulation().isTown(p)) {
 			return BiomeType.TOWN.getColor();
 		}else {
 			return null;
@@ -526,29 +500,29 @@ public class MapPanel  extends JPanel{
 	private Color getColor2(int i,int j,HexData data) {
 		Point p = new Point(i,j);
 		if(HexData.MAGIC.equals(data)) {
-			return magic.getColor(i, j);
-		}else if(precipitation.isLake(p)&&!HexData.BIOME.equals(data)) {
+			return controller.getMagic().getColor(i, j);
+		}else if(controller.getPrecipitation().isLake(p)&&!HexData.BIOME.equals(data)) {
 			return null;
-		}else if(showCities&&population.isCity(p)) {
+		}else if(showCities&&controller.getPopulation().isCity(p)) {
 			return null;
-		}else if(showCities&&population.isTown(p)) {
+		}else if(showCities&&controller.getPopulation().isTown(p)) {
 			return null;
-		}else if (grid.isWater(i, j)) {
+		}else if (controller.getGrid().isWater(i, j)) {
 			return null;
 		}else if(HexData.PRECIPITATION.equals(data)) {
-			return precipitation.getColor(precipitation.getPrecipitation(i, j));
+			return controller.getPrecipitation().getColor(controller.getPrecipitation().getPrecipitation(i, j));
 		}else if(HexData.BIOME.equals(data)) {
-			return biomes.getColor(biomes.getBiome(i, j));
+			return controller.getBiomes().getColor(controller.getBiomes().getBiome(i, j));
 		}else if(HexData.POPULATION.equals(data)) {
-			return population.getColor(i, j);
+			return controller.getPopulation().getColor(i, j);
 		}else if(HexData.ECONOMY.equals(data)) {
-			return economy.getColor(i, j);
+			return controller.getEconomy().getColor(i, j);
 		}else if(HexData.THREAT.equals(data)) {
-			Point threatSource = threats.getCenter(p);
-			return threats.getThreatCreatureType(threatSource).getColor();
+			Point threatSource = controller.getThreats().getCenter(p);
+			return controller.getThreats().getThreatCreatureType(threatSource).getColor();
 		}else {
-			float height = grid.getHeight(i, j);
-			return grid.getColor(height);
+			float height = controller.getGrid().getHeight(i, j);
+			return controller.getGrid().getColor(height);
 		}
 	}
 
@@ -606,7 +580,7 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
-				if(population.isTown(p)) {
+				if(controller.getPopulation().isTown(p)) {
 					Color color1 = getColor1(i,j,displayData);
 					Color color2 = getColor2(i,j,displayData);
 					if(color1==null) {
@@ -616,7 +590,7 @@ public class MapPanel  extends JPanel{
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
 					if(borderColor!=null) {
 						g2.setColor(borderColor);
-						Character c = biomes.getBiome(i, j).getCh();
+						Character c = controller.getBiomes().getBiome(i, j).getCh();
 						if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
 					}
 				}
@@ -642,8 +616,8 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
-				if(population.isTown(p)) {
-					economy.findTradeRoads(p);
+				if(controller.getPopulation().isTown(p)) {
+					controller.getEconomy().findTradeRoads(p);
 				}
 			}
 			if(printLoadingInfo) {
@@ -656,7 +630,7 @@ public class MapPanel  extends JPanel{
 			logger.log("Drawing roads: ");
 			dialog.createProgressUI("Drawing roads: ");
 		}
-		Graph<Point> roads = economy.getRoads();
+		Graph<Point> roads = controller.getEconomy().getRoads();
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
@@ -868,54 +842,6 @@ public class MapPanel  extends JPanel{
 		this.distance = distance;
 	}
 
-	public PrecipitationModel getPrecipitation() {
-		return this.precipitation;
-	}
-
-	public BiomeModel getBiomes() {
-		return this.biomes;
-	}
-
-	public PopulationModel getPopulation() {
-		return this.population;
-	}
-
-	public MagicModel getMagic() {
-		return this.magic;
-	}
-
-	public LocationNameModel getNames() {
-		return this.names;
-	}
-
-	public ThreatModel getThreats() {
-		return this.threats;
-	}
-
-	public EncounterModel getEncounters() {
-		return this.encounters;
-	}
-
-	public NPCModel getNpcs() {
-		return npcs;
-	}
-
-	public SettlementModel getSettlements() {
-		return settlements;
-	}
-
-	public LocationModel getPois() {
-		return pois;
-	}
-
-	public EconomicModel getEconomy() {
-		return economy;
-	}
-
-	public DungeonModel getDungeon() {
-		return dungeons;
-	}
-
 	public SaveRecord getRecord() {
 		return record;
 	}
@@ -923,6 +849,10 @@ public class MapPanel  extends JPanel{
 	@Override
 	public void repaint() {
 		super.repaint();
+	}
+
+	public DataController getController() {
+		return controller;
 	}
 
 }

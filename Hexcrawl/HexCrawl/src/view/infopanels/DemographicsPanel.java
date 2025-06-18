@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import controllers.DataController;
 import population.PopulationModel;
 import population.Species;
 import view.InfoPanel;
@@ -47,7 +48,7 @@ public class DemographicsPanel extends JPanel {
 	}
 	
 	public void doPaint() {
-		PopulationModel population = info.getPanel().getPopulation();
+		PopulationModel population = info.getPanel().getController().getPopulation();
 		Point pos;
 		if(info.getPanel().isShowDistance()) pos = info.getPanel().getMouseoverGridPoint();
 		else pos = info.getPanel().getSelectedGridPoint();
@@ -66,7 +67,7 @@ public class DemographicsPanel extends JPanel {
 	}
 
 	private String getDemoString(Point pos) {
-		PopulationModel population = info.getPanel().getPopulation();
+		PopulationModel population = info.getPanel().getController().getPopulation();
 		int pop = population.getTransformedUniversalPopulation(pos);
 		LinkedHashMap<Species,Integer> demographics = population.getTransformedDemographics(pos);
 		String demoString = "";
@@ -85,7 +86,7 @@ public class DemographicsPanel extends JPanel {
 
 	private String getDemoLabelText(float pop, int popScale, int transformedUniversalPopulation) {
 		if(transformedUniversalPopulation>0) {
-			return info.getPanel().getPopulation().demoTransformString(pop,pop, popScale);
+			return info.getPanel().getController().getPopulation().demoTransformString(pop,pop, popScale);
 		}else {
 			return "None";
 		}

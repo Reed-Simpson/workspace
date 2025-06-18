@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import general.DataModel;
 import general.Graph;
 import general.Indexible;
 import general.OpenSimplex2S;
@@ -12,11 +13,12 @@ import general.Pair;
 import general.Util;
 import io.SaveRecord;
 import map.AltitudeModel;
+import map.HexData;
 import names.wilderness.WildernessNameGenerator;
 import population.PopulationModel;
 import precipitation.PrecipitationModel;
 
-public class BiomeModel {
+public class BiomeModel extends DataModel {
 	private static final int TABLECOUNT = 2;
 	private static final int NAMEINDEXES = 3;
 	//Altitude Breakpoints
@@ -38,10 +40,9 @@ public class BiomeModel {
 	private AltitudeModel grid;
 	private PrecipitationModel precipitation;
 	private PopulationModel population;
-	private SaveRecord record;
 
 	public BiomeModel(SaveRecord record, AltitudeModel grid, PrecipitationModel precipitation,PopulationModel population) {
-		this.record = record;
+		super(record);
 		this.grid = grid;
 		this.precipitation = precipitation;
 		this.population=population;
@@ -318,6 +319,9 @@ public class BiomeModel {
 		}
 		return group;
 	}
-
+	@Override
+	public BiomeType getDefaultValue(Point p, int i) {
+		return getBiome(p);
+	}
 
 }

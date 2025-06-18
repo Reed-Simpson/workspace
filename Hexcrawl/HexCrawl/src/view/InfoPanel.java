@@ -110,7 +110,7 @@ public class InfoPanel extends JTabbedPane{
 	int selectedEncounter;
 	boolean changeSelected;
 	//private EncountersPanel encounterPanel;
-	private ArrayList<JTextPane> encounterTexts;
+	private ArrayList<MyTextPane> encounterTexts;
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
 
@@ -133,10 +133,10 @@ public class InfoPanel extends JTabbedPane{
 		//encounterPanel = new EncountersPanel(this);
 		JPanel encounterPanel = new JPanel();
 		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
-		encounterTexts = new ArrayList<JTextPane>();
+		encounterTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
-			JTextPane encounteri = new JTextPane();
+			MyTextPane encounteri = new MyTextPane(this);
 			//			npci.setLineWrap(true);
 			//			npci.setWrapStyleWord(true);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
@@ -144,9 +144,6 @@ public class InfoPanel extends JTabbedPane{
 			TextLinkMouseListener mouseAdapter = new TextLinkMouseListener(encounteri);
 			encounteri.addMouseListener(mouseAdapter);
 			encounteri.addMouseMotionListener(mouseAdapter);
-			encounteri.setAlignmentX(LEFT_ALIGNMENT);
-			encounteri.setCaret(new MyCaret());
-			encounteri.setContentType("text/html");
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
 		}
@@ -277,8 +274,8 @@ public class InfoPanel extends JTabbedPane{
 		regionNameField.addFocusListener(new FocusListener() {
 			public void focusLost(FocusEvent e) {
 				String text = regionNameField.getText();
-				Point pos = panel.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
-				PopulationModel pop = panel.getPopulation();
+				Point pos = panel.getController().getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
+				PopulationModel pop = panel.getController().getPopulation();
 				String defaultText = getDefaultRegionNameText(pos,pop.isTown(pos));
 				if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeRegionName(pos);
 				else panel.getRecord().putRegionName(pos, text);
@@ -370,10 +367,10 @@ public class InfoPanel extends JTabbedPane{
 		Point pos;
 		if(panel.isShowDistance()) pos = panel.getMouseoverGridPoint();
 		else pos = panel.getSelectedGridPoint();
-		AltitudeModel grid = panel.getGrid();
-		PrecipitationModel precipitation = panel.getPrecipitation();
-		BiomeModel biomes = panel.getBiomes();
-		PopulationModel population = panel.getPopulation();
+		AltitudeModel grid = panel.getController().getGrid();
+		PrecipitationModel precipitation = panel.getController().getPrecipitation();
+		BiomeModel biomes = panel.getController().getBiomes();
+		PopulationModel population = panel.getController().getPopulation();
 		Point zero = panel.getRecord().getZero();
 		
 		hexGeneralPanel.dopaint();
@@ -426,7 +423,7 @@ public class InfoPanel extends JTabbedPane{
 		String biome = getBiomeText(pos);
 		this.biome.setText("Biome Type: "+biome);
 
-		String magics = panel.getMagic().getMagicType(pos).getName();
+		String magics = panel.getController().getMagic().getMagicType(pos).getName();
 		this.magic.setText("Magic Type: "+magics);
 
 		this.threatText.setText(getThreatText(pos));
@@ -443,13 +440,14 @@ public class InfoPanel extends JTabbedPane{
 
 
 			for(int i = 0;i<this.encounterTexts.size();i++) {
-				JTextPane pane = this.encounterTexts.get(i);
+				MyTextPane pane = this.encounterTexts.get(i);
 				if(i==selectedEncounter) {
 					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				writeStringToDocument(getEncounterText(pos,i), pane);
+				pane.setText(getEncounterText(pos,i));
+				//writeStringToDocument(getEncounterText(pos,i), pane);
 
 			}
 			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
@@ -571,7 +569,7 @@ public class InfoPanel extends JTabbedPane{
 		return sb.toString();
 	}
 
-	private String getLinkText(String link) {
+	public String getLinkText(String link) {
 		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(link);
 		if(matcher.matches()) {
 			if(Integer.valueOf(matcher.group(4))==0) {
@@ -594,19 +592,19 @@ public class InfoPanel extends JTabbedPane{
 
 	private String getDefaultRegionNameText(Point pos,boolean isCity) {
 		if(isCity) {
-			Species species = panel.getPopulation().getMajoritySpecies(pos.x, pos.y);
-			LocationNameModel names = panel.getNames();
+			Species species = panel.getController().getPopulation().getMajoritySpecies(pos.x, pos.y);
+			LocationNameModel names = panel.getController().getNames();
 			return names.getName(species.getCityNameGen(), pos);
 		}else {
-			BiomeModel biomes = panel.getBiomes();
+			BiomeModel biomes = panel.getController().getBiomes();
 			Point region = biomes.getAbsoluteRegion(pos);
 			return biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(pos));
 		}
 	}
 
 	public String getBiomeText(Point pos) {
-		BiomeModel biomes = panel.getBiomes();
-		MagicModel magic = panel.getMagic();
+		BiomeModel biomes = panel.getController().getBiomes();
+		MagicModel magic = panel.getController().getMagic();
 		String biome = biomes.getBiome(pos).getName();
 		if(magic.isWeird(pos)) {
 			Point region = biomes.getAbsoluteRegion(pos);
@@ -617,14 +615,14 @@ public class InfoPanel extends JTabbedPane{
 
 
 	private String getThreatText(Point pos) {
-		Point center = panel.getThreats().getCenter(pos);
+		Point center = panel.getController().getThreats().getCenter(pos);
 		String threatText = panel.getRecord().getThreat(center);
 		if(threatText==null) threatText = getDefaultThreatText(center);
 		return threatText;
 	}
 
 	private String getDefaultThreatText(Point pos) {
-		ThreatModel threats = panel.getThreats();
+		ThreatModel threats = panel.getController().getThreats();
 		Threat threat = threats.getThreat(pos);
 		String string = threat.toString();
 		return string;
@@ -671,8 +669,8 @@ public class InfoPanel extends JTabbedPane{
 		if(encounterText==null) encounterText = getDefaultEncounterText(pos,index);
 		return encounterText;
 	}
-	private String getDefaultEncounterText(Point pos,int index) {
-		Encounter n = panel.getEncounters().getEncounter(index, pos);
+	String getDefaultEncounterText(Point pos,int index) {
+		Encounter n = panel.getController().getEncounters().getEncounter(index, pos);
 		return n.toString(index+1);
 	}
 	private String getNPCText(Point pos,int index) {
@@ -681,7 +679,7 @@ public class InfoPanel extends JTabbedPane{
 		return npcText;
 	}
 	private String getDefaultNPCText(Point pos,int index) {
-		NPC n = panel.getNpcs().getNPC(index, pos);
+		NPC n = panel.getController().getNpcs().getNPC(index, pos);
 		return n.toString(index+1);
 	}
 	private String getNPCLinkText(Point pos,int index) {
@@ -700,7 +698,7 @@ public class InfoPanel extends JTabbedPane{
 		return cityText;
 	}
 	private String getDefaultCityText(Point capital) {
-		SettlementModel cities = panel.getSettlements();
+		SettlementModel cities = panel.getController().getSettlements();
 		Settlement city = cities.getSettlement(capital);
 		StringBuilder c1Text = new StringBuilder();
 		c1Text.append(city.toString());
@@ -708,7 +706,7 @@ public class InfoPanel extends JTabbedPane{
 		return string;
 	}
 	private String getDistrictLinkText(Point capital,int index) {
-		SettlementModel cities = panel.getSettlements();
+		SettlementModel cities = panel.getController().getSettlements();
 		Settlement city = cities.getSettlement(capital);
 		return city.getDistricts().get(index);
 	}
@@ -718,7 +716,7 @@ public class InfoPanel extends JTabbedPane{
 		return factionText;
 	}
 	private String getDefaultFactionText(Point capital,int i) {
-		return panel.getSettlements().getFaction(i, capital).toString();
+		return panel.getController().getSettlements().getFaction(i, capital).toString();
 	}
 	private String getFactionLinkText(Point pos,int index) {
 		String factionText = getFactionText(pos, index);
@@ -739,7 +737,7 @@ public class InfoPanel extends JTabbedPane{
 		return poiText;
 	}
 	private String getDefaultPOIText(Point pos,int i, boolean isCity) {
-		return panel.getPois().getPOI(i, pos,isCity);
+		return panel.getController().getPois().getPOI(i, pos,isCity);
 	}
 	private String getPOILinkText(Point pos,int index, boolean isCity) {
 		String poiText = getPOIText(pos, index,isCity);
@@ -751,12 +749,12 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 	private String getDefaultInnText(Point pos) {
-		AltitudeModel grid = panel.getGrid();
-		PrecipitationModel precipitation = panel.getPrecipitation();
+		AltitudeModel grid = panel.getController().getGrid();
+		PrecipitationModel precipitation = panel.getController().getPrecipitation();
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			return "Inn: none";
 		}else {
-			LocationNameModel names = panel.getNames();
+			LocationNameModel names = panel.getController().getNames();
 			return names.getInnText(pos);
 		}
 	}
@@ -766,7 +764,7 @@ public class InfoPanel extends JTabbedPane{
 		return poiText;
 	}
 	private String getDefaultDungeonText(Point pos,int i) {
-		return panel.getDungeon().getDungeon(i, pos).toString(i+1);
+		return panel.getController().getDungeon().getDungeon(i, pos).toString(i+1);
 	}
 	private String getDungeonLinkText(Point pos,int index) {
 		String dungeonText = getDungeonText(pos, index);
@@ -784,7 +782,7 @@ public class InfoPanel extends JTabbedPane{
 		return dungeonText;
 	}
 	private String getDefaultDungeonEncounterText(Point pos,int i) {
-		Encounter e = panel.getEncounters().getDungeonEncounter(i+20, pos);
+		Encounter e = panel.getController().getEncounters().getDungeonEncounter(i+20, pos);
 		return e.toString(i+1);
 	}
 
@@ -873,18 +871,18 @@ public class InfoPanel extends JTabbedPane{
 		switch(tab) {
 		case "npc": result = getNPCText(p, index);break;
 		case "location": {
-			PopulationModel population = panel.getPopulation();
+			PopulationModel population = panel.getController().getPopulation();
 			boolean isCity = population.isCity(p);
 			result = getPOIText(p, index, isCity);break;
 		}
 		case "dungeon": result = getDungeonText(p, index);break;
 		case "faction": {
-			PopulationModel population = panel.getPopulation();
+			PopulationModel population = panel.getController().getPopulation();
 			Point capital = population.getAbsoluteFealty(p);
 			result = getFactionText(capital, index);break;
 		}
 		case "district": {
-			PopulationModel population = panel.getPopulation();
+			PopulationModel population = panel.getController().getPopulation();
 			Point capital = population.getAbsoluteFealty(p);
 			result = getCityText(capital);break;
 		}
@@ -904,14 +902,14 @@ public class InfoPanel extends JTabbedPane{
 		switch(tab) {
 		case "npc": result = getNPCLinkText(p, index);break;
 		case "location": {
-			PopulationModel population = panel.getPopulation();
+			PopulationModel population = panel.getController().getPopulation();
 			boolean isCity = population.isCity(p);
 			result = getPOILinkText(p, index, isCity);break;
 		}
 		case "dungeon": result = getDungeonLinkText(p, index);break;
 		case "faction": result = getFactionLinkText(p, index);break;
 		case "district": {
-			PopulationModel population = panel.getPopulation();
+			PopulationModel population = panel.getController().getPopulation();
 			Point capital = population.getAbsoluteFealty(p);
 			result = getDistrictLinkText(capital,index);break;
 		}
@@ -924,10 +922,10 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	private final class EncounterFocusListener implements FocusListener {
-		private final JTextPane encounteri;
+		private final MyTextPane encounteri;
 		int index;
 
-		private EncounterFocusListener(JTextPane encounteri, int i) {
+		private EncounterFocusListener(MyTextPane encounteri, int i) {
 			this.encounteri = encounteri;
 			this.index = i;
 		}
@@ -935,9 +933,10 @@ public class InfoPanel extends JTabbedPane{
 			InfoPanel.this.repaint();
 		}
 		public void focusLost(FocusEvent e) {
-			String text = encounteri.getText();
+			String text = encounteri.getRawText();
 			Point p = panel.getSelectedGridPoint();
 			String defaultText = getDefaultEncounterText(p,index);
+			System.out.println("encounter text check: "+text.equals(defaultText));
 			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeEncounter(p,index);
 			else panel.getRecord().putEncounter(p,index, text);
 		}
@@ -975,7 +974,7 @@ public class InfoPanel extends JTabbedPane{
 		public void focusLost(FocusEvent e) {
 			String text = poii.getText();
 			Point p = panel.getSelectedGridPoint();
-			boolean isCity = panel.getPopulation().isCity(p);
+			boolean isCity = panel.getController().getPopulation().isCity(p);
 			String defaultText = removeLinks(getDefaultPOIText(p,index,isCity));
 			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeLocation(p,index);
 			else panel.getRecord().putLocation(p,index, text);
@@ -1063,7 +1062,7 @@ public class InfoPanel extends JTabbedPane{
 		@Override
 		public void focusLost(FocusEvent e) {
 			String text = city1.getText();
-			Point p = panel.getPopulation().getAbsoluteFealty(panel.getSelectedGridPoint());
+			Point p = panel.getController().getPopulation().getAbsoluteFealty(panel.getSelectedGridPoint());
 			if(text==null||"".equals(text)||text.equals(removeLinks(getDefaultCityText(p)))) panel.getRecord().removeCity(p);
 			else panel.getRecord().putCity(p, text);
 		}
@@ -1075,7 +1074,7 @@ public class InfoPanel extends JTabbedPane{
 		@Override
 		public void focusLost(FocusEvent e) {
 			String text = threatText.getText();
-			Point center = panel.getThreats().getCenter(panel.getSelectedGridPoint());
+			Point center = panel.getController().getThreats().getCenter(panel.getSelectedGridPoint());
 			if(text==null||"".equals(text)||text.equals(removeLinks(getDefaultThreatText(center)))) panel.getRecord().removeThreat(center);
 			else panel.getRecord().putThreat(center, text);
 		}

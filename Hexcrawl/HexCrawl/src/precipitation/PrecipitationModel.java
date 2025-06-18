@@ -10,13 +10,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import biome.BiomeModel;
+import general.DataModel;
 import general.Graph;
 import general.OpenSimplex2S;
 import general.Util;
 import io.SaveRecord;
 import map.AltitudeModel;
+import map.HexData;
 
-public class PrecipitationModel {
+public class PrecipitationModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;
 	public static final int LOCAL_WEIGHT_2 = 3;
 	public static final int EVAPORATION_WEIGHT = 3;
@@ -38,11 +40,13 @@ public class PrecipitationModel {
 	private ConcurrentHashMap<Point,Float> volumeCache;
 	private ConcurrentHashMap<Point,Integer> lakes;
 	private ConcurrentHashMap<Point,Point> outletCache;
-	private SaveRecord record;
 
 	public PrecipitationModel(SaveRecord record, AltitudeModel grid) {
+		super(record);
 		this.grid = grid;
-		this.record = record;
+		resetCache();
+	}
+	private void resetCache() {
 		this.evapCache = new HashMap<Point,Float>();
 		this.flowCache = new ConcurrentHashMap<Point,Point>();
 		this.riverCache = new ConcurrentHashMap<Point,Point>();
@@ -315,6 +319,11 @@ public class PrecipitationModel {
 		public void run() {
 			updateFlowVolume(p, 0f,0);
 		}
+	}
+
+	@Override
+	public Float getDefaultValue(Point p, int i) {
+		return getPrecipitation(p);
 	}
 
 

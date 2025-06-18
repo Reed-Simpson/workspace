@@ -2,6 +2,7 @@ package location;
 
 import java.awt.Point;
 
+import general.DataModel;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
@@ -9,7 +10,7 @@ import general.WeightedTable;
 import io.SaveRecord;
 import settlement.SettlementModel;
 
-public class LocationModel {
+public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
 	private static final int TABLECOUNT = 5;
 	private static final String BIOMES = "Ash,Badlands,Bay,Beach,Delta,Desert,Dunes,Dustbowl,Fjords,Flood,"+
@@ -50,11 +51,6 @@ public class LocationModel {
 			"Remote,Resourceful,Ruined,Rustic,Safe,Multifunctional,Simple,Small,Spacious,Storage,Strange,Stylish,Suspicious,Tall,Threatening,Tranquil,Unexpected,Unpleasant,Unusual,Useful,Warm,Warning,Watery,Welcoming";
 	private static WeightedTable<String> descriptors;
 	
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	private static void populateAllTables() {
 		biomes = new WeightedTable<String>();
 		populate(biomes,BIOMES,",");
@@ -159,10 +155,9 @@ public class LocationModel {
 	}
 	
 	
-	private SaveRecord record;
 	
 	public LocationModel(SaveRecord record) {
-		this.record = record;
+		super(record);
 	}
 	private int getLocationDetailIndex(int i,Point p) {
 		float val = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i), p.x, p.y);
@@ -189,6 +184,10 @@ public class LocationModel {
 	public String getPoison(int i,Point p) {
 		if(poisons==null) populateAllTables();
 		return poisons.getByWeight(getLocationDetailIndex(i*TABLECOUNT+6, p));
+	}
+	@Override
+	public String getDefaultValue(Point p, int i) {
+		return getPOI(i, p, false);
 	}
 
 }

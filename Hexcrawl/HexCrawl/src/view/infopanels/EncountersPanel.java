@@ -62,7 +62,7 @@ public class EncountersPanel extends AbstractPanel{
 		return encounterText;
 	}
 	private String getDefaultEncounterText(Point pos,int index) {
-		Encounter n = info.getPanel().getEncounters().getEncounter(index, pos);
+		Encounter n = info.getPanel().getController().getEncounters().getEncounter(index, pos);
 		return n.toString(index+1);
 	}
 

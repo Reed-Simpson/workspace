@@ -6,21 +6,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import general.DataModel;
 import general.OpenSimplex2S;
 import general.Util;
 import io.SaveRecord;
 import npc.NPC;
 import npc.NPCModel;
 
-public class ThreatModel {
+public class ThreatModel extends DataModel{
 	private static final int SEED_OFFSET = 7*Util.getOffsetX();
 	private static final int THREATGROUPCOUNT = 10;
 	private HashMap<Point,Point> centerCache;
-	private SaveRecord record;
 	private NPCModel npcs;
 
 	public ThreatModel(SaveRecord record,NPCModel npcs) {
-		this.record = record;
+		super(record);
 		this.npcs = npcs;
 		this.centerCache = new HashMap<Point,Point>();
 	}
@@ -111,6 +111,11 @@ public class ThreatModel {
 			indexes[i] = getThreatDetailIndex(p,5+i);
 		}
 		return Util.toCamelCase(CreatureType.getName(threat, indexes));
+	}
+
+	@Override
+	public Threat getDefaultValue(Point p, int i) {
+		return getThreat(p);
 	}
 
 }

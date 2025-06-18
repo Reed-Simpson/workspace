@@ -3,6 +3,7 @@ package encounters;
 import java.awt.Point;
 
 import dungeon.DungeonModel;
+import general.DataModel;
 import general.Indexible;
 import general.OpenSimplex2S;
 import general.Util;
@@ -12,7 +13,7 @@ import location.LocationModel;
 import population.PopulationModel;
 import settlement.SettlementModel;
 
-public class EncounterModel {
+public class EncounterModel extends DataModel{
 	//STATIC CONSTANTS
 	private static final int SEED_OFFSET = 8*Util.getOffsetX();
 	private static final String VERBS = "Abandon,Accompany,Activate,Agree,Ambush,Arrive,Assist,Attack,Attain,Bargain,Befriend,Bestow,Betray,Block,Break,Carry,Celebrate,Change,Close,Combine,"+
@@ -71,11 +72,6 @@ public class EncounterModel {
 		if(encounterFocus==null) populateAllTables();
 		return encounterFocus.getByWeight(e);
 	}
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	private static void populateAllTables() {
 		populateEncounterFocus();
 		encounterVerb = new WeightedTable<String>();
@@ -117,11 +113,10 @@ public class EncounterModel {
 	}
 	
 	//NON_STATIC CODE
-	private SaveRecord record;
 	private PopulationModel pop;
 	
 	public EncounterModel(SaveRecord record,PopulationModel pop) {
-		this.record = record;
+		super(record);
 		this.pop = pop;
 	}
 
@@ -193,6 +188,9 @@ public class EncounterModel {
 			e.setHazard(new String[] {getWildernessHazard(e)});
 		}
 		return e;
+	}
+	public String getDefaultValue(Point p,int i) {
+		return getEncounter(i,p).toString();
 	}
 	public Encounter getDungeonEncounter(int i,Point p) {
 		float[] floats = new float[TABLECOUNT];

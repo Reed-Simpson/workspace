@@ -199,7 +199,7 @@ public class MenuBar extends JMenuBar {
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
 		dataFieldsPanel.add(new JLabel("data:"));
 		
-		dataMenu = new JComboBox<HexData>(HexData.getValues());
+		dataMenu = new JComboBox<HexData>(HexData.getMapViews());
 		dataMenu.setMaximumSize(new Dimension(100,100));
 		dataMenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {

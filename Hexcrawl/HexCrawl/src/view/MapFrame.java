@@ -66,13 +66,13 @@ public class MapFrame extends JFrame{
 
 	public void load(SaveRecord record) {
 		this.record=record;
-		InfoPanel info = new InfoPanel();
+		ProgressBarDialog dialog = new ProgressBarDialog(this);
+		MapPanel panel = new MapPanel(this,record,dialog);
+		InfoPanel info = new InfoPanel(panel);
 		RegionPanel region = new RegionPanel();
 		JTabbedPane tabs = new JTabbedPane();
 		tabs.add("Info Panel",info);
 		tabs.add("Region Panel",region);
-		ProgressBarDialog dialog = new ProgressBarDialog(this);
-		MapPanel panel = new MapPanel(this,record,info,dialog);
 		this.add(panel,BorderLayout.CENTER);
 		this.add(info,BorderLayout.EAST);
 		MenuBar bar = new MenuBar(panel);

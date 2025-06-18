@@ -114,7 +114,8 @@ public class InfoPanel extends JTabbedPane{
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
 
-	public InfoPanel() {
+	public InfoPanel(MapPanel panel) {
+		this.panel = panel;
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 		//Tab 1
 		this.hexPanel = new JPanel();
@@ -136,14 +137,8 @@ public class InfoPanel extends JTabbedPane{
 		encounterTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
-			MyTextPane encounteri = new MyTextPane(this);
-			//			npci.setLineWrap(true);
-			//			npci.setWrapStyleWord(true);
+			MyTextPane encounteri = new MyTextPane(this, panel.getController(),i);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
-			encounteri.addFocusListener(new EncounterFocusListener(encounteri,i));
-			TextLinkMouseListener mouseAdapter = new TextLinkMouseListener(encounteri);
-			encounteri.addMouseListener(mouseAdapter);
-			encounteri.addMouseMotionListener(mouseAdapter);
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
 		}
@@ -671,7 +666,7 @@ public class InfoPanel extends JTabbedPane{
 	}
 	String getDefaultEncounterText(Point pos,int index) {
 		Encounter n = panel.getController().getEncounters().getEncounter(index, pos);
-		return n.toString(index+1);
+		return n.toString();
 	}
 	private String getNPCText(Point pos,int index) {
 		String npcText = panel.getRecord().getNPC(pos,index);
@@ -680,7 +675,7 @@ public class InfoPanel extends JTabbedPane{
 	}
 	private String getDefaultNPCText(Point pos,int index) {
 		NPC n = panel.getController().getNpcs().getNPC(index, pos);
-		return n.toString(index+1);
+		return n.toString();
 	}
 	private String getNPCLinkText(Point pos,int index) {
 		String npcText = getNPCText(pos, index);
@@ -783,7 +778,7 @@ public class InfoPanel extends JTabbedPane{
 	}
 	private String getDefaultDungeonEncounterText(Point pos,int i) {
 		Encounter e = panel.getController().getEncounters().getDungeonEncounter(i+20, pos);
-		return e.toString(i+1);
+		return e.toString();
 	}
 
 	private String getHexNoteText(Point pos) {

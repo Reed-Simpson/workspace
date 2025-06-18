@@ -66,7 +66,7 @@ public class Encounter extends Indexible {
 		this.descriptor = descriptor;
 	}
 	
-	public String toString(int i) {
+	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ "+this.getType()+" Encounter #"+(i)+" ~~~~~\r\n");
 		e1Text.append("Focus: "+this.getFocus() +"\r\n");

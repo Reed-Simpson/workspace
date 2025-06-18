@@ -12,34 +12,43 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import controllers.DataController;
 import data.HexData;
 import view.infopanels.ChatLinkAction;
 import view.infopanels.ChatLinkMouseoverAction;
+import view.infopanels.TextLinkMouseListener;
 
 @SuppressWarnings("serial")
 public class MyTextPane extends JTextPane {
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 	private InfoPanel info;
 	private String rawText;
+	private DataController controller;
+	private int index;
 
 	
-	public MyTextPane(InfoPanel info) {
+	public MyTextPane(InfoPanel info,DataController controller,int index) {
 		this.info = info;
+		this.controller = controller;
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setCaret(new MyCaret());
 		this.setContentType("text/html");
+		this.addFocusListener(new TextFocusListener(HexData.ENCOUNTER));
+		TextLinkMouseListener mouseAdapter = new TextLinkMouseListener(this);
+		this.addMouseListener(mouseAdapter);
+		this.addMouseMotionListener(mouseAdapter);
 	}
 	
 	public void setText(String t) {
 		this.rawText = t;
+		super.setText("");
+		//doc.remove(0, doc.getLength());//delete contents
 		this.writeStringToDocument(t);
 	}
 
 	private void writeStringToDocument(String string) {
 		StyledDocument doc = this.getStyledDocument();
 		try {
-			super.setText("<html>");
-			//doc.remove(0, doc.getLength());//delete contents
 			int curlybrace = string.indexOf("{");
 			int closebrace = -1;
 			while(curlybrace>-1) {
@@ -71,23 +80,20 @@ public class MyTextPane extends JTextPane {
 
 
 	private final class TextFocusListener implements FocusListener {
-		int index;
 		HexData type;
 
-		private TextFocusListener(int i,HexData type) {
-			this.index = i;
+		private TextFocusListener(HexData type) {
 			this.type = type;
 		}
 		public void focusGained(FocusEvent e) {
+			System.out.println("focus gained");
 			info.repaint();
 		}
 		public void focusLost(FocusEvent e) {
+			System.out.println("focus lost");
 			String text = MyTextPane.this.getRawText();
 			Point p = info.getPanel().getSelectedGridPoint();
-			String defaultText = info.getDefaultEncounterText(p,index);
-			System.out.println("encounter text check: "+text.equals(defaultText));
-			if(text==null||"".equals(text)||text.equals(defaultText)) info.getPanel().getRecord().removeEncounter(p,index);
-			else info.getPanel().getRecord().putEncounter(p,index, text);
+			controller.updateData(type, text, p, index);
 		}
 	}
 }

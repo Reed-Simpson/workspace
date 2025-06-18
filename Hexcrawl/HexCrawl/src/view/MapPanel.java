@@ -53,7 +53,6 @@ public class MapPanel  extends JPanel{
 	private static final int LOG_THRESHOLD = 500;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
-	private InfoPanel infoPanel;
 	private Point center; //center represents the pixel offset from 0,0
 	private Point mouseover;
 	private double scale; // Scale represents the pixel distance from the center of one hex to an adjacent one
@@ -73,12 +72,10 @@ public class MapPanel  extends JPanel{
 	int previousIndex;
 	private DataController controller;
 
-	public MapPanel(MapFrame frame, SaveRecord record,InfoPanel infoPanel, ProgressBarDialog dialog) {
+	public MapPanel(MapFrame frame, SaveRecord record,ProgressBarDialog dialog) {
 		this.frame = frame;
 		this.dialog = dialog;
 		this.reloadFromSaveRecord(record);
-		this.infoPanel=infoPanel;
-		infoPanel.setPanel(this);
 		this.addMouseListener(new MouseAdapter());
 		this.addMouseMotionListener(new MouseMotionAdapter());
 		this.addMouseWheelListener(new MouseWheelAdapter());
@@ -216,7 +213,6 @@ public class MapPanel  extends JPanel{
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 
 		printLoadingInfo = false;
-		infoPanel.repaint();
 		dialog.removeProgressUI();
 	}
 

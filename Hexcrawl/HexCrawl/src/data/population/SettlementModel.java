@@ -1,6 +1,7 @@
 package data.population;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import data.DataModel;
 import data.Indexible;
@@ -176,6 +177,13 @@ public class SettlementModel extends DataModel{
 	@Override
 	public Settlement getDefaultValue(Point p, int i) {
 		return getSettlement(p);
+	}
+
+
+	public String getDistrict(int i, Point capital) {
+		ArrayList<String> districts = getSettlement(capital).getDistricts();
+		if(i<districts.size()&&i>-1) return districts.get(i);
+		return null;
 	}
 
 }

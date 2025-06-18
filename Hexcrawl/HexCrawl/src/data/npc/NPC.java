@@ -170,7 +170,7 @@ public class NPC extends Indexible{
 		this.domain = domain;
 	}
 
-	public String toString(int i) {
+	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		String name = (this.name!=null?this.name+", the ":"");
 		//e1Text.append("~~~~~ NPC #"+(i)+name+" ~~~~~\r\n");

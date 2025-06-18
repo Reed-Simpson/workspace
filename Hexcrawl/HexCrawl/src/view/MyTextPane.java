@@ -2,11 +2,13 @@ package view;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -31,7 +33,7 @@ public class MyTextPane extends JTextPane {
 		this.info = info;
 		this.controller = controller;
 		this.setAlignmentX(LEFT_ALIGNMENT);
-		this.setCaret(new MyCaret());
+		this.setCaret(new NoScrollCaret());
 		this.setContentType("text/html");
 		this.addFocusListener(new TextFocusListener(HexData.ENCOUNTER));
 		TextLinkMouseListener mouseAdapter = new TextLinkMouseListener(this);
@@ -94,6 +96,13 @@ public class MyTextPane extends JTextPane {
 			String text = MyTextPane.this.getRawText();
 			Point p = info.getPanel().getSelectedGridPoint();
 			controller.updateData(type, text, p, index);
+		}
+	}
+	
+	private class NoScrollCaret extends DefaultCaret {
+		@Override
+		protected void adjustVisibility(Rectangle nloc) {
+
 		}
 	}
 }

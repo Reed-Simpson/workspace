@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import data.DataModel;
-import data.HexData;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.altitude.AltitudeModel;

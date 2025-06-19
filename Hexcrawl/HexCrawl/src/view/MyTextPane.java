@@ -16,13 +16,10 @@ import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTextPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.Element;
 import javax.swing.text.Style;
@@ -39,7 +36,6 @@ public class MyTextPane extends JTextPane {
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 	private InfoPanel info;
 	private String rawText;
-	private String formattedText;
 	private DataController controller;
 	private int index;
 	private HexData type;
@@ -61,7 +57,6 @@ public class MyTextPane extends JTextPane {
 		//this.getStyledDocument().addDocumentListener(new MyDocumentListener());
 		DefaultStyledDocument doc = (DefaultStyledDocument) this.getStyledDocument();
 		doc.setDocumentFilter(new MyDocumentFilter());
-		formattedText = "";
 	}
 
 	public void setText(String t) {
@@ -98,7 +93,6 @@ public class MyTextPane extends JTextPane {
 				}
 			}
 			if(closebrace!=-1) doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
-			formattedText = doc.getText(0, doc.getLength());
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -275,50 +269,6 @@ public class MyTextPane extends JTextPane {
 			return "["+a+"-"+b+"]";
 		}
 	}
-	private class MyDocumentListener implements DocumentListener{
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			if(info.isChangeSelected()) {
-				int changeLength = e.getLength();
-				int offset = e.getOffset();
-				Document doc = e.getDocument();
-				String string;
-				try {
-					int a = formattedIndexToRaw(offset);
-					int b = formattedIndexToRaw(offset+changeLength);
-					string = doc.getText(0, doc.getLength()).substring(offset, offset+changeLength);
-					insertRawText(string,a);
-					System.out.println(rawText);
-					//formattedText = doc.getText(0, doc.getLength());
-				} catch (BadLocationException e1) {
-					e1.printStackTrace();
-					throw new IllegalStateException(formattedText);
-				}
-			}
-		}
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			if(info.isChangeSelected()) {
-				int changeLength = e.getLength();
-				int offset = e.getOffset();
-				int a = formattedIndexToRaw(offset);
-				int b = formattedIndexToRaw(offset+changeLength);
-				//String string = formattedText.substring(offset, offset+changeLength);
-				//System.out.println(string+ " -> "+rawText.substring(a, b));
-				deleteRawText(a,b);
-				System.out.println(rawText);
-				//				Document doc = e.getDocument();
-				//				try {
-				//					formattedText = doc.getText(0, doc.getLength());
-				//				} catch (BadLocationException e1) {
-				//					e1.printStackTrace();
-				//					throw new IllegalStateException(formattedText);
-				//				}
-			}
-		}
-		public void changedUpdate(DocumentEvent e) {}
-	}
-
 	private class MyDocumentFilter extends DocumentFilter {
 
 		@Override
@@ -379,7 +329,6 @@ public class MyTextPane extends JTextPane {
 					}
 				}
 				if(closebrace!=-1) super.insertString(fb, doc.getLength(), string.substring(closebrace+1), DEFAULT);
-				formattedText = doc.getText(0, doc.getLength());
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}

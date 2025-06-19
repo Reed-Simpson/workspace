@@ -7,7 +7,6 @@ import java.util.HashSet;
 
 import data.DataModel;
 import data.Graph;
-import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.altitude.AltitudeModel;

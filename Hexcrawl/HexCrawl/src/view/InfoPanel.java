@@ -20,8 +20,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
-import javax.swing.text.Style;
-import javax.swing.text.StyleContext;
 
 import data.HexData;
 import data.altitude.AltitudeModel;
@@ -59,7 +57,6 @@ public class InfoPanel extends JTabbedPane{
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
-	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 	private MapPanel panel;
 
 	private JLabel biome;

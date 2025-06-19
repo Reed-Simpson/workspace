@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import controllers.DataController;
 import data.population.PopulationModel;
 import data.population.Species;
 import view.InfoPanel;

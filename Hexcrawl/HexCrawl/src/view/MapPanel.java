@@ -25,22 +25,10 @@ import javax.swing.SwingUtilities;
 import controllers.DataController;
 import data.Graph;
 import data.HexData;
-import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.biome.BiomeType;
-import data.dungeon.DungeonModel;
-import data.economy.EconomicModel;
-import data.encounters.EncounterModel;
-import data.location.LocationModel;
-import data.magic.MagicModel;
-import data.npc.NPCModel;
-import data.population.PopulationModel;
-import data.population.SettlementModel;
-import data.precipitation.PrecipitationModel;
-import data.threat.ThreatModel;
 import io.AppData;
 import io.SaveRecord;
-import names.LocationNameModel;
 import util.Counter;
 
 public class MapPanel  extends JPanel{

@@ -130,7 +130,7 @@ public class MyTextPane extends JTextPane {
 		private TextFocusListener(HexData type) {
 		}
 		public void focusGained(FocusEvent e) {
-			System.out.println("focus gained");
+			//System.out.println(getRawText());
 		}
 		public void focusLost(FocusEvent e) {
 			System.out.println("focus lost");

@@ -84,15 +84,13 @@ public class DataController {
 		switch(type) {
 		case THREAT: {
 			Point center = threats.getCenter(p);
-			value = threats.getThreat(center).toString();
-			break;
+			value = threats.getThreat(center).toString();break;
 		}
-		case ENCOUNTER: value = encounters.getEncounter(i, p).toString();
-		case NPC: value =  npcs.getNPC(i,p).toString();
+		case ENCOUNTER: value = encounters.getEncounter(i, p).toString();break;
+		case NPC: value =  npcs.getNPC(i,p).toString(); break;
 		case LOCATION: {
 			if(i==0) value = getDefaultInnText(p);
-			else value = pois.getPOI(i, p,population.isCity(p));
-			break;
+			else value = pois.getPOI(i, p,population.isCity(p));break;
 		}
 		case DUNGEON: value = dungeons.getDungeon(i, p).toString();break;
 		case D_ENCOUNTER: value = encounters.getDungeonEncounter(i, p).toString();break;
@@ -212,6 +210,8 @@ public class DataController {
 
 	public void updateData(HexData type, String text, Point p, int index) {
 		String defaultText = this.getDefaultText(type, p,index);
+		System.out.println(type+" "+index);
+		System.out.println(defaultText);
 		System.out.println(type.getText()+" text check: "+text.equals(defaultText));
 		boolean isDefault = text==null||"".equals(text)||text.equals(defaultText);
 		if(isDefault) this.removeData(type, p,index);

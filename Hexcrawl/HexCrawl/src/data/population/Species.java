@@ -26,7 +26,7 @@ public enum Species {
 	HUMAN(		1,0.0f,60f/360f,new HumanCityNameGenerator(),		new HumanNameGenerator(),		1.0f),
 	HALFLING(	2,0.0f,90f/360f,new HalflingCityNameGenerator(),	new HalflingNameGenerator(),	1.0f),
 	ELF(		4,0.5f,120f/360f,new ElfCityNameGenerator(),		new ElfNameGenerator(),			1.0f),
-	GENASI(		9,0.0f,210f/360f,new GenasiCityNameGenerator(),		new GenasiNameGenerator(),		1.0f),
+	GENASI(		9,0.0f,180f/360f,new GenasiCityNameGenerator(),		new GenasiNameGenerator(),		1.0f),
 	GNOME(		3,0.2f,270f/360f,new GnomeCityNameGenerator(),		new GnomeNameGenerator(),		0.8f),
 	ORC(		8,0.8f,330f/360f,new OrcCityNameGenerator(),		new OrcNameGenerator(),			1.0f),
 	GOLIATH(	7,0.8f,300f/360f,new GoliathCityNameGenerator(),	ORC.getNPCNameGen(),			0.8f),

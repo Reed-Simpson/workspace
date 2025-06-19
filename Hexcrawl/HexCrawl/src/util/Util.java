@@ -299,4 +299,11 @@ public class Util {
 			return result;
 		}
 	}
+	
+	public static String pad(String s,int width) {
+		if(width<s.length()) return s;
+		if(s.length()%2!=width%2) s+=" ";
+		String padding = String.format("%" + ((width-s.length())/2) + "s", "");
+		return padding+s+padding;
+	}
 }

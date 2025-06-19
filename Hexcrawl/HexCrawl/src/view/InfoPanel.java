@@ -2,7 +2,6 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -23,7 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import data.HexData;
@@ -46,6 +44,7 @@ import view.infopanels.HexPanelGeneralStatPanel;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
+	private static final int TAB_TITLE_LENGTH = 36;
 	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
 	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
 	private static final int FACTION_TAB_INDEX = 1;
@@ -225,7 +224,7 @@ public class InfoPanel extends JTabbedPane{
 
 		hexPanel.add(detailsTabs);
 
-		this.addTab("                         Hex                         ", new JScrollPane(hexPanel));
+		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), new JScrollPane(hexPanel));
 
 		//Tab 1
 		this.regionPanel = new JPanel();
@@ -299,7 +298,7 @@ public class InfoPanel extends JTabbedPane{
 
 		regionPanel.add(regionTabs);
 
-		this.addTab("                        Region                        ", new JScrollPane(regionPanel));
+		this.addTab(Util.pad("Region", TAB_TITLE_LENGTH), new JScrollPane(regionPanel));
 
 		resetSelection();
 		changeSelected = true;

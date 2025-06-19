@@ -154,11 +154,11 @@ public class DungeonModel extends DataModel {
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Dungeon result = new Dungeon(floats);
-		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p));
+		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p,record.getZero()));
 		result.setForm(getForm(result));
 		result.setLayout(getLayout(result));
 		result.setRuination(getRuination(result));
-		result.setReward(Util.formatTableResultPOS(getReward(result),result,p));
+		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,record.getZero()));
 		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
 		result.setMonster(MonsterModel.getMonster(result));
 		return result;

@@ -291,13 +291,13 @@ public class NPCModel extends DataModel {
 		npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));
 	}
 	private void setAsset(int i, Point p, NPC npc) {
-		npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p));
+		npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p,record.getZero()));
 	}
 	private void setLiability(int i, Point p, NPC npc) {
 		npc.setLiability(getLiability(npc));
 	}
 	private void setGoal(int i, Point p, NPC npc) {
-		npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p));
+		npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p,record.getZero()));
 	}
 	private void setMisfortune(int i, Point p, NPC npc) {
 		npc.setMisfortune(getMisfortune(npc));

@@ -125,10 +125,10 @@ public class EncounterModel extends DataModel{
 		else return LocationModel.getStructureOrLandmark(e);
 	}
 	public String getLocation(Indexible e,Point p) {
-		return Util.formatTableResultPOS("${location index}", e,p);
+		return Util.formatTableResultPOS("${location index}", e,p,record.getZero());
 	}
 	public String getChar(Indexible e,Point p) {
-		return Util.formatTableResultPOS("${npc index}", e,p);
+		return Util.formatTableResultPOS("${npc index}", e,p,record.getZero());
 	}
 	private String getCityRoom( Indexible e) {
 		return SettlementModel.getRoom(e);

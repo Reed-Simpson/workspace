@@ -170,11 +170,12 @@ public class MenuBar extends JMenuBar {
 			public void actionPerformed(ActionEvent e) {
 				Point c = panel.getSelectedGridPoint();
 				Point zero = panel.getRecord().getZero();
-				Point p = new Point(Integer.parseInt(xField.getText())+zero.x,Integer.parseInt(yField.getText())+zero.y);
+				Point displayPos = new Point(Integer.parseInt(xField.getText()),Integer.parseInt(yField.getText()));
+				Point actualPos = Util.denormalizePos(displayPos, zero);
 				double scale = Double.parseDouble(sField.getText());
-				if(!c.equals(p)||scale!=panel.getScale()) {
+				if(!c.equals(actualPos)||scale!=panel.getScale()) {
 					panel.setScale(scale);
-					panel.recenter(p,true);
+					panel.recenter(actualPos,true);
 					panel.repaint();
 					sLabel.repaint();
 				}

@@ -18,6 +18,7 @@ import data.precipitation.PrecipitationModel;
 import data.threat.ThreatModel;
 import io.SaveRecord;
 import names.LocationNameModel;
+import util.Util;
 
 public class DataController {
 	
@@ -225,9 +226,10 @@ public class DataController {
 		}
 	}
 	public String getLinkText(String tab, int x, int y, int index) {
-		Point p = new Point(x,y);
+		Point displayPos = new Point(x,y);
+		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		HexData type = HexData.get(tab);
-		return getLinkText(type, p, index);
+		return getLinkText(type, actualPos, index);
 	}
 
 

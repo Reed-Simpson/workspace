@@ -8,11 +8,11 @@ import javax.swing.AbstractAction;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")
-	public class ChatLinkAction extends AbstractAction    {
+	public class TextLinkAction extends AbstractAction    {
 		private String textLink;
 		private InfoPanel info;
 
-		public ChatLinkAction(String textLink,InfoPanel info){
+		public TextLinkAction(String textLink,InfoPanel info){
 			this.textLink = textLink;
 			this.info = info;
 		}

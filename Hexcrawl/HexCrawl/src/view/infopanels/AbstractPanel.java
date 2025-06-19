@@ -49,7 +49,7 @@ public abstract class AbstractPanel extends JPanel{
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
 		StyleConstants.setUnderline(regularBlue, true);
-		regularBlue.addAttribute("linkact", new ChatLinkAction(textLink, info));
+		regularBlue.addAttribute("linkact", new TextLinkAction(textLink, info));
 		doc.insertString(doc.getLength(), textLink, regularBlue);
 
 	}

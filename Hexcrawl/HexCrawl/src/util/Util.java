@@ -100,6 +100,10 @@ public class Util {
 		if(zero==null) zero = new Point(0,0);
 		return new Point(pos.x-zero.x,zero.y-pos.y);
 	}
+	public static Point denormalizePos(Point pos,Point zero) {
+		if(zero==null) zero = new Point(0,0);
+		return new Point(pos.x+zero.x,zero.y+pos.y);
+	}
 	public static String posString(Point pos,Point zero) {
 		Point p = normalizePos(pos,zero);
 		return posString(p);
@@ -114,14 +118,15 @@ public class Util {
 		else return string;
 	}
 	public static String formatTableResultPOS(String result,Indexible obj) {
-		return formatTableResultPOS(result, obj, null);
+		return formatTableResultPOS(result, obj, null,null);
 	}
-	public static String formatTableResultPOS(String result,Indexible obj,Point p) {
+	public static String formatTableResultPOS(String result,Indexible obj,Point p,Point zero) {
 		if(p!=null) {
-			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, p));
-			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, p));
-			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, p));
-			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, p));
+			Point displayPos = normalizePos(p, zero);
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, displayPos));
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
+			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
+			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos));
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));

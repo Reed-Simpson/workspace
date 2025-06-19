@@ -29,7 +29,7 @@ import javax.swing.text.StyledDocument;
 
 import controllers.DataController;
 import data.HexData;
-import view.infopanels.ChatLinkAction;
+import view.infopanels.TextLinkAction;
 
 @SuppressWarnings("serial")
 public class MyTextPane extends JTextPane {
@@ -111,7 +111,7 @@ public class MyTextPane extends JTextPane {
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
 		StyleConstants.setUnderline(regularBlue, true);
-		regularBlue.addAttribute("linkact", new ChatLinkAction(link, info));
+		regularBlue.addAttribute("linkact", new TextLinkAction(link, info));
 		regularBlue.addAttribute("linkmouseover", new MouseoverAction(link, this,info));
 		return regularBlue;
 	}
@@ -227,7 +227,7 @@ public class MyTextPane extends JTextPane {
 			@SuppressWarnings("deprecation")
 			Element ele = MyTextPane.this.getStyledDocument().getCharacterElement(MyTextPane.this.viewToModel(e.getPoint()));
 			AttributeSet as = ele.getAttributes();
-			ChatLinkAction fla = (ChatLinkAction)as.getAttribute("linkact");
+			TextLinkAction fla = (TextLinkAction)as.getAttribute("linkact");
 			if(fla != null){
 				fla.execute();
 			}

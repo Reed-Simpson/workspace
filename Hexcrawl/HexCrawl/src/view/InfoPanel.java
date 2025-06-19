@@ -695,7 +695,9 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	public void selectTabAndIndex(String tab, int x, int y, int index) {
-		panel.recenter(new Point(x,y), true);
+		Point displayPos = new Point(x,y);
+		Point actualPos = Util.denormalizePos(displayPos, panel.getRecord().getZero());
+		panel.recenter(actualPos, true);
 		switch(tab) {
 		case "npc": selectTab(0,NPC_TAB_INDEX,index);break;
 		case "location": selectTab(0,LOCATION_TAB_INDEX,index);break;
@@ -774,24 +776,25 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	public String getToolTipText(String tab, int x, int y, int index) {
-		Point p = new Point(x,y);
+		Point displayPos = new Point(x,y);
+		Point actualPos = Util.denormalizePos(displayPos, panel.getRecord().getZero());
 		String result;
 		switch(tab) {
-		case "npc": result = getNPCText(p, index);break;
+		case "npc": result = getNPCText(actualPos, index);break;
 		case "location": {
 			PopulationModel population = panel.getController().getPopulation();
-			boolean isCity = population.isCity(p);
-			result = getPOIText(p, index, isCity);break;
+			boolean isCity = population.isCity(actualPos);
+			result = getPOIText(actualPos, index, isCity);break;
 		}
-		case "dungeon": result = getDungeonText(p, index);break;
+		case "dungeon": result = getDungeonText(actualPos, index);break;
 		case "faction": {
 			PopulationModel population = panel.getController().getPopulation();
-			Point capital = population.getAbsoluteFealty(p);
+			Point capital = population.getAbsoluteFealty(actualPos);
 			result = getFactionText(capital, index);break;
 		}
 		case "district": {
 			PopulationModel population = panel.getController().getPopulation();
-			Point capital = population.getAbsoluteFealty(p);
+			Point capital = population.getAbsoluteFealty(actualPos);
 			result = getCityText(capital);break;
 		}
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);

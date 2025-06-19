@@ -18,15 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.ToolTipManager;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
 
 import data.HexData;
 import data.altitude.AltitudeModel;
@@ -40,17 +35,11 @@ import data.population.SettlementModel;
 import data.population.SettlementSize;
 import data.population.Species;
 import data.precipitation.PrecipitationModel;
-import data.threat.Threat;
-import data.threat.ThreatModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
 import util.Util;
-import view.infopanels.ChatLinkAction;
-import view.infopanels.ChatLinkMouseoverAction;
 import view.infopanels.DemographicsPanel;
-import view.infopanels.EncountersPanel;
 import view.infopanels.HexPanelGeneralStatPanel;
-import view.infopanels.TextLinkMouseListener;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
@@ -64,6 +53,7 @@ public class InfoPanel extends JTabbedPane{
 	private static final int NPC_TAB_INDEX = 1;
 	private static final int ENCOUNTER_TAB_INDEX = 0;
 	private static final int WIDTH = 450;
+	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
 	public static final int POICOUNT = 20;
 	public static final int DUNGEONCOUNT = 6;
@@ -136,7 +126,7 @@ public class InfoPanel extends JTabbedPane{
 		JPanel encounterPanel = new JPanel();
 		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
 		encounterTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
+		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
 			MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
@@ -199,7 +189,7 @@ public class InfoPanel extends JTabbedPane{
 		JPanel dungeonPanel = new JPanel();
 		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
 		dungeonTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
+		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
 			MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
@@ -480,21 +470,6 @@ public class InfoPanel extends JTabbedPane{
 		changeSelected = true;
 	}
 
-	private String removeLinks(String string) {
-		StringBuilder sb = new StringBuilder();
-		int curlybrace = string.indexOf("{");
-		int closebrace = -1;
-		while(curlybrace>-1) {
-			sb.append(string.substring(closebrace+1,curlybrace));
-			closebrace = string.indexOf("}", curlybrace);
-			String link = string.substring(curlybrace, closebrace+1);
-			sb.append(getLinkText(link));
-			curlybrace = string.indexOf("{", closebrace);
-		}
-		sb.append(string.substring(closebrace+1));
-		return sb.toString();
-	}
-
 	public String getLinkText(String link) {
 		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(link);
 		if(matcher.matches()) {
@@ -537,21 +512,6 @@ public class InfoPanel extends JTabbedPane{
 			biome = magic.getWeirdness(region).toLowerCase() + " "+biome;
 		}
 		return biome;
-	}
-
-
-	private String getThreatText(Point pos) {
-		Point center = panel.getController().getThreats().getCenter(pos);
-		String threatText = panel.getRecord().getThreat(center);
-		if(threatText==null) threatText = getDefaultThreatText(center);
-		return threatText;
-	}
-
-	private String getDefaultThreatText(Point pos) {
-		ThreatModel threats = panel.getController().getThreats();
-		Threat threat = threats.getThreat(pos);
-		String string = threat.toString();
-		return string;
 	}
 
 	private void positivePopComponents() {

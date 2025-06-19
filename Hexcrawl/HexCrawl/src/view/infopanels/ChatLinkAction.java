@@ -17,7 +17,7 @@ import view.InfoPanel;
 			this.info = info;
 		}
 
-		protected void execute(){
+		public void execute(){
 			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(textLink);
 			if(matcher.matches()) {
 				System.out.println(textLink);

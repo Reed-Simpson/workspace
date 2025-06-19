@@ -59,8 +59,8 @@ public class MenuBar extends JMenuBar {
 		this.add(fileMenu);
 		repopulateRecentFiles(panel);
 		
-		JMenu campaignMenu = constructCampaignMenu();
-		this.add(campaignMenu);
+		//JMenu campaignMenu = constructCampaignMenu();
+		//this.add(campaignMenu);
 		
 		JMenu utilityMenu = constructUtilityMenu();
 		this.add(utilityMenu);

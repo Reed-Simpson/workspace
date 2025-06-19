@@ -44,7 +44,7 @@ import view.infopanels.HexPanelGeneralStatPanel;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
-	private static final int TAB_TITLE_LENGTH = 36;
+	private static final int TAB_TITLE_LENGTH = 34;
 	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
 	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
 	private static final int FACTION_TAB_INDEX = 1;
@@ -299,12 +299,20 @@ public class InfoPanel extends JTabbedPane{
 		regionPanel.add(regionTabs);
 
 		this.addTab(Util.pad("Region", TAB_TITLE_LENGTH), new JScrollPane(regionPanel));
+		
+		
+		//Campaign menu
+		JPanel campaignPanel = new JPanel();
+
+		this.addTab(Util.pad("Campaign", TAB_TITLE_LENGTH), new JScrollPane(campaignPanel));
+		
 
 		resetSelection();
 		changeSelected = true;
 
 		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
 		toolTipManager.setDismissDelay(Integer.MAX_VALUE); 
+		toolTipManager.setInitialDelay(0);
 	}
 
 	public void resetSelection() {

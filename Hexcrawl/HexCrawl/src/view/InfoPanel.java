@@ -101,6 +101,7 @@ public class InfoPanel extends JTabbedPane{
 	int selectedFaction;
 	int selectedEncounter;
 	boolean changeSelected;
+
 	//private EncountersPanel encounterPanel;
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
@@ -471,7 +472,7 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	public String getLinkText(String link) {
-		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(link);
+		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(link);
 		if(matcher.matches()) {
 			if(Integer.valueOf(matcher.group(4))==0) {
 				System.out.println(link);
@@ -790,6 +791,9 @@ public class InfoPanel extends JTabbedPane{
 	}
 	public MapPanel getPanel() {
 		return panel;
+	}
+	public boolean isChangeSelected() {
+		return changeSelected;
 	}
 
 	@Override

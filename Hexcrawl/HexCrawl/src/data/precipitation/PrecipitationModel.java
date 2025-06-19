@@ -228,12 +228,13 @@ public class PrecipitationModel extends DataModel{
 		}
 	}
 	private void addEdge(Graph<Point> lake, Point p1,Point p2) {
-		lake.addEdge(p1, p2, getEdgeWeight(p2));
-		lake.addEdge(p2, p1, getEdgeWeight(p1));
+		lake.addEdge(p1, p2, getEdgeWeight(p1,p2));
+		lake.addEdge(p2, p1, getEdgeWeight(p2,p1));
 	}
-	private int getEdgeWeight(Point p) {
-		float alt = grid.getHeight(p);
-		return ((int) alt*1000000)%20;
+	private int getEdgeWeight(Point p1,Point p2) {
+		float alt = 1+grid.getHeight(p2)-grid.getHeight(p1);
+		if(alt>1) alt+=20;
+		return ((int) alt*1000);
 	}
 
 	private void updateFlowPath(Point l, Point outlet,Graph<Point> lake,HashSet<Point> cache) {

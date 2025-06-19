@@ -238,7 +238,7 @@ public class Util {
 
 	public static String getIndexString(Indexible obj,String type,int count,Point p) {
 		int index = obj.reduceTempId(count);
-		return "{"+type+":"+p.x+","+p.y+","+(index+1)+"}";
+		return "{"+type+":"+p.x+","+p.y+","+(index+1)+"}$";
 	}
 
 	public static String formatSubtype(String string,CreatureSubtype type) {

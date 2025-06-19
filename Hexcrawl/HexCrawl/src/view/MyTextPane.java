@@ -9,14 +9,22 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -32,11 +40,13 @@ public class MyTextPane extends JTextPane {
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 	private InfoPanel info;
 	private String rawText;
+	private String formattedText;
 	private DataController controller;
 	private int index;
-	HexData type;
+	private HexData type;
+	private HashMap<Interval,Interval> links;
 
-	
+
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
 		this.controller = info.getPanel().getController();
@@ -49,17 +59,26 @@ public class MyTextPane extends JTextPane {
 		TextLinkMouseListener mouseAdapter = new TextLinkMouseListener();
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
+		//this.getStyledDocument().addDocumentListener(new MyDocumentListener());
+		DefaultStyledDocument doc = (DefaultStyledDocument) this.getStyledDocument();
+		doc.setDocumentFilter(new MyDocumentFilter());
+		formattedText = "";
 	}
-	
+
 	public void setText(String t) {
 		this.rawText = t;
 		super.setText("");
+		links = new HashMap<Interval,Interval>();
 		this.writeStringToDocument(t);
 	}
-	
+
 	public void doPaint() {
 		String text = controller.getText(type, info.getPanel().getSelectedGridPoint(), index);
 		this.setText(text);
+	}
+
+	public void touch() {
+		this.setText(rawText);
 	}
 
 	private void writeStringToDocument(String string) {
@@ -69,17 +88,24 @@ public class MyTextPane extends JTextPane {
 			int closebrace = -1;
 			while(curlybrace>-1) {
 				doc.insertString(doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
-				closebrace = string.indexOf("}", curlybrace);
-				insertLink(string.substring(curlybrace, closebrace+1));
-				curlybrace = string.indexOf("{", closebrace);
+				closebrace = string.indexOf("}$", curlybrace)+1;
+				if(closebrace!=0) {
+					Interval linkInterval = insertLink(string.substring(curlybrace, closebrace+1));
+					links.put(linkInterval, new Interval(curlybrace,closebrace+1));
+					curlybrace = string.indexOf("{", closebrace);
+				}else {
+					closebrace = curlybrace-1;
+					break;
+				}
 			}
-			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
+			if(closebrace!=-1) doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
+			formattedText = doc.getText(0, doc.getLength());
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void insertLink(String link) throws BadLocationException {
+	private Interval insertLink(String link) throws BadLocationException {
 		StyledDocument doc = this.getStyledDocument();
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
@@ -87,7 +113,9 @@ public class MyTextPane extends JTextPane {
 		regularBlue.addAttribute("linkact", new ChatLinkAction(link, info));
 		regularBlue.addAttribute("linkmouseover", new MouseoverAction(link, this,info));
 		String linkText = getLinkText(link);
+		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
 		doc.insertString(doc.getLength(), linkText, regularBlue);
+		return result;
 	}
 
 	public String getRawText() {
@@ -95,11 +123,8 @@ public class MyTextPane extends JTextPane {
 	}
 
 	public String getLinkText(String link) {
-		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(link);
+		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(link);
 		if(matcher.matches()) {
-			if(Integer.valueOf(matcher.group(4))==0) {
-				System.out.println(link);
-			}
 			link = controller.getLinkText(
 					matcher.group(1),
 					Integer.valueOf(matcher.group(2)),
@@ -107,6 +132,38 @@ public class MyTextPane extends JTextPane {
 					Integer.valueOf(matcher.group(4))-1);
 		}
 		return link;
+	}
+
+	private int rawIndexToFormatted(int raw) {
+		int formatted = raw;
+		for(Entry<Interval,Interval> e:links.entrySet()) {
+			Interval rawInterval = e.getValue();
+			Interval formattedInterval = e.getKey();
+			if(rawInterval.getB()<=raw) formatted+=formattedInterval.size()-rawInterval.size();
+			else if(rawInterval.getA()<raw) formatted+=rawInterval.getA()-raw+formattedInterval.size()-1;
+		}
+		return formatted;
+	}
+
+	private int formattedIndexToRaw(int formatted) {
+		int raw = formatted;
+		for(Entry<Interval,Interval> e:links.entrySet()) {
+			Interval rawInterval = e.getValue();
+			Interval formattedInterval = e.getKey();
+			if(formattedInterval.getB()<=formatted) raw+=rawInterval.size()-formattedInterval.size();
+			else if(formattedInterval.getA()<formatted) raw+=formattedInterval.getA()-formatted+rawInterval.size()-1;
+		}
+		return raw;
+	}
+	public void insertRawText(String string, int a) {
+		rawText = rawText.substring(0, a)+string+rawText.substring(a);
+	}
+	public void replaceRawText(String string, int a,int b) {
+		rawText = rawText.substring(0, a)+string+rawText.substring(b);
+	}
+
+	public void deleteRawText(int a, int b) {
+		rawText = rawText.substring(0, a)+rawText.substring(b);
 	}
 
 	private String removeLinks(String string) {
@@ -139,14 +196,12 @@ public class MyTextPane extends JTextPane {
 			controller.updateData(type, text, p, index);
 		}
 	}
-	
 	private class NoScrollCaret extends DefaultCaret {
 		@Override
 		protected void adjustVisibility(Rectangle nloc) {
 
 		}
 	}
-	
 	private class MouseoverAction extends AbstractAction    {
 		private String textLink;
 		private final JTextPane textPane;
@@ -176,8 +231,7 @@ public class MyTextPane extends JTextPane {
 			execute();
 		}
 	}
-	public class TextLinkMouseListener implements MouseListener,MouseMotionListener {
-
+	private class TextLinkMouseListener implements MouseListener,MouseMotionListener {
 		public void mouseReleased(MouseEvent e) {}
 		public void mousePressed(MouseEvent e) {}
 		public void mouseExited(MouseEvent e) {}
@@ -202,8 +256,151 @@ public class MyTextPane extends JTextPane {
 			if(fla != null){
 				fla.execute();
 			}else {
-				
+
 			}
+		}
+	}
+	private class Interval {
+		int a;
+		int b;
+		public Interval(int a,int b) {
+			this.a=a;
+			this.b=b;
+		}
+		public int getA() {
+			return a;
+		}
+		public int getB() {
+			return b;
+		}
+		public int size() {
+			return b-a;
+		}
+		public String toString() {
+			return "["+a+"-"+b+"]";
+		}
+	}
+	private class MyDocumentListener implements DocumentListener{
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			if(info.isChangeSelected()) {
+				int changeLength = e.getLength();
+				int offset = e.getOffset();
+				Document doc = e.getDocument();
+				String string;
+				try {
+					int a = formattedIndexToRaw(offset);
+					int b = formattedIndexToRaw(offset+changeLength);
+					string = doc.getText(0, doc.getLength()).substring(offset, offset+changeLength);
+					insertRawText(string,a);
+					System.out.println(rawText);
+					//formattedText = doc.getText(0, doc.getLength());
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+					throw new IllegalStateException(formattedText);
+				}
+			}
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			if(info.isChangeSelected()) {
+				int changeLength = e.getLength();
+				int offset = e.getOffset();
+				int a = formattedIndexToRaw(offset);
+				int b = formattedIndexToRaw(offset+changeLength);
+				//String string = formattedText.substring(offset, offset+changeLength);
+				//System.out.println(string+ " -> "+rawText.substring(a, b));
+				deleteRawText(a,b);
+				System.out.println(rawText);
+				//				Document doc = e.getDocument();
+				//				try {
+				//					formattedText = doc.getText(0, doc.getLength());
+				//				} catch (BadLocationException e1) {
+				//					e1.printStackTrace();
+				//					throw new IllegalStateException(formattedText);
+				//				}
+			}
+		}
+		public void changedUpdate(DocumentEvent e) {}
+	}
+
+	private class MyDocumentFilter extends DocumentFilter {
+
+		@Override
+		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+			if(info.isChangeSelected()) {
+				int a = formattedIndexToRaw(offset);
+				int b = formattedIndexToRaw(offset+length);
+				//System.out.println("a:"+a+"-b:"+b);
+				deleteRawText(a,b);
+				//System.out.println(rawText);
+				writeStringToDocument(fb, rawText);
+			}else {
+				super.remove(fb, offset, length); // Allow the removal
+			}
+		}
+
+		@Override
+		public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+			//System.out.println("replace");
+			if(info.isChangeSelected()) {
+				int openbracket = rawText.lastIndexOf("{");
+				int closebracket = rawText.lastIndexOf("}$");
+				if(text.endsWith("}")&&openbracket>closebracket) {
+					String endswith = rawText.substring(openbracket);
+					if(endswith.matches("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)")) {
+						text+="$";
+					}
+				}
+				int a = formattedIndexToRaw(offset);
+				int b = formattedIndexToRaw(offset+length);
+				System.out.println("a:"+a+"-b:"+b);
+				replaceRawText(text,a,b);
+				System.out.println(text);
+				writeStringToDocument(fb, rawText);
+			}else {
+				super.replace(fb, offset, length, text, attrs); // Allow the replacement with modified text
+			}
+		}
+
+
+		private void writeStringToDocument(FilterBypass fb, String string) throws BadLocationException {
+			StyledDocument doc = MyTextPane.this.getStyledDocument();
+			super.remove(fb, 0, doc.getLength());
+			links = new HashMap<Interval,Interval>();
+			try {
+				int curlybrace = string.indexOf("{");
+				int closebrace = -1;
+				while(curlybrace>-1) {
+					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
+					closebrace = string.indexOf("}$", curlybrace)+1;
+					if(closebrace!=0) {
+						Interval linkInterval = insertLink(fb,string.substring(curlybrace, closebrace+1));
+						links.put(linkInterval, new Interval(curlybrace,closebrace+1));
+						curlybrace = string.indexOf("{", closebrace);
+					}else {
+						closebrace = curlybrace-1;
+						break;
+					}
+				}
+				if(closebrace!=-1) super.insertString(fb, doc.getLength(), string.substring(closebrace+1), DEFAULT);
+				formattedText = doc.getText(0, doc.getLength());
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}
+
+		private Interval insertLink(FilterBypass fb, String link) throws BadLocationException {
+			StyledDocument doc = MyTextPane.this.getStyledDocument();
+			Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
+			StyleConstants.setForeground(regularBlue, Color.BLUE);
+			StyleConstants.setUnderline(regularBlue, true);
+			regularBlue.addAttribute("linkact", new ChatLinkAction(link, info));
+			regularBlue.addAttribute("linkmouseover", new MouseoverAction(link, MyTextPane.this,info));
+			String linkText = getLinkText(link);
+			Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
+			super.insertString(fb, doc.getLength(), linkText, regularBlue);
+			return result;
 		}
 	}
 }

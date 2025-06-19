@@ -474,9 +474,6 @@ public class InfoPanel extends JTabbedPane{
 	public String getLinkText(String link) {
 		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(link);
 		if(matcher.matches()) {
-			if(Integer.valueOf(matcher.group(4))==0) {
-				System.out.println(link);
-			}
 			link = getLinkText(
 					matcher.group(1),
 					Integer.valueOf(matcher.group(2)),

@@ -18,7 +18,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
@@ -107,15 +106,20 @@ public class MyTextPane extends JTextPane {
 
 	private Interval insertLink(String link) throws BadLocationException {
 		StyledDocument doc = this.getStyledDocument();
+		Style regularBlue = getLinkStyle(link, doc);
+		String linkText = getLinkText(link);
+		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
+		doc.insertString(doc.getLength(), linkText, regularBlue);
+		return result;
+	}
+
+	private Style getLinkStyle(String link, StyledDocument doc) {
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
 		StyleConstants.setUnderline(regularBlue, true);
 		regularBlue.addAttribute("linkact", new ChatLinkAction(link, info));
 		regularBlue.addAttribute("linkmouseover", new MouseoverAction(link, this,info));
-		String linkText = getLinkText(link);
-		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
-		doc.insertString(doc.getLength(), linkText, regularBlue);
-		return result;
+		return regularBlue;
 	}
 
 	public String getRawText() {
@@ -132,17 +136,6 @@ public class MyTextPane extends JTextPane {
 					Integer.valueOf(matcher.group(4))-1);
 		}
 		return link;
-	}
-
-	private int rawIndexToFormatted(int raw) {
-		int formatted = raw;
-		for(Entry<Interval,Interval> e:links.entrySet()) {
-			Interval rawInterval = e.getValue();
-			Interval formattedInterval = e.getKey();
-			if(rawInterval.getB()<=raw) formatted+=formattedInterval.size()-rawInterval.size();
-			else if(rawInterval.getA()<raw) formatted+=rawInterval.getA()-raw+formattedInterval.size()-1;
-		}
-		return formatted;
 	}
 
 	private int formattedIndexToRaw(int formatted) {
@@ -172,8 +165,9 @@ public class MyTextPane extends JTextPane {
 		int closebrace = -1;
 		while(curlybrace>-1) {
 			sb.append(string.substring(closebrace+1,curlybrace));
-			closebrace = string.indexOf("}", curlybrace);
+			closebrace = string.indexOf("}$", curlybrace)+1;
 			String link = string.substring(curlybrace, closebrace+1);
+			System.out.println(link);
 			sb.append(getLinkText(link));
 			curlybrace = string.indexOf("{", closebrace);
 		}
@@ -214,14 +208,15 @@ public class MyTextPane extends JTextPane {
 		}
 
 		protected void execute(){
-			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(textLink);
+			System.out.print("mousover");
+			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
 			if(matcher.matches()) {
 				String tooltipText = info.getToolTipText(
 						matcher.group(1),
 						Integer.valueOf(matcher.group(2)),
 						Integer.valueOf(matcher.group(3)),
 						Integer.valueOf(matcher.group(4))-1);
-				tooltipText = tooltipText.replaceAll("\r\n", "<br>");
+				tooltipText = removeLinks(tooltipText.replaceAll("\r\n", "<br>"));
 				textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
 			}
 		}
@@ -392,11 +387,7 @@ public class MyTextPane extends JTextPane {
 
 		private Interval insertLink(FilterBypass fb, String link) throws BadLocationException {
 			StyledDocument doc = MyTextPane.this.getStyledDocument();
-			Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
-			StyleConstants.setForeground(regularBlue, Color.BLUE);
-			StyleConstants.setUnderline(regularBlue, true);
-			regularBlue.addAttribute("linkact", new ChatLinkAction(link, info));
-			regularBlue.addAttribute("linkmouseover", new MouseoverAction(link, MyTextPane.this,info));
+			Style regularBlue = getLinkStyle(link, doc);
 			String linkText = getLinkText(link);
 			Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
 			super.insertString(fb, doc.getLength(), linkText, regularBlue);

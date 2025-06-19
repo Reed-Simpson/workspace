@@ -1,5 +1,6 @@
 package io;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +41,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> locations2;
 	private HashMap<Point,ArrayList<String>> dungeons;
 	private HashMap<Point,ArrayList<String>> factions;
+	private HashMap<Point,Color> highlights;
 	private DiceRoller roller;
 
 	public SaveRecord() {
@@ -62,6 +64,7 @@ public class SaveRecord implements Serializable {
 		this.locations2 = new HashMap<Point,ArrayList<String>>();
 		this.dungeons = new HashMap<Point,ArrayList<String>>();
 		this.factions = new HashMap<Point,ArrayList<String>>();
+		this.highlights = new HashMap<Point,Color>();
 		
 		this.hasUnsavedData = true;
 	}
@@ -186,6 +189,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.locations2==null) loadedRecord.locations2 = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.dungeons==null) loadedRecord.dungeons = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.factions==null) loadedRecord.factions = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.highlights==null) loadedRecord.highlights = new HashMap<Point,Color>();
 		}
 		return loadedRecord;
 	}
@@ -455,5 +459,14 @@ public class SaveRecord implements Serializable {
 	}
 	public boolean setHasUnsavedData(boolean unsavedData) {
 		return this.hasUnsavedData = unsavedData;
+	}
+
+	public void setHighlight(Point p, Color color) {
+		if(color==null||Color.BLACK.equals(color)) highlights.remove(p);
+		else highlights.put(p, color);
+		System.out.println(p+","+color);
+	}
+	public Color getHighlight(Point p) {
+		return highlights.get(p);
 	}
 }

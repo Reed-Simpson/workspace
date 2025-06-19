@@ -164,7 +164,10 @@ public class MapPanel  extends JPanel{
 		return displayData;
 	}
 	public void setDisplayData(HexData displayData) {
-		this.displayData = displayData;
+		if(this.displayData!=displayData) {
+			printLoadingInfo = true;
+			this.displayData = displayData;
+		}
 	}
 
 	public void setDisplayRegion(HexData selectedItem) {
@@ -191,6 +194,7 @@ public class MapPanel  extends JPanel{
 			drawRivers(g2, step, displayScale, borderColor);
 		}
 		drawOceans(g2, step, displayScale, borderColor);
+		drawHighlights(g2, step, displayScale);
 		if(HexData.ECONOMY.equals(displayData)) {
 			drawRoads(g2,step,displayScale,Color.RED);
 			highlightTowns(g2,step,displayScale,Color.RED);
@@ -270,9 +274,26 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo) logger.logln("Oceans loaded "+(System.currentTimeMillis()-time)+" ms");
 	}
 
-	private void drawSelectedHex(Graphics2D g2, int displayScale) {
+	private void drawHighlights(Graphics2D g2, int step, int displayScale) {
+		int strokeSize = displayScale/4;
+		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
+		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
 		Stroke defaultStroke = g2.getStroke();
-		g2.setStroke(new BasicStroke(2));
+		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
+		for(int i=p1.x;i<p2.x;i+=1) {
+			for(int j=p2.y;j<p1.y;j+=1) {
+				Point p = new Point(i,j);
+				Color borderColor = record.getHighlight(p);
+				if(borderColor!=null) this.drawHex(g2, getScreenPos(i,j),borderColor,null,null,Math.max((int)scale,1),null);
+			}
+		}
+		g2.setStroke(defaultStroke);
+	}
+
+	private void drawSelectedHex(Graphics2D g2, int displayScale) {
+		int strokeSize = displayScale/7;
+		Stroke defaultStroke = g2.getStroke();
+		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		Point p = this.getSelectedGridPoint();
 		Color color1 = getColor1(p.x,p.y,displayData);
 		Color color2 = getColor2(p.x,p.y,displayData);
@@ -280,7 +301,7 @@ public class MapPanel  extends JPanel{
 			color1 = color2;
 			color2 = null;
 		}
-		this.drawHex(g2, getScreenPos(p),Color.CYAN,color1,color2,displayScale,null);
+		this.drawHex(g2, getScreenPos(p),Color.CYAN,color1,color2,Math.max((int)scale,1),null);
 		g2.setStroke(defaultStroke);
 	}
 
@@ -834,6 +855,11 @@ public class MapPanel  extends JPanel{
 
 	public DataController getController() {
 		return controller;
+	}
+
+	public void setHighlight(Color selectedColor) {
+		Point p = this.getSelectedGridPoint();
+		record.setHighlight(p,selectedColor);
 	}
 
 }

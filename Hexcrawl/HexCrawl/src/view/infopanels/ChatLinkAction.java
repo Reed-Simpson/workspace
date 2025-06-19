@@ -18,7 +18,7 @@ import view.InfoPanel;
 		}
 
 		public void execute(){
-			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(textLink);
+			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
 			if(matcher.matches()) {
 				System.out.println(textLink);
 				info.selectTabAndIndex(

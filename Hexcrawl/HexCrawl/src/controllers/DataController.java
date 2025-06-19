@@ -210,7 +210,7 @@ public class DataController {
 
 	public void updateData(HexData type, String text, Point p, int index) {
 		String defaultText = this.getDefaultText(type, p,index);
-		System.out.println(type.getText()+" text check: "+text.equals(defaultText));
+		//System.out.println(type.getText()+" text check: "+text.equals(defaultText));
 		boolean isDefault = text==null||"".equals(text)||text.equals(defaultText);
 		if(isDefault) this.removeData(type, p,index);
 		else this.putData(type, p,index, text);

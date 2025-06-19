@@ -92,7 +92,7 @@ public class MyTextPane extends JTextPane {
 					break;
 				}
 			}
-			if(closebrace!=-1) doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
+			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -161,7 +161,6 @@ public class MyTextPane extends JTextPane {
 			sb.append(string.substring(closebrace+1,curlybrace));
 			closebrace = string.indexOf("}$", curlybrace)+1;
 			String link = string.substring(curlybrace, closebrace+1);
-			System.out.println(link);
 			sb.append(getLinkText(link));
 			curlybrace = string.indexOf("{", closebrace);
 		}
@@ -178,7 +177,7 @@ public class MyTextPane extends JTextPane {
 			//System.out.println(getRawText());
 		}
 		public void focusLost(FocusEvent e) {
-			System.out.println("focus lost");
+			//System.out.println("focus lost");
 			String text = MyTextPane.this.getRawText();
 			Point p = info.getPanel().getSelectedGridPoint();
 			controller.updateData(type, text, p, index);
@@ -202,7 +201,6 @@ public class MyTextPane extends JTextPane {
 		}
 
 		protected void execute(){
-			System.out.print("mousover");
 			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
 			if(matcher.matches()) {
 				String tooltipText = info.getToolTipText(
@@ -328,7 +326,7 @@ public class MyTextPane extends JTextPane {
 						break;
 					}
 				}
-				if(closebrace!=-1) super.insertString(fb, doc.getLength(), string.substring(closebrace+1), DEFAULT);
+				super.insertString(fb, doc.getLength(), string.substring(closebrace+1), DEFAULT);
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}

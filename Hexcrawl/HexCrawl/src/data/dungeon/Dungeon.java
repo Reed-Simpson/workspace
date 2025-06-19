@@ -54,7 +54,7 @@ public class Dungeon extends Indexible{
 		this.trick = trick;
 	}
 	
-	public String toString(int i) {
+	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ Dungeon #"+(i)+" ~~~~~\r\n");
 		e1Text.append("Layout & Form: "+this.getLayout()+" "+this.getForm() + "\r\n");

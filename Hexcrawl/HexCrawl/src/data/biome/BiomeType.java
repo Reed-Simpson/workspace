@@ -4,8 +4,8 @@ import java.awt.Color;
 
 public enum BiomeType {
 	VOID(Color.BLACK,null,"void",9999),
-	WATER(Color.BLUE,'w',"ocean",3), 
-	SHALLOWS(Color.getHSBColor(220f/360f, 0.99f, 1f), 'w',"shallows",2), 
+	WATER(Color.BLUE,'\u2652',"ocean",3), 
+	SHALLOWS(Color.getHSBColor(220f/360f, 0.99f, 1f), '\u2652',"shallows",2), 
 	GRASSLAND(Color.getHSBColor(100f/360f, 0.7f, 1f), '\u22ce',"grassland",3), 
 	FOREST(Color.GREEN, '\u26b2',"forest",4), 
 	HIGHLAND(Color.getHSBColor(100f/360f, 0.7f, 0.9f), '\u22ce',"highland",3), 
@@ -28,7 +28,7 @@ public enum BiomeType {
 	BADLANDS(Color.ORANGE, '\u23dc',"badlands",4),
 	VOLCANIC(Color.RED, 'A',"volcanic peaks",6),
 	WETLAND(Color.getHSBColor(285f/360f, 0.95f, 0.5f), '\u22ce',"wetland",6) ,
-	LAKE(Color.getHSBColor(220f/360f, 0.7f, 1f), 'w',"lake",2) ,
+	LAKE(Color.getHSBColor(220f/360f, 0.7f, 1f), '\u2652',"lake",2) ,
 	FLOODPLAIN(Color.getHSBColor(170f/360f, 0.7f, 1f), '\u22ce',"floodplain",3) ,
 	RIVER(Color.getHSBColor(220f/360f, 0.7f, 1f), '\u2652',"river",2), 
 	CITY(Color.WHITE, '\u2605',"city",0) , 

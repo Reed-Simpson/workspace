@@ -82,11 +82,20 @@ public class DataController {
 	public String getDefaultText(HexData type,Point p,int i) {
 		String value;
 		switch(type) {
+		case THREAT: {
+			Point center = threats.getCenter(p);
+			value = threats.getThreat(center).toString();
+			break;
+		}
+		case ENCOUNTER: value = encounters.getEncounter(i, p).toString();
+		case NPC: value =  npcs.getNPC(i,p).toString();
 		case LOCATION: {
 			if(i==0) value = getDefaultInnText(p);
 			else value = pois.getPOI(i, p,population.isCity(p));
 			break;
 		}
+		case DUNGEON: value = dungeons.getDungeon(i, p).toString();break;
+		case D_ENCOUNTER: value = encounters.getDungeonEncounter(i, p).toString();break;
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getFaction(i, capital).toString(); break;
@@ -95,9 +104,21 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getDistrict(i, capital); break;
 		}
+		case CITY: {
+			Point capital = population.getAbsoluteFealty(p);
+			if(population.isCity(capital)) {
+				value = settlements.getSettlement(capital).toString();break;
+			}else {
+				value = "None";break;
+			}
+		}
+		case BIOME: {
+			Point region = biomes.getAbsoluteRegion(p);
+			value =  biomes.getRegionName(region);break;
+		}
+		case NONE: value = "";break;
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
-		System.out.println(value);
 		return value.toString();
 	}
 	private String getDefaultInnText(Point pos) {
@@ -106,11 +127,6 @@ public class DataController {
 		}else {
 			return names.getInnText(pos);
 		}
-	}
-	public boolean isDefaultText(HexData type,String text,Point p,int index) {
-		String defaultText = this.getDefaultText(type, p,index);
-		System.out.println(type.getText()+" text check: "+text.equals(defaultText));
-		return text==null||"".equals(text)||text.equals(defaultText);
 	}
 	public String getData(HexData type,Point p, int i) {
 		switch(type) {
@@ -195,8 +211,25 @@ public class DataController {
 	}
 
 	public void updateData(HexData type, String text, Point p, int index) {
-		if(this.isDefaultText(type, text, p, index)) this.removeData(type, p,index);
+		String defaultText = this.getDefaultText(type, p,index);
+		System.out.println(type.getText()+" text check: "+text.equals(defaultText));
+		boolean isDefault = text==null||"".equals(text)||text.equals(defaultText);
+		if(isDefault) this.removeData(type, p,index);
 		else this.putData(type, p,index, text);
+	}
+	public String getLinkText(HexData type, Point pos,int index) {
+		String fullText = getText(type, pos, index);
+		int firstLine = fullText.indexOf("\r\n");
+		if(firstLine>-1&&firstLine<50) {
+			return fullText.substring(0, firstLine);
+		}else {
+			return fullText.substring(0,30);
+		}
+	}
+	public String getLinkText(String tab, int x, int y, int index) {
+		Point p = new Point(x,y);
+		HexData type = HexData.get(tab);
+		return getLinkText(type, p, index);
 	}
 
 

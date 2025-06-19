@@ -76,18 +76,18 @@ public class InfoPanel extends JTabbedPane{
 	private JLabel magic;
 	private JLabel cityName;
 	//THREAT
-	private JTextArea threatText;
+	private MyTextPane threatText;
 	private JScrollPane threatScrollPane;
 	//ENCOUNTER
 	private JScrollPane npcScrollPane;
 	private JPanel hexPanel;
 	private JPanel regionPanel;
 	private JLabel locationName2;
-	private JTextArea city1;
+	private MyTextPane city1;
 	private JScrollPane cityScrollPane;
 	private JScrollPane poiScrollPane;
 	private JScrollPane dungeonScrollPane;
-	private JTextArea hexNote1;
+	private MyTextPane hexNote1;
 	private JScrollPane hexNoteScrollPane;
 	public boolean expandHexNotePane;
 	public boolean hideHexNotePane;
@@ -154,14 +154,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<NPCCOUNT;i++) {
 			npcPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
 			MyTextPane npci = new MyTextPane(this, i, HexData.NPC);
-			//			npci.setLineWrap(true);
-			//			npci.setWrapStyleWord(true);
 			npci.setMaximumSize(new Dimension(WIDTH-20,9999));
-//			npci.addFocusListener(new NPCFocusListener2(npci,i));
-//			npci.addMouseListener(new TextLinkMouseListener(npci));
-//			npci.setAlignmentX(LEFT_ALIGNMENT);
-//			npci.setCaret(new MyCaret());
-//			npci.setContentType("text/html");
 			npcPanel.add(npci);
 			npcTexts.add(npci);
 		}
@@ -176,24 +169,12 @@ public class InfoPanel extends JTabbedPane{
 		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
 		MyTextPane inn = new MyTextPane(this, 0, HexData.LOCATION);
 		inn.setMaximumSize(new Dimension(WIDTH-20,9999));
-//		inn.addFocusListener(new POIFocusListener(inn,0));
-//		inn.addMouseListener(new TextLinkMouseListener(inn));
-//		inn.setAlignmentX(LEFT_ALIGNMENT);
-//		inn.setCaret(new MyCaret());
-//		inn.setContentType("text/html");
 		poiPanel.add(inn);
 		poiTexts.add(inn);
 		for(int i=1;i<POICOUNT;i++) {
 			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.LOCATION);
-			//			poii.setLineWrap(true);
-			//			poii.setWrapStyleWord(true);
 			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
-//			poii.addFocusListener(new POIFocusListener(poii,i));
-//			poii.addMouseListener(new TextLinkMouseListener(poii));
-//			poii.setAlignmentX(LEFT_ALIGNMENT);
-//			poii.setCaret(new MyCaret());
-//			poii.setContentType("text/html");
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
@@ -207,14 +188,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<DUNGEONCOUNT;i++) {
 			dEntrancePanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
-			//			poii.setLineWrap(true);
-			//			poii.setWrapStyleWord(true);
 			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
-//			poii.addFocusListener(new DungeonEntranceFocusListener(poii,i));
-//			poii.addMouseListener(new TextLinkMouseListener(poii));
-//			poii.setAlignmentX(LEFT_ALIGNMENT);
-//			poii.setCaret(new MyCaret());
-//			poii.setContentType("text/html");
 			dEntrancePanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
@@ -228,14 +202,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<EncountersPanel.ENCOUNTERCOUNT;i++) {
 			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
 			MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
-			//			encounteri.setLineWrap(true);
-			//			encounteri.setWrapStyleWord(true);
 			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
-//			encounteri.addFocusListener(new DungeonEncounterFocusListener(encounteri,i));
-//			encounteri.addMouseListener(new TextLinkMouseListener(encounteri));
-//			encounteri.setAlignmentX(LEFT_ALIGNMENT);
-//			encounteri.setCaret(new MyCaret());
-//			encounteri.setContentType("text/html");
 			dungeonPanel.add(encounteri);
 			dungeonTexts.add(encounteri);
 		}
@@ -243,10 +210,7 @@ public class InfoPanel extends JTabbedPane{
 		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("D.Encounters", dungeonScrollPane);
 
-		hexNote1 = new JTextArea();
-		hexNote1.setLineWrap(true);
-		hexNote1.setWrapStyleWord(true);
-		hexNote1.addFocusListener(new HexNoteFocusListener());
+		hexNote1 = new MyTextPane(this, -1, HexData.NONE);
 		hexNoteScrollPane = new JScrollPane(hexNote1);
 		detailsTabs.addTab("Notes", hexNoteScrollPane);
 
@@ -293,10 +257,7 @@ public class InfoPanel extends JTabbedPane{
 		regionPanel.add(dummy4);
 		regionPanel.add(getSeparator());
 
-		threatText = new JTextArea("Threat");
-		threatText.setLineWrap(true);
-		threatText.setWrapStyleWord(true);
-		threatText.addFocusListener(new ThreatFocusListener());
+		threatText = new MyTextPane(this, -1, HexData.THREAT);
 		threatScrollPane = new JScrollPane(threatText);
 		threatScrollPane.setMaximumSize(new Dimension(9999,125));
 		threatScrollPane.setPreferredSize(new Dimension(9999,125));
@@ -309,10 +270,7 @@ public class InfoPanel extends JTabbedPane{
 
 
 		regionTabs = new JTabbedPane();
-		city1 = new JTextArea();
-		city1.setLineWrap(true);
-		city1.setWrapStyleWord(true);
-		city1.addFocusListener(new CityFocusListener());
+		city1 = new MyTextPane(this, -1, HexData.CITY);
 		cityScrollPane = new JScrollPane(city1);
 		regionTabs.addTab("Parent City", cityScrollPane);
 
@@ -322,14 +280,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<FACTIONCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);;
-			//			encounteri.setLineWrap(true);
-			//			encounteri.setWrapStyleWord(true);
 			factioni.setMaximumSize(new Dimension(WIDTH-20,9999));
-//			factioni.addFocusListener(new FactionFocusListener(factioni,i));
-//			factioni.addMouseListener(new TextLinkMouseListener(factioni));
-//			factioni.setAlignmentX(LEFT_ALIGNMENT);
-//			factioni.setCaret(new MyCaret());
-//			factioni.setContentType("text/html");
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
 		}
@@ -422,13 +373,15 @@ public class InfoPanel extends JTabbedPane{
 		String magics = panel.getController().getMagic().getMagicType(pos).getName();
 		this.magic.setText("Magic Type: "+magics);
 
-		this.threatText.setText(getThreatText(pos));
+		threatText.doPaint();
+//		this.threatText.setText(getThreatText(pos));
+		city1.doPaint();
 
 		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
 		
 
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-			this.city1.setText("None");
+//			this.city1.setText("None");
 
 			zeroPopComponents();
 		}else {
@@ -442,8 +395,8 @@ public class InfoPanel extends JTabbedPane{
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				pane.setText(getEncounterText(pos,i));
-				//writeStringToDocument(getEncounterText(pos,i), pane);
+				pane.doPaint();
+				//pane.setText(getEncounterText(pos,i));
 
 			}
 			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
@@ -457,7 +410,8 @@ public class InfoPanel extends JTabbedPane{
 					}else {
 						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
-					pane.setText(getNPCText(pos,i));
+					pane.doPaint();
+					//pane.setText(getNPCText(pos,i));
 				}
 				if(selectedNPC>-1) this.npcTexts.get(selectedNPC).setCaretPosition(0);
 			}else {
@@ -471,7 +425,8 @@ public class InfoPanel extends JTabbedPane{
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				pane.setText(getPOIText(pos,i,pos.equals(capital)));
+				pane.doPaint();
+				//pane.setText(getPOIText(pos,i,pos.equals(capital)));
 			}
 			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
 
@@ -482,7 +437,8 @@ public class InfoPanel extends JTabbedPane{
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				pane.setText(getDungeonText(pos,i));
+				pane.doPaint();
+				//pane.setText(getDungeonText(pos,i));
 			}
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
@@ -493,12 +449,13 @@ public class InfoPanel extends JTabbedPane{
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
-				pane.setText(getDungeonEncounterText(pos,i));
+				pane.doPaint();
+				//pane.setText(getDungeonEncounterText(pos,i));
 			}
 			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
 			if(population.isCity(capital)) {
-				this.city1.setText(getCityText(capital));
+//				this.city1.setText(getCityText(capital));
 				//this.city1.setCaretPosition(0);
 
 				for(int i = 0;i<this.factionTexts.size();i++) {
@@ -508,7 +465,8 @@ public class InfoPanel extends JTabbedPane{
 					}else {
 						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
-					pane.setText(getFactionText(pos,i));
+					pane.doPaint();
+					//pane.setText(getFactionText(pos,i));
 				}
 				if(selectedFaction>-1) this.factionTexts.get(selectedFaction).setCaretPosition(0);
 			}else {
@@ -516,7 +474,8 @@ public class InfoPanel extends JTabbedPane{
 			}
 		}
 
-		this.hexNote1.setText(getHexNoteText(pos));
+		hexNote1.doPaint();
+//		this.hexNote1.setText(getHexNoteText(pos));
 		super.paint(g);
 		changeSelected = true;
 	}
@@ -631,11 +590,6 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 
-	private String getEncounterText(Point pos,int index) {
-		String encounterText = panel.getRecord().getEncounter(pos,index);
-		if(encounterText==null) encounterText = getDefaultEncounterText(pos,index);
-		return encounterText;
-	}
 	String getDefaultEncounterText(Point pos,int index) {
 		Encounter n = panel.getController().getEncounters().getEncounter(index, pos);
 		return n.toString();
@@ -731,7 +685,7 @@ public class InfoPanel extends JTabbedPane{
 		return poiText;
 	}
 	private String getDefaultDungeonText(Point pos,int i) {
-		return panel.getController().getDungeon().getDungeon(i, pos).toString(i+1);
+		return panel.getController().getDungeon().getDungeon(i, pos).toString();
 	}
 	private String getDungeonLinkText(Point pos,int index) {
 		String dungeonText = getDungeonText(pos, index);
@@ -743,20 +697,10 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 
-	private String getDungeonEncounterText(Point pos,int i) {
-		String dungeonText = panel.getRecord().getDungeonEncounter(pos,i);
-		if(dungeonText==null) dungeonText = getDefaultDungeonEncounterText(pos,i);
-		return dungeonText;
-	}
-	private String getDefaultDungeonEncounterText(Point pos,int i) {
-		Encounter e = panel.getController().getEncounters().getDungeonEncounter(i+20, pos);
-		return e.toString();
-	}
-
-	private String getHexNoteText(Point pos) {
-		if(panel.getRecord().getNote(pos)!=null) return panel.getRecord().getNote(pos);
-		else return "";
-	}
+//	private String getHexNoteText(Point pos) {
+//		if(panel.getRecord().getNote(pos)!=null) return panel.getRecord().getNote(pos);
+//		else return "";
+//	}
 
 	public void setPanel(MapPanel panel) {
 		this.panel = panel;
@@ -886,165 +830,6 @@ public class InfoPanel extends JTabbedPane{
 	}
 	public MapPanel getPanel() {
 		return panel;
-	}
-
-	private final class EncounterFocusListener implements FocusListener {
-		private final MyTextPane encounteri;
-		int index;
-
-		private EncounterFocusListener(MyTextPane encounteri, int i) {
-			this.encounteri = encounteri;
-			this.index = i;
-		}
-		public void focusGained(FocusEvent e) {
-			InfoPanel.this.repaint();
-		}
-		public void focusLost(FocusEvent e) {
-			String text = encounteri.getRawText();
-			Point p = panel.getSelectedGridPoint();
-			String defaultText = getDefaultEncounterText(p,index);
-			System.out.println("encounter text check: "+text.equals(defaultText));
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeEncounter(p,index);
-			else panel.getRecord().putEncounter(p,index, text);
-		}
-	}
-	private final class NPCFocusListener2 implements FocusListener {
-		private final JTextPane npci;
-		int index;
-
-		private NPCFocusListener2(JTextPane npci, int i) {
-			this.npci = npci;
-			this.index = i;
-		}
-		public void focusGained(FocusEvent e) {
-			InfoPanel.this.repaint();
-		}
-		public void focusLost(FocusEvent e) {
-			String text = npci.getText();
-			Point p = panel.getSelectedGridPoint();
-			String defaultText = removeLinks(getDefaultNPCText(p,index));
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeNPC(p,index);
-			else panel.getRecord().putNPC(p,index, text);
-		}
-	}
-	public class POIFocusListener implements FocusListener {
-		private final JTextPane poii;
-		int index;
-
-		private POIFocusListener(JTextPane poii, int i) {
-			this.poii = poii;
-			this.index = i;
-		}
-		public void focusGained(FocusEvent e) {
-			InfoPanel.this.repaint();
-		}
-		public void focusLost(FocusEvent e) {
-			String text = poii.getText();
-			Point p = panel.getSelectedGridPoint();
-			boolean isCity = panel.getController().getPopulation().isCity(p);
-			String defaultText = removeLinks(getDefaultPOIText(p,index,isCity));
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeLocation(p,index);
-			else panel.getRecord().putLocation(p,index, text);
-		}
-	}
-	public class DungeonEntranceFocusListener implements FocusListener {
-		private final JTextPane poii;
-		int index;
-
-		private DungeonEntranceFocusListener(JTextPane poii, int i) {
-			this.poii = poii;
-			this.index = i;
-		}
-		public void focusGained(FocusEvent e) {
-			InfoPanel.this.repaint();
-		}
-		public void focusLost(FocusEvent e) {
-			String text = poii.getText();
-			Point p = panel.getSelectedGridPoint();
-			String defaultText = removeLinks(getDefaultDungeonText(p,index));
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeDungeon(p,index);
-			else panel.getRecord().putDungeon(p,index, text);
-		}
-	}
-	public class DungeonEncounterFocusListener implements FocusListener {
-		private final JTextPane dungeoni;
-		int index;
-
-		private DungeonEncounterFocusListener(JTextPane dungeoni, int i) {
-			this.dungeoni = dungeoni;
-			this.index = i;
-		}
-		@Override
-		public void focusGained(FocusEvent e) {
-			InfoPanel.this.repaint();
-		}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			String text = dungeoni.getText();
-			Point p = panel.getSelectedGridPoint();
-			String defaultText = removeLinks(getDefaultDungeonEncounterText(p,index));
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeDungeonEncounter(p, index);
-			else panel.getRecord().putDungeonEncounter(p,index, text);
-		}
-	}
-	public class FactionFocusListener implements FocusListener {
-		private final JTextPane factioni;
-		int index;
-
-		private FactionFocusListener(JTextPane factioni, int i) {
-			this.factioni = factioni;
-			this.index = i;
-		}
-		@Override
-		public void focusGained(FocusEvent e) {
-			InfoPanel.this.repaint();
-		}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			String text = factioni.getText();
-			Point p = panel.getSelectedGridPoint();
-			String defaultText = removeLinks(getDefaultFactionText(p,index));
-			if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeFaction(p, index);
-			else panel.getRecord().putFaction(p,index, text);
-		}
-	}
-	public class HexNoteFocusListener implements FocusListener {
-		@Override
-		public void focusGained(FocusEvent e) {}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			String text = hexNote1.getText();
-			Point p = panel.getSelectedGridPoint();
-			if(text==null||"".equals(text)) panel.getRecord().removeNote(p);
-			else panel.getRecord().putNote(p, text);
-		}
-	}
-	public class CityFocusListener implements FocusListener {
-		@Override
-		public void focusGained(FocusEvent e) {}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			String text = city1.getText();
-			Point p = panel.getController().getPopulation().getAbsoluteFealty(panel.getSelectedGridPoint());
-			if(text==null||"".equals(text)||text.equals(removeLinks(getDefaultCityText(p)))) panel.getRecord().removeCity(p);
-			else panel.getRecord().putCity(p, text);
-		}
-	}
-	public class ThreatFocusListener implements FocusListener {
-		@Override
-		public void focusGained(FocusEvent e) {}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			String text = threatText.getText();
-			Point center = panel.getController().getThreats().getCenter(panel.getSelectedGridPoint());
-			if(text==null||"".equals(text)||text.equals(removeLinks(getDefaultThreatText(center)))) panel.getRecord().removeThreat(center);
-			else panel.getRecord().putThreat(center, text);
-		}
 	}
 
 	@Override

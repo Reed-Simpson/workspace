@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -47,8 +49,12 @@ public class MyTextPane extends JTextPane {
 	public void setText(String t) {
 		this.rawText = t;
 		super.setText("");
-		//doc.remove(0, doc.getLength());//delete contents
 		this.writeStringToDocument(t);
+	}
+	
+	public void doPaint() {
+		String text = controller.getText(type, info.getPanel().getSelectedGridPoint(), index);
+		this.setText(text);
 	}
 
 	private void writeStringToDocument(String string) {
@@ -81,6 +87,36 @@ public class MyTextPane extends JTextPane {
 
 	public String getRawText() {
 		return rawText;
+	}
+
+	public String getLinkText(String link) {
+		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}").matcher(link);
+		if(matcher.matches()) {
+			if(Integer.valueOf(matcher.group(4))==0) {
+				System.out.println(link);
+			}
+			link = controller.getLinkText(
+					matcher.group(1),
+					Integer.valueOf(matcher.group(2)),
+					Integer.valueOf(matcher.group(3)),
+					Integer.valueOf(matcher.group(4))-1);
+		}
+		return link;
+	}
+
+	private String removeLinks(String string) {
+		StringBuilder sb = new StringBuilder();
+		int curlybrace = string.indexOf("{");
+		int closebrace = -1;
+		while(curlybrace>-1) {
+			sb.append(string.substring(closebrace+1,curlybrace));
+			closebrace = string.indexOf("}", curlybrace);
+			String link = string.substring(curlybrace, closebrace+1);
+			sb.append(getLinkText(link));
+			curlybrace = string.indexOf("{", closebrace);
+		}
+		sb.append(string.substring(closebrace+1));
+		return sb.toString();
 	}
 
 

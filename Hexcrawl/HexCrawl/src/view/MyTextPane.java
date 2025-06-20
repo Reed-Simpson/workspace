@@ -70,14 +70,9 @@ public class MyTextPane extends JTextPane {
 		links = new HashMap<Interval,Interval>();
 		this.writeStringToDocument(t);
 	}
-
 	public void doPaint() {
 		String text = controller.getText(type, info.getPanel().getSelectedGridPoint(), index);
 		this.setText(text);
-	}
-
-	public void touch() {
-		this.setText(rawText);
 	}
 
 	private void writeStringToDocument(String string) {

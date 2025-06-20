@@ -406,7 +406,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<threadText.size();i++) {
 			MyTextPane pane = new MyTextPane(this, i, HexData.THREAD);
 			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-			pane.setText(threadText.get(i));
+			pane.doPaint();
 			threads.add(pane);
 			threadsList.add(pane);
 			threads.add(Box.createVerticalStrut(2));

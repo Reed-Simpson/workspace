@@ -19,6 +19,7 @@ public enum HexData {
 	FACTION("faction"),
 	DISTRICT("district"),
 	CITY("city"),
+	CHARACTER("character"),
 	THREAD("thread");
 	
 	public static HexData[] getMapViews() {

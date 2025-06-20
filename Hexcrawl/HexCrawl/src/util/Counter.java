@@ -50,7 +50,7 @@ public class Counter {
 		if(this.logger!=null) logger.reset();
 	}
 	public void resetCounter(long max) {
-		resetCounter(max,5);
+		resetCounter(max,20);
 	}
 	public void resetCounter() {
 		resetCounter(this.counterMax);

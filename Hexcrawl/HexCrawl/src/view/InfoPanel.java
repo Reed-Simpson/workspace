@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 
@@ -110,7 +109,9 @@ public class InfoPanel extends JTabbedPane{
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
 	private JScrollPane encounterScrollPane;
-	private JTextArea charactersEmpty;
+	private MyTextPane charactersEmpty;
+	private ArrayList<MyTextPane> charactersList;
+	private ArrayList<MyTextPane> threadsList;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -327,50 +328,91 @@ public class InfoPanel extends JTabbedPane{
 		campaignPanel.setLayout(new BoxLayout(campaignPanel,BoxLayout.Y_AXIS));
 		//TODO populate campaign tab
 
-		JPanel charactersPanel = new JPanel(new BorderLayout());
+
 		JPanel charactersHeader = new JPanel();
 		charactersHeader.setLayout(new BoxLayout(charactersHeader, BoxLayout.X_AXIS));
 		charactersHeader.add(Box.createHorizontalStrut(40));
 		charactersHeader.add(new JLabel("Characters:"),BorderLayout.WEST);
 		charactersHeader.add(Box.createHorizontalGlue());
-		charactersHeader.add(new JButton("Hide"),BorderLayout.EAST);
-		charactersHeader.add(Box.createHorizontalStrut(140));
-		charactersPanel.add(charactersHeader, BorderLayout.NORTH);
 		JPanel characters = new JPanel();
+		JScrollPane charactersScrollPane = new JScrollPane(characters);
+		JButton charactersHideButton = new JButton("Hide");
+		charactersHideButton.addActionListener(new ActionListener() {
+			boolean hidden = false;
+			public void actionPerformed(ActionEvent e) {
+				if(hidden) {
+					charactersHideButton.setText("Hide");
+					hidden = false;
+					charactersScrollPane.setVisible(true);
+				}else {
+					charactersHideButton.setText("Show");
+					hidden = true;
+					charactersScrollPane.setVisible(false);
+				}
+			}
+		});
+		charactersHeader.add(charactersHideButton,BorderLayout.EAST);
+		charactersHeader.add(Box.createHorizontalStrut(140));
+		campaignPanel.add(charactersHeader);
+		this.charactersList = new ArrayList<MyTextPane>();
 		characters.setLayout(new BoxLayout(characters, BoxLayout.Y_AXIS));
 		ArrayList<Reference> chars = panel.getRecord().getCampaignCharacters();
-		for(int i=0;i<chars.size();i++) {
+		for(int i=0;i<chars.size()+30;i++) {
 			MyTextPane pane = new MyTextPane(this, i, HexData.NPC);
+			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			characters.add(pane);
+			charactersList.add(pane);
 			characters.add(Box.createVerticalStrut(2));
 		}
-		charactersEmpty = new JTextArea("None");
+		charactersEmpty = new MyTextPane(this, chars.size(), HexData.NPC);
+		charactersEmpty.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 		charactersEmpty.setEnabled(false);
 		characters.add(charactersEmpty);
-		charactersPanel.add(new JScrollPane(characters),BorderLayout.CENTER);
-		campaignPanel.add(charactersPanel);
+		campaignPanel.add(charactersScrollPane);
 
+		
 		JPanel threadsPanel = new JPanel(new BorderLayout());
 		JPanel threadsHeader = new JPanel();
 		threadsHeader.setLayout(new BoxLayout(threadsHeader, BoxLayout.X_AXIS));
 		threadsHeader.add(Box.createHorizontalStrut(40));
 		threadsHeader.add(new JLabel("Threads:"),BorderLayout.WEST);
 		threadsHeader.add(Box.createHorizontalGlue());
-		threadsHeader.add(new JButton("Hide"),BorderLayout.EAST);
+		JPanel threads = new JPanel();
+		JScrollPane threadsScrollPane = new JScrollPane(threads);
+		JButton addThreadButton = new JButton("➕ Add Thread");
+		JButton threadsHideButton = new JButton("Hide");
+		threadsHideButton.addActionListener(new ActionListener() {
+			boolean hidden = false;
+			public void actionPerformed(ActionEvent e) {
+				if(hidden) {
+					threadsHideButton.setText("Hide");
+					hidden = false;
+					threadsScrollPane.setVisible(true);
+					addThreadButton.setVisible(true);
+				}else {
+					threadsHideButton.setText("Show");
+					hidden = true;
+					threadsScrollPane.setVisible(false);
+					addThreadButton.setVisible(false);
+				}
+			}
+		});
+		threadsHeader.add(threadsHideButton,BorderLayout.EAST);
 		threadsHeader.add(Box.createHorizontalStrut(140));
 		threadsPanel.add(threadsHeader, BorderLayout.NORTH);
-		JPanel threads = new JPanel();
+		this.threadsList = new ArrayList<MyTextPane>();
 		threads.setLayout(new BoxLayout(threads, BoxLayout.Y_AXIS));
 		ArrayList<String> threadText = panel.getRecord().getCampaignThreads();
-		for(int i=0;i<threadText.size();i++) {
+		for(int i=0;i<threadText.size()+30;i++) {
 			MyTextPane pane = new MyTextPane(this, i, HexData.THREAD);
+			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			threads.add(pane);
+			threadsList.add(pane);
 			threads.add(Box.createVerticalStrut(2));
 		}
-		JButton addThreadButton = new JButton("➕ Add Thread");
 		addThreadButton.setMaximumSize(new Dimension(999, 30));
 		threadsPanel.add(addThreadButton,BorderLayout.SOUTH);
-		threadsPanel.add(new JScrollPane(threads),BorderLayout.CENTER);
+		threadsPanel.add(threadsScrollPane,BorderLayout.CENTER);
 		campaignPanel.add(threadsPanel);
 		
 		this.addTab(Util.pad("Campaign", TAB_TITLE_LENGTH), (campaignPanel));

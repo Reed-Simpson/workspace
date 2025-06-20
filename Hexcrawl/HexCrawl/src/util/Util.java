@@ -127,11 +127,19 @@ public class Util {
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos));
+			if(result.contains("${character index}")) {
+				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
+				else result = Util.replace(result,"${character index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
+			}
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
+			if(result.contains("${character index}")) {
+				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
+				else result = Util.replace(result,"${character index}",FactionNameGenerator.getFaction(obj));
+			}
 		}
 		return result;
 	}

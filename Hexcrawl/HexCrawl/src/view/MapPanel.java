@@ -383,6 +383,7 @@ public class MapPanel  extends JPanel{
 			counter.resetCounter();
 		}
 		if(printLoadingInfo) {
+			counter.resetCounter();
 			dialog.createProgressUI("Loading lakes ~10 s: ");
 			logger.log("Loading lakes "+(sum*loadingFactor)+" ~10000ms: ");
 		}

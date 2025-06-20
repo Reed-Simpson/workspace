@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 import data.Reference;
@@ -31,7 +31,7 @@ public class SaveRecord implements Serializable {
 	private Point zero;
 	private double scale;
 	private boolean initialized;
-	private HashMap<Point,String> notes;
+	private LinkedHashMap<Point,String> notes;
 	private HashMap<Point,String> threats;
 	private HashMap<Point,String> cities;
 	private HashMap<Point,String> locations;
@@ -54,7 +54,7 @@ public class SaveRecord implements Serializable {
 		this.setScale(20);
 		setDefaultPos();
 		initialized=false;
-		this.notes = new HashMap<Point,String>();
+		this.notes = new LinkedHashMap<Point,String>();
 		this.threats = new HashMap<Point,String>();
 		this.cities = new HashMap<Point,String>();
 		this.locations = new HashMap<Point,String>();
@@ -182,7 +182,7 @@ public class SaveRecord implements Serializable {
 			} catch (Exception ex) {}
 		}
 		if(loadedRecord!=null) {
-			if(loadedRecord.notes==null) loadedRecord.notes=new HashMap<Point,String>();
+			if(loadedRecord.notes==null||!(loadedRecord.notes instanceof LinkedHashMap)) loadedRecord.notes=new LinkedHashMap<Point,String>();
 			if(loadedRecord.threats==null) loadedRecord.threats=new HashMap<Point,String>();
 			if(loadedRecord.cities==null) loadedRecord.cities=new HashMap<Point,String>();
 			if(loadedRecord.locations==null) loadedRecord.locations=new HashMap<Point,String>();

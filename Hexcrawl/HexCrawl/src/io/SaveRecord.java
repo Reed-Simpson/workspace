@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import data.Reference;
 import data.altitude.AltitudeModel;
 import data.population.PopulationModel;
 import util.DiceRoller;
@@ -43,6 +45,8 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> factions;
 	private HashMap<Point,Color> highlights;
 	private DiceRoller roller;
+	private ArrayList<Reference> campaignCharacters;
+	private ArrayList<String> campaignThreads;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -65,6 +69,9 @@ public class SaveRecord implements Serializable {
 		this.dungeons = new HashMap<Point,ArrayList<String>>();
 		this.factions = new HashMap<Point,ArrayList<String>>();
 		this.highlights = new HashMap<Point,Color>();
+
+		this.campaignCharacters = new ArrayList<Reference>();
+		this.campaignThreads = new ArrayList<String>();
 		
 		this.hasUnsavedData = true;
 	}
@@ -190,6 +197,9 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.dungeons==null) loadedRecord.dungeons = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.factions==null) loadedRecord.factions = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.highlights==null) loadedRecord.highlights = new HashMap<Point,Color>();
+			
+			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
+			if(loadedRecord.campaignThreads==null) loadedRecord.campaignThreads = new ArrayList<String>();
 		}
 		return loadedRecord;
 	}
@@ -468,5 +478,25 @@ public class SaveRecord implements Serializable {
 	}
 	public Color getHighlight(Point p) {
 		return highlights.get(p);
+	}
+	
+	public ArrayList<Reference> getCampaignCharacters(){
+		return this.campaignCharacters;
+	}
+	public boolean putCampaignCharacter(Reference ref) {
+		return this.campaignCharacters.add(ref);
+	}
+	public Reference removeCampaignCharacter(int index) {
+		return this.campaignCharacters.remove(index);
+	}
+	
+	public ArrayList<String> getCampaignThreads(){
+		return this.campaignThreads;
+	}
+	public boolean putCampaignThread(String ref) {
+		return this.campaignThreads.add(ref);
+	}
+	public String removeCampaignThread(int index) {
+		return this.campaignThreads.remove(index);
 	}
 }

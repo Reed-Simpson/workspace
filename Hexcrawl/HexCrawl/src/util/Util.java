@@ -102,7 +102,7 @@ public class Util {
 	}
 	public static Point denormalizePos(Point pos,Point zero) {
 		if(zero==null) zero = new Point(0,0);
-		return new Point(pos.x+zero.x,zero.y+pos.y);
+		return new Point(pos.x+zero.x,zero.y-pos.y);
 	}
 	public static String posString(Point pos,Point zero) {
 		Point p = normalizePos(pos,zero);

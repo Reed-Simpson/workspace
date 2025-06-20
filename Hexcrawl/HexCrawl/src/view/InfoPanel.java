@@ -14,17 +14,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 
 import data.HexData;
+import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.encounters.Encounter;
@@ -54,7 +58,7 @@ public class InfoPanel extends JTabbedPane{
 	private static final int LOCATION_TAB_INDEX = 2;
 	private static final int NPC_TAB_INDEX = 1;
 	private static final int ENCOUNTER_TAB_INDEX = 0;
-	private static final int WIDTH = 450;
+	private static final int INFOPANELWIDTH = 450;
 	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
 	public static final int POICOUNT = 20;
@@ -103,17 +107,33 @@ public class InfoPanel extends JTabbedPane{
 	int selectedEncounter;
 	boolean changeSelected;
 
-	//private EncountersPanel encounterPanel;
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
 	private JScrollPane encounterScrollPane;
+	private JTextArea charactersEmpty;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-		//Tab 1
+
+		createHexTab(panel);
+		
+		createRegionTab(panel);
+		
+		createCampaignTab();
+		
+
+		resetSelection();
+		changeSelected = true;
+
+		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+		toolTipManager.setDismissDelay(Integer.MAX_VALUE); 
+		toolTipManager.setInitialDelay(0);
+	}
+
+	private void createHexTab(MapPanel panel) {
 		this.hexPanel = new JPanel();
-		hexPanel.setPreferredSize(new Dimension(WIDTH,WIDTH));
+		hexPanel.setPreferredSize(new Dimension(INFOPANELWIDTH,INFOPANELWIDTH));
 		hexPanel.setLayout(new BoxLayout(hexPanel, BoxLayout.Y_AXIS));
 		
 
@@ -132,7 +152,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
 			MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
-			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
+			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH,9999));
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
 		}
@@ -147,7 +167,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<NPCCOUNT;i++) {
 			npcPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
 			MyTextPane npci = new MyTextPane(this, i, HexData.NPC);
-			npci.setMaximumSize(new Dimension(WIDTH-20,9999));
+			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			npcPanel.add(npci);
 			npcTexts.add(npci);
 		}
@@ -161,13 +181,13 @@ public class InfoPanel extends JTabbedPane{
 		poiTexts = new ArrayList<MyTextPane>();
 		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
 		MyTextPane inn = new MyTextPane(this, 0, HexData.LOCATION);
-		inn.setMaximumSize(new Dimension(WIDTH-20,9999));
+		inn.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 		poiPanel.add(inn);
 		poiTexts.add(inn);
 		for(int i=1;i<POICOUNT;i++) {
 			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.LOCATION);
-			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
+			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
@@ -181,7 +201,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<DUNGEONCOUNT;i++) {
 			dEntrancePanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
-			poii.setMaximumSize(new Dimension(WIDTH-20,9999));
+			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			dEntrancePanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
@@ -195,7 +215,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
 			MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
-			encounteri.setMaximumSize(new Dimension(WIDTH-20,9999));
+			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			dungeonPanel.add(encounteri);
 			dungeonTexts.add(encounteri);
 		}
@@ -225,8 +245,9 @@ public class InfoPanel extends JTabbedPane{
 		hexPanel.add(detailsTabs);
 
 		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), new JScrollPane(hexPanel));
+	}
 
-		//Tab 1
+	private void createRegionTab(MapPanel panel) {
 		this.regionPanel = new JPanel();
 		regionPanel.setPreferredSize(new Dimension(300,300));
 		regionPanel.setLayout(new BoxLayout(regionPanel, BoxLayout.Y_AXIS));
@@ -288,7 +309,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<FACTIONCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);;
-			factioni.setMaximumSize(new Dimension(WIDTH-20,9999));
+			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
 		}
@@ -299,21 +320,62 @@ public class InfoPanel extends JTabbedPane{
 		regionPanel.add(regionTabs);
 
 		this.addTab(Util.pad("Region", TAB_TITLE_LENGTH), new JScrollPane(regionPanel));
-		
-		
-		//Campaign menu
-		JPanel campaignPanel = new JPanel();
-
-		this.addTab(Util.pad("Campaign", TAB_TITLE_LENGTH), new JScrollPane(campaignPanel));
-		
-
-		resetSelection();
-		changeSelected = true;
-
-		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
-		toolTipManager.setDismissDelay(Integer.MAX_VALUE); 
-		toolTipManager.setInitialDelay(0);
 	}
+
+	private void createCampaignTab() {
+		JPanel campaignPanel = new JPanel();
+		campaignPanel.setLayout(new BoxLayout(campaignPanel,BoxLayout.Y_AXIS));
+		//TODO populate campaign tab
+
+		JPanel charactersPanel = new JPanel(new BorderLayout());
+		JPanel charactersHeader = new JPanel();
+		charactersHeader.setLayout(new BoxLayout(charactersHeader, BoxLayout.X_AXIS));
+		charactersHeader.add(Box.createHorizontalStrut(40));
+		charactersHeader.add(new JLabel("Characters:"),BorderLayout.WEST);
+		charactersHeader.add(Box.createHorizontalGlue());
+		charactersHeader.add(new JButton("Hide"),BorderLayout.EAST);
+		charactersHeader.add(Box.createHorizontalStrut(140));
+		charactersPanel.add(charactersHeader, BorderLayout.NORTH);
+		JPanel characters = new JPanel();
+		characters.setLayout(new BoxLayout(characters, BoxLayout.Y_AXIS));
+		ArrayList<Reference> chars = panel.getRecord().getCampaignCharacters();
+		for(int i=0;i<chars.size();i++) {
+			MyTextPane pane = new MyTextPane(this, i, HexData.NPC);
+			characters.add(pane);
+			characters.add(Box.createVerticalStrut(2));
+		}
+		charactersEmpty = new JTextArea("None");
+		charactersEmpty.setEnabled(false);
+		characters.add(charactersEmpty);
+		charactersPanel.add(new JScrollPane(characters),BorderLayout.CENTER);
+		campaignPanel.add(charactersPanel);
+
+		JPanel threadsPanel = new JPanel(new BorderLayout());
+		JPanel threadsHeader = new JPanel();
+		threadsHeader.setLayout(new BoxLayout(threadsHeader, BoxLayout.X_AXIS));
+		threadsHeader.add(Box.createHorizontalStrut(40));
+		threadsHeader.add(new JLabel("Threads:"),BorderLayout.WEST);
+		threadsHeader.add(Box.createHorizontalGlue());
+		threadsHeader.add(new JButton("Hide"),BorderLayout.EAST);
+		threadsHeader.add(Box.createHorizontalStrut(140));
+		threadsPanel.add(threadsHeader, BorderLayout.NORTH);
+		JPanel threads = new JPanel();
+		threads.setLayout(new BoxLayout(threads, BoxLayout.Y_AXIS));
+		ArrayList<String> threadText = panel.getRecord().getCampaignThreads();
+		for(int i=0;i<threadText.size();i++) {
+			MyTextPane pane = new MyTextPane(this, i, HexData.THREAD);
+			threads.add(pane);
+			threads.add(Box.createVerticalStrut(2));
+		}
+		JButton addThreadButton = new JButton("➕ Add Thread");
+		addThreadButton.setMaximumSize(new Dimension(999, 30));
+		threadsPanel.add(addThreadButton,BorderLayout.SOUTH);
+		threadsPanel.add(new JScrollPane(threads),BorderLayout.CENTER);
+		campaignPanel.add(threadsPanel);
+		
+		this.addTab(Util.pad("Campaign", TAB_TITLE_LENGTH), (campaignPanel));
+	}
+
 
 	public void resetSelection() {
 		selectedEncounter = -1;
@@ -685,11 +747,6 @@ public class InfoPanel extends JTabbedPane{
 			return dungeonText.substring(0,30);
 		}
 	}
-
-//	private String getHexNoteText(Point pos) {
-//		if(panel.getRecord().getNote(pos)!=null) return panel.getRecord().getNote(pos);
-//		else return "";
-//	}
 
 	public void setPanel(MapPanel panel) {
 		this.panel = panel;

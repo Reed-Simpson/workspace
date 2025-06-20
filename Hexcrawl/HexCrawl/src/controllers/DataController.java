@@ -88,7 +88,9 @@ public class DataController {
 			value = threats.getThreat(center).toString();break;
 		}
 		case ENCOUNTER: value = encounters.getEncounter(i, p).toString();break;
-		case NPC: value =  npcs.getNPC(i,p).toString(); break;
+		case NPC: {
+			value =  npcs.getNPC(i,p).toString(); break;
+		}
 		case LOCATION: {
 			if(i==0) value = getDefaultInnText(p);
 			else value = pois.getPOI(i, p,population.isCity(p));break;

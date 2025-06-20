@@ -33,7 +33,7 @@ public enum BiomeType {
 	RIVER(Color.getHSBColor(220f/360f, 0.7f, 1f), '\u2652',"river",2), 
 	CITY(Color.WHITE, '\u2605',"city",0) , 
 	TOWN(Color.GRAY, '\u2B24',"town",0),
-	DELTA(Color.getHSBColor(220f/360f, 0.7f, 1f), '\u2652',"delta",6) ;
+	DELTA(Color.getHSBColor(200f/360f, 0.7f, 1f), '\u2652',"delta",6) ;
 
 	private Color color;
 	private Character ch;

@@ -18,7 +18,8 @@ public enum HexData {
 	D_ENCOUNTER("d.encounter"),
 	FACTION("faction"),
 	DISTRICT("district"),
-	CITY("city");
+	CITY("city"),
+	THREAD("thread");
 	
 	public static HexData[] getMapViews() {
 		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT};

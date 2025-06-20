@@ -117,13 +117,6 @@ public class MenuBar extends JMenuBar {
 		return fileMenu;
 	}
 
-	private JMenu constructCampaignMenu() {
-		JMenu menu = new JMenu("Campaign");
-		JMenuItem listsItem = new JMenuItem("Lists");
-		menu.add(listsItem);
-		return menu;
-	}
-
 	private JMenu constructUtilityMenu() {
 		JMenu menu = new JMenu("Utilities");
 		JMenuItem roller = new JMenuItem("Dice Roller");

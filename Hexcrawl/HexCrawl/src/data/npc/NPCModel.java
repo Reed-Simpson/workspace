@@ -244,7 +244,10 @@ public class NPCModel extends DataModel {
 
 	public NPC getNPC(int i,Point p) {
 		WeightedTable<Species> demo = population.getTransformedDemographics(p);
-		if(demo.getSumWeight()==0) return null;
+		if(demo.getSumWeight()==0) {
+			System.out.println(Util.normalizePos(p, record.getZero()));
+			return null;
+		}
 		float[] floats = new float[TABLECOUNT];
 		for(int x=0;x<floats.length;x++) {
 			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
@@ -252,7 +255,6 @@ public class NPCModel extends DataModel {
 		NPC result = new NPC(floats);
 
 		populateNPCData(i, p, result);
-
 		return result;
 	}
 	private void populateNPCData(int i, Point p, NPC npc) {

@@ -40,7 +40,7 @@ public class MyTextPane extends JTextPane {
 	private int index;
 	private HexData type;
 	private HashMap<Interval,Interval> links;
-
+	private Point point;
 
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
@@ -57,6 +57,9 @@ public class MyTextPane extends JTextPane {
 		//this.getStyledDocument().addDocumentListener(new MyDocumentListener());
 		DefaultStyledDocument doc = (DefaultStyledDocument) this.getStyledDocument();
 		doc.setDocumentFilter(new MyDocumentFilter());
+	}
+	public MyTextPane(InfoPanel info,HexData type) {
+		this(info,0,type);
 	}
 
 	public void setText(String t) {
@@ -167,6 +170,14 @@ public class MyTextPane extends JTextPane {
 		sb.append(string.substring(closebrace+1));
 		return sb.toString();
 	}
+	
+	private Point getPoint() {
+		if(this.point!=null) return this.point;
+		else return info.getPanel().getSelectedGridPoint();
+	}
+	public void setPoint(Point point) {
+		this.point = point;
+	}
 
 
 	private final class TextFocusListener implements FocusListener {
@@ -179,7 +190,7 @@ public class MyTextPane extends JTextPane {
 		public void focusLost(FocusEvent e) {
 			//System.out.println("focus lost");
 			String text = MyTextPane.this.getRawText();
-			Point p = info.getPanel().getSelectedGridPoint();
+			Point p = getPoint();
 			controller.updateData(type, text, p, index);
 		}
 	}

@@ -21,7 +21,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.DocumentFilter;
-import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -52,6 +51,7 @@ public class MyTextPane extends JTextPane {
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setCaret(new NoScrollCaret());
 		this.setContentType("text/html");
+		this.setText("");
 		this.addFocusListener(new TextFocusListener(type));
 		TextLinkMouseListener mouseAdapter = new TextLinkMouseListener();
 		this.addMouseListener(mouseAdapter);

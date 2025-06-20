@@ -6,6 +6,7 @@ import java.util.List;
 
 import data.GenericTables;
 import data.Indexible;
+import data.Reference;
 import data.dungeon.DungeonModel;
 import data.item.EquipmentModel;
 import data.location.LocationModel;
@@ -251,7 +252,7 @@ public class Util {
 
 	public static String getIndexString(Indexible obj,String type,int count,Point p) {
 		int index = obj.reduceTempId(count);
-		return "{"+type+":"+p.x+","+p.y+","+(index+1)+"}$";
+		return new Reference("{"+type+":"+p.x+","+p.y+","+(index+1)+"}$").toString();
 	}
 
 	public static String formatSubtype(String string,CreatureSubtype type) {

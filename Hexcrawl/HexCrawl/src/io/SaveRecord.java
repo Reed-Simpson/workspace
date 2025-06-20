@@ -182,7 +182,7 @@ public class SaveRecord implements Serializable {
 			} catch (Exception ex) {}
 		}
 		if(loadedRecord!=null) {
-			if(loadedRecord.notes==null||!(loadedRecord.notes instanceof LinkedHashMap)) loadedRecord.notes=new LinkedHashMap<Point,String>();
+			if(loadedRecord.notes==null) loadedRecord.notes=new LinkedHashMap<Point,String>();
 			if(loadedRecord.threats==null) loadedRecord.threats=new HashMap<Point,String>();
 			if(loadedRecord.cities==null) loadedRecord.cities=new HashMap<Point,String>();
 			if(loadedRecord.locations==null) loadedRecord.locations=new HashMap<Point,String>();
@@ -474,7 +474,6 @@ public class SaveRecord implements Serializable {
 	public void setHighlight(Point p, Color color) {
 		if(color==null||Color.BLACK.equals(color)) highlights.remove(p);
 		else highlights.put(p, color);
-		System.out.println(p+","+color);
 	}
 	public Color getHighlight(Point p) {
 		return highlights.get(p);
@@ -483,8 +482,14 @@ public class SaveRecord implements Serializable {
 	public ArrayList<Reference> getCampaignCharacters(){
 		return this.campaignCharacters;
 	}
-	public boolean putCampaignCharacter(Reference ref) {
-		return this.campaignCharacters.add(ref);
+	public String putCampaignCharacter(int i,String s) {
+		Reference ref = new Reference(s);
+		while(this.campaignCharacters.size()<i+1) this.campaignCharacters.add(null);
+		Reference set = this.campaignCharacters.set(i, ref);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set.toString();
 	}
 	public Reference removeCampaignCharacter(int index) {
 		return this.campaignCharacters.remove(index);
@@ -493,8 +498,13 @@ public class SaveRecord implements Serializable {
 	public ArrayList<String> getCampaignThreads(){
 		return this.campaignThreads;
 	}
-	public boolean putCampaignThread(String ref) {
-		return this.campaignThreads.add(ref);
+	public String putCampaignThread(int i,String s) {
+		while(this.campaignThreads.size()<i+1) this.campaignThreads.add(null);
+		String set = this.campaignThreads.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 	public String removeCampaignThread(int index) {
 		return this.campaignThreads.remove(index);

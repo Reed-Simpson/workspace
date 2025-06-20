@@ -403,9 +403,10 @@ public class InfoPanel extends JTabbedPane{
 		this.threadsList = new ArrayList<MyTextPane>();
 		threads.setLayout(new BoxLayout(threads, BoxLayout.Y_AXIS));
 		ArrayList<String> threadText = panel.getRecord().getCampaignThreads();
-		for(int i=0;i<threadText.size()+30;i++) {
+		for(int i=0;i<threadText.size();i++) {
 			MyTextPane pane = new MyTextPane(this, i, HexData.THREAD);
 			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			pane.setText(threadText.get(i));
 			threads.add(pane);
 			threadsList.add(pane);
 			threads.add(Box.createVerticalStrut(2));
@@ -413,6 +414,13 @@ public class InfoPanel extends JTabbedPane{
 		addThreadButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				MyTextPane pane = new MyTextPane(InfoPanel.this, threadsList.size(), HexData.THREAD);
+				pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+				threads.add(pane);
+				threadsList.add(pane);
+				threads.add(Box.createVerticalStrut(2));
+				System.out.println(threadsList.size());
+				InfoPanel.this.repaint();
 			}
 		});
 		addThreadButton.setMaximumSize(new Dimension(999, 30));

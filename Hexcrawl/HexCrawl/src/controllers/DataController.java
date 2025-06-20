@@ -155,6 +155,8 @@ public class DataController {
 			return record.getRegionName(region);
 		}
 		case NONE: return record.getNote(p);
+		case THREAD: return record.getCampaignThread(i);
+		case CHARACTER: return record.getCampaignCharacter(i).toString();
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}

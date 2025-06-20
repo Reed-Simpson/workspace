@@ -410,6 +410,11 @@ public class InfoPanel extends JTabbedPane{
 			threadsList.add(pane);
 			threads.add(Box.createVerticalStrut(2));
 		}
+		addThreadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		addThreadButton.setMaximumSize(new Dimension(999, 30));
 		threadsPanel.add(addThreadButton,BorderLayout.SOUTH);
 		threadsPanel.add(threadsScrollPane,BorderLayout.CENTER);

@@ -21,6 +21,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -29,6 +30,7 @@ import javax.swing.text.StyledDocument;
 
 import controllers.DataController;
 import data.HexData;
+import data.Reference;
 import view.infopanels.TextLinkAction;
 
 @SuppressWarnings("serial")
@@ -81,19 +83,13 @@ public class MyTextPane extends JTextPane {
 	private void writeStringToDocument(String string) {
 		StyledDocument doc = this.getStyledDocument();
 		try {
-			int curlybrace = string.indexOf("{");
+			Matcher matcher = Reference.PATTERN.matcher(string);
 			int closebrace = -1;
-			while(curlybrace>-1) {
-				doc.insertString(doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
-				closebrace = string.indexOf("}$", curlybrace)+1;
-				if(closebrace!=0) {
-					Interval linkInterval = insertLink(string.substring(curlybrace, closebrace+1));
-					links.put(linkInterval, new Interval(curlybrace,closebrace+1));
-					curlybrace = string.indexOf("{", closebrace);
-				}else {
-					closebrace = curlybrace-1;
-					break;
-				}
+			while(matcher.find()) {
+				doc.insertString(doc.getLength(), string.substring(closebrace+1,matcher.start()), DEFAULT);
+				closebrace = matcher.end()-1;
+				Interval linkInterval = insertLink(string.substring(matcher.start(), matcher.end()));
+				links.put(linkInterval, new Interval(matcher.start(),matcher.end()));
 			}
 			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
 		} catch (BadLocationException e) {
@@ -124,7 +120,7 @@ public class MyTextPane extends JTextPane {
 	}
 
 	public String getLinkText(String link) {
-		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(link);
+		Matcher matcher = Reference.PATTERN.matcher(link);
 		if(matcher.matches()) {
 			link = controller.getLinkText(
 					matcher.group(1),
@@ -158,14 +154,13 @@ public class MyTextPane extends JTextPane {
 
 	private String removeLinks(String string) {
 		StringBuilder sb = new StringBuilder();
-		int curlybrace = string.indexOf("{");
+		Matcher matcher = Reference.PATTERN.matcher(string);
 		int closebrace = -1;
-		while(curlybrace>-1) {
-			sb.append(string.substring(closebrace+1,curlybrace));
-			closebrace = string.indexOf("}$", curlybrace)+1;
-			String link = string.substring(curlybrace, closebrace+1);
+		while(matcher.find()) {
+			sb.append(string.substring(closebrace+1,matcher.start()));
+			closebrace = matcher.end()-1;
+			String link = string.substring(matcher.start(), matcher.end());
 			sb.append(getLinkText(link));
-			curlybrace = string.indexOf("{", closebrace);
 		}
 		sb.append(string.substring(closebrace+1));
 		return sb.toString();
@@ -185,10 +180,8 @@ public class MyTextPane extends JTextPane {
 		private TextFocusListener(HexData type) {
 		}
 		public void focusGained(FocusEvent e) {
-			//System.out.println(getRawText());
 		}
 		public void focusLost(FocusEvent e) {
-			//System.out.println("focus lost");
 			String text = MyTextPane.this.getRawText();
 			Point p = getPoint();
 			controller.updateData(type, text, p, index);
@@ -285,9 +278,7 @@ public class MyTextPane extends JTextPane {
 			if(info.isChangeSelected()) {
 				int a = formattedIndexToRaw(offset);
 				int b = formattedIndexToRaw(offset+length);
-				//System.out.println("a:"+a+"-b:"+b);
 				deleteRawText(a,b);
-				//System.out.println(rawText);
 				writeStringToDocument(fb, rawText);
 			}else {
 				super.remove(fb, offset, length); // Allow the removal
@@ -296,21 +287,19 @@ public class MyTextPane extends JTextPane {
 
 		@Override
 		public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-			//System.out.println("replace");
 			if(info.isChangeSelected()) {
-				int openbracket = rawText.lastIndexOf("{");
-				int closebracket = rawText.lastIndexOf("}$");
+				String substring = rawText.substring(0, offset);
+				int openbracket = substring.lastIndexOf("{");
+				int closebracket = substring.lastIndexOf("}$");
 				if(text.endsWith("}")&&openbracket>closebracket) {
-					String endswith = rawText.substring(openbracket);
-					if(endswith.matches("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)")) {
+					String endswith = substring.substring(openbracket);
+					if(endswith.matches(Reference.PARTIAL)) {
 						text+="$";
 					}
 				}
 				int a = formattedIndexToRaw(offset);
 				int b = formattedIndexToRaw(offset+length);
-				System.out.println("a:"+a+"-b:"+b);
 				replaceRawText(text,a,b);
-				System.out.println(text);
 				writeStringToDocument(fb, rawText);
 			}else {
 				super.replace(fb, offset, length, text, attrs); // Allow the replacement with modified text
@@ -323,19 +312,13 @@ public class MyTextPane extends JTextPane {
 			super.remove(fb, 0, doc.getLength());
 			links = new HashMap<Interval,Interval>();
 			try {
-				int curlybrace = string.indexOf("{");
+				Matcher matcher = Reference.PATTERN.matcher(string);
 				int closebrace = -1;
-				while(curlybrace>-1) {
-					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,curlybrace), DEFAULT);
-					closebrace = string.indexOf("}$", curlybrace)+1;
-					if(closebrace!=0) {
-						Interval linkInterval = insertLink(fb,string.substring(curlybrace, closebrace+1));
-						links.put(linkInterval, new Interval(curlybrace,closebrace+1));
-						curlybrace = string.indexOf("{", closebrace);
-					}else {
-						closebrace = curlybrace-1;
-						break;
-					}
+				while(matcher.find()) {
+					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,matcher.start()), DEFAULT);
+					closebrace = matcher.end()-1;
+					Interval linkInterval = insertLink(fb,string.substring(matcher.start(), matcher.end()));
+					links.put(linkInterval, new Interval(matcher.start(), matcher.end()));
 				}
 				super.insertString(fb, doc.getLength(), string.substring(closebrace+1), DEFAULT);
 			} catch (BadLocationException e) {

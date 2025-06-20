@@ -1,8 +1,13 @@
 package data;
 
 import java.awt.Point;
+import java.util.regex.Pattern;
 
 public class Reference {
+	public static String PARTIAL = "\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)";
+	public static String FULL = PARTIAL+"\\}\\$";
+	public static Pattern PATTERN = Pattern.compile(FULL);
+	
 	HexData type;
 	Point point;
 	int index;

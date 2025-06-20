@@ -406,7 +406,6 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
-					//System.out.println(i+","+j);
 					controller.getPrecipitation().updateFlowVolume(new Point(i,j), 0, 0);
 					//					UpdateFlowVolumeThread thread = precipitation.getThread(new Point(i,j));
 					//					thread.run();

@@ -118,6 +118,8 @@ public class DataController {
 			value =  biomes.getRegionName(region);break;
 		}
 		case NONE: value = "";break;
+		case THREAD: value = "";break;
+		case CHARACTER: value = "";break;
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
 		return value.toString();
@@ -180,6 +182,8 @@ public class DataController {
 			return record.removeRegionName(region);
 		}
 		case NONE: return record.removeNote(p);
+		case THREAD: return record.removeCampaignThread(i);
+		case CHARACTER: return record.removeCampaignCharacter(i).toString();
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -213,7 +217,6 @@ public class DataController {
 
 	public void updateData(HexData type, String text, Point p, int index) {
 		String defaultText = this.getDefaultText(type, p,index);
-		//System.out.println(type.getText()+" text check: "+text.equals(defaultText));
 		boolean isDefault = text==null||"".equals(text)||text.equals(defaultText);
 		if(isDefault) this.removeData(type, p,index);
 		else this.putData(type, p,index, text);

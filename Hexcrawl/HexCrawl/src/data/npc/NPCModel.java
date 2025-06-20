@@ -245,7 +245,6 @@ public class NPCModel extends DataModel {
 	public NPC getNPC(int i,Point p) {
 		WeightedTable<Species> demo = population.getTransformedDemographics(p);
 		if(demo.getSumWeight()==0) {
-			System.out.println(Util.normalizePos(p, record.getZero()));
 			return null;
 		}
 		float[] floats = new float[TABLECOUNT];

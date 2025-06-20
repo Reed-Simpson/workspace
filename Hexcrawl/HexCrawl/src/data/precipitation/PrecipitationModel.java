@@ -120,7 +120,6 @@ public class PrecipitationModel extends DataModel{
 		}else {
 			g= (int)(255*Math.ceil(gradiants*precipitation/YELLOW_THRESH)/gradiants);
 		}
-		//System.out.println(r+" "+g);
 		return new Color(r, g, 0);
 	}
 
@@ -140,7 +139,6 @@ public class PrecipitationModel extends DataModel{
 				}
 			}
 			if(index%2==0&&!isFlowingInto(result2,p)) {//chance of fudge is 1 in 2
-				//System.out.println("Fudging "+p+" from "+getFlow(result)+" to "+result2);
 				result = result2;
 			}
 			flowCache.put(p, result);
@@ -281,7 +279,6 @@ public class PrecipitationModel extends DataModel{
 
 	private boolean isFlowingInto(Point p1,Point p2) {
 		while(p1!=p2&&getFlow(p1)!=p1) {
-			//System.out.println(p1+" is flowing into "+getFlow(p1));
 			p1=getFlow(p1);
 		}
 		return p1.equals(p2);

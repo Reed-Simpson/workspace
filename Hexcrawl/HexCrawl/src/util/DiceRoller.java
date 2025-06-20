@@ -103,7 +103,6 @@ public class DiceRoller {
 	}
 
 	public double roll(String s) {
-		//System.out.println(s);
 		Matcher matcher = Pattern.compile("(.*)\\((.*)\\)(.*)").matcher(s);
 		if(matcher.matches()) {
 			return roll(matcher.group(1)+""+intify(roll(matcher.group(2)))+""+matcher.group(3));

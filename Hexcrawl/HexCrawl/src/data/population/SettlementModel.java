@@ -3,10 +3,12 @@ package data.population;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import controllers.DataController;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
+import data.magic.MagicModel;
 import data.npc.Faction;
 import io.SaveRecord;
 import names.FactionNameGenerator;
@@ -138,10 +140,14 @@ public class SettlementModel extends DataModel{
 	}
 
 
+	private DataController controller;
+
+
 	//NON_STATIC CODE
 
-	public SettlementModel(SaveRecord record) {
+	public SettlementModel(SaveRecord record,DataController controller) {
 		super(record);
+		this.controller = controller;
 	}
 	
 	public Settlement getSettlement(Point p) {
@@ -153,8 +159,11 @@ public class SettlementModel extends DataModel{
 		result.setTheme(getTheme(result));
 		result.setLeadership(getLeadership(result));
 		result.setEvent(getEvent(result));
+		MagicModel magic = controller.getMagic();
 		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
-			result.putDistrict(getDistrict(result));
+			String district = getDistrict(result);
+			if(magic.isWeird(p,k)) district = magic.getAdjective(p, k)+" "+district;
+			result.putDistrict(district);
 		}
 		return result;
 	}

@@ -507,10 +507,6 @@ public class MapPanel  extends JPanel{
 			return controller.getMagic().getColor(i, j);
 		}else if(controller.getPrecipitation().isLake(p)&&!HexData.BIOME.equals(data)) {
 			return null;
-		}else if(showCities&&controller.getPopulation().isCity(p)) {
-			return null;
-		}else if(showCities&&controller.getPopulation().isTown(p)) {
-			return null;
 		}else if (controller.getGrid().isWater(i, j)) {
 			return null;
 		}else if(HexData.PRECIPITATION.equals(data)) {

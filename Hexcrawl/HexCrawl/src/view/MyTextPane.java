@@ -39,6 +39,7 @@ import view.infopanels.TextLinkAction;
 @SuppressWarnings("serial")
 public class MyTextPane extends JTextPane {
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+	private final Style basic;
 	private InfoPanel info;
 	private String rawText;
 	private DataController controller;
@@ -61,6 +62,7 @@ public class MyTextPane extends JTextPane {
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
 		DefaultStyledDocument doc = (DefaultStyledDocument) this.getStyledDocument();
+		this.basic = getDefaultStyle(doc);
 		doc.setDocumentFilter(new MyDocumentFilter());
 	}
 	public MyTextPane(InfoPanel info,HexData type) {
@@ -84,12 +86,12 @@ public class MyTextPane extends JTextPane {
 			Matcher matcher = Reference.PATTERN.matcher(string);
 			int closebrace = -1;
 			while(matcher.find()) {
-				doc.insertString(doc.getLength(), string.substring(closebrace+1,matcher.start()), DEFAULT);
+				doc.insertString(doc.getLength(), string.substring(closebrace+1,matcher.start()), basic);
 				Interval linkInterval = insertLink(string.substring(matcher.start(), matcher.end()));
 				links.put(linkInterval, new Interval(matcher.start(),matcher.end()));
 				closebrace = matcher.end()-1;
 			}
-			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
+			doc.insertString(doc.getLength(), string.substring(closebrace+1), basic);
 
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -103,6 +105,12 @@ public class MyTextPane extends JTextPane {
 		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
 		doc.insertString(doc.getLength(), linkText, regularBlue);
 		return result;
+	}
+	
+	private Style getDefaultStyle(StyledDocument doc) {
+		Style basic = doc.addStyle("basic", DEFAULT);
+		basic.addAttribute("linkmouseover", new MouseoverAction(null, this,info));
+		return basic;
 	}
 
 	private Style getLinkStyle(String link, StyledDocument doc) {
@@ -211,16 +219,20 @@ public class MyTextPane extends JTextPane {
 		}
 
 		protected void execute(){
-			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
-			if(matcher.matches()) {
-				HexData type = HexData.get(matcher.group(1));
-				String tooltipText = info.getToolTipText(
-						type,
-						Integer.valueOf(matcher.group(2)),
-						Integer.valueOf(matcher.group(3)),
-						Integer.valueOf(matcher.group(4))-1);
-				tooltipText = removeLinks(tooltipText.replaceAll("\r\n", "<br>"));
-				textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
+			if(textLink==null) {
+				textPane.setToolTipText(null);
+			} else {
+				Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
+				if(matcher.matches()) {
+					HexData type = HexData.get(matcher.group(1));
+					String tooltipText = info.getToolTipText(
+							type,
+							Integer.valueOf(matcher.group(2)),
+							Integer.valueOf(matcher.group(3)),
+							Integer.valueOf(matcher.group(4))-1);
+					tooltipText = removeLinks(tooltipText.replaceAll("\r\n", "<br>"));
+					textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
+				}
 			}
 		}
 
@@ -265,7 +277,7 @@ public class MyTextPane extends JTextPane {
 
 			}
 		}
-		
+
 		private void doPopupMenu(MouseEvent e) {
 			JPopupMenu menu = new JPopupMenu();
 			if(HexData.CHARACTER.equals(type)) {
@@ -355,12 +367,12 @@ public class MyTextPane extends JTextPane {
 				Matcher matcher = Reference.PATTERN.matcher(string);
 				int closebrace = -1;
 				while(matcher.find()) {
-					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,matcher.start()), DEFAULT);
+					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,matcher.start()), basic);
 					closebrace = matcher.end()-1;
 					Interval linkInterval = insertLink(fb,string.substring(matcher.start(), matcher.end()));
 					links.put(linkInterval, new Interval(matcher.start(), matcher.end()));
 				}
-				super.insertString(fb, doc.getLength(), string.substring(closebrace+1), DEFAULT);
+				super.insertString(fb, doc.getLength(), string.substring(closebrace+1), basic);
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}

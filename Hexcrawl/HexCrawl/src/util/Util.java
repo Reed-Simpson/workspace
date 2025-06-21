@@ -181,6 +181,7 @@ public class Util {
 		if(result.contains("${dungeon activity}")) result = Util.replace(result,"${dungeon activity}",DungeonModel.getActivity(obj));
 		if(result.contains("${dungeon room}")) result = Util.replace(result,"${dungeon room}",DungeonModel.getRoom(obj));
 		if(result.contains("${dungeon form}")) result = Util.replace(result,"${dungeon form}",DungeonModel.getForm(obj));
+		if(result.contains("${dungeon layout}")) result = Util.replace(result,"${dungeon layout}",DungeonModel.getLayout(obj));
 		if(result.contains("${dungeon ruination}")) result = Util.replace(result,"${dungeon ruination}",DungeonModel.getRuination(obj));
 		if(result.contains("${dungeon trick}")) result = Util.replace(result,"${dungeon trick}",DungeonModel.getTrick(obj));
 
@@ -294,11 +295,14 @@ public class Util {
 		int index = obj.reduceTempId(array.length);
 		return array[index];
 	}
-	
+
 	public static String parseArray(String[] arr) {
+		return parseArray(arr,"and");
+	}
+	public static String parseArray(String[] arr,String conjunction) {
 		if(arr.length==0) return "";
 		else if(arr.length==1) return arr[0];
-		else if(arr.length==2) return arr[0]+" and "+arr[1];
+		else if(arr.length==2) return arr[0]+" "+conjunction+" "+arr[1];
 		else {
 			String result = "";
 			for(int i=0;i<arr.length-1;i++) {

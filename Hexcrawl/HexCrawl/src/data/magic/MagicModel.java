@@ -68,6 +68,9 @@ public class MagicModel extends DataModel{
 	private static WeightedTable<String> druids;
 	private static final String BARDS = "Bard of Creation,Bard of Eloquence,Bard of Glamour,Bard of Lore,Bard of Spirits,Bard of Swords,Bard of Valour,Bard of Whispers";
 	private static WeightedTable<String> bards;
+	private static final String MAGIC_ADJECTIVE = "${weirdness},${dungeon layout},${dungeon ruination},${dungeon trick},${effect}";
+	private static WeightedTable<String> adjective;
+	
 
 
 	private static void populateAllTables() {
@@ -107,6 +110,8 @@ public class MagicModel extends DataModel{
 		populate(druids, DRUIDS, ",");
 		bards = new WeightedTable<String>();
 		populate(bards, BARDS, ",");
+		adjective = new WeightedTable<String>();
+		populate(adjective, MAGIC_ADJECTIVE, ",");
 	}
 	public static String getWeirdness(int index) {
 		if(weirdness==null) populateAllTables();
@@ -194,6 +199,10 @@ public class MagicModel extends DataModel{
 	public static String getBard(int index) {
 		if(bards==null) populateAllTables();
 		return Util.formatTableResult(bards.getByWeight(index),new Indexible(index/bards.size()));
+	}
+	public static String getAdjective(Indexible obj) {
+		if(adjective==null) populateAllTables();
+		return Util.formatTableResult(adjective.getByWeight(obj),obj);
 	}
 	
 	
@@ -326,24 +335,38 @@ public class MagicModel extends DataModel{
 		}
 		return color;
 	}
-	
+
 	public boolean isWeird(Point p) {
-		float w = getWeirdnessValue(p);
+		return isWeird(p,0);
+	}
+
+	public boolean isWeird(Point p,int i) {
+		Indexible obj = new Indexible(getWeirdnessValue(p));
 		MagicType type = getMagicType(p);
+		int roll = obj.reduceTempId(20);
+		for(int count = 0;count<i;count++) {
+			roll = obj.reduceTempId(20);
+		}
 		if(MagicType.WILDMAGIC.equals(type)) {
-			return w>-0.5f; //90%
+			return roll>1; //90%
 		}else if(MagicType.HIGHMAGIC.equals(type)) {
-			return w>0.0f; //50%
+			return roll>9; //50%
 		}else if(MagicType.NORMALMAGIC.equals(type)) {
-			return w>0.3f; //20%
+			return roll>16; //20%
 		}else if(MagicType.LOWMAGIC.equals(type)) {
-			return w>0.6f; //5%
+			return roll>19; //5%
 		}else {
 			return false;
 		}
 	}
 	public String getWeirdness(Point p) {
-		return getWeirdness(getWeirdnessIndex(0, p));
+		return getWeirdness(p,0);
+	}
+	public String getWeirdness(Point p,int i) {
+		return getWeirdness(getWeirdnessIndex(i, p));
+	}
+	public String getAdjective(Point p,int i) {
+		return getAdjective(new Indexible(getWeirdnessIndex(i, p)));
 	}
 	@Override
 	public Float getDefaultValue(Point p, int i) {

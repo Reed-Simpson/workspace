@@ -25,6 +25,8 @@ public class NPC extends Indexible{
 	private transient String domain;
 	private transient String name;
 	private transient String goblin;
+	private transient String faction;
+	private transient String[] descriptors;
 
 	public NPC(float... floats) {
 		super(floats);
@@ -177,15 +179,26 @@ public class NPC extends Indexible{
 		String species = this.getSpecies().name();
 		if(Species.GOBLINOID.equals(this.species)) species = this.getGoblin();
 		e1Text.append(name+Util.toCamelCase(species)+" "+this.getJob() + "\r\n");
-		e1Text.append(this.getAsset()+" but "+this.getLiability()+". ");
-		e1Text.append("Seeks "+this.getGoal()+" but is "+this.getMisfortune()+". ");
-		e1Text.append("Adept at using "+this.getMethod()+". Looks "+this.getAppearance()+" with "+this.getDetail()+". ");
+		e1Text.append("• Descriptors: "+Util.parseArray(this.getDescriptors()));
+		e1Text.append("\r\n");
+		//appearance
+		e1Text.append("• Appearance: "+this.getAppearance()+" with "+this.getDetail()+". ");
 		e1Text.append("Their outfit appears to be "+this.getCostume()+". ");
-		e1Text.append("Has a "+this.getPersonality()+" personality and is "+this.getMannerism()+". ");
-		e1Text.append("Has a reputation for being "+this.getReputation()+", and secretly is "+this.getSecret()+". ");
-		e1Text.append("Likes to study "+this.getHobby()+". ");
+		e1Text.append("\r\n");
+		//social
+		e1Text.append("• Social: Has a "+this.getPersonality()+" personality and is "+this.getMannerism()+". ");
+		e1Text.append("Has a reputation for being "+this.getReputation()+". ");
 		e1Text.append("Has a close relationship with a "+this.getRelationship()+". ");
+		e1Text.append("\r\n");
+		//personal
+		e1Text.append("• Personal: Seeks "+this.getGoal()+". ");
+		e1Text.append(this.getAsset()+" and adept at using "+this.getMethod()+". ");
+		e1Text.append("Likes to study "+this.getHobby()+". ");
 		e1Text.append("Practices a faith that reveres "+this.getDomain()+".");
+		e1Text.append("\r\n");
+		//Liabilities
+		e1Text.append("• Liabilities: "+this.getLiability()+" and is currently "+this.getMisfortune()+". ");
+		e1Text.append("Secretly is "+this.getSecret()+". ");
 		return e1Text.toString();
 	}
 
@@ -203,6 +216,18 @@ public class NPC extends Indexible{
 
 	public void setGoblin(String goblin) {
 		this.goblin = goblin;
+	}
+	public String getFaction() {
+		return faction;
+	}
+	public void setFaction(String faction) {
+		this.faction = faction;
+	}
+	public String[] getDescriptors() {
+		return descriptors;
+	}
+	public void setDescriptors(String[] descriptors) {
+		this.descriptors = descriptors;
 	}
 
 }

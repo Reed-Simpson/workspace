@@ -124,11 +124,14 @@ public class EncounterModel extends DataModel{
 		if(isCity) return SettlementModel.getBuilding(e);
 		else return LocationModel.getStructureOrLandmark(e);
 	}
-	public String getLocation(Indexible e,Point p) {
+	public String getLocationReference(Indexible e,Point p) {
 		return Util.formatTableResultPOS("${location index}", e,p,record.getZero());
 	}
-	public String getChar(Indexible e,Point p) {
+	public String getNPCReference(Indexible e,Point p) {
 		return Util.formatTableResultPOS("${npc index}", e,p,record.getZero());
+	}
+	public String getFactionReference(Indexible e,Point p) {
+		return Util.formatTableResultPOS("${faction index}", e,p,record.getZero());
 	}
 	private String getCityRoom( Indexible e) {
 		return SettlementModel.getRoom(e);
@@ -177,14 +180,14 @@ public class EncounterModel extends DataModel{
 		e.setFocus(getFocus(e));
 		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getActivity(e,isCity)+'"'});
 		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
-		e.setCharacter(new String[] {getChar(e),getChar(e),getChar(e, p)});
+		e.setCharacter(new String[] {getNPCReference(e, p),getFactionReference(e, p)});
 		e.setObject(new String[] {getObj(e),getObj(e)});
 		if(isCity) {
-			e.setLocation(new String[] {getLocation(e, p),getCityRoom(e),getStreet(e),getDiscovery(e, isCity)});
+			e.setLocation(new String[] {getLocationReference(e, p),getCityRoom(e),getStreet(e),getDiscovery(e, isCity)});
 			//e.setHazard(new String[] {getCityEvent(e)});
 		}
 		else {
-			e.setLocation(new String[] {getLocation(e, p),getDiscovery(e, isCity)});
+			e.setLocation(new String[] {getLocationReference(e, p),getDiscovery(e, isCity)});
 			e.setHazard(new String[] {getWildernessHazard(e)});
 		}
 		return e;

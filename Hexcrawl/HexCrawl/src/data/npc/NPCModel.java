@@ -6,6 +6,7 @@ import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
+import data.encounters.EncounterModel;
 import data.population.PopulationModel;
 import data.population.Species;
 import io.SaveRecord;
@@ -68,13 +69,13 @@ public class NPCModel extends DataModel {
 			"honor-bound,hotheaded,inquisitive,irascible,jolly,know-it-all,lazy,loyal,menacing,mopey,nervous,protective,"+
 			"righteous,rude,sarcastic,savage,scheming,serene,spacey,stoic,stubborn,stuck-up,suspicous,wisecracking";
 	private static WeightedTable<String> personalities;
-	private static final String MANNERISMS = "fond of anecdotes,often breathy,often chuckling,often clipped,often cryptic,deep voiced,speaking with a drawl,often enunciating,often using flowery speech,gravelly voiced,highly formal,hypnotic,"+
+	private static final String MANNERISMS = "fond of anecdotes,often breathy,often chuckling,often curt,often cryptic,deep voiced,speaking with a drawl,often enunciating,often using flowery speech,gravelly voiced,highly formal,hypnotic,"+
 			"often interrupting,laconic,often laughing,often taking long pauses,melodious,monotone,often mumbling,often narrating,overly casual,fond of quaint sayings,often rambling,fond of random facts"+
 			"often rapid-fire,fond of rhyming,robotic,often speaking slowly,often speechifying,squeaky,fond of street slang,often stuttering,often talking to self,often trailing off,very loud,often whispering";
 	private static WeightedTable<String> mannerisms;
 	private static final String SECRETS = "addicted,artificial,an assassin,bankrupt,beholden,a counterspy,a cultist,a demigod,of evil lineage,an exile,a fence,a fugitive,"+
 			"a ghost,a parent,a heretic,high born,hiding a huge fortune,an illusion,an insurrectionist,low born,married,mind-controlled,frequently ${misfortune},a monster hunter,"+
-			"a non-human,${relationship},an adulterer,protects a relic,hiding a scandalous birth,a secret police,a serial killer,a smuggler,a spy,a planar traveler,transformed,a war criminal";
+			"a non-human,hiding a(n) ${relationship},an adulterer,protects a relic,hiding a scandalous birth,a secret police,a serial killer,a smuggler,a spy,a planar traveler,transformed,a war criminal";
 	private static WeightedTable<String> secrets;
 	private static final String REPUTATIONS = "ambitious,authoritative,boorish,a borrower,a celebrity,charitable,a cheat,dangerous,an entertainer,a gossip,hardworking,holy,"+
 			"honest,a hypochondriac,an idiot,influential,a layabout,a leader,a misanthrope,a miser,neighborly,a nutjob,obnoxious,overeducated,"+
@@ -88,8 +89,8 @@ public class NPCModel extends DataModel {
 			"idol,informant,master,mentor,nemesis,offspring,parent,patron,political rival,prisoner,protege,quarry,"+
 			"sidekick,romantic rival,servant,sibling,social rival,spouse,stalker,suitor,supplicant,supplier,sweetheart,unrequited love";
 	private static WeightedTable<String> relationships;
-	private static final String DOMAINS = "${animal},balance,betrayal,chance,chaos,conquest,cycles,death,destiny,dreams,${element},gateways,"+
-			"judgement,love,memory,monsters,moon,motherhood,${job},oaths,order,plague,purification,reason,"+
+	private static final String DOMAINS = "${animal}s,balance,betrayal,chance,chaos,conquest,cycles,death,destiny,dreams,${element},gateways,"+
+			"judgement,love,memory,monsters,moon,motherhood,${job}s,oaths,order,plague,purification,reason,"+
 			"schemes,secrets,storms,summer,sun,the forge,the sea,the wild,time,underworld,wealth,winter";
 	private static WeightedTable<String> domains;
 
@@ -276,7 +277,11 @@ public class NPCModel extends DataModel {
 		setDomain(i, p, npc);
 		setRelationship(i, p, npc);
 		setName(i, p, npc);
+		setFaction(i, p, npc);
+		setDescriptors(i,p,npc);
 	}
+
+
 	private void setSpecies(int i, Point p, NPC result) {
 		if(result.getSpecies()==null) {
 			WeightedTable<Species> demo = population.getTransformedDemographics(p);
@@ -341,6 +346,14 @@ public class NPCModel extends DataModel {
 			String name = npc.getSpecies().getNPCNameGen().getName(npc);
 			npc.setName(name);
 		}
+	}
+	private void setFaction(int i, Point p, NPC npc) {
+		npc.setFaction(Util.formatTableResultPOS("${faction index}", npc, p, record.getZero()));
+	}
+	private void setDescriptors(int i, Point p, NPC npc) {
+		String desc1 = EncounterModel.getChar(npc);
+		String desc2 = EncounterModel.getChar(npc);
+		npc.setDescriptors(new String[]{desc1,desc2});
 	}
 	public NPC getRandomNPC(int i,Point p) {
 		float[] floats = new float[TABLECOUNT];

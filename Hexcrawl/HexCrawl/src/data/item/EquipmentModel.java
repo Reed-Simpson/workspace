@@ -33,7 +33,7 @@ public class EquipmentModel {
 	private static WeightedTable<String> potions;
 	private static final String INGREDIENTS = "Ancient Liquor,${animal},Blind eye,Boiled cat,${book} page,Bottled frog,Coffin nail,Corpse hair,Crossroad dust,Cultist entrails,${edible plant},Exotic spice,"+
 			"Killer's hand,King's tooth,Last breath,Liar's tongue,Lightning bolt,Lodestone,Monk's vow,${monster feature},Newborn's cry,Oil portrait,${physical element},${poisonous plant},"+
-			"${potion},Pyre ember,Queen bee,Queen's blood,Ship's barnacle,Star-metal,Thief's finger,Tomb flower,${rare material},Wedding ring,Widow's tears,Wizard skull";
+			"${potion},Pyre ember,Queen bee,Queen's blood,Ship's barnacle,Starmetal,Thief's finger,Tomb flower,${rare material},Wedding ring,Widow's tears,Wizard skull";
 	private static WeightedTable<String> ingredients;
 	private static final String TREASURES = "Alchemy recipe,Amulet,Astrolabe,Blueprints,Calligraphy,Carpet,Compass,Contract,Crown,Crystal,Deed,Embroidery,"+
 			"Fine china,Fine liquor,Instrument,Magical book,Microscope,Music box,Orrery,Painting,Perfume,Prayer book,Printing block,Rare textile,"+

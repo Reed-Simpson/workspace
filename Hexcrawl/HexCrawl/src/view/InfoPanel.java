@@ -2,7 +2,6 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -156,7 +155,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<ENCOUNTERCOUNT;i++) {
 			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
 			MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
-			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH,9999));
+			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			encounterPanel.add(encounteri);
 			encounterTexts.add(encounteri);
 		}
@@ -741,19 +740,6 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 
-	private String getCityText(Point capital) {
-		String cityText = panel.getRecord().getCity(capital);
-		if(cityText==null) cityText = getDefaultCityText(capital);
-		return cityText;
-	}
-	private String getDefaultCityText(Point capital) {
-		SettlementModel cities = panel.getController().getSettlements();
-		Settlement city = cities.getSettlement(capital);
-		StringBuilder c1Text = new StringBuilder();
-		c1Text.append(city.toString());
-		String string = c1Text.toString();
-		return string;
-	}
 	private String getDistrictLinkText(Point capital,int index) {
 		SettlementModel cities = panel.getController().getSettlements();
 		Settlement city = cities.getSettlement(capital);

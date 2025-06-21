@@ -48,7 +48,7 @@ public class DataController {
 		this.names = new LocationNameModel(record);
 		this.npcs = new NPCModel(record, population);
 		this.threats = new ThreatModel(record,npcs);
-		this.settlements = new SettlementModel(record);
+		this.settlements = new SettlementModel(record,this);
 		this.pois = new LocationModel(record);
 		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);

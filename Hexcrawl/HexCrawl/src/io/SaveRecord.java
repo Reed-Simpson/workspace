@@ -483,18 +483,22 @@ public class SaveRecord implements Serializable {
 		return this.campaignCharacters;
 	}
 	public Reference getCampaignCharacter(int i) {
-		return this.campaignCharacters.get(i);
+		if(campaignCharacters.size()<=i) return null;
+		else return this.campaignCharacters.get(i);
 	}
 	public String putCampaignCharacter(int i,String s) {
+		System.out.println("putCampaignCharacter "+i+" "+s);
 		Reference ref = new Reference(s);
 		while(this.campaignCharacters.size()<i+1) this.campaignCharacters.add(null);
 		Reference set = this.campaignCharacters.set(i, ref);
 		if(set!=null&&!set.equals(s)) {
 			this.hasUnsavedData = true;
 		}
-		return set.toString();
+		if(set==null) return null;
+		else return set.toString();
 	}
 	public Reference removeCampaignCharacter(int index) {
+		System.out.println("removeCampaignCharacter "+index);
 		return this.campaignCharacters.remove(index);
 	}
 	
@@ -502,9 +506,11 @@ public class SaveRecord implements Serializable {
 		return this.campaignThreads;
 	}
 	public String getCampaignThread(int i) {
-		return this.campaignThreads.get(i);
+		if(campaignThreads.size()<=i) return null;
+		else return this.campaignThreads.get(i);
 	}
 	public String putCampaignThread(int i,String s) {
+		System.out.println("putCampaignThread "+i+" "+s);
 		while(this.campaignThreads.size()<i+1) this.campaignThreads.add(null);
 		String set = this.campaignThreads.set(i, s);
 		if(set!=null&&!set.equals(s)) {
@@ -513,6 +519,7 @@ public class SaveRecord implements Serializable {
 		return set;
 	}
 	public String removeCampaignThread(int index) {
+		System.out.println("removeCampaignThread "+index);
 		return this.campaignThreads.remove(index);
 	}
 }

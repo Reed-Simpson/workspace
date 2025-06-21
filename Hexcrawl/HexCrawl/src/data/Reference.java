@@ -1,10 +1,12 @@
 package data;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Reference {
+public class Reference implements Serializable{
+	private static final long serialVersionUID = 3816076390422175045L;
 	public static String PARTIAL = "\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)";
 	public static String FULL = PARTIAL+"\\}\\$";
 	public static Pattern PATTERN = Pattern.compile(FULL);

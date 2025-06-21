@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -57,7 +58,7 @@ public class InfoPanel extends JTabbedPane{
 	private static final int LOCATION_TAB_INDEX = 2;
 	private static final int NPC_TAB_INDEX = 1;
 	private static final int ENCOUNTER_TAB_INDEX = 0;
-	private static final int INFOPANELWIDTH = 450;
+	public static final int INFOPANELWIDTH = 450;
 	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
 	public static final int POICOUNT = 20;
@@ -112,10 +113,12 @@ public class InfoPanel extends JTabbedPane{
 	private MyTextPane charactersEmpty;
 	private ArrayList<MyTextPane> charactersList;
 	private ArrayList<MyTextPane> threadsList;
+	private JPanel charactersPanel;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+		this.setMaximumSize(new Dimension(INFOPANELWIDTH,99999));
 
 		createHexTab(panel);
 		
@@ -334,9 +337,38 @@ public class InfoPanel extends JTabbedPane{
 		charactersHeader.add(Box.createHorizontalStrut(40));
 		charactersHeader.add(new JLabel("Characters:"),BorderLayout.WEST);
 		charactersHeader.add(Box.createHorizontalGlue());
-		JPanel characters = new JPanel();
-		JScrollPane charactersScrollPane = new JScrollPane(characters);
+		charactersPanel = new JPanel();
 		JButton charactersHideButton = new JButton("Hide");
+		charactersHeader.add(charactersHideButton,BorderLayout.EAST);
+		charactersHeader.add(Box.createHorizontalStrut(140));
+		campaignPanel.add(charactersHeader);
+		this.charactersList = new ArrayList<MyTextPane>();
+		charactersPanel.setLayout(new BoxLayout(charactersPanel, BoxLayout.Y_AXIS));
+		charactersPanel.setMaximumSize(new Dimension(INFOPANELWIDTH-20,99999));
+		//charactersPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-20,999));
+		ArrayList<Reference> chars = panel.getRecord().getCampaignCharacters();
+		for(int i=0;i<chars.size();i++) {
+			MyTextPane pane = new MyTextPane(this, i, HexData.CHARACTER);
+			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			pane.setRef(chars.get(i));
+			pane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2,Color.gray));
+			charactersPanel.add(pane);
+			charactersList.add(pane);
+		}
+		charactersEmpty = new MyTextPane(this, chars.size(), HexData.CHARACTER);
+		charactersEmpty.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		charactersEmpty.setEnabled(false);
+		charactersEmpty.setText("None");
+		charactersPanel.add(charactersEmpty);
+		if(chars.size()==0) {
+			charactersEmpty.setVisible(true);
+		}else {
+			charactersEmpty.setVisible(false);
+		}
+		JScrollPane charactersScrollPane = new JScrollPane(charactersPanel);
+		charactersScrollPane.setPreferredSize(new Dimension(INFOPANELWIDTH,999));
+		charactersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		charactersScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		charactersHideButton.addActionListener(new ActionListener() {
 			boolean hidden = false;
 			public void actionPerformed(ActionEvent e) {
@@ -351,27 +383,12 @@ public class InfoPanel extends JTabbedPane{
 				}
 			}
 		});
-		charactersHeader.add(charactersHideButton,BorderLayout.EAST);
-		charactersHeader.add(Box.createHorizontalStrut(140));
-		campaignPanel.add(charactersHeader);
-		this.charactersList = new ArrayList<MyTextPane>();
-		characters.setLayout(new BoxLayout(characters, BoxLayout.Y_AXIS));
-		ArrayList<Reference> chars = panel.getRecord().getCampaignCharacters();
-		for(int i=0;i<chars.size()+30;i++) {
-			MyTextPane pane = new MyTextPane(this, i, HexData.NPC);
-			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-			characters.add(pane);
-			charactersList.add(pane);
-			characters.add(Box.createVerticalStrut(2));
-		}
-		charactersEmpty = new MyTextPane(this, chars.size(), HexData.NPC);
-		charactersEmpty.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-		charactersEmpty.setEnabled(false);
-		characters.add(charactersEmpty);
 		campaignPanel.add(charactersScrollPane);
+		campaignPanel.setMaximumSize(new Dimension(INFOPANELWIDTH,99999));
 
 		
 		JPanel threadsPanel = new JPanel(new BorderLayout());
+//		threadsPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-20,999));
 		JPanel threadsHeader = new JPanel();
 		threadsHeader.setLayout(new BoxLayout(threadsHeader, BoxLayout.X_AXIS));
 		threadsHeader.add(Box.createHorizontalStrut(40));
@@ -379,6 +396,7 @@ public class InfoPanel extends JTabbedPane{
 		threadsHeader.add(Box.createHorizontalGlue());
 		JPanel threads = new JPanel();
 		JScrollPane threadsScrollPane = new JScrollPane(threads);
+		threadsScrollPane.setPreferredSize(new Dimension(INFOPANELWIDTH,999));
 		JButton addThreadButton = new JButton("➕ Add Thread");
 		JButton threadsHideButton = new JButton("Hide");
 		threadsHideButton.addActionListener(new ActionListener() {
@@ -419,7 +437,6 @@ public class InfoPanel extends JTabbedPane{
 				threads.add(pane);
 				threadsList.add(pane);
 				threads.add(Box.createVerticalStrut(2));
-				System.out.println(threadsList.size());
 				InfoPanel.this.repaint();
 			}
 		});
@@ -612,9 +629,14 @@ public class InfoPanel extends JTabbedPane{
 				enableCityTabs(false);
 			}
 		}
+		for(int i=0;i<threadsList.size();i++) {
+			this.threadsList.get(i).doPaint();
+		}
+		for(int i=0;i<charactersList.size();i++) {
+			this.charactersList.get(i).doPaint();
+		}
 
 		hexNote1.doPaint();
-//		this.hexNote1.setText(getHexNoteText(pos));
 		super.paint(g);
 		changeSelected = true;
 	}
@@ -894,30 +916,11 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 
-	public String getToolTipText(String tab, int x, int y, int index) {
+	public String getToolTipText(HexData type, int x, int y, int index) {
 		Point displayPos = new Point(x,y);
 		Point actualPos = Util.denormalizePos(displayPos, panel.getRecord().getZero());
-		String result;
-		switch(tab) {
-		case "npc": result = getNPCText(actualPos, index);break;
-		case "location": {
-			PopulationModel population = panel.getController().getPopulation();
-			boolean isCity = population.isCity(actualPos);
-			result = getPOIText(actualPos, index, isCity);break;
-		}
-		case "dungeon": result = getDungeonText(actualPos, index);break;
-		case "faction": {
-			PopulationModel population = panel.getController().getPopulation();
-			Point capital = population.getAbsoluteFealty(actualPos);
-			result = getFactionText(capital, index);break;
-		}
-		case "district": {
-			PopulationModel population = panel.getController().getPopulation();
-			Point capital = population.getAbsoluteFealty(actualPos);
-			result = getCityText(capital);break;
-		}
-		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
-		}
+		String result = panel.getController().getText(type, actualPos, index);
+		
 		Matcher matcher;
 		matcher = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\})").matcher(result);
 		while(matcher.find()) {
@@ -957,6 +960,27 @@ public class InfoPanel extends JTabbedPane{
 	@Override
     public void repaint() {
 		super.repaint();
+	}
+
+	public void removeCharacter(int index) {
+		panel.getController().removeData(HexData.CHARACTER, null, index);
+		charactersList.remove(index).setVisible(false);
+		if(charactersList.size()==0) charactersEmpty.setVisible(true);
+	}
+
+	public void addCharacter(HexData type, Point point, int index) {
+		Point displayPoint = Util.normalizePos(point, panel.getRecord().getZero());
+		Reference ref = new Reference(type,displayPoint,index);
+		panel.getController().putData(HexData.CHARACTER, null, charactersList.size(), ref.toString());
+		MyTextPane pane = new MyTextPane(this, charactersList.size(), HexData.CHARACTER);
+		pane.setRef(ref);
+		pane.doPaint();
+		pane.setAlignmentX(LEFT_ALIGNMENT);
+		pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		pane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2,Color.gray));
+		charactersPanel.add(pane);
+		charactersList.add(pane);
+		charactersEmpty.setVisible(false);
 	}
 
 }

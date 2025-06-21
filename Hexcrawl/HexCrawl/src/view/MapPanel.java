@@ -32,6 +32,7 @@ import io.SaveRecord;
 import util.Counter;
 
 public class MapPanel  extends JPanel{
+	private static final int WIDEVIEW = 6;
 	private static final long serialVersionUID = 6922738675563657970L;
 	private static final Color LINE_COLOR = Color.BLACK;
 	private static final double sqrt3 = Math.sqrt(3.0);
@@ -180,6 +181,7 @@ public class MapPanel  extends JPanel{
 		Graphics2D g2 = (Graphics2D) g;
 		int step = 1;
 		int displayScale = (int)scale;
+		boolean wideview = scale<WIDEVIEW;
 		if(scale<MIN_SCALE) {
 			step = (int) (MIN_SCALE/scale);
 			displayScale = MIN_SCALE;
@@ -188,20 +190,20 @@ public class MapPanel  extends JPanel{
 		if(scale<HIDE_BORDERS_SCALE) {
 			borderColor = null;
 		}
-		if(!isDragging)calculateRivers(displayScale);
+		if(!isDragging&&!wideview)calculateRivers(displayScale);
 		drawHexes(g2, step, displayScale, borderColor);
-		if(showRivers) {
+		if(showRivers&&!wideview) {
 			drawRivers(g2, step, displayScale, borderColor);
 		}
 		drawOceans(g2, step, displayScale, borderColor);
 		drawHighlights(g2, step, displayScale);
-		if(HexData.ECONOMY.equals(displayData)) {
+		if(HexData.ECONOMY.equals(displayData)&&!wideview) {
 			drawRoads(g2,step,displayScale,Color.RED);
 			highlightTowns(g2,step,displayScale,Color.RED);
 		}
 		drawRegion(g2, displayScale);
 		drawSelectedHex(g2, displayScale);
-		drawSymbols(g2, step, displayScale, borderColor);
+		if(!wideview)drawSymbols(g2, step, displayScale, borderColor);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 
 		printLoadingInfo = false;

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
@@ -15,6 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -30,6 +33,7 @@ import javax.swing.text.StyledDocument;
 import controllers.DataController;
 import data.HexData;
 import data.Reference;
+import util.Util;
 import view.infopanels.TextLinkAction;
 
 @SuppressWarnings("serial")
@@ -41,7 +45,7 @@ public class MyTextPane extends JTextPane {
 	private int index;
 	private HexData type;
 	private HashMap<Interval,Interval> links;
-	private Point point;
+	private Reference ref;
 
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
@@ -53,10 +57,9 @@ public class MyTextPane extends JTextPane {
 		this.setContentType("text/html");
 		this.setText("");
 		this.addFocusListener(new TextFocusListener(type));
-		TextLinkMouseListener mouseAdapter = new TextLinkMouseListener();
+		TextpaneMouseListener mouseAdapter = new TextpaneMouseListener();
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
-		//this.getStyledDocument().addDocumentListener(new MyDocumentListener());
 		DefaultStyledDocument doc = (DefaultStyledDocument) this.getStyledDocument();
 		doc.setDocumentFilter(new MyDocumentFilter());
 	}
@@ -71,7 +74,7 @@ public class MyTextPane extends JTextPane {
 		this.writeStringToDocument(t);
 	}
 	public void doPaint() {
-		String text = controller.getText(type, info.getPanel().getSelectedGridPoint(), index);
+		String text = controller.getText(getType(), getPoint(), getIndex());
 		this.setText(text);
 	}
 
@@ -82,11 +85,12 @@ public class MyTextPane extends JTextPane {
 			int closebrace = -1;
 			while(matcher.find()) {
 				doc.insertString(doc.getLength(), string.substring(closebrace+1,matcher.start()), DEFAULT);
-				closebrace = matcher.end()-1;
 				Interval linkInterval = insertLink(string.substring(matcher.start(), matcher.end()));
 				links.put(linkInterval, new Interval(matcher.start(),matcher.end()));
+				closebrace = matcher.end()-1;
 			}
 			doc.insertString(doc.getLength(), string.substring(closebrace+1), DEFAULT);
+
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -160,13 +164,21 @@ public class MyTextPane extends JTextPane {
 		sb.append(string.substring(closebrace+1));
 		return sb.toString();
 	}
-	
+
 	private Point getPoint() {
-		if(this.point!=null) return this.point;
+		if(this.ref!=null) return Util.denormalizePos(this.ref.getPoint(),controller.getRecord().getZero());
 		else return info.getPanel().getSelectedGridPoint();
 	}
-	public void setPoint(Point point) {
-		this.point = point;
+	private HexData getType() {
+		if(this.ref!=null) return this.ref.getType();
+		else return type;
+	}
+	private int getIndex() {
+		if(this.ref!=null) return this.ref.getIndex();
+		else return index;
+	}
+	public void setRef(Reference reference) {
+		this.ref = reference;
 	}
 
 
@@ -178,8 +190,7 @@ public class MyTextPane extends JTextPane {
 		}
 		public void focusLost(FocusEvent e) {
 			String text = MyTextPane.this.getRawText();
-			Point p = getPoint();
-			controller.updateData(type, text, p, index);
+			controller.updateData(getType(), text, getPoint(), getIndex());
 		}
 	}
 	private class NoScrollCaret extends DefaultCaret {
@@ -202,8 +213,9 @@ public class MyTextPane extends JTextPane {
 		protected void execute(){
 			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
 			if(matcher.matches()) {
+				HexData type = HexData.get(matcher.group(1));
 				String tooltipText = info.getToolTipText(
-						matcher.group(1),
+						type,
 						Integer.valueOf(matcher.group(2)),
 						Integer.valueOf(matcher.group(3)),
 						Integer.valueOf(matcher.group(4))-1);
@@ -217,9 +229,17 @@ public class MyTextPane extends JTextPane {
 			execute();
 		}
 	}
-	private class TextLinkMouseListener implements MouseListener,MouseMotionListener {
-		public void mouseReleased(MouseEvent e) {}
-		public void mousePressed(MouseEvent e) {}
+	private class TextpaneMouseListener implements MouseListener,MouseMotionListener {
+		public void mouseReleased(MouseEvent e) {
+			if(e.isPopupTrigger()) {
+				doPopupMenu(e);
+			}
+		}
+		public void mousePressed(MouseEvent e) {
+			if(e.isPopupTrigger()) {
+				doPopupMenu(e);
+			}
+		}
 		public void mouseExited(MouseEvent e) {}
 		public void mouseEntered(MouseEvent e) {}
 		public void mouseClicked(MouseEvent e){
@@ -244,6 +264,31 @@ public class MyTextPane extends JTextPane {
 			}else {
 
 			}
+		}
+		
+		private void doPopupMenu(MouseEvent e) {
+			JPopupMenu menu = new JPopupMenu();
+			if(HexData.CHARACTER.equals(type)) {
+				if("None".equals(getRawText())) return;
+				JMenuItem remove = new JMenuItem("Remove From Characters List");
+				remove.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						info.removeCharacter(index);
+					}
+				});
+				menu.add(remove);
+			}else {
+				JMenuItem add = new JMenuItem("Add To Characters List");
+				add.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						info.addCharacter(type,getPoint(),index);
+					}
+				});
+				menu.add(add);
+			}
+			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
 	private class Interval {
@@ -330,4 +375,5 @@ public class MyTextPane extends JTextPane {
 			return result;
 		}
 	}
+
 }

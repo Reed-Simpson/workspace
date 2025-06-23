@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 import data.DataModel;
 import data.Graph;
@@ -77,6 +78,14 @@ public class BiomeModel extends DataModel {
 		int[] vals = new int[NAMEINDEXES];
 		for(int i=0;i<vals.length;i++) {
 			vals[i] = Util.getIndexFromSimplex((OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+Util.getOffsetX()-1-i), p.x, p.y)));
+		}
+		return Util.toCamelCase(WildernessNameGenerator.getRegionName(new Indexible(vals)));
+	}
+	
+	public String getRegionName(Random random) {
+		int[] vals = new int[NAMEINDEXES];
+		for(int i=0;i<vals.length;i++) {
+			vals[i] = random.nextInt();
 		}
 		return Util.toCamelCase(WildernessNameGenerator.getRegionName(new Indexible(vals)));
 	}

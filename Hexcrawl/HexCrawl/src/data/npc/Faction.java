@@ -14,6 +14,10 @@ public class Faction extends Indexible {
 		super(floats);
 	}
 
+	public Faction(int[] ints) {
+		super(ints);
+	}
+
 	public String getType() {
 		return type;
 	}

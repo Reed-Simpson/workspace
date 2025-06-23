@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import data.DataModel;
@@ -93,19 +94,19 @@ public class ThreatModel extends DataModel{
 		Point threatSource = getCenter(p);
 		if(threatCache.get(threatSource)!=null) return threatCache.get(threatSource);
 		NPC npc = npcs.getNPC(40, threatSource);
-		if(npc==null) npc = npcs.getRandomNPC(40,threatSource);
+//		if(npc==null) npc = npcs.getRandomNPC(40,threatSource);
 		int[] indexes = new int[25];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getThreatDetailIndex(p,i);
 		}
 		Threat result = new Threat(indexes);
-		result.setType(getThreatCreatureType(threatSource,result));
+		result.setType(getThreatCreatureType(result));
 		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), result));
 		result.setNPC(npc);
 		result.setMotive(ThreatDetails.getMotivation(result));
 		result.setFlaw(ThreatDetails.getFlaw(result));
 		result.setPlan(ThreatDetails.getPlan(result));
-		result.setName(getThreatName(result, threatSource ));
+		result.setName(getThreatName(result ));
 		threatCache.put(threatSource, result);
 		return result;
 	}
@@ -114,21 +115,34 @@ public class ThreatModel extends DataModel{
 		Threat threat = getThreat(p);
 		return threat.getType();
 	}
-	public CreatureType getThreatCreatureType(Point p,Indexible obj) {
+	public CreatureType getThreatCreatureType(Indexible obj) {
 		return CreatureType.getByWeight(obj);
 	}
 	
-	public String getThreatName(Threat threat,Point p) {
-		int[] indexes = new int[20];
-		for(int i=0;i<indexes.length;i++) {
-			indexes[i] = getThreatDetailIndex(p,5+i);
-		}
+	public String getThreatName(Threat threat) {
 		return Util.toCamelCase(CreatureType.getName(threat));
 	}
 
 	@Override
 	public Threat getDefaultValue(Point p, int i) {
 		return getThreat(p);
+	}
+
+	public Threat getThreat(Point p,Random random) {
+		NPC npc = npcs.getNPC(p,random);
+		int[] indexes = new int[25];
+		for(int i=0;i<indexes.length;i++) {
+			indexes[i] = random.nextInt();
+		}
+		Threat result = new Threat(indexes);
+		result.setType(getThreatCreatureType(result));
+		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), result));
+		result.setNPC(npc);
+		result.setMotive(ThreatDetails.getMotivation(result));
+		result.setFlaw(ThreatDetails.getFlaw(result));
+		result.setPlan(ThreatDetails.getPlan(result));
+		result.setName(getThreatName(result ));
+		return result;
 	}
 
 }

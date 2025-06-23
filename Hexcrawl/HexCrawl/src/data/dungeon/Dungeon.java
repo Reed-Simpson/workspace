@@ -17,6 +17,9 @@ public class Dungeon extends Indexible{
 	public Dungeon(float... floats) {
 		super(floats);
 	}
+	public Dungeon(int[] ints) {
+		super(ints);
+	}
 	public String getEntrance() {
 		return entrance;
 	}

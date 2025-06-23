@@ -36,6 +36,9 @@ public class NPC extends Indexible{
 		this.species = s;
 	}
 
+	public NPC(int[] ints) {
+		super(ints);
+	}
 	public Species getSpecies() {
 		return species;
 	}

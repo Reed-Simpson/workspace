@@ -1,6 +1,7 @@
 package data.location;
 
 import java.awt.Point;
+import java.util.Random;
 
 import data.DataModel;
 import data.Indexible;
@@ -169,12 +170,21 @@ public class LocationModel extends DataModel{
 	}
 	public String getPOI(int i,Point p,boolean isCity) {
 		Indexible obj = new Indexible(getLocationDetailIndex(i*TABLECOUNT, p));
+		String poi = getPOI(isCity, obj);
+		return Util.formatTableResultPOS(poi, obj, p,record.getZero());
+	}
+	public String getPOI(Random random,Point p,boolean isCity) {
+		Indexible obj = new Indexible(random.nextInt());
+		String poi = getPOI(isCity, obj);
+		return Util.formatTableResultPOS(poi, obj, p,record.getZero());
+	}
+	private String getPOI(boolean isCity, Indexible obj) {
 		String location;
 		if(isCity) location = SettlementModel.getBuilding(obj);
 		else location = getStructure(obj);
 		String descriptor1 = getDescriptor(obj);
 		String descriptor2 = getDescriptor(obj);
-		String proprietor = "\r\nProprietor: "+Util.formatTableResultPOS("${npc index}", obj, p,record.getZero());
+		String proprietor = "\r\nProprietor: ${npc index}";
 		return descriptor1+" and "+descriptor2+" "+location+proprietor;
 	}
 	public String getEdible(int i,Point p) {

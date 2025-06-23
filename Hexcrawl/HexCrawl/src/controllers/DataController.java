@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 
 import data.DataModel;
 import data.HexData;
+import data.Indexible;
 import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
@@ -255,6 +256,32 @@ public class DataController {
 		if(isDefault) this.removeData(type, p,index);
 		else this.putData(type, p,index, text);
 	}
+	public String genNewData(HexData type, Point p, int i) {
+		switch(type) {
+		case THREAT: return threats.getThreat(p,record.getRandom()).toString();
+		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom()).toString();
+		case NPC: return npcs.getNPC(p,record.getRandom()).toString();
+		case LOCATION: {
+			if(i==0) return names.getInnText(record.getRandom());
+			else return pois.getPOI(record.getRandom(), p,population.isCity(p));
+		}
+		case DUNGEON: return dungeons.getDungeon(record.getRandom(), p).toString();
+		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
+		case FACTION: return settlements.getFaction(record.getRandom()).toString(); 
+		case FAITH: return settlements.getFaith(record.getRandom()).toString(); 
+		case DISTRICT: return SettlementModel.getDistrict(new Indexible(record.getRandom().nextInt())); 
+		case TOWN: {
+			Species species = population.getMajoritySpecies(p.x,p.y);
+			return names.getName(species.getCityNameGen(), record.getRandom());
+		}
+		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();
+		case BIOME: return biomes.getRegionName(record.getRandom());
+		case NONE: return "";
+		case THREAD: return "";
+		case CHARACTER: return "";
+		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
+		}
+	}
 
 	public String getLinkText(String link) {
 		Matcher matcher = Reference.PATTERN.matcher(link);
@@ -334,4 +361,5 @@ public class DataController {
 	public SaveRecord getRecord() {
 		return record;
 	}
+
 }

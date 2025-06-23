@@ -1,6 +1,7 @@
 package data.encounters;
 
 import java.awt.Point;
+import java.util.Random;
 
 import data.DataModel;
 import data.Indexible;
@@ -175,6 +176,20 @@ public class EncounterModel extends DataModel{
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Encounter e = new Encounter(floats);
+		populateEncounterDetail(p, isCity, e);
+		return e;
+	}
+	public Object getEncounter(Point p, Random random) {
+		boolean isCity = pop.isCity(p);
+		int[] ints = new int[TABLECOUNT];
+		for(int n=0;n<ints.length;n++) {
+			ints[n] = random.nextInt();
+		}
+		Encounter e = new Encounter(ints);
+		populateEncounterDetail(p, isCity, e);
+		return e;
+	}
+	private void populateEncounterDetail(Point p, boolean isCity, Encounter e) {
 		if(isCity) e.setType("City");
 		else e.setType("Wilderness");
 		e.setFocus(getFocus(e));
@@ -189,7 +204,6 @@ public class EncounterModel extends DataModel{
 			e.setLocation(new String[] {getLocationReference(e, p),LocationModel.getDiscovery(e)});
 		}
 		e.setHazard(new String[] {getWildernessHazard(e)});
-		return e;
 	}
 	public String getDefaultValue(Point p,int i) {
 		return getEncounter(i,p).toString();
@@ -200,6 +214,19 @@ public class EncounterModel extends DataModel{
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Encounter e = new Encounter(floats);
+		populateDungeonEncounterDetail(e);
+		return e;
+	}
+	public Encounter getDungeonEncounter(Random random) {
+		int[] ints = new int[TABLECOUNT];
+		for(int n=0;n<ints.length;n++) {
+			ints[n] = random.nextInt();
+		}
+		Encounter e = new Encounter(ints);
+		populateDungeonEncounterDetail(e);
+		return e;
+	}
+	private void populateDungeonEncounterDetail(Encounter e) {
 		e.setType("Dungeon");
 		e.setFocus(getFocus(e));
 		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getDungeonActivity(e)+'"'});
@@ -208,6 +235,5 @@ public class EncounterModel extends DataModel{
 		e.setCharacter(new String[] {getChar(e),getChar(e)});
 		e.setObject(new String[] {getObj(e),getObj(e)});
 		e.setHazard(new String[] {getDungeonHazard(e),getTrap(e)});
-		return e;
 	}
 }

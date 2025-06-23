@@ -288,6 +288,14 @@ public class MyTextPane extends JTextPane {
 				});
 				menu.add(add);
 			}
+			JMenuItem gen = new JMenuItem("Generate New");
+			gen.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					controller.genNewData(getType(), getPoint(), index);
+				}
+			});
+			menu.add(gen);
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}

@@ -14,6 +14,10 @@ public class Settlement extends Indexible {
 		super(vals);
 	}
 	
+	public Settlement(int[] vals) {
+		super(vals);
+	}
+
 	public String getLeadership() {
 		return leadership;
 	}

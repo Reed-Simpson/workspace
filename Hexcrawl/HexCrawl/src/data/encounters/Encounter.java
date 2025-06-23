@@ -17,6 +17,9 @@ public class Encounter extends Indexible {
 	public Encounter(float... floats) {
 		super(floats);
 	}
+	public Encounter(int[] ints) {
+		super(ints);
+	}
 	public String getFocus() {
 		return focus;
 	}

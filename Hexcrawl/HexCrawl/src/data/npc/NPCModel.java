@@ -1,6 +1,7 @@
 package data.npc;
 
 import java.awt.Point;
+import java.util.Random;
 
 import data.DataModel;
 import data.Indexible;
@@ -244,138 +245,154 @@ public class NPCModel extends DataModel {
 	}
 
 	public NPC getNPC(int i,Point p) {
-		WeightedTable<Species> demo = population.getTransformedDemographics(p);
-		if(demo.getSumWeight()==0) {
-			return null;
-		}
+//		WeightedTable<Species> demo = population.getTransformedDemographics(p);
+//		if(demo.getSumWeight()==0) {
+//			return null;
+//		}
 		float[] floats = new float[TABLECOUNT];
 		for(int x=0;x<floats.length;x++) {
 			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
 		}
 		NPC result = new NPC(floats);
 
-		setSpecies(i, p, result);
-		setGoblin(i, p, result);
-		populateNPCData(i, p, result);
+		populateNPCData(p, result);
 		return result;
 	}
-	private void populateNPCData(int i, Point p, NPC npc) {
-		setJob(i, p, npc);
-		setAsset(i, p, npc);
-		setLiability(i, p, npc);
-		setGoal(i, p, npc);
-		setMisfortune(i, p, npc);
-		setMethod(i, p, npc);
-		setAppearance(i, p, npc);
-		setDetail(i, p, npc);
-		setCostume(i, p, npc);
-		setPersonality(i, p, npc);
-		setMannerism(i, p, npc);
-		setHobby(i, p, npc);
-		setReputation(i, p, npc);
-		setSecret(i, p, npc);
-		setDomain(i, p, npc);
-		setRelationship(i, p, npc);
-		setName(i, p, npc);
-		setFaction(i, p, npc);
-		setDescriptors(i,p,npc);
+	private void populateNPCData(Point p, NPC npc) {
+		setSpecies(p, npc);
+		setGoblin(p, npc);
+		setJob(p, npc);
+		setAsset(p, npc);
+		setLiability(p, npc);
+		setGoal(p, npc);
+		setMisfortune(p, npc);
+		setMethod(p, npc);
+		setAppearance(p, npc);
+		setDetail(p, npc);
+		setCostume(p, npc);
+		setPersonality(p, npc);
+		setMannerism(p, npc);
+		setHobby(p, npc);
+		setReputation(p, npc);
+		setSecret(p, npc);
+		setDomain(p, npc);
+		setRelationship(p, npc);
+		setName(p, npc);
+		setFaction(p, npc);
+		setDescriptors(p,npc);
 	}
 
 
-	private void setSpecies(int i, Point p, NPC result) {
+	private void setSpecies(Point p, NPC result) {
 		if(result.getSpecies()==null) {
 			WeightedTable<Species> demo = population.getTransformedDemographics(p);
-			int id = result.reduceTempId(demo.getSumWeight());
-			Species species = demo.getByWeight(id);
-			result.setSpecies(species);
+			if(demo.getSumWeight()>0) {
+				Species species = demo.getByWeight(result);
+				result.setSpecies(species);
+			}else {
+				Species species = getRandomNPCSpecies(result);
+				result.setSpecies(species);
+			}
 		}
 	}
-	private void setGoblin(int i, Point p, NPC result) {
+	private void setGoblin(Point p, NPC result) {
 		result.setGoblin(HumanoidNameGenerator.getGoblinoid(result));
 	}
-	private void setJob(int i, Point p, NPC npc) {
+	private void setJob(Point p, NPC npc) {
 		npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));
 	}
-	private void setAsset(int i, Point p, NPC npc) {
+	private void setAsset(Point p, NPC npc) {
 		npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p,record.getZero()));
 	}
-	private void setLiability(int i, Point p, NPC npc) {
+	private void setLiability(Point p, NPC npc) {
 		npc.setLiability(getLiability(npc));
 	}
-	private void setGoal(int i, Point p, NPC npc) {
+	private void setGoal(Point p, NPC npc) {
 		npc.setGoal(Util.formatTableResultPOS(getGoal(npc),npc,p,record.getZero()));
 	}
-	private void setMisfortune(int i, Point p, NPC npc) {
+	private void setMisfortune(Point p, NPC npc) {
 		npc.setMisfortune(getMisfortune(npc));
 	}
-	private void setMethod(int i, Point p, NPC npc) {
+	private void setMethod(Point p, NPC npc) {
 		npc.setMethod(getMethod(npc));
 	}
-	private void setAppearance(int i, Point p, NPC npc) {
+	private void setAppearance(Point p, NPC npc) {
 		npc.setAppearance(getAppearance(npc));
 	}
-	private void setDetail(int i, Point p, NPC npc) {
+	private void setDetail(Point p, NPC npc) {
 		npc.setDetail(getDetail(npc));
 	}
-	private void setCostume(int i, Point p, NPC npc) {
+	private void setCostume(Point p, NPC npc) {
 		npc.setCostume(getCostume(npc));
 	}
-	private void setPersonality(int i, Point p, NPC npc) {
+	private void setPersonality(Point p, NPC npc) {
 		npc.setPersonality(getPersonality(npc));
 	}
-	private void setMannerism(int i, Point p, NPC npc) {
+	private void setMannerism(Point p, NPC npc) {
 		npc.setMannerism(getMannerism(npc));
 	}
-	private void setHobby(int i, Point p, NPC npc) {
+	private void setHobby(Point p, NPC npc) {
 		npc.setHobby(getHobby(npc));
 	}
-	private void setReputation(int i, Point p, NPC npc) {
+	private void setReputation(Point p, NPC npc) {
 		npc.setReputation(getReputation(npc));
 	}
-	private void setSecret(int i, Point p, NPC npc) {
+	private void setSecret(Point p, NPC npc) {
 		npc.setSecret(getSecret(npc));
 	}
-	private void setDomain(int i, Point p, NPC npc) {
+	private void setDomain(Point p, NPC npc) {
 		npc.setDomain(Util.formatTableResultPOS("${faith index}",npc,p,record.getZero()));
 	}
-	private void setRelationship(int i, Point p, NPC npc) {
+	private void setRelationship(Point p, NPC npc) {
 		npc.setRelationship(getRelationship(npc));
 	}
-	private void setName(int i, Point p, NPC npc) {
+	private void setName(Point p, NPC npc) {
 		if(npc.getSpecies()!=null&&npc.getSpecies().getNPCNameGen()!=null) {
 			String name = npc.getSpecies().getNPCNameGen().getName(npc);
 			name = Util.formatTableResultPOS(name, npc, p, record.getZero());
 			npc.setName(name);
 		}
 	}
-	private void setFaction(int i, Point p, NPC npc) {
+	private void setFaction(Point p, NPC npc) {
 		npc.setFaction(Util.formatTableResultPOS("${faction index}", npc, p, record.getZero()));
 	}
-	private void setDescriptors(int i, Point p, NPC npc) {
+	private void setDescriptors(Point p, NPC npc) {
 		String desc1 = EncounterModel.getChar(npc);
 		String desc2 = EncounterModel.getChar(npc);
 		npc.setDescriptors(new String[]{desc1,desc2});
 	}
-	public NPC getRandomNPC(int i,Point p) {
-		float[] floats = new float[TABLECOUNT];
-		for(int x=0;x<floats.length;x++) {
-			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
-		}
-		NPC result = new NPC(floats);
-		Species species = getNPCSpecies(result);
-		result.setSpecies(species);
-		result.setGoblin(HumanoidNameGenerator.getGoblinoid(result));
-		populateNPCData(i, p, result);
-
-		return result;
-	}
-	public Species getNPCSpecies(Indexible obj) {
+//	public NPC getRandomNPC(int i,Point p) {
+//		float[] floats = new float[TABLECOUNT];
+//		for(int x=0;x<floats.length;x++) {
+//			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
+//		}
+//		NPC result = new NPC(floats);
+//		Species species = getRandomNPCSpecies(result);
+//		result.setSpecies(species);
+//		result.setGoblin(HumanoidNameGenerator.getGoblinoid(result));
+//		populateNPCData(i, p, result);
+//
+//		return result;
+//	}
+	public Species getRandomNPCSpecies(Indexible obj) {
 		Species[] species = Species.getAbeirNPCSpecies();
 		return (Species) Util.getElementFromArray(species, obj);
 	}
 	@Override
 	public NPC getDefaultValue(Point p, int i) {
 		return getNPC(i, p);
+	}
+
+
+	public NPC getNPC(Point p,Random random) {
+		int[] ints = new int[TABLECOUNT];
+		for(int x=0;x<ints.length;x++) {
+			ints[x] = random.nextInt();
+		}
+		NPC result = new NPC(ints);
+
+		populateNPCData(p, result);
+		return result;
 	}
 
 }

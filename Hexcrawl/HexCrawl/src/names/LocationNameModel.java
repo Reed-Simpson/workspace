@@ -1,6 +1,7 @@
 package names;
 
 import java.awt.Point;
+import java.util.Random;
 
 import data.Indexible;
 import data.OpenSimplex2S;
@@ -25,6 +26,13 @@ public class LocationNameModel {
 	}
 	public String getInnText(Point p) {
 		Indexible obj = new Indexible(getIndexValue(p,0),getIndexValue(p,1),getIndexValue(p,2),getIndexValue(p,3));
+		return getInnText(obj);
+	}
+	public String getInnText(Random random) {
+		Indexible obj = new Indexible(random.nextInt(),random.nextInt(),random.nextInt(),random.nextInt());
+		return getInnText(obj);
+	}
+	private String getInnText(Indexible obj) {
 		String innname = "Inn: "+getInnName(obj);
 		String innquirk = "\r\nQuirk: "+getInnQuirk(obj);
 		String inndescriptors = "\r\nDescriptors: "+getInnDescriptor(obj)+" and "+getInnDescriptor(obj);
@@ -45,6 +53,15 @@ public class LocationNameModel {
 		int[] indexes = new int[20];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getIndexValue(p,3+i);
+		}
+		return gen.getName(new Indexible(indexes));
+	}
+
+
+	public String getName(NameGenerator gen, Random random) {
+		int[] indexes = new int[20];
+		for(int i=0;i<indexes.length;i++) {
+			indexes[i] = random.nextInt();
 		}
 		return gen.getName(new Indexible(indexes));
 	}

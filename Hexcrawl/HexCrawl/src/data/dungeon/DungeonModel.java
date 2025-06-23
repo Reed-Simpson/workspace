@@ -1,6 +1,7 @@
 package data.dungeon;
 
 import java.awt.Point;
+import java.util.Random;
 
 import data.DataModel;
 import data.Indexible;
@@ -154,6 +155,19 @@ public class DungeonModel extends DataModel {
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Dungeon result = new Dungeon(floats);
+		populateDungeonDetail(p, result);
+		return result;
+	}
+	public Dungeon getDungeon(Random random,Point p) {
+		int[] ints = new int[TABLECOUNT];
+		for(int n=0;n<ints.length;n++) {
+			ints[n] = random.nextInt();
+		}
+		Dungeon result = new Dungeon(ints);
+		populateDungeonDetail(p, result);
+		return result;
+	}
+	private void populateDungeonDetail(Point p, Dungeon result) {
 		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p,record.getZero()));
 		result.setForm(getForm(result));
 		result.setLayout(getLayout(result));
@@ -161,7 +175,6 @@ public class DungeonModel extends DataModel {
 		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,record.getZero()));
 		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
 		result.setMonster(MonsterModel.getMonster(result));
-		return result;
 	}
 	@Override
 	public Dungeon getDefaultValue(Point p, int i) {

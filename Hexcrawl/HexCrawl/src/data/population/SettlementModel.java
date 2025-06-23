@@ -2,6 +2,7 @@ package data.population;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 import controllers.DataController;
 import data.DataModel;
@@ -9,6 +10,7 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.magic.MagicModel;
+import data.magic.MagicType;
 import data.npc.Faction;
 import data.npc.NPCModel;
 import io.SaveRecord;
@@ -157,43 +159,92 @@ public class SettlementModel extends DataModel{
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+j), p.x, p.y);
 		}
 		Settlement result = new Settlement(vals);
+		populateSettlementDetails(result);
+		populateDistricts(p, result);
+		return result;
+	}
+	public Object getSettlement(Point p,Random random) {
+		int[] vals = new int[SETTLEMENTTABLES];
+		for(int j=0;j<vals.length;j++) {
+			vals[j] = random.nextInt();
+		}
+		Settlement result = new Settlement(vals);
+		populateSettlementDetails(result);
+		populateDistricts(p,random, result);
+		return result;
+	}
+	private void populateSettlementDetails(Settlement result) {
 		result.setTheme(getTheme(result));
 		result.setLeadership(getLeadership(result));
 		result.setEvent(getEvent(result));
+	}
+	private void populateDistricts(Point p, Settlement result) {
 		MagicModel magic = controller.getMagic();
 		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
 			String district = getDistrict(result);
 			if(magic.isWeird(p,k)) district = magic.getAdjective(p, k)+" "+district;
 			result.putDistrict(district);
 		}
-		return result;
+	}
+	private void populateDistricts(Point p, Random random, Settlement result) {
+		MagicModel magic = controller.getMagic();
+		MagicType type = magic.getMagicType(p);
+		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
+			String district = getDistrict(result);
+			if(magic.isWeird(type,random.nextInt())) district = MagicModel.getAdjective(new Indexible(random.nextInt()))+" "+district;
+			result.putDistrict(district);
+		}
 	}
 	public Faction getFaction(int i,Point p) {
 		float[] vals = new float[FACTIONTABLES];
-		for(int j=0;j<FACTIONTABLES;j++) {
+		for(int j=0;j<vals.length;j++) {
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j+i*FACTIONTABLES), p.x, p.y);
 		}
 		Faction result = new Faction(vals);
+		populateFactionDetails(result);
+		return result;
+	}
+	public Faction getFaction(Random random) {
+		int[] ints = new int[FACTIONTABLES];
+		for(int n=0;n<ints.length;n++) {
+			ints[n] = random.nextInt();
+		}
+		Faction result = new Faction(ints);
+		populateFactionDetails(result);
+		return result;
+	}
+	private void populateFactionDetails(Faction result) {
 		String type = FactionNameGenerator.getFaction(result);
 		result.setType(type);
 		result.setName(formatName(result, type));
 		result.setTrait(FactionNameGenerator.getTrait(result));
 		result.setGoal(FactionNameGenerator.getGoal(result));
-		return result;
 	}
 	public Faction getFaith(int i,Point p) {
 		float[] vals = new float[FACTIONTABLES];
-		for(int j=0;j<FACTIONTABLES;j++) {
+		for(int j=0;j<vals.length;j++) {
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j+(i+Util.getOffsetX()/2)*FACTIONTABLES), p.x, p.y);
 		}
 		Faction result = new Faction(vals);
+		populateFaithDetails(result);
+		return result;
+	}
+	public Faction getFaith(Random random) {
+		int[] vals = new int[FACTIONTABLES];
+		for(int j=0;j<vals.length;j++) {
+			vals[j] = random.nextInt();
+		}
+		Faction result = new Faction(vals);
+		populateFaithDetails(result);
+		return result;
+	}
+	private void populateFaithDetails(Faction result) {
 		String type = FactionNameGenerator.getFaith(result);
 		result.setType(type);
 		result.setDomain(NPCModel.getDomain(result));
 		result.setName(formatName(result, type));
 		result.setTrait(FactionNameGenerator.getTrait(result));
 		result.setGoal(FactionNameGenerator.getGoal(result));
-		return result;
 	}
 	private String formatName(Faction result, String type) {
 		String name = FactionNameGenerator.getName(type,result);
@@ -214,5 +265,7 @@ public class SettlementModel extends DataModel{
 		if(i<districts.size()&&i>-1) return districts.get(i);
 		return null;
 	}
+
+
 
 }

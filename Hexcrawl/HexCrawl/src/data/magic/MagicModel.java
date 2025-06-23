@@ -11,6 +11,7 @@ import io.SaveRecord;
 import util.Util;
 
 public class MagicModel extends DataModel{
+	private static final int WEIRDNESSMOD = 20;
 	public static final int LOCAL_WEIGHT_1 = 10;
 	public static final int LOCAL_WEIGHT_2 = 1;
 	public static final int SEED_OFFSET = 3*Util.getOffsetX();
@@ -372,10 +373,14 @@ public class MagicModel extends DataModel{
 	public boolean isWeird(Point p,int i) {
 		Indexible obj = new Indexible(getWeirdnessValue(p));
 		MagicType type = getMagicType(p);
-		int roll = obj.reduceTempId(20);
+		int roll = obj.reduceTempId(WEIRDNESSMOD);
 		for(int count = 0;count<i;count++) {
-			roll = obj.reduceTempId(20);
+			roll = obj.reduceTempId(WEIRDNESSMOD);
 		}
+		return isWeird(type, roll);
+	}
+	public boolean isWeird(MagicType type, int roll) {
+		roll = roll%WEIRDNESSMOD;
 		if(MagicType.WILDMAGIC.equals(type)) {
 			return roll>1; //90%
 		}else if(MagicType.HIGHMAGIC.equals(type)) {

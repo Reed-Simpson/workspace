@@ -21,6 +21,7 @@ public class WeightedTable<T> extends LinkedHashMap<T,Integer> {
 		return sumweight = result;
 	}
 
+	@Deprecated
 	public T getByWeight(int index) {
 		Integer sum = getSumWeight();
 		index = index % sum;

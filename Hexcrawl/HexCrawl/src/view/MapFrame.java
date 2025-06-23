@@ -66,8 +66,7 @@ public class MapFrame extends JFrame{
 
 	public void load(SaveRecord record) {
 		this.record=record;
-		ProgressBarDialog dialog = new ProgressBarDialog(this);
-		MapPanel panel = new MapPanel(this,record,dialog);
+		MapPanel panel = new MapPanel(this,record);
 		InfoPanel info = new InfoPanel(panel);
 		RegionPanel region = new RegionPanel();
 		JTabbedPane tabs = new JTabbedPane();

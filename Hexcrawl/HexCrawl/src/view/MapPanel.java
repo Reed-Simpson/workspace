@@ -61,9 +61,9 @@ public class MapPanel  extends JPanel{
 	int previousIndex;
 	private DataController controller;
 
-	public MapPanel(MapFrame frame, SaveRecord record,ProgressBarDialog dialog) {
+	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
-		this.dialog = dialog;
+		this.dialog = new ProgressBarDialog(frame);
 		this.reloadFromSaveRecord(record);
 		this.addMouseListener(new MouseAdapter());
 		this.addMouseMotionListener(new MouseMotionAdapter());
@@ -178,6 +178,7 @@ public class MapPanel  extends JPanel{
 	@Override
 	public void paint(Graphics g){
 		time = System.currentTimeMillis();
+		this.dialog = new ProgressBarDialog(frame);
 		Graphics2D g2 = (Graphics2D) g;
 		int step = 1;
 		int displayScale = (int)scale;

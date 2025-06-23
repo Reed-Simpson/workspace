@@ -31,7 +31,7 @@ public class Counter {
 		this.counter++;
 		if(bar!=null) {
 			bar.setValue((int) (counter*bar.getMaximum()/counterMax));
-			bar.repaint();
+			//bar.repaint();
 		}
 		if(counter>=counterThresh*counterThreshcount) {
 			String s = "("+(counter*100/counterMax)+"%)";

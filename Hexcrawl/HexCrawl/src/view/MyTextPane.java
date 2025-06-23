@@ -300,6 +300,16 @@ public class MyTextPane extends JTextPane {
 				}
 			});
 			menu.add(gen);
+			JMenuItem revert = new JMenuItem("Revert to Default");
+			revert.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String defaultText = controller.getDefaultText(getType(), getPoint(), getIndex());
+					controller.putData(getType(), getPoint(), getIndex(), defaultText);
+					MyTextPane.this.doPaint();
+				}
+			});
+			menu.add(revert);
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}

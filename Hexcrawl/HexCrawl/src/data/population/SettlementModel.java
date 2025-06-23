@@ -10,8 +10,10 @@ import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.magic.MagicModel;
 import data.npc.Faction;
+import data.npc.NPCModel;
 import io.SaveRecord;
 import names.FactionNameGenerator;
+import names.InnNameGenerator;
 import util.Util;
 import view.InfoPanel;
 
@@ -174,15 +176,34 @@ public class SettlementModel extends DataModel{
 		}
 		Faction result = new Faction(vals);
 		String type = FactionNameGenerator.getFaction(result);
-		String name = FactionNameGenerator.getName(type,result);
-		String trait = FactionNameGenerator.getTrait(result);
-		String goal = FactionNameGenerator.getGoal(result);
 		result.setType(type);
-		result.setName(name);
-		result.setTrait(trait);
-		result.setGoal(goal);
+		result.setName(formatName(result, type));
+		result.setTrait(FactionNameGenerator.getTrait(result));
+		result.setGoal(FactionNameGenerator.getGoal(result));
 		return result;
 	}
+	public Faction getFaith(int i,Point p) {
+		float[] vals = new float[FACTIONTABLES];
+		for(int j=0;j<FACTIONTABLES;j++) {
+			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j+(i+Util.getOffsetX()/2)*FACTIONTABLES), p.x, p.y);
+		}
+		Faction result = new Faction(vals);
+		String type = FactionNameGenerator.getFaith(result);
+		result.setType(type);
+		result.setDomain(NPCModel.getDomain(result));
+		result.setName(formatName(result, type));
+		result.setTrait(FactionNameGenerator.getTrait(result));
+		result.setGoal(FactionNameGenerator.getGoal(result));
+		return result;
+	}
+	private String formatName(Faction result, String type) {
+		String name = FactionNameGenerator.getName(type,result);
+		if(name.contains("${placeholder domain}")) {
+			name = Util.replace(name,"${placeholder domain}",result.getDomain());
+		}
+		return Util.toCamelCase(name);
+	}
+	
 	@Override
 	public Settlement getDefaultValue(Point p, int i) {
 		return getSettlement(p);

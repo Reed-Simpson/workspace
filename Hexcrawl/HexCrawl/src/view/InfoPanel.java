@@ -113,6 +113,9 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<MyTextPane> charactersList;
 	private ArrayList<MyTextPane> threadsList;
 	private JPanel charactersPanel;
+	private ArrayList<MyTextPane> faithsTexts;
+	private JScrollPane faithsScrollPane;
+	private int selectedFaith;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -301,17 +304,19 @@ public class InfoPanel extends JTabbedPane{
 		regionPanel.add(cityName);
 
 
+		//City tab
 		regionTabs = new JTabbedPane();
 		city1 = new MyTextPane(this, -1, HexData.CITY);
 		cityScrollPane = new JScrollPane(city1);
 		regionTabs.addTab("Parent City", cityScrollPane);
 
+		//Faction tab
 		JPanel factionPanel = new JPanel();
 		factionPanel.setLayout(new BoxLayout(factionPanel, BoxLayout.Y_AXIS));
 		factionTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<FACTIONCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
-			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);;
+			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);
 			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
@@ -319,7 +324,23 @@ public class InfoPanel extends JTabbedPane{
 		factionScrollPane = new JScrollPane(factionPanel);
 		factionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Factions", factionScrollPane);
+		
+		//Faiths tab
+		JPanel faithsPanel = new JPanel();
+		faithsPanel.setLayout(new BoxLayout(faithsPanel, BoxLayout.Y_AXIS));
+		faithsTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<FACTIONCOUNT;i++) {
+			faithsPanel.add(new JLabel("~~~~~ Faith #"+(i+1)+" ~~~~~"));
+			MyTextPane factioni = new MyTextPane(this, i, HexData.FAITH);
+			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			faithsPanel.add(factioni);
+			faithsTexts.add(factioni);
+		}
+		faithsScrollPane = new JScrollPane(faithsPanel);
+		faithsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("Faiths", faithsScrollPane);
 
+		
 		regionPanel.add(regionTabs);
 
 		this.addTab(Util.pad("Region", TAB_TITLE_LENGTH), new JScrollPane(regionPanel));
@@ -609,10 +630,17 @@ public class InfoPanel extends JTabbedPane{
 			}
 			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
+			for(int i = 0;i<this.faithsTexts.size();i++) {
+				MyTextPane pane = this.faithsTexts.get(i);
+				if(i==selectedFaith) {
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+				}else {
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
+				}
+				pane.doPaint();
+			}
+			
 			if(population.isCity(capital)) {
-//				this.city1.setText(getCityText(capital));
-				//this.city1.setCaretPosition(0);
-
 				for(int i = 0;i<this.factionTexts.size();i++) {
 					MyTextPane pane = this.factionTexts.get(i);
 					if(i==selectedFaction) {
@@ -621,7 +649,6 @@ public class InfoPanel extends JTabbedPane{
 						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
 					pane.doPaint();
-					//pane.setText(getFactionText(pos,i));
 				}
 				if(selectedFaction>-1) this.factionTexts.get(selectedFaction).setCaretPosition(0);
 			}else {

@@ -8,10 +8,12 @@ import util.Util;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static HashMap<String,IndexibleNameGenerator> factionNameGenerators;
+	private static HashMap<String,IndexibleNameGenerator> faithNameGenerators;
 //	private static final String FACTIONS = "art movement,beggar's guild,black market,brotherhood,city guard,conspiracy,craft guild,crime family,crime ring,dark cult,explorer's club,free company,"+
 //			"gourmand club,heist crew,heretical sect,high council,hired killers,local militia,national church,noble house,outlander clan,outlaw gang,political party,religious order,"+
 //			"religious sect,resistance,royal army,royal house,scholar's circle,secret society,spy network,street artists,street gang,street musicians,theater troupe,trade company";
 	private static WeightedTable<String> factions;
+	private static WeightedTable<String> faiths;
 	private static final String TRAITS = "bankrupt,bureaucratic,charitable,confused,connected,corrupt,decadent,decaying,delusional,divided,dwindling,efficient,"+
 			"esoteric,expanding,hunted,incompetent,incorruptible,insane,insular,manipulative,martial,${personality},pious,popular,"+
 			"righteous,ruthless,secret,subversive,suppressed,threatened,thriving,unpopular,up-and-coming,wealthy,well-prepared,xenophobic";
@@ -22,7 +24,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static WeightedTable<String> goals;
 
 	private static final String CHURCH_ADJECTIVES = "Eldritch,Infernal,Abyssal,Draconic,Elemental,Celestial,Humanist";
-	private static final String CHURCH_NOUNS = "Church of ${domain},Temple of ${domain},Servants of ${domain},Order of the ${spell},Children of the ${spell},Cult of the ${spell}";
+	private static final String CHURCH_NOUNS = "Church of ${placeholder domain},Temple of ${placeholder domain},Servants of ${placeholder domain},Order of the ${spell},Children of the ${spell},Cult of the ${spell}";
 	private static final String CRIMINAL_ADJECTIVES= "${underworld npc},${color} Cloak,Hidden,Secret,Whispering,Masked,Shrouded,Midnight,Shadow,Veiled,Dusk,Twilight,Lurking,Hollow,Silent,Desperate";
 	private static final String CRIMINAL_NOUNS= "Veil,Cartel,Defiance,Syndicate,Brotherhood,Shadows,Network,Ring,Hands,Gang,Clan";
 	private static final String UNDERCLASS_ADJECTIVES= "Shattered,Ragged,Forgotten,Lost,Tattered,Hollow,Gutter,Shivering,Silent,Desperate,${misfortune}";
@@ -103,7 +105,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static WeightedTable<String> heistcrew_adjectives;
 	private static WeightedTable<String> heistcrew_nouns;
 	private static final String HERETICALSECT_ADJECTIVES = CHURCH_ADJECTIVES;
-	private static final String HERETICALSECT_NOUNS = CHURCH_NOUNS+",Prophets of ${domain},Seekers of the ${spell},Conclave of ${domain},Heralds of the ${spell},Reformists of ${domain}";
+	private static final String HERETICALSECT_NOUNS = CHURCH_NOUNS+",Prophets of ${placeholder domain},Seekers of the ${spell},Conclave of ${placeholder domain},Heralds of the ${spell},Reformists of ${placeholder domain}";
 	private static WeightedTable<String> hereticalsect_adjectives;
 	private static WeightedTable<String> hereticalsect_nouns;
 	private static final String HIGHCOUNCIL_ADJECTIVES = "Summit,Prime,Supreme,${color} Robed,${rare material},${material}-Masked";
@@ -347,6 +349,19 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		tradecompany_nouns = new WeightedTable<String>();
 		populate(tradecompany_nouns,TRADECOMPANY_NOUNS,",");
 		populateFaction();
+		populateFaiths();
+	}
+	private static void populateFaiths() {
+		faithNameGenerators = new HashMap<String, IndexibleNameGenerator>();
+		faithNameGenerators.put("Dark Cult",new DarkCultNameGen());
+		faithNameGenerators.put("Heretical Sect",new HereticalSectNameGen());
+		faithNameGenerators.put("National Church",new NationalChurchNameGen());
+		faithNameGenerators.put("Religious Order",new ReligiousOrderNameGen());
+		faithNameGenerators.put("Religious Sect",new ReligiousSectNameGen());
+		faiths = new WeightedTable<String>();
+		for(String s:faithNameGenerators.keySet()) {
+			faiths.put(s);
+		}
 	}
 	private static void populateFaction() {
 		factionNameGenerators = new HashMap<String, IndexibleNameGenerator>();
@@ -359,22 +374,17 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		factionNameGenerators.put("Craft Guild",new CraftGuildNameGen());
 		factionNameGenerators.put("Crime Family",new CrimeFamilyNameGen());
 		factionNameGenerators.put("Crime Ring",new CrimeRingNameGen());
-		factionNameGenerators.put("Dark Cult",new DarkCultNameGen());
 		factionNameGenerators.put("Explorer's Club",new ExplorerClubNameGen());
 		factionNameGenerators.put("Free Company",new FreeCompanyNameGen());
 		factionNameGenerators.put("Gourmand Club",new GourmandClubNameGen());
 		factionNameGenerators.put("Heist Crew",new HeistCrewNameGen());
-		factionNameGenerators.put("Heretical Sect",new HereticalSectNameGen());
 		factionNameGenerators.put("High Council",new HighCouncilNameGen());
 		factionNameGenerators.put("Hired Killers",new HiredKillersNameGen());
 		factionNameGenerators.put("Local Militia",new LocalMilitiaNameGen());
-		factionNameGenerators.put("National Church",new NationalChurchNameGen());
 		factionNameGenerators.put("Noble House",new NobleHouseNameGen());
 		factionNameGenerators.put("Outlander Clan",new OutlanderClanNameGen());
 		factionNameGenerators.put("Outlaw Gang",new OutlawGangNameGen());
 		factionNameGenerators.put("Political Party",new PoliticalPartyNameGen());
-		factionNameGenerators.put("Religious Order",new ReligiousOrderNameGen());
-		factionNameGenerators.put("Religious Sect",new ReligiousSectNameGen());
 		factionNameGenerators.put("Resistance",new ResistanceNameGen());
 		factionNameGenerators.put("Royal Army",new RoyalArmyNameGen());
 		factionNameGenerators.put("Royal House",new RoyalHouseNameGen());
@@ -395,6 +405,10 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	public static String getFaction(Indexible obj) {
 		if(factions==null) populateAllTables();
 		return factions.getByWeight(obj);
+	}
+	public static String getFaith(Indexible obj) {
+		if(faiths==null) populateAllTables();
+		return faiths.getByWeight(obj);
 	}
 	public static String getTrait(Indexible obj) {
 		if(traits==null) populateAllTables();
@@ -701,9 +715,11 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	
 	public static String getName(String s,Indexible obj) {
 		if(factionNameGenerators==null) populateAllTables();
-		String name = factionNameGenerators.get(s).getName(obj);
+		IndexibleNameGenerator gen = faithNameGenerators.get(s);
+		if(gen==null) gen = factionNameGenerators.get(s);
+		String name = gen.getName(obj);
 		name = Util.formatTableResult(name,obj);
-		return Util.toCamelCase(name);
+		return name;
 	}
 
 	private static class ArtMovementNameGen extends IndexibleNameGenerator{

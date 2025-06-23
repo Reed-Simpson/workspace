@@ -17,6 +17,7 @@ public enum HexData {
 	DUNGEON("dungeon"),
 	D_ENCOUNTER("d.encounter"),
 	FACTION("faction"),
+	FAITH("faith"),
 	DISTRICT("district"),
 	CITY("city"),
 	TOWN("town"),

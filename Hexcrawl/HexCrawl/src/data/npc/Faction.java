@@ -8,6 +8,7 @@ public class Faction extends Indexible {
 	String trait;
 	String goal;
 	String name;
+	String domain;
 
 	public Faction(float... floats) {
 		super(floats);
@@ -44,9 +45,19 @@ public class Faction extends Indexible {
 		this.name = name;
 	}
 	
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	
 	public String toString() {
 		StringBuilder c1Text = new StringBuilder();
 		c1Text.append(this.getName()+"\r\n");
+		if(this.getDomain()!=null) c1Text.append("   Domain: "+this.getDomain()+"\r\n");
 		c1Text.append("   Type: "+this.getType()+"\r\n");
 		c1Text.append("   Trait: "+this.getTrait()+"\r\n");
 		c1Text.append("   Goal: "+this.getGoal()+"\r\n");

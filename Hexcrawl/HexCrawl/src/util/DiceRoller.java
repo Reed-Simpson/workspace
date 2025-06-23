@@ -31,7 +31,7 @@ public class DiceRoller {
 	}
 	
 	public ArrayList<Integer> roll(int number,int sides) {
-		if(rand==null) rand = new Random();
+		if(rand==null) rand = new Random(System.currentTimeMillis());
 		ArrayList<Integer> results = new ArrayList<Integer>();
 		for(int i=0;i<number;i++) {
 			results.add(rand.nextInt(sides)+1);
@@ -187,8 +187,8 @@ public class DiceRoller {
 		return diceRollerDialog;
 	}
 	
+	@SuppressWarnings("serial")
 	public class DiceRollerDialog extends JDialog {
-		private static final long serialVersionUID = 969397943780677514L;
 		private JTextArea archive;
 		private int index = -1;
 		private String temp;

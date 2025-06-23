@@ -256,7 +256,7 @@ public class Util {
 
 		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
 
-		String[] encode = {"location index","npc index","faction index","district index","subtype","town index"};
+		String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain"};
 		for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 		if(result.contains("${")) {
 			throw new IllegalStateException("Unable to process tag: "+result);

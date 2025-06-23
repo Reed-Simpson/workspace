@@ -43,6 +43,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> locations2;
 	private HashMap<Point,ArrayList<String>> dungeons;
 	private HashMap<Point,ArrayList<String>> factions;
+	private HashMap<Point,ArrayList<String>> faiths;
 	private HashMap<Point,Color> highlights;
 	private DiceRoller roller;
 	private ArrayList<Reference> campaignCharacters;
@@ -68,6 +69,7 @@ public class SaveRecord implements Serializable {
 		this.locations2 = new HashMap<Point,ArrayList<String>>();
 		this.dungeons = new HashMap<Point,ArrayList<String>>();
 		this.factions = new HashMap<Point,ArrayList<String>>();
+		this.faiths = new HashMap<Point,ArrayList<String>>();
 		this.highlights = new HashMap<Point,Color>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
@@ -196,6 +198,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.locations2==null) loadedRecord.locations2 = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.dungeons==null) loadedRecord.dungeons = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.factions==null) loadedRecord.factions = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.faiths==null) loadedRecord.faiths = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.highlights==null) loadedRecord.highlights = new HashMap<Point,Color>();
 			
 			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
@@ -236,7 +239,7 @@ public class SaveRecord implements Serializable {
 
 	public String putNote(Point p,String s) {
 		String put = this.notes.put(p, s);
-		if(put!=null&&!put.equals(p)) {
+		if(put!=null&&!put.equals(s)) {
 			this.hasUnsavedData = true;
 		}
 		return put;
@@ -254,7 +257,7 @@ public class SaveRecord implements Serializable {
 
 	public String putThreat(Point p,String s) {
 		String put = this.threats.put(p, s);
-		if(put!=null&&!put.equals(p)) {
+		if(put!=null&&!put.equals(s)) {
 			this.hasUnsavedData = true;
 		}
 		return put;
@@ -272,7 +275,7 @@ public class SaveRecord implements Serializable {
 
 	public String putCity(Point p,String s) {
 		String put = this.cities.put(p, s);
-		if(put!=null&&!put.equals(p)) {
+		if(put!=null&&!put.equals(s)) {
 			this.hasUnsavedData = true;
 		}
 		return put;
@@ -405,6 +408,31 @@ public class SaveRecord implements Serializable {
 	}
 	public String removeFaction(Point p, int i) {
 		ArrayList<String> faction = this.factions.get(p);
+		if(faction==null||faction.size()<=i) return null;
+		String set = faction.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+
+	public String putFaith(Point p, int i,String s) {
+		if(!this.faiths.containsKey(p)) this.faiths.put(p, new ArrayList<String>());
+		ArrayList<String> faction = this.faiths.get(p);
+		while(faction.size()<i+1) faction.add(null);
+		String set = faction.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getFaith(Point p, int i) {
+		ArrayList<String> faction = this.faiths.get(p);
+		if(faction==null||faction.size()<=i) return null;
+		return faction.get(i);
+	}
+	public String removeFaith(Point p, int i) {
+		ArrayList<String> faction = this.faiths.get(p);
 		if(faction==null||faction.size()<=i) return null;
 		String set = faction.set(i, null);
 		if(set!=null) {

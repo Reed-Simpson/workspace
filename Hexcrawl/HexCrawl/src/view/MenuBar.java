@@ -191,7 +191,7 @@ public class MenuBar extends JMenuBar {
 		sLabel = new JLabel("1 hex = 6 miles");
 		dataFieldsPanel.add(sLabel);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
-		dataFieldsPanel.add(new JLabel("data:"));
+		dataFieldsPanel.add(new JLabel("view:"));
 		
 		dataMenu = new JComboBox<HexData>(HexData.getMapViews());
 		dataMenu.setMaximumSize(new Dimension(100,100));
@@ -237,7 +237,7 @@ public class MenuBar extends JMenuBar {
 		dataFieldsPanel.add(dBox);
 		dBox.setSelected(false);
 		
-		dataFieldsPanel.add(new JLabel("show region:"));
+		dataFieldsPanel.add(new JLabel("highlight region:"));
 		regionMenu = new JComboBox<HexData>(HexData.getRegionTypes());
 		regionMenu.setMaximumSize(new Dimension(100,100));
 		regionMenu.addActionListener(new ActionListener(){

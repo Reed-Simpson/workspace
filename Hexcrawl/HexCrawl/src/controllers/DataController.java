@@ -74,6 +74,7 @@ public class DataController {
 		case DUNGEON: return dungeons;
 		case D_ENCOUNTER: return encounters;
 		case FACTION: return settlements;
+		case FAITH: return settlements;
 		case CITY: return settlements;
 		case TOWN: return settlements;
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
@@ -104,6 +105,10 @@ public class DataController {
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getFaction(i, capital).toString(); break;
+		}
+		case FAITH: {
+			Point capital = population.getAbsoluteFealty(p);
+			value = settlements.getFaith(i, capital).toString(); break;
 		}
 		case DISTRICT: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -155,6 +160,10 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getFaction(capital, i);
 		}
+		case FAITH: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getFaith(capital, i);
+		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getCity(capital);
@@ -188,6 +197,10 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.removeFaction(capital, i);
 		}
+		case FAITH: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeFaith(capital, i);
+		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.removeCity(capital);
@@ -216,6 +229,10 @@ public class DataController {
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.putFaction(capital, i, s);
+		}
+		case FAITH: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.putFaith(capital, i, s);
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);

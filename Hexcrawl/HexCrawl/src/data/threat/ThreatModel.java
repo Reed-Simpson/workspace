@@ -33,7 +33,7 @@ public class ThreatModel extends DataModel{
 		int result = -1;
 		float val = 0f;
 		for(int i=0;i<THREATGROUPCOUNT;i++) {
-			float popN = getThreatGroupIndex(i,p,Util.getNScale());
+			float popN = getThreatGroupIndex(i,p,Util.getNScale()*1.4);
 			if(popN>val) {
 				result = i;
 				val=popN;

@@ -47,12 +47,14 @@ public class MyTextPane extends JTextPane {
 	private HexData type;
 	private HashMap<Interval,Interval> links;
 	private Reference ref;
+	private int offset;
 
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
 		this.controller = info.getPanel().getController();
 		this.index = index;
 		this.type = type;
+		this.offset = 0;
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setCaret(new NoScrollCaret());
 		this.setContentType("text/html");
@@ -338,10 +340,12 @@ public class MyTextPane extends JTextPane {
 		@Override
 		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
 			if(info.isChangeSelected()) {
+				MyTextPane.this.offset = offset;
 				int a = formattedIndexToRaw(offset);
 				int b = formattedIndexToRaw(offset+length);
 				deleteRawText(a,b);
 				writeStringToDocument(fb, rawText);
+				MyTextPane.this.setCaretPosition(MyTextPane.this.offset);
 			}else {
 				super.remove(fb, offset, length); // Allow the removal
 			}
@@ -350,7 +354,10 @@ public class MyTextPane extends JTextPane {
 		@Override
 		public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 			if(info.isChangeSelected()) {
-				String substring = rawText.substring(0, offset);
+				MyTextPane.this.offset = offset+text.length()-length;
+				int a = formattedIndexToRaw(offset);
+				int b = formattedIndexToRaw(offset+length);
+				String substring = rawText.substring(0, a);
 				int openbracket = substring.lastIndexOf("{");
 				int closebracket = substring.lastIndexOf("}$");
 				if(text.endsWith("}")&&openbracket>closebracket) {
@@ -359,10 +366,9 @@ public class MyTextPane extends JTextPane {
 						text+="$";
 					}
 				}
-				int a = formattedIndexToRaw(offset);
-				int b = formattedIndexToRaw(offset+length);
 				replaceRawText(text,a,b);
 				writeStringToDocument(fb, rawText);
+				MyTextPane.this.setCaretPosition(MyTextPane.this.offset);
 			}else {
 				super.replace(fb, offset, length, text, attrs); // Allow the replacement with modified text
 			}

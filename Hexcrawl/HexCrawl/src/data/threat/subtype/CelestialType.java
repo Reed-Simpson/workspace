@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -25,10 +26,14 @@ public enum CelestialType implements CreatureSubtype{
 		weights.put(UNICORN, 10);
 		weights.put(PEGASI, 10);
 	}
-	
+	@Deprecated
 	public static CelestialType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static CelestialType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static CelestialType getFromID(int id) {
 		id = id%CelestialType.values().length;

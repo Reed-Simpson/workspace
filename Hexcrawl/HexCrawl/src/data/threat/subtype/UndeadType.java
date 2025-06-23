@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -36,10 +37,14 @@ public enum UndeadType implements CreatureSubtype {
 		weights.put(DEMILICH, 1);
 		weights.put(GHOSTDRAGON, 1);
 	}
-	
+	@Deprecated
 	public static UndeadType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static UndeadType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static UndeadType getFromID(int id) {
 		id = id%UndeadType.values().length;

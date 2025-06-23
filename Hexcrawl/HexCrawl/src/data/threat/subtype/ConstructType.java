@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -21,10 +22,14 @@ public enum ConstructType implements CreatureSubtype {
 		weights.put(AWAKENED, 10);
 		weights.put(INEVITABLE, 10);
 	}
-	
+	@Deprecated
 	public static ConstructType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static ConstructType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static ConstructType getFromID(int id) {
 		id = id%ConstructType.values().length;

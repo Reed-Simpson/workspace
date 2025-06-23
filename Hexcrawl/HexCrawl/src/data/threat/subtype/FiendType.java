@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -23,10 +24,14 @@ public enum FiendType implements CreatureSubtype {
 		weights.put(LOUMARA, 20);
 		weights.put(OBYRITH, 1);
 	}
-	
+	@Deprecated
 	public static FiendType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static FiendType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static FiendType getFromID(int id) {
 		id = id%FiendType.values().length;

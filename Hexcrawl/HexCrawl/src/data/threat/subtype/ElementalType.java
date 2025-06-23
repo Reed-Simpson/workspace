@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -56,9 +57,14 @@ public enum ElementalType implements CreatureSubtype {
 		weights.put(SAND, 1);
 	}
 	
+	@Deprecated
 	public static ElementalType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static ElementalType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	
 	private int id;

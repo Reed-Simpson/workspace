@@ -1,5 +1,6 @@
 package data.threat;
 
+import data.Indexible;
 import data.WeightedTable;
 
 public class ThreatDetails {
@@ -18,9 +19,14 @@ public class ThreatDetails {
 		motivations.put("Twisted Justice");
 	}
 	
+	@Deprecated
 	public static String getMotivation(int index) {
 		if(motivations==null) populateMotivations();
 		return motivations.getByWeight(index);
+	}
+	public static String getMotivation(Indexible obj) {
+		if(motivations==null) populateMotivations();
+		return motivations.getByWeight(obj);
 	}
 	
 	private static void populateFlaws() {
@@ -31,9 +37,14 @@ public class ThreatDetails {
 		flaws.put("Fear/Insecurity");
 	}
 	
+	@Deprecated
 	public static String getFlaw(int index) {
 		if(flaws==null) populateFlaws();
 		return flaws.getByWeight(index);
+	}
+	public static String getFlaw(Indexible obj) {
+		if(flaws==null) populateFlaws();
+		return flaws.getByWeight(obj);
 	}
 	
 	private static void populatePlans() {
@@ -55,9 +66,14 @@ public class ThreatDetails {
 		plans.put("Support Evil Groups Secretly");
 	}
 	
+	@Deprecated
 	public static String getPlan(int index) {
 		if(plans==null) populatePlans();
 		return plans.getByWeight(index);
+	}
+	public static String getPlan(Indexible obj) {
+		if(plans==null) populatePlans();
+		return plans.getByWeight(obj);
 	}
 
 }

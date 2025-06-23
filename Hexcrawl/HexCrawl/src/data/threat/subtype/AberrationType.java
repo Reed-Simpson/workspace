@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -28,10 +29,14 @@ public enum AberrationType implements CreatureSubtype{
 		weights.put(GRIMLOCK, 10);
 		weights.put(STARSPAWN, 10);
 	}
-	
+	@Deprecated
 	public static AberrationType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static AberrationType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static AberrationType getFromID(int id) {
 		id = id%AberrationType.values().length;

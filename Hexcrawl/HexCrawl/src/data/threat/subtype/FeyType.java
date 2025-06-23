@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -21,10 +22,14 @@ public enum FeyType implements CreatureSubtype {
 		weights.put(SATYR, 10);
 		weights.put(CENTAUR, 10);
 	}
-	
+	@Deprecated
 	public static FeyType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static FeyType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static FeyType getFromID(int id) {
 		id = id%FeyType.values().length;

@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -17,10 +18,14 @@ public enum BeastType implements CreatureSubtype{
 		weights.put(LYCANTHROPE, 100);
 		weights.put(DRUID, 100);
 	}
-	
+	@Deprecated
 	public static BeastType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static BeastType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static BeastType getFromID(int id) {
 		id = id%BeastType.values().length;

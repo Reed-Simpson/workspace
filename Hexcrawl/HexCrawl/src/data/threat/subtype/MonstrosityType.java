@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -57,10 +58,14 @@ public enum MonstrosityType implements CreatureSubtype {
 		weights.put(LAMIA, 10);
 		weights.put(TERRASQUE, 1);
 	}
-	
+	@Deprecated
 	public static MonstrosityType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static MonstrosityType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static MonstrosityType getFromID(int id) {
 		id = id%MonstrosityType.values().length;

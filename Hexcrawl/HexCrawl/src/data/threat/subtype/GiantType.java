@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -33,10 +34,14 @@ public enum GiantType implements CreatureSubtype {
 		weights.put(FOMORIAN, 50);
 		weights.put(TITAN, 1);
 	}
-	
+	@Deprecated
 	public static GiantType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static GiantType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static GiantType getFromID(int id) {
 		id = id%GiantType.values().length;

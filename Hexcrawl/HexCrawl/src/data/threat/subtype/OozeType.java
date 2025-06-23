@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -31,10 +32,14 @@ public enum OozeType implements CreatureSubtype {
 		weights.put(GELATINOUSCUBE, 10);
 		weights.put(BLOBOFANNIHILATION, 1);
 	}
-	
+	@Deprecated
 	public static OozeType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static OozeType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static OozeType getFromID(int id) {
 		id = id%OozeType.values().length;

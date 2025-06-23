@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -38,9 +39,14 @@ public enum HumanoidType implements CreatureSubtype {
 		weights.put(LYCANTHROPE, 10);
 	}
 
+	@Deprecated
 	public static HumanoidType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static HumanoidType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static HumanoidType getFromID(int id) {
 		id = id%HumanoidType.values().length;

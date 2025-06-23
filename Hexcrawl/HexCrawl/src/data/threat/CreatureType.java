@@ -92,23 +92,23 @@ public enum CreatureType {
 		return this.color;
 	}
 	
-	public static CreatureSubtype getSubtypeByWeight(CreatureType type,int index) {
+	public static CreatureSubtype getSubtypeByWeight(CreatureType type,Indexible obj) {
 		CreatureSubtype result = null;
 		switch(type) {
-		case DRAGON: result=DragonType.getByWeight(index); break;
-		case ELEMENTAL: result=ElementalType.getByWeight(index); break;
-		case HUMANOID: result=HumanoidType.getByWeight(index); break;
-		case UNDEAD: result=UndeadType.getByWeight(index); break;
-		case ABERRATION: result=AberrationType.getByWeight(index); break;
-		case FIEND: result=FiendType.getByWeight(index); break;
-		case CELESTIAL: result=CelestialType.getByWeight(index); break;
-		case BEAST: result=BeastType.getByWeight(index); break;
-		case MONSTROSITY: result=MonstrosityType.getByWeight(index); break;
-		case OOZE: result=OozeType.getByWeight(index); break;
-		case PLANT: result=PlantType.getByWeight(index); break;
-		case CONSTRUCT: result=ConstructType.getByWeight(index); break;
-		case FEY: result=FeyType.getByWeight(index); break;
-		case GIANT: result=GiantType.getByWeight(index); break;
+		case DRAGON: result=DragonType.getByWeight(obj); break;
+		case ELEMENTAL: result=ElementalType.getByWeight(obj); break;
+		case HUMANOID: result=HumanoidType.getByWeight(obj); break;
+		case UNDEAD: result=UndeadType.getByWeight(obj); break;
+		case ABERRATION: result=AberrationType.getByWeight(obj); break;
+		case FIEND: result=FiendType.getByWeight(obj); break;
+		case CELESTIAL: result=CelestialType.getByWeight(obj); break;
+		case BEAST: result=BeastType.getByWeight(obj); break;
+		case MONSTROSITY: result=MonstrosityType.getByWeight(obj); break;
+		case OOZE: result=OozeType.getByWeight(obj); break;
+		case PLANT: result=PlantType.getByWeight(obj); break;
+		case CONSTRUCT: result=ConstructType.getByWeight(obj); break;
+		case FEY: result=FeyType.getByWeight(obj); break;
+		case GIANT: result=GiantType.getByWeight(obj); break;
 		}
 		return result;
 	}
@@ -125,6 +125,12 @@ public enum CreatureType {
 		ThreatNameGenerator gen = threat.getType().getNameGenerator();
 		if(gen==null) return null;
 		return gen.getName(threat,index);
+	}
+	public static String getName(Threat threat) {
+		ThreatNameGenerator gen = threat.getType().getNameGenerator();
+		if(gen==null) return null;
+		return gen.getName(threat);
+		
 	}
 	public static CreatureType getFromID(int id) {
 		id = id%CreatureType.values().length;

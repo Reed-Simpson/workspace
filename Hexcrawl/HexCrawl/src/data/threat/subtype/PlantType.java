@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -21,10 +22,14 @@ public enum PlantType implements CreatureSubtype {
 		weights.put(MYCONID, 100);
 		weights.put(BODYTAKER, 100);
 	}
-	
+	@Deprecated
 	public static PlantType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static PlantType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static PlantType getFromID(int id) {
 		id = id%PlantType.values().length;

@@ -94,17 +94,17 @@ public class ThreatModel extends DataModel{
 		if(threatCache.get(threatSource)!=null) return threatCache.get(threatSource);
 		NPC npc = npcs.getNPC(40, threatSource);
 		if(npc==null) npc = npcs.getRandomNPC(40,threatSource);
-		int[] indexes = new int[20];
+		int[] indexes = new int[25];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getThreatDetailIndex(p,i);
 		}
 		Threat result = new Threat(indexes);
 		result.setType(getThreatCreatureType(threatSource,result));
-		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), getThreatDetailIndex(threatSource,1)));
+		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), result));
 		result.setNPC(npc);
-		result.setMotive(ThreatDetails.getMotivation(getThreatDetailIndex(threatSource,3)));
-		result.setFlaw(ThreatDetails.getFlaw(getThreatDetailIndex(threatSource,4)));
-		result.setPlan(ThreatDetails.getPlan(getThreatDetailIndex(threatSource,5)));
+		result.setMotive(ThreatDetails.getMotivation(result));
+		result.setFlaw(ThreatDetails.getFlaw(result));
+		result.setPlan(ThreatDetails.getPlan(result));
 		result.setName(getThreatName(result, threatSource ));
 		threatCache.put(threatSource, result);
 		return result;
@@ -123,7 +123,7 @@ public class ThreatModel extends DataModel{
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getThreatDetailIndex(p,5+i);
 		}
-		return Util.toCamelCase(CreatureType.getName(threat, indexes));
+		return Util.toCamelCase(CreatureType.getName(threat));
 	}
 
 	@Override

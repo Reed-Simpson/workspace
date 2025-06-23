@@ -2,6 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.threat.CreatureSubtype;
+import data.threat.Threat;
 import data.threat.subtype.FiendType;
 import util.Util;
 
@@ -12,7 +13,7 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 			"phonou","ki","toro","sem","deus","kym","don","raph","nkon","mory","kes","os","dam","pptos","stor","leel","biel","ziel"};
 	private static final String[] TITLE = {"Whose ${form} is ${effect}","The ${monster trait} ${monster personality} ${subtype}","Who ${insanity}","With Whose Passage ${omen}"};
 	
-
+	@Deprecated
 	@Override
 	public String getName(int... val) {
 		if(val.length<5) throw new IllegalArgumentException("Expected 5 or more values");
@@ -22,16 +23,27 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 		String title = getTitle(type, remainder);
 		return partial+", "+title;
 	}
-	
+	@Deprecated
 	public static String getPartialName(int val1,int val2) {
 		String part1 = getElementFromArray(PART1, val1);
 		String part2 = getElementFromArray(PART2, val2);
 		return part1+part2;
 	}
-
+	@Deprecated
 	private String getTitle(CreatureSubtype type, int... val) {
 		int[] remainder = Util.getRemainder(val, 1);
 		String title = Util.formatTableResult(getElementFromArray(TITLE, val[0]),new Indexible(remainder));
 		return title;
+	}
+	@Override
+	public String getName(Threat threat) {
+		String partial = getPartialName(threat);
+		String title = Util.formatTableResult(getElementFromArray(TITLE, threat),threat);
+		return partial+", "+title;
+	}
+	public static String getPartialName(Threat threat) {
+		String part1 = getElementFromArray(PART1, threat);
+		String part2 = getElementFromArray(PART2, threat);
+		return part1+part2;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import data.DataModel;
+import data.Indexible;
 import data.OpenSimplex2S;
 import data.npc.NPC;
 import data.npc.NPCModel;
@@ -17,12 +18,14 @@ public class ThreatModel extends DataModel{
 	private static final int SEED_OFFSET = 7*Util.getOffsetX();
 	private static final int THREATGROUPCOUNT = 10;
 	private HashMap<Point,Point> centerCache;
+	private HashMap<Point,Threat> threatCache;
 	private NPCModel npcs;
 
 	public ThreatModel(SaveRecord record,NPCModel npcs) {
 		super(record);
 		this.npcs = npcs;
 		this.centerCache = new HashMap<Point,Point>();
+		this.threatCache = new HashMap<Point,Threat>();
 	}
 
 	public int getThreatGroup(Point p) {
@@ -88,21 +91,31 @@ public class ThreatModel extends DataModel{
 	
 	public Threat getThreat(Point p) {
 		Point threatSource = getCenter(p);
+		if(threatCache.get(threatSource)!=null) return threatCache.get(threatSource);
 		NPC npc = npcs.getNPC(40, threatSource);
 		if(npc==null) npc = npcs.getRandomNPC(40,threatSource);
-		Threat result = new Threat(0);
-		result.setType(getThreatCreatureType(threatSource));
+		int[] indexes = new int[20];
+		for(int i=0;i<indexes.length;i++) {
+			indexes[i] = getThreatDetailIndex(p,i);
+		}
+		Threat result = new Threat(indexes);
+		result.setType(getThreatCreatureType(threatSource,result));
 		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), getThreatDetailIndex(threatSource,1)));
 		result.setNPC(npc);
 		result.setMotive(ThreatDetails.getMotivation(getThreatDetailIndex(threatSource,3)));
 		result.setFlaw(ThreatDetails.getFlaw(getThreatDetailIndex(threatSource,4)));
 		result.setPlan(ThreatDetails.getPlan(getThreatDetailIndex(threatSource,5)));
 		result.setName(getThreatName(result, threatSource ));
+		threatCache.put(threatSource, result);
 		return result;
 	}
 
 	public CreatureType getThreatCreatureType(Point p) {
-		return CreatureType.getByWeight(getThreatDetailIndex(p,0));
+		Threat threat = getThreat(p);
+		return threat.getType();
+	}
+	public CreatureType getThreatCreatureType(Point p,Indexible obj) {
+		return CreatureType.getByWeight(obj);
 	}
 	
 	public String getThreatName(Threat threat,Point p) {

@@ -11,9 +11,12 @@ public class Threat extends Indexible{
 	private String flaw;
 	private String plan;
 	private NPC npc;
-	
+
 	public Threat(float... floats) {
 		super(floats);
+	}
+	public Threat(int... ints) {
+		super(ints);
 	}
 	
 	

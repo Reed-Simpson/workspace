@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Reference implements Serializable{
 	private static final long serialVersionUID = 3816076390422175045L;
-	public static String PARTIAL = "\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)";
+	public static String PARTIAL = "\\{(\\w+):(-?\\d+),(-?\\d+),(\\d+)";
 	public static String FULL = PARTIAL+"\\}\\$";
 	public static Pattern PATTERN = Pattern.compile(FULL);
 	

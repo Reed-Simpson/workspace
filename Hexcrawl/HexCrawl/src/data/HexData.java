@@ -19,6 +19,7 @@ public enum HexData {
 	FACTION("faction"),
 	DISTRICT("district"),
 	CITY("city"),
+	TOWN("town"),
 	CHARACTER("character"),
 	THREAD("thread");
 	

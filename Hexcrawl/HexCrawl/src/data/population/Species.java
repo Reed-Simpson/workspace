@@ -1,5 +1,6 @@
 package data.population;
 
+import data.Indexible;
 import names.IndexibleNameGenerator;
 import names.NameGenerator;
 import names.city.DragonbornCityNameGenerator;
@@ -16,9 +17,11 @@ import names.npc.DwarfNameGenerator;
 import names.npc.ElfNameGenerator;
 import names.npc.GenasiNameGenerator;
 import names.npc.GnomeNameGenerator;
+import names.npc.GoliathNameGenerator;
 import names.npc.HalflingNameGenerator;
 import names.npc.HumanNameGenerator;
 import names.npc.OrcNameGenerator;
+import util.Util;
 
 public enum Species {
 	DRAGONBORN(	6,0.5f,0f/360f,	new DragonbornCityNameGenerator(),	new DragonbornNameGenerator(),	1.0f),
@@ -29,15 +32,21 @@ public enum Species {
 	GENASI(		9,0.0f,180f/360f,new GenasiCityNameGenerator(),		new GenasiNameGenerator(),		1.0f),
 	GNOME(		3,0.2f,270f/360f,new GnomeCityNameGenerator(),		new GnomeNameGenerator(),		0.8f),
 	ORC(		8,0.8f,330f/360f,new OrcCityNameGenerator(),		new OrcNameGenerator(),			1.0f),
-	GOLIATH(	7,0.8f,300f/360f,new GoliathCityNameGenerator(),	ORC.getNPCNameGen(),			0.8f),
-	GOBLINOID(	11,0.8f,240f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			1.0f),
-	KOBOLD(		12,0.8f,180f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			0.5f),
-	LIZARDFOLK(	13,0.8f,150f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			0.5f),
+	GOLIATH(	7,0.8f,300f/360f,new GoliathCityNameGenerator(),	new GoliathNameGenerator(),		0.8f),
+	GOBLINOID(	11,1.0f,240f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			1.0f),
+	KOBOLD(		12,1.0f,180f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			0.5f),
+	LIZARDFOLK(	13,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			0.5f),
 	GNOLL(		14,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			0.5f),
 	TROG(		15,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNPCNameGen(),			0.1f),
 	AASIMAR(	16,0.0f,60f/360f,HUMAN.getCityNameGen(),			HUMAN.getNPCNameGen(),			0.01f),
 	TIEFLING(	17,0.0f,60f/360f,HUMAN.getCityNameGen(),			HUMAN.getNPCNameGen(),			0.05f),
 	OTHER(		10,0.0f,60f/360f,HUMAN.getCityNameGen(),			HUMAN.getNPCNameGen(),			1.0f);
+
+	private static final String[] GOBLINOIDS = {"Goblin","Hobgoblin","Bugbear"};
+	public static String getString(Species species, Indexible obj) {
+		if(GOBLINOID.equals(species)) return GOBLINOIDS[obj.reduceTempId(GOBLINOIDS.length)];
+		else return Util.toCamelCase(species.name());
+	}
 	
 	private float isolationFactor;
 	private float hue;

@@ -46,7 +46,7 @@ public class LocationNameModel {
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getIndexValue(p,3+i);
 		}
-		return gen.getName(indexes);
+		return gen.getName(new Indexible(indexes));
 	}
 
 }

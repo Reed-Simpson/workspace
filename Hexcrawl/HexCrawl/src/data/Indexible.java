@@ -53,6 +53,7 @@ public class Indexible {
 		this.tempId = tempId;
 	}
 	public int reduceTempId(int factor) {
+		if(factor<1) throw new IllegalArgumentException("Factor must be greater than 0");
 		BigInteger val = BigInteger.valueOf(factor);
 		if(this.tempId.compareTo(val)<0) throw new IllegalStateException("Ran out of ID data");
 		int result = this.tempId.mod(val).intValue();

@@ -10,7 +10,7 @@ public class HalflingNameGenerator extends IndexibleNameGenerator{
 		"Andry","Bree","Callie","Cora","Euphemia","Jillian","Kithri","Lavinia","Lidda","Merla","Nedda","Paela","Portia","Seraphina","Shaena","Trym","Vani","Verna"};
 	private static final String[] LAST = {"Brushgather","Goodbarrel","Greenbottle","High-hill","Hilltopple","Leagallow","Tealeaf","Thorngage","Tosscobble","Underbough"};
 	
-
+	@Deprecated
 	@Override
 	public String getName(int... val) {
 		if(val.length<3) throw new IllegalArgumentException("Expected 3 or more values");

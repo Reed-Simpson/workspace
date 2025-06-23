@@ -68,6 +68,8 @@ public class MagicModel extends DataModel{
 	private static WeightedTable<String> druids;
 	private static final String BARDS = "Bard of Creation,Bard of Eloquence,Bard of Glamour,Bard of Lore,Bard of Spirits,Bard of Swords,Bard of Valour,Bard of Whispers";
 	private static WeightedTable<String> bards;
+	private static final String ARTIFICER = "Armorer,Artillerist,Battlesmith,Alchemist";
+	private static WeightedTable<String> artificer;
 	private static final String MAGIC_ADJECTIVE = "${weirdness},${dungeon layout},${dungeon ruination},${dungeon trick},${effect}";
 	private static WeightedTable<String> adjective;
 	
@@ -110,92 +112,115 @@ public class MagicModel extends DataModel{
 		populate(druids, DRUIDS, ",");
 		bards = new WeightedTable<String>();
 		populate(bards, BARDS, ",");
+		artificer = new WeightedTable<String>();
+		populate(artificer, ARTIFICER, ",");
 		adjective = new WeightedTable<String>();
 		populate(adjective, MAGIC_ADJECTIVE, ",");
 	}
+	@Deprecated
 	public static String getWeirdness(int index) {
 		if(weirdness==null) populateAllTables();
 		return Util.formatTableResult(weirdness.getByWeight(index),new Indexible(index/weirdness.size()));
 	}
+	@Deprecated
 	public static String getSpell(int index) {
 		if(spells==null) populateAllTables();
 		return Util.formatTableResult(spells.getByWeight(index),new Indexible(index/spells.size()));
 	}
+	@Deprecated
 	public static String getPhysicalEffect(int index) {
 		if(physicaleffects==null) populateAllTables();
 		return physicaleffects.getByWeight(index);
 	}
+	@Deprecated
 	public static String getEtherealEffect(int index) {
 		if(etherealeffects==null) populateAllTables();
 		return etherealeffects.getByWeight(index);
 	}
+	@Deprecated
 	public static String getEffect(int index) {
 		if(physicaleffects==null) populateAllTables();
 		if(index%2==0) return getPhysicalEffect(index/2);
 		else return getEtherealEffect(index/2);
 	}
+	@Deprecated
 	public static String getPhysicalElement(int index) {
 		if(physicalelements==null) populateAllTables();
 		return physicalelements.getByWeight(index);
 	}
+	@Deprecated
 	public static String getEtherealElement(int index) {
 		if(etherealelements==null) populateAllTables();
 		return etherealelements.getByWeight(index);
 	}
+	@Deprecated
 	public static String getElement(int index) {
 		if(physicalelements==null) populateAllTables();
 		if(index%2==0) return getPhysicalElement(index/2);
 		else return getEtherealElement(index/2);
 	}
+	@Deprecated
 	public static String getPhysicalForm(int index) {
 		if(physicalforms==null) populateAllTables();
 		return physicalforms.getByWeight(index);
 	}
+	@Deprecated
 	public static String getEtherealForm(int index) {
 		if(etherealforms==null) populateAllTables();
 		return etherealforms.getByWeight(index);
 	}
+	@Deprecated
 	public static String getForm(int index) {
 		if(physicalforms==null) populateAllTables();
 		if(index%2==0) return getPhysicalForm(index/2);
 		else return getEtherealForm(index/2);
 	}
+	@Deprecated
 	public static String getMutation(int index) {
 		if(mutations==null) populateAllTables();
 		return Util.formatTableResult(mutations.getByWeight(index),new Indexible(index/mutations.size()));
 	}
+	@Deprecated
 	public static String getInsanity(int index) {
 		if(insanities==null) populateAllTables();
 		return Util.formatTableResult(insanities.getByWeight(index),new Indexible(index/insanities.size()));
 	}
+	@Deprecated
 	public static String getOmen(int index) {
 		if(omens==null) populateAllTables();
 		return Util.formatTableResult(omens.getByWeight(index),new Indexible(index/omens.size()));
 	}
+	@Deprecated
 	public static String getSpellcaster(int index) {
 		if(spellcasters==null) populateAllTables();
 		return Util.formatTableResult(spellcasters.getByWeight(index),new Indexible(index/spellcasters.size()));
 	}
+	@Deprecated
 	public static String getWizard(int index) {
 		if(wizards==null) populateAllTables();
 		return wizards.getByWeight(index);
 	}
+	@Deprecated
 	public static String getWarlock(int index) {
 		if(warlocks==null) populateAllTables();
 		return warlocks.getByWeight(index);
 	}
+	@Deprecated
 	public static String getSorcerer(int index) {
 		if(sorcerers==null) populateAllTables();
 		return sorcerers.getByWeight(index);
 	}
+	@Deprecated
 	public static String getCleric(int index) {
 		if(clerics==null) populateAllTables();
 		return Util.formatTableResult(clerics.getByWeight(index),new Indexible(index/clerics.size()));
 	}
+	@Deprecated
 	public static String getDruid(int index) {
 		if(druids==null) populateAllTables();
 		return Util.formatTableResult(druids.getByWeight(index),new Indexible(index/druids.size()));
 	}
+	@Deprecated
 	public static String getBard(int index) {
 		if(bards==null) populateAllTables();
 		return Util.formatTableResult(bards.getByWeight(index),new Indexible(index/bards.size()));
@@ -296,6 +321,10 @@ public class MagicModel extends DataModel{
 	public static String getBard(Indexible obj) {
 		if(bards==null) populateAllTables();
 		return Util.formatTableResult(bards.getByWeight(obj),obj);
+	}
+	public static String getArtificer(Indexible obj) {
+		if(artificer==null) populateAllTables();
+		return Util.formatTableResult(artificer.getByWeight(obj),obj);
 	}
 	
 	

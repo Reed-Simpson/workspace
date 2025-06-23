@@ -11,7 +11,7 @@ public class DwarfNameGenerator extends IndexibleNameGenerator{
 		"Amber","Artin","Audhild","Bardryn","Dagnal","Diesa","Eldeth","Falkrunn","Finellen","Gunnloda","Gurdis","Helja","Hlin","Kathra","Kristryd","Ilde","Liftrasa","Mardred","Riswynn","Sannl","Torbera","Torgga","Vistra"};
 	private static final String[] LAST = {"Balderk","Battlehammer","Brawnanvil","Dankil","Fireforge","Frostbeard","Gorunn","Holderhek","Ironfist","Loderr","Lutgehr","Rumnaheim","Strakeln","Torunn","Ungart"};
 	
-
+	@Deprecated
 	@Override
 	public String getName(int... val) {
 		if(val.length<5) throw new IllegalArgumentException("Expected 5 or more values");

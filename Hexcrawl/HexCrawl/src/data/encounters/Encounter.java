@@ -72,8 +72,8 @@ public class Encounter extends Indexible {
 		e1Text.append("Focus: "+this.getFocus() +"\r\n");
 		e1Text.append("Action: "+Util.parseArray(this.getAction()) + "\r\n");
 		e1Text.append("Descriptor: "+Util.parseArray(this.getDescriptor()) + "\r\n");
-		e1Text.append("Location: "+Util.parseArray(this.getLocation(),"or") + "\r\n");
-		e1Text.append("Character: "+Util.parseArray(this.getCharacter(),"or") + "\r\n");
+		e1Text.append("Location: "+Util.parseArray(this.getLocation(),"and/or") + "\r\n");
+		e1Text.append("Character: "+Util.parseArray(this.getCharacter(),"and/or") + "\r\n");
 		e1Text.append("Object: "+Util.parseArray(this.getObject()));
 		if(hazard!=null) e1Text.append( "\r\nHazard: "+Util.parseArray(this.getHazard()) );
 		return e1Text.toString();

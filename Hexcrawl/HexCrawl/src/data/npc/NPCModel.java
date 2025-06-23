@@ -25,7 +25,7 @@ public class NPCModel extends DataModel {
 			"Fence,Forger,Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Laborer,Lamplighter,Mercenary,"+
 			"Poet,Poisoner,Privateer,Rat-Catcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,Vagabond,Wizard";
 	private static WeightedTable<String> underworld;
-	private static final String WILDERNESS = "Apiarist,Bandit,Caravan Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisherman,Forager,Fugative,Hedge Wizard,"+
+	private static final String WILDERNESS = "Apiarist,Bandit,Caravan Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisher,Forager,Fugative,Hedge Wizard,"+
 			"Hermit,Hunter,Messenger,Minstrel,Monk,Monster Hunter,Outlander,Tinker,Pilgrim,Poacher,Raider,Ranger,"+
 			"Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tinker,Tomb Raider,Trader,Trapper,Witch,Woodcutter";
 	private static WeightedTable<String> wilderness;
@@ -41,33 +41,33 @@ public class NPCModel extends DataModel {
 			"infamy,to infiltrate ${faction index},justice,to kidnap ${relationship},to lead ${faction index},learning,to locate ${relationship},love,mastery,power,to reach location,to rescue ${relationship},"+
 			"to resolve a dispute,to restore ${faction},to reveal a secret,revenge,to sabotage ${faction index},to serve a deity,to serve evil,to serve ${faction index},to serve ideology,to serve leader,to help the Needy,wealth";
 	private static WeightedTable<String> goals;
-	private static final String MISFORTUNES = "abandoned,addicted,arrested,blackmailed,burgled,challenged,condemned,crippled,cursed,defrauded,demoted,depressed,"+
+	private static final String MISFORTUNE_ADJECTIVES = "abandoned,addicted,arrested,blackmailed,burgled,challenged,condemned,crippled,cursed,defrauded,demoted,depressed,"+
 			"discredited,dismissed,disowned,exiled,famished,forgotten,framed,haunted,humiliated,impoverished,kidnapped,lost,"+
 			"mobbed,mutilated,overworked,poisoned,pursued,rejected,replaced,robbed,sick,sued,suspected,transformed";
 	private static WeightedTable<String> misfortunes;
-	private static final String MISSIONS = "Apprehend,Assassinate,Blackmail,Burgle,Chart,Convince,Deface,Defraud,Deliver,Destroy,Discredit,Escort,"+
+	private static final String MISSION_VERBS = "Apprehend,Assassinate,Blackmail,Burgle,Chart,Convince,Deface,Defraud,Deliver,Destroy,Discredit,Escort,"+
 			"Exfiltrate,Extort,Follow,Frame,Impersonate,Impress,Infiltrate,Interrogate,Investigate,Kidnap,Locate,Plant,"+
-			"Protect,Raid,Replace,Retrieve,Rob,Ruin,Sabotage,Smuggle,Surveil,Take over,Terrorize,Threaten";
+			"Protect,Raid,Replace,Retrieve,Rob,Ruin,Sabotage,Smuggle,Surveil,Control,Terrorize,Threaten";
 	private static WeightedTable<String> missions;
-	private static final String METHODS = "alchemy,blackmail,bluster,bribery,bullying,bureaucracy,charm,commerce,cronies,debate,deceit,deduction,"+
+	private static final String METHOD_NOUNS = "alchemy,blackmail,bluster,bribery,bullying,bureaucracy,charm,commerce,cronies,debate,deceit,deduction,"+
 			"eloquence,espionage,fast-talking,favors,hard work,humor,investigation,legal maneuvers,manipulation,misdirection,money,nagging,"+
 			"negotiation,persistence,piety,preparation,quick wit,research,rumors,sabotage,teamwork,theft,threats,violence";
 	private static WeightedTable<String> methods;
-	private static final String APPEARANCES = "aquiline,athletic,barrel-chested,boney,brawny,brutish,bullnecked,chiseled,coltish,corpulent,craggy,delicate,"+
+	private static final String APPEARANCE_ADJECTIVES = "aquiline,athletic,barrel-chested,boney,brawny,brutish,bullnecked,chiseled,coltish,corpulent,craggy,delicate,"+
 			"furrowed,gaunt,gorgeous,grizzled,haggard,handsome,hideous,lanky,pudgy,ripped,rosy,scrawny,"+
 			"sinewy,slender,slumped,solid,square-jawed,statuesque,towering,trim,weathered,willowy,wiry,wrinkled";
 	private static WeightedTable<String> appearances;
-	private static final String DETAILS = "acid scars,battle scars,a birthmark,braided hair,a brand mark,a broken nose,bronze skin,burn scars,bushy eyebrows,curly hair,dark skin,dreadlocks,"+
+	private static final String APPEARANCE_NOUNS = "acid scars,battle scars,a birthmark,braided hair,a brand mark,a broken nose,bronze skin,burn scars,bushy eyebrows,curly hair,dark skin,dreadlocks,"+
 			"an exotic accent,flogging scars,freckles,a gold tooth,a hoarse voice,a huge beard,long hair,a melodious voice,a missing ear,missing teeth,a mustache,muttonchops,"+
 			"nine fingers,oiled hair,one eye,pale Skin,piercings,ritual scars,sallow skin,a shaved head,a sunburn,tangled hair,tattoos,a topknot";
 	private static WeightedTable<String> details;
-	private static final String COSTUMES = "antique,battle-torn,bedraggled,blood-stained,ceremonial,dated,decaying,eccentric,elegant,embroidered,exotic,fashionable,"+
+	private static final String COSTUME_ADJECTIVES = "antique,battle-torn,bedraggled,blood-stained,ceremonial,dated,decaying,eccentric,elegant,embroidered,exotic,fashionable,"+
 			"flamboyant,flood-stained,formal,frayed,frumpy,garish,grimy,haute couture,lacey,livery,mud-stained,ostentatious,"+
 			"oversized,patched,patterned,perfumed,practical,rumpled,sigils,singed,tasteless,undersized,wine-stained,worn out";
 	private static WeightedTable<String> costumes;
-	private static final String PERSONALITIES = "bitter,brave,cautious,chipper,contrary,cowardly,cunning,driven,entitled,gregarious,grumpy,heartless,"+
-			"honor-bound,hotheaded,inquisitive,irascible,jolly,know-it-all,lazy,loyal,menacing,mopey,nervous,protective,"+
-			"righteous,rude,sarcastic,savage,scheming,serene,spacey,stoic,stubborn,stuck-up,suspicous,wisecracking";
+	private static final String PERSONALITY_ADJECTIVES = "bitter,brave,cautious,chipper,contrary,cowardly,cunning,driven,entitled,gregarious,grumpy,heartless,"+
+			"honor-bound,hotheaded,inquisitive,irascible,jolly,pretentious,lazy,loyal,menacing,mopey,nervous,protective,"+
+			"righteous,rude,sarcastic,savage,scheming,serene,spacey,stoic,stubborn,stuck-up,suspicous,jovial";
 	private static WeightedTable<String> personalities;
 	private static final String MANNERISMS = "fond of anecdotes,often breathy,often chuckling,often curt,often cryptic,deep voiced,speaking with a drawl,often enunciating,often using flowery speech,gravelly voiced,highly formal,hypnotic,"+
 			"often interrupting,laconic,often laughing,often taking long pauses,melodious,monotone,often mumbling,often narrating,overly casual,fond of quaint sayings,often rambling,fond of random facts"+
@@ -77,21 +77,21 @@ public class NPCModel extends DataModel {
 			"a ghost,a parent,a heretic,high born,hiding a huge fortune,an illusion,an insurrectionist,low born,married,mind-controlled,frequently ${misfortune},a monster hunter,"+
 			"a non-human,hiding a(n) ${relationship},an adulterer,protects a relic,hiding a scandalous birth,a secret police,a serial killer,a smuggler,a spy,a planar traveler,transformed,a war criminal";
 	private static WeightedTable<String> secrets;
-	private static final String REPUTATIONS = "ambitious,authoritative,boorish,a borrower,a celebrity,charitable,a cheat,dangerous,an entertainer,a gossip,hardworking,holy,"+
-			"honest,a hypochondriac,an idiot,influential,a layabout,a leader,a misanthrope,a miser,neighborly,a nutjob,obnoxious,overeducated,"+
-			"a partier,pious,proper,a doomsayer,repulsive,respected,riffraff,scandalous,a slime ball,terrifying,a weirdo,wise";
+	private static final String REPUTATION_ADJECTIVES = "ambitious,authoritative,boorish,indebted,famous,charitable,deceitful,dangerous,entertaining,gossipy,hardworking,holy,"+
+			"honest,neurotic,idiotic,influential,lazy,leaderly,misanthropic,miserly,neighborly,nutty,obnoxious,overeducated,"+
+			"revelrous,pious,proper,gloomy,repulsive,respected,riffraff,scandalous,slimey,terrifying,weird,wise";
 	private static WeightedTable<String> reputations;
-	private static final String HOBBIES = "archeology,art collecting,bad fiction,calligraphy,card games,clockwork,cats,cuisine,dark lore,dog breeding,embroidery,exercise,"+
+	private static final String HOBBY_NOUNS = "archeology,art collecting,bad fiction,calligraphy,card games,clockwork,cats,cuisine,dark lore,dog breeding,embroidery,exercise,"+
 			"falconry,fashion,fishing,foreign cultures,gardening,history,horseracing,hunting,music,knitting,lawn games,mountaineering,"+
 			"opera,painting,poetry,puzzle-solving,riddling,science,sculpture,sketching,smoking,theater,weaving,whiskey";
 	private static WeightedTable<String> hobbies;
-	private static final String RELATIONSHIPS = "adviser,blackmailer,business partner,business rival,buyer,captor,client,confidant,debtor,disciple,guardian,henchman,"+
+	private static final String RELATIONSHIP_NOUNS = "adviser,blackmailer,business partner,business rival,buyer,captor,client,confidant,debtor,disciple,guardian,henchman,"+
 			"idol,informant,master,mentor,nemesis,offspring,parent,patron,political rival,prisoner,protege,quarry,"+
 			"sidekick,romantic rival,servant,sibling,social rival,spouse,stalker,suitor,supplicant,supplier,sweetheart,unrequited love";
 	private static WeightedTable<String> relationships;
-	private static final String DOMAINS = "${animal}s,balance,betrayal,chance,chaos,conquest,cycles,death,destiny,dreams,${element},gateways,"+
+	private static final String DOMAIN_NOUNS = "${animal}s,balance,betrayal,chance,chaos,conquest,cycles,death,destiny,dreams,${element},gateways,"+
 			"judgement,love,memory,monsters,moon,motherhood,${job}s,oaths,order,plague,purification,reason,"+
-			"schemes,secrets,storms,summer,sun,the forge,the sea,the wild,time,underworld,wealth,winter";
+			"schemes,secrets,storms,summer,sun,forge,sea,wild,time,underworld,wealth,winter";
 	private static WeightedTable<String> domains;
 
 	private static void populateAllTables() {
@@ -108,31 +108,31 @@ public class NPCModel extends DataModel {
 		goals = new WeightedTable<String>();
 		populate(goals,GOALS,",");
 		misfortunes = new WeightedTable<String>();
-		populate(misfortunes,MISFORTUNES,",");
+		populate(misfortunes,MISFORTUNE_ADJECTIVES,",");
 		missions = new WeightedTable<String>();
-		populate(missions,MISSIONS,",");
+		populate(missions,MISSION_VERBS,",");
 		methods = new WeightedTable<String>();
-		populate(methods,METHODS,",");
+		populate(methods,METHOD_NOUNS,",");
 		appearances = new WeightedTable<String>();
-		populate(appearances,APPEARANCES,",");
+		populate(appearances,APPEARANCE_ADJECTIVES,",");
 		details = new WeightedTable<String>();
-		populate(details,DETAILS,",");
+		populate(details,APPEARANCE_NOUNS,",");
 		costumes = new WeightedTable<String>();
-		populate(costumes,COSTUMES,",");
+		populate(costumes,COSTUME_ADJECTIVES,",");
 		personalities = new WeightedTable<String>();
-		populate(personalities,PERSONALITIES,",");
+		populate(personalities,PERSONALITY_ADJECTIVES,",");
 		mannerisms = new WeightedTable<String>();
 		populate(mannerisms,MANNERISMS,",");
 		secrets = new WeightedTable<String>();
 		populate(secrets,SECRETS,",");
 		reputations = new WeightedTable<String>();
-		populate(reputations,REPUTATIONS,",");
+		populate(reputations,REPUTATION_ADJECTIVES,",");
 		hobbies = new WeightedTable<String>();
-		populate(hobbies,HOBBIES,",");
+		populate(hobbies,HOBBY_NOUNS,",");
 		relationships = new WeightedTable<String>();
-		populate(relationships,RELATIONSHIPS,",");
+		populate(relationships,RELATIONSHIP_NOUNS,",");
 		domains = new WeightedTable<String>();
-		populate(domains,DOMAINS,",");
+		populate(domains,DOMAIN_NOUNS,",");
 	}
 
 
@@ -254,12 +254,12 @@ public class NPCModel extends DataModel {
 		}
 		NPC result = new NPC(floats);
 
+		setSpecies(i, p, result);
+		setGoblin(i, p, result);
 		populateNPCData(i, p, result);
 		return result;
 	}
 	private void populateNPCData(int i, Point p, NPC npc) {
-		setSpecies(i, p, npc);
-		setGoblin(i, p, npc);
 		setJob(i, p, npc);
 		setAsset(i, p, npc);
 		setLiability(i, p, npc);
@@ -344,6 +344,7 @@ public class NPCModel extends DataModel {
 	private void setName(int i, Point p, NPC npc) {
 		if(npc.getSpecies()!=null&&npc.getSpecies().getNPCNameGen()!=null) {
 			String name = npc.getSpecies().getNPCNameGen().getName(npc);
+			name = Util.formatTableResultPOS(name, npc, p, record.getZero());
 			npc.setName(name);
 		}
 	}

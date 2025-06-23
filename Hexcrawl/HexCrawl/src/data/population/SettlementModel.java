@@ -20,45 +20,45 @@ public class SettlementModel extends DataModel{
 	private static final int FACTIONTABLES = 20;
 	private static final int SETTLEMENTTABLES = 5;
 	//private static final int TABLECOUNT = FACTIONTABLES+5;
-	private static final String THEMES = "${animal},Aristocracy,Art,Bureaucracy,Castes,Catacombs,${city activity},${city event},Crime Families,Cruelty,${district index},${domain},"+
+	public static final String THEMES = "${animal},Aristocracy,Art,Bureaucracy,Castes,Catacombs,${city activity},${city event},Crime Families,Cruelty,${district index},${domain},"+
 			"${faction index},Festivals,Feuds,Intrigue,${lower class building},Martial Law,Meritocracy,${job},Opulence,${physical element},Pilgrimages,Piracy,"+
 			"Plutocracy,Poverty,Rituals,Slavery,Spices,Theocracy,Thievery,Trade,Tyranny,${upper class building},Wizardry,Xenophobia";
 	private static WeightedTable<String> themes;
-	private static final String EVENTS = "Assassination,Carnival,Conscription,Coronation,Coup,Cult Activity,Curfew,Discovery,Earthquake,${faction index} War,Fashion Trend,Fire,"+
+	public static final String EVENTS = "Assassination,Carnival,Conscription,Coronation,Coup,Cult Activity,Curfew,Discovery,Earthquake,${faction index} War,Fashion Trend,Fire,"+
 			"Flood,Heavy Fog,Heavy Taxes,Holy Day,Hysteria,Inquisition,Insurrection,Invasion,Jailbreak,Mass Eviction,Mass Pardon,Negotiations,"+
 			"Plague,Proclamation,Prohibition,Public Games,Refugees,Rioting,Roundup,Scandal,Serial Killer,Shortage,Tournament,Trial";
 	private static WeightedTable<String> events;
-	private static final String DISTRICTS = "Catacombs,${civilized npc},Construction,Crafts,Criminality,Culture,Dining,Education,Entertainment,Finance,Foreigners,Ghettoes,"+
+	public static final String DISTRICTS = "Catacombs,${civilized npc},Construction,Crafts,Criminality,Culture,Dining,Education,Entertainment,Finance,Foreigners,Ghettoes,"+
 			"Government,Graveyards,Green Space,Industrialization,Judgement,Livestock,Marketplace,Memorials,Military,Opulence,Pollution,Poverty,"+
 			"Punishment,Religion,Science,Trade,Trash,${underworld npc},${upper class building},${lower class building},Vices,${wilderness npc},Wizardry,Wonders";
 	private static WeightedTable<String> districts;
-	private static final String UCBUILDINGS = "Academy,Alchemist,Archive,Art Dealer,Barber,Bookbinder,Bookseller,Castle,Clockmaker,Clothier,Courthouse,Furrier,"+
+	public static final String UCBUILDINGS = "Academy,Alchemist,Archive,Art Dealer,Barber,Bookbinder,Bookseller,Castle,Clockmaker,Clothier,Courthouse,Furrier,"+
 			"Gallery,Garden,Haberdashery,Jeweler,Law Office,Locksmith,Lounge,Manor,Museum,Observatory,Opera House,Park,"+
 			"Physician,Printer,Public Baths,Restaurant,Salon,Stables,Taxidermist,Temple,Tobacconist,Townhouse,Winery,Zoo";
 	private static WeightedTable<String> ucBuildings;
-	private static final String LCBUILDINGS = "Apothacary,Asylum,Baker,Brewery,Butcher,Candlemaker,Catacombs,Cheesemaker,Criminal Den,Curiosity Shop,Dock,Fighting Pit,"+
+	public static final String LCBUILDINGS = "Apothacary,Asylum,Baker,Brewery,Butcher,Candlemaker,Catacombs,Cheesemaker,Criminal Den,Curiosity Shop,Dock,Fighting Pit,"+
 			"Forge,Fortuneteller,Gambling Hall,Leatherworks,Marketplace,Mason,Mill,Moneylender,Orphanage,Outfitter,Prison,Sewers,"+
 			"Shipyards,Shrine,Stockyard,Stonecarver,Tattooist,Tavern,Theater,Veterinarian,Warehouse,Watchtower,Weaver,Workshop";
 	private static WeightedTable<String> lcBuildings;
-	private static final String ACTIVITIES = "Abduct,Beg,Brawl,Burgle,Celebrate,Chase,Construct,Cook,Dance,Duel,${dungeon activity},Execute,"+
+	public static final String ACTIVITIES = "Abduct,Beg,Brawl,Burgle,Celebrate,Chase,Construct,Cook,Dance,Duel,${dungeon activity},Execute,"+
 			"Extinguish,Extort,Follow,Gamble,Interrogate,Marry,${mission},Mourn,Party,Patrol,Perform,"+
 			"Play,Preach,Process,Proclaim,Protest,Release,Repair,Riot,Rob,Search,Sell,${wilderness activity}";
 	private static WeightedTable<String> activities;
-	private static final String ROOMS = "arboretum,atrium,attic,aviary,ballroom,baths,bed chamber,cabinet,chapel,cloakroom,dining room,dressing room,"+
+	public static final String ROOMS = "arboretum,atrium,attic,aviary,ballroom,baths,bed chamber,cabinet,chapel,cloakroom,dining room,dressing room,"+
 			"${dungeon room},garden,garret,greenhouse,junk room,kitchen,larder,library,map room,menagerie,mews,nursery,"+
 			"pantry,parlor,privey,root cellar,saucery,scullery,smoking room,spicery,still room,study,trophy room,wardrobe";
 	private static WeightedTable<String> rooms;
-	private static final String STREETS = "arcade,awnings,balconies,barricades,bridge,canal,carriages,catwalks,${city activity},climbable walls,clotheslines,crowd,"+
+	public static final String STREETS = "arcade,awnings,balconies,barricades,bridge,canal,carriages,catwalks,${city activity},climbable walls,clotheslines,crowd,"+
 			"dead end,dense fog,downpour,${dungeon activity},flooding,food stalls,fountain,gates,ladders,livestock,muddy,overgrown,"+
 			"roof access,roof gardens,sewer access,sinkhole,slick,steep roofs,steep streets,steps,torn up street,vermin swarms,well,${wilderness activity}";
 	private static WeightedTable<String> streets;
-	private static final String FEATURES = "${animal} nests,balconies,basement access,brightly lit,broken furniture,broken glass,cabinets,carpeted floors,chandeliers,crawlspaces,drain pipes,dumbwaiters,"+
+	public static final String FEATURES = "${animal} nests,balconies,basement access,brightly lit,broken furniture,broken glass,cabinets,carpeted floors,chandeliers,crawlspaces,drain pipes,dumbwaiters,"+
 			"echoing marble,hanging chains,huge fireplace,narrow ledges,open windows,ornate weapons,overgrown,patrols,piles of trash,pillars,rotting ceiling,rotting floors,"+
 			"rotting walls,screens,servant passages,sewer access,shadowy alcoves,skylights,spyholes,staircases,tall bookshelves,unlit,watchdogs,window drapes";
 	private static WeightedTable<String> features;
-	private static final String LEADER = "Respected,Feared,Easily manipulated,Illigitimate,Monsterous,Contested,Indecisive,Incompetent,Declining,Iron-willed,Puppet";
+	public static final String LEADER = "Respected,Feared,Easily manipulated,Illigitimate,Monsterous,Contested,Indecisive,Incompetent,Declining,Iron-willed,Puppet";
 	private static WeightedTable<String> leader;
-	private static final String GOVERNMENT = "Autocrat,Elected Official,Monarch,Plutocrats,Aristocracy,Theocracy,Tribes,Commune,Elected Council";
+	public static final String GOVERNMENT = "Autocrat,Elected Official,Monarch,Plutocrats,Aristocracy,Theocracy,Tribes,Commune,Elected Council";
 	private static WeightedTable<String> government;
 
 

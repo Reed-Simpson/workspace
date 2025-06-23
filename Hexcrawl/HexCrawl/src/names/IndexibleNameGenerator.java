@@ -10,7 +10,8 @@ public abstract class IndexibleNameGenerator extends NameGenerator{
 	}
 	
 
+	@Deprecated
 	public String getName(int... val) {
-		return null;
+		return getName(new Indexible(val));
 	};
 }

@@ -1,9 +1,11 @@
 package controllers;
 
 import java.awt.Point;
+import java.util.regex.Matcher;
 
 import data.DataModel;
 import data.HexData;
+import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.dungeon.DungeonModel;
@@ -14,6 +16,7 @@ import data.magic.MagicModel;
 import data.npc.NPCModel;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
+import data.population.Species;
 import data.precipitation.PrecipitationModel;
 import data.threat.ThreatModel;
 import io.SaveRecord;
@@ -72,6 +75,7 @@ public class DataController {
 		case D_ENCOUNTER: return encounters;
 		case FACTION: return settlements;
 		case CITY: return settlements;
+		case TOWN: return settlements;
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -104,6 +108,11 @@ public class DataController {
 		case DISTRICT: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getDistrict(i, capital); break;
+		}
+		case TOWN: {
+			Point capital = population.getLocalFealty(p);
+			Species species = population.getMajoritySpecies(capital.x,capital.y);
+			value =  names.getName(species.getCityNameGen(), capital);break;
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -149,6 +158,10 @@ public class DataController {
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getCity(capital);
+		}
+		case TOWN: {
+			Point capital = population.getLocalFealty(p);
+			return record.getRegionName(capital);
 		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);
@@ -225,20 +238,39 @@ public class DataController {
 		if(isDefault) this.removeData(type, p,index);
 		else this.putData(type, p,index, text);
 	}
+
+	public String getLinkText(String link) {
+		Matcher matcher = Reference.PATTERN.matcher(link);
+		if(matcher.matches()) {
+			link = getLinkText(
+					matcher.group(1),
+					Integer.valueOf(matcher.group(2)),
+					Integer.valueOf(matcher.group(3)),
+					Integer.valueOf(matcher.group(4))-1);
+		}
+		return link;
+	}
 	public String getLinkText(HexData type, Point pos,int index) {
 		String fullText = getText(type, pos, index);
 		int firstLine = fullText.indexOf("\r\n");
-		if(firstLine>-1&&firstLine<50) {
+		if(firstLine>-1&&firstLine<100) {
 			return fullText.substring(0, firstLine);
-		}else {
-			return fullText.substring(0,30);
-		}
+		}else if(fullText.length()>=50) {
+			return fullText.substring(0,50);
+		}else return fullText;
 	}
 	public String getLinkText(String tab, int x, int y, int index) {
 		Point displayPos = new Point(x,y);
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		HexData type = HexData.get(tab);
-		return getLinkText(type, actualPos, index);
+		String linkText = getLinkText(type, actualPos, index);
+		Matcher matcher = Reference.PATTERN.matcher(linkText);
+		if(matcher.find()) {
+			linkText = linkText.substring(0,matcher.start())+
+					getLinkText(linkText.substring(matcher.start(), matcher.end()))+
+					linkText.substring(matcher.end());
+		}
+		return linkText;
 	}
 
 

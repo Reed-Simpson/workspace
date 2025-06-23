@@ -38,7 +38,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static final String DEFENDER_NOUNS= "Sentinels,Watchers,Garrison,Guard,Patrol,Wardens,Shields,Sentries,Bastion,Gatekeepers,Aegis,Protectors,"+
 			"Company,Legion,Brigade,Companions,${animal}s,${weapon}s";
 	private static final String ATTACKER_ADJECTIVES= "Lethal,${basic color} Steel,Iron ${landmark},${metal} Heart,Bloody,${basic color} ${animal},${color} ${weapon},${monster trait} ${weapon}";
-	private static final String ATTACKER_NOUNS= "Vanguard,Enforcers,Company,Legion,Brigade,Raiders,Companions,Killers,Marauders";
+	private static final String ATTACKER_NOUNS= "Vanguard,Enforcers,Company,Legion,Brigade,Raiders,Companions,Killers,Marauders,Slayers,Hunters";
 
 
 	private static final String GENERIC_ADJECTIVES= "${material},${animal},Lost,Forgotten,Aetheric,Fateful,Illumnated,Shadowed,Esoteric,Gilded,${fancy color},${effect}";
@@ -193,11 +193,6 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static WeightedTable<String> tradecompany_nouns;
 
 
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	private static void populateAllTables() {
 		traits = new WeightedTable<String>();
 		populate(traits,TRAITS,",");

@@ -2,6 +2,7 @@ package data.threat;
 
 import java.awt.Color;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.subtype.AberrationType;
 import data.threat.subtype.BeastType;
@@ -77,9 +78,14 @@ public enum CreatureType {
 		weights.put(FEY, 0);
 		weights.put(GIANT, 1);
 	}
+	@Deprecated
 	public static CreatureType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static CreatureType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	
 	public Color getColor() {
@@ -114,6 +120,7 @@ public enum CreatureType {
 	public int getId() {
 		return this.id;
 	}
+	@Deprecated
 	public static String getName(Threat threat,int... index) {
 		ThreatNameGenerator gen = threat.getType().getNameGenerator();
 		if(gen==null) return null;

@@ -42,11 +42,6 @@ public class InnNameGenerator extends NameGenerator{
 			"has been named best pub in town several years in a row by the nobles in the region,features great food at incredible prices but discriminates against certain customers";
 	private static WeightedTable<String> quirks;
 
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	public static String getPrefix(int val) {
 		if(prefixes==null) {
 			prefixes = new WeightedTable<String>();

@@ -1,5 +1,6 @@
 package names.threat;
 
+import data.threat.Threat;
 import data.threat.subtype.ElementalType;
 
 public class ElementalNameGenerator extends ThreatNameGenerator{
@@ -27,7 +28,7 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 	private static final String[] SAND = {"Chron","Aev"};
 	private static final String[] SUFFIX = {"is","e","us","all","a","os","it","en","ian","or","onne","ere","er","ise","um","ios","ate"};
 	
-
+	@Deprecated
 	@Override
 	public String getName(int... val) {
 		if(val.length<3) throw new IllegalArgumentException("Expected 3 or more values");
@@ -67,6 +68,14 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + type);
 		}
+	}
+
+	@Override
+	public String getName(Threat threat) {
+		String[] prefixArray = getPrefixArray((ElementalType) threat.getSubtype());
+		String part1 = getElementFromArray(prefixArray, threat);
+		String part2 = getElementFromArray(SUFFIX, threat);
+		return part1+part2;
 	}
 
 }

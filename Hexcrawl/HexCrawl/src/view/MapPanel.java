@@ -32,7 +32,7 @@ import io.SaveRecord;
 import util.Counter;
 
 public class MapPanel  extends JPanel{
-	private static final int WIDEVIEW = 6;
+	private static final int WIDEVIEW = 5;
 	private static final long serialVersionUID = 6922738675563657970L;
 	private static final Color LINE_COLOR = Color.BLACK;
 	private static final double sqrt3 = Math.sqrt(3.0);

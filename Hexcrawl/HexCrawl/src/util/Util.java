@@ -8,6 +8,7 @@ import data.GenericTables;
 import data.Indexible;
 import data.Reference;
 import data.dungeon.DungeonModel;
+import data.encounters.EncounterModel;
 import data.item.EquipmentModel;
 import data.location.LocationModel;
 import data.magic.MagicModel;
@@ -118,6 +119,12 @@ public class Util {
 		if(i>-1) return string.substring(0,i)+replacement+string.substring(i+match.length());
 		else return string;
 	}
+
+	public static String getTownIndex(Indexible obj,Point p,Point zero) {
+		Point displayPos = normalizePos(p, zero);
+		return getIndexString(obj, "town", 1, displayPos);
+	}
+	
 	public static String formatTableResultPOS(String result,Indexible obj) {
 		return formatTableResultPOS(result, obj, null,null);
 	}
@@ -132,6 +139,9 @@ public class Util {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
 				else result = Util.replace(result,"${character index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
 			}
+			if(result.contains("${town index}")) {
+				result = Util.replace(result,"${town index}",getIndexString(obj, "town", 1, displayPos));
+			}
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
@@ -141,6 +151,7 @@ public class Util {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
 				else result = Util.replace(result,"${character index}",FactionNameGenerator.getFaction(obj));
 			}
+			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",Species.GOLIATH.getCityNameGen().getName(obj));
 		}
 		return result;
 	}
@@ -176,7 +187,7 @@ public class Util {
 		if(result.contains("${hobby}")) result = Util.replace(result,"${hobby}",NPCModel.getHobby(obj));
 
 		if(result.contains("${last name}")) result = Util.replace(result,"${last name}",HumanNameGenerator.getLastName(obj));
-		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",Species.HUMAN.getCityNameGen().getName(obj.reduceTempId(100)));
+		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",Species.HUMAN.getCityNameGen().getName(obj));
 
 		if(result.contains("${dungeon activity}")) result = Util.replace(result,"${dungeon activity}",DungeonModel.getActivity(obj));
 		if(result.contains("${dungeon room}")) result = Util.replace(result,"${dungeon room}",DungeonModel.getRoom(obj));
@@ -208,6 +219,7 @@ public class Util {
 		if(result.contains("${wood}")) result = Util.replace(result,"${wood}",EquipmentModel.getWood(obj));
 		if(result.contains("${stone}")) result = Util.replace(result,"${stone}",EquipmentModel.getStone(obj));
 		if(result.contains("${fabric}")) result = Util.replace(result,"${fabric}",EquipmentModel.getFabric(obj));
+		if(result.contains("${item trait}")) result = Util.replace(result,"${item trait}",EquipmentModel.getTrait(obj));
 
 		if(result.contains("${spell}")) result = Util.replace(result,"${spell}",MagicModel.getSpell(obj));
 		if(result.contains("${physical element}")) result = Util.replace(result,"${physical element}",MagicModel.getPhysicalElement(obj));
@@ -242,7 +254,9 @@ public class Util {
 		if(result.contains("${inn prefix}")) result = Util.replace(result,"${inn prefix}",InnNameGenerator.getPrefix(obj));
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
 
-		String[] encode = {"location index","npc index","faction index","district index","subtype"};
+		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
+
+		String[] encode = {"location index","npc index","faction index","district index","subtype","town index"};
 		for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 		if(result.contains("${")) {
 			throw new IllegalStateException("Unable to process tag: "+result);
@@ -258,6 +272,9 @@ public class Util {
 
 	public static String formatSubtype(String string,CreatureSubtype type) {
 		return Util.replace(string,"${subtype}",type.getName());
+	}
+	public static String formatSpecies(String string, Species species) {
+		return Util.replace(string,"${species}",species.name());
 	}
 	public static int[] getRemainder(int[] vals,int reduction) {
 		int[] remainder = new int[vals.length-reduction];

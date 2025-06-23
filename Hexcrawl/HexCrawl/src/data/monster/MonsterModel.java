@@ -26,7 +26,7 @@ public class MonsterModel {
 			"Lobster,Manatee,Manta ray,Muskrat,Narwhal,Newt,Octopus,Otter,Penguin,Platypus,Pufferfish,Salamander,"+
 			"Sea anemone,Sea urchin,Seahorse,Seal,Shark,Shrimp,Squid,Swordfish,Tadpole,Turtle,Walrus,Whale";
 	private static WeightedTable<String> aquatic;
-	private static final String FEATURES = "Antlers,Beak,Carapace,Claws,Compound eyes,Eye stalks,Fangs,Fins,Fur,Gills,Hooves,Horns,"+
+	public static final String FEATURES = "Antlers,Beak,Carapace,Claws,Compound eyes,Eye stalks,Fangs,Fins,Fur,Gills,Hooves,Horns,"+
 			"Legless,Long tongue,Many-eyed,Many-limbed,Mucus,Pincers,Plates,Plumage,Probiscus,Scales,Segments,Shaggy hair,"+
 			"Shell,Spikes,Spinnerets,Spines,Stinger,Suction cups,Tail,Talons,Tentacles,Trunk,Tusks,Wings";
 	private static WeightedTable<String> features;

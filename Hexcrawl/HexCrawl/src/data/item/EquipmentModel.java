@@ -39,9 +39,9 @@ public class EquipmentModel {
 			"Fine china,Fine liquor,Instrument,Magical book,Microscope,Music box,Orrery,Painting,Perfume,Prayer book,Printing block,Rare textile,"+
 			"Royal robes,Saint's relic,Scrimshaw,Sextant,Sheet music,Signet ring,Silverware,Spices,Spyglass,Tapestry,Telescope,Treasure map";
 	private static WeightedTable<String> treasures;
-	private static final String TRAITS = "Altered,Ancient,Blessed,Bulky,Compact,Consumable,Cultural value,Cursed,Damaged,Disguised,Draws enemies,${effect},"+
+	private static final String TRAITS = "Altered,Ancient,Blessed,Bulky,Compact,Consumable,Culturally valuable,Cursed,Damaged,Disguised,Draws enemies,${effect},"+
 			"${element},Embellished,Encoded,Exotic,Extra-planar,Famous,Forbidden,Fragile,Heavy,Immovable,Impractical,Indestructible,"+
-			"Intelligent,Masterwork,Military value,Non-human,Owned,Partial,Political value,Religious value,Repaired,Royal,Toxic,Vile";
+			"Intelligent,Masterwork,Militarily valuable,Non-human,Owned,Partial,Politically valuable,Religiously valuable,Repaired,Royal,Toxic,Vile";
 	private static WeightedTable<String> traits;
 	private static final String METALS = "Iron,Bronze,Copper,Brass,Steel,Quicksilver,Lead";
 	private static WeightedTable<String> metals;
@@ -95,19 +95,22 @@ public class EquipmentModel {
 		other = new WeightedTable<String>();
 		populate(other,OTHER,",");
 	}
-
+	@Deprecated
 	public static String getMisc(int i) {
 		if(misc==null) populateAllTables();
 		return misc.getByWeight(i);
 	}
+	@Deprecated
 	public static String getApparel(int i) {
 		if(apparel==null) populateAllTables();
 		return apparel.getByWeight(i);
 	}
+	@Deprecated
 	public static String getWeapon(int i) {
 		if(weapons==null) populateAllTables();
 		return weapons.getByWeight(i);
 	}
+	@Deprecated
 	public static String getItem(int i) {
 		if(misc==null) populateAllTables();
 		if(i%5==0) return getMisc(i/5);
@@ -116,34 +119,42 @@ public class EquipmentModel {
 		else if(i%5==3) return getTreasure(i/5);
 		else return getTool(i/5);
 	}
+	@Deprecated
 	public static String getBook(int i) {
 		if(books==null) populateAllTables();
 		return books.getByWeight(i);
 	}
+	@Deprecated
 	public static String getTool(int i) {
 		if(tools==null) populateAllTables();
 		return tools.getByWeight(i);
 	}
+	@Deprecated
 	public static String getPotion(int i) {
 		if(potions==null) populateAllTables();
 		return Util.formatTableResult(potions.getByWeight(i),new Indexible(i/potions.size()));
 	}
+	@Deprecated
 	public static String getIngredient(int i) {
 		if(ingredients==null) populateAllTables();
 		return Util.formatTableResult(ingredients.getByWeight(i),new Indexible(i/ingredients.size()));
 	}
+	@Deprecated
 	public static String getTreasure(int i) {
 		if(treasures==null) populateAllTables();
 		return treasures.getByWeight(i);
 	}
+	@Deprecated
 	public static String getTrait(int i) {
 		if(traits==null) populateAllTables();
 		return Util.formatTableResult(traits.getByWeight(i),new Indexible(i/traits.size()));
 	}
+	@Deprecated
 	public static String getRareMaterial(int i) {
 		if(rare==null) populateAllTables();
 		return rare.getByWeight(i);
 	}
+	@Deprecated
 	public static String getCommonMaterial(int i) {
 		if(metals==null) populateAllTables();
 		if(i%4==0) return getMetal(i/4);
@@ -151,22 +162,27 @@ public class EquipmentModel {
 		else if(i%4==2) return getStone(i/4);
 		else return getFabric(i/4);
 	}
+	@Deprecated
 	public static String getMetal(int i) {
 		if(metals==null) populateAllTables();
 		return metals.getByWeight(i);
 	}
+	@Deprecated
 	public static String getWood(int i) {
 		if(woods==null) populateAllTables();
 		return woods.getByWeight(i);
 	}
+	@Deprecated
 	public static String getStone(int i) {
 		if(minerals==null) populateAllTables();
 		return minerals.getByWeight(i);
 	}
+	@Deprecated
 	public static String getFabric(int i) {
 		if(fabrics==null) populateAllTables();
 		return fabrics.getByWeight(i);
 	}
+	@Deprecated
 	public static String getMaterial(int i) {
 		if(metals==null) populateAllTables();
 		int ratio = 5;

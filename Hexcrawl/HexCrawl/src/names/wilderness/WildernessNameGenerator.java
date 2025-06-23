@@ -11,11 +11,7 @@ public class WildernessNameGenerator extends IndexibleNameGenerator{
 	private static final String NAMES = "${color}${landmark},${animal}${monster feature},${wilderness npc}'s Doom,${misfortune} Man's,${personality} Man's,${domain},"+
 			"Old ${structure},${hazard},${edible plant},${poisonous plant},${inn prefix} ${inn suffix}";
 	private static WeightedTable<String> names;
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
+
 	public static String getRegionName(Indexible obj) {
 		if(names==null) {
 			names = new WeightedTable<String>();

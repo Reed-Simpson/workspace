@@ -1,5 +1,6 @@
 package data.threat.subtype;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
 
@@ -49,10 +50,14 @@ public enum DragonType implements CreatureSubtype {
 		weights.put(SHADOW, 1);
 		weights.put(DRACOLICH, 1);
 	}
-	
+
 	public static DragonType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);
+	}
+	public static DragonType getByWeight(Indexible obj) {
+		if(weights==null) populateWeights();
+		return weights.getByWeight(obj);
 	}
 	public static DragonType getFromID(int id) {
 		id = id%DragonType.values().length;

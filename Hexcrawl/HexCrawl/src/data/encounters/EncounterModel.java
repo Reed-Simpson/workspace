@@ -16,31 +16,31 @@ import util.Util;
 public class EncounterModel extends DataModel{
 	//STATIC CONSTANTS
 	private static final int SEED_OFFSET = 8*Util.getOffsetX();
-	private static final String VERBS = "Abandon,Accompany,Activate,Agree,Ambush,Arrive,Assist,Attack,Attain,Bargain,Befriend,Bestow,Betray,Block,Break,Carry,Celebrate,Change,Close,Combine,"+
+	public static final String VERBS = "Abandon,Accompany,Activate,Agree,Ambush,Arrive,Assist,Attack,Attain,Bargain,Befriend,Bestow,Betray,Block,Break,Carry,Celebrate,Change,Close,Combine,"+
 			"Communicate,Conceal,Continue,Control,Create,Deceive,Decrease,Defend,Delay,Deny,Depart,Deposit,Destroy,Dispute,Disrupt,Distrust,Divide,Drop,Easy,Energize,"+
 			"Escape,Expose,Fail,Fight,Flee,Free,Guide,Harm,Heal,Hinder,Imitate,Imprison,Increase,Indulge,Inform,Inquire,Inspect,Invade,Leave,Lure,"+
 			"Misuse,Move,Neglect,Observe,Open,Oppose,Overthrow,Praise,Proceed,Protect,Punish,Pursue,Recruit,Refuse,Release,Relinquish,Repair,Repulse,Return,Reward,"+
 			"Ruin,Separate,Start,Stop,Strange,Struggle,Succeed,Support,Suppress,Take,Threaten,Transform,Trap,Travel,Triumph,Truce,Trust,Use,Usurp,Waste";
-	private static final String NOUNS = "Advantage,Adversity,Agreement,Animal,Attention,Balance,Battle,Benefits,Building,Burden,Bureaucracy,Business,Chaos,Comfort,Completion,Conflict,Cooperation,Danger,Defense,Depletion,"+
+	public static final String NOUNS = "Advantage,Adversity,Agreement,Animal,Attention,Balance,Battle,Benefits,Building,Burden,Bureaucracy,Business,Chaos,Comfort,Completion,Conflict,Cooperation,Danger,Defense,Depletion,"+
 			"Disadvantage,Distraction,Elements,Emotion,Enemy,Energy,Environment,Expectation,Exterior,Extravagance,Failure,Fame,Fear,Freedom,Friend,Goal,Group,Health,Hinderance,Home,"+
 			"Hope,Idea,Illness,Illusion,Individual,Information,Innocent,Intellect,Interior,Investment,Leadership,Legal,Location,Military,Misfortune,Mundane,Nature,Needs,News,Normal,"+
 			"Object,Obscurity,Official,Opposition,Ouside,Pain,Path,Peace,People,Personal,Physical,Plot,Portal,Possessions,Poverty,Power,Prison,Project,Protection,Reassurance,"+
 			"Representative,Riches,Safety,Strength,Success,Suffering,Surprise,Tactic,Technology,Tension,Time,Trial,Value,Vehicle,Victory,Vulnerability,Weapon,Weather,Work,Wound";
-	private static final String ADVERB = "Adventurously,Aggressively,Anxiously,Awkwardly,Beautifully,Bleakly,Boldly,Bravely,Busily,Calmly,Carefully,Carelessly,Cautiously,Ceaselessly,Cheerfully,Combatively,Coolly,Crazily,Curiously,Dangerously,"+
+	public static final String ADVERB = "Adventurously,Aggressively,Anxiously,Awkwardly,Beautifully,Bleakly,Boldly,Bravely,Busily,Calmly,Carefully,Carelessly,Cautiously,Ceaselessly,Cheerfully,Combatively,Coolly,Crazily,Curiously,Dangerously,"+
 			"Defiantly,Deliberately,Delicately,Delightfully,Dimly,Efficiently,Emotionally,Energetically,Enormously,Enthusiastically,Excitedly,Fearfully,Ferociously,Fiercly,Foolishly,Fortunately,Frantically,Freely,Frighteningly,Fully,"+
 			"Generously,Gently,Gladly,Gracefully,Gratefully,Happily,Hastily,Healthily,Helpfully,Helplessly,Hopelessly,Innocently,Intensly,Interestingly,Irritatingly,Joyfully,Kindly,Lazily,Lightly,Loosely,"+
 			"Loudly,Lovingly,Loyally,Majestically,Meaningfully,Mechanically,Mildly,Miserably,Mockingly,Mysteriously,Naturally,Neatly,Nicely,Oddly,Offensively,Officially,Partially,Passively,Peacefully,Perfectly,"+
 			"Playfully,Politely,Positively,Powerfully,Quaintly,Quarrelsomely,Quietly,Roughly,Rudely,Ruthlessly,Slowly,Softly,Strangely,Swiftly,Threateningly,Timidly,Very,Violently,Wildly,Yieldingly";
-	private static final String ADJECTIVE = "Abnormal,Amusing,Artificial,Average,Beautiful,Bizarre,Boring,Bright,Broken,Clean,Cold,Colorful,Colorless,Comforting,Creepy,Cute,Damaged,Dark,Defeated,Dirty,"+
+	public static final String ADJECTIVE = "Abnormal,Amusing,Artificial,Average,Beautiful,Bizarre,Boring,Bright,Broken,Clean,Cold,Colorful,Colorless,Comforting,Creepy,Cute,Damaged,Dark,Defeated,Dirty,"+
 			"Disagreeable,Dry,Dull,Empty,Enormous,Extraordinary,Extravagant,Faded,Familiar,Fancy,Feeble,Festive,Flawless,Forlorn,Fragile,Fragrant,Fresh,Full,Glorious,Graceful,"+
 			"Hard,Harsh,Healthy,Heavy,Historical,Horrible,Important,Interesting,Juvenile,Lacking,Large,Lavish,Lean,Less,Lethal,Lively,Lonely,Lovely,Magnificent,Mature,"+
 			"Messy,Mighty,Military,Modern,Mundane,Mysterious,Natural,Normal,Odd,Old,Pale,Peaceful,Petite,Plain,Poor,Powerful,Protective,Quaint,Rare,Reassuring,"+
 			"Remarkable,Rotten,Rough,Ruined,Rustic,Scary,Shocking,Simple,Small,Smooth,Soft,Strong,Stylish,Unpleasant,Valuable,Vibrant,Warm,Watery,Weak,Young";
-	private static final String CHARACTERS = "Accompanied,Active,Aggressive,Ambush,Animal,Anxious,Armed,Beautiful,Bold,Busy,Calm,Careless,Casual,Cautious,Classy,Colorful,Combative,Crazy,Creepy,Curious,Dangerous,Deceitful,Defeated,"+
+	public static final String CHARACTER_ADJECTIVES = "Accompanied,Active,Aggressive,Ambush,Animal,Anxious,Armed,Beautiful,Bold,Busy,Calm,Careless,Casual,Cautious,Classy,Colorful,Combative,Crazy,Creepy,Curious,Dangerous,Deceitful,Defeated,"+
 			"Defiant,Delightful,Emotional,Energetic,Equipped,Excited,Expected,Familiar,Fast,Feeble,Feminine,Ferocious,Foe,Foolish,Fortunate,Fragrant,Frantic,Friend,Frightened,Frightening,Generous,Glad,Happy,Harmful,Helpful,Helpless,Hurt,"+
 			"Important,Inactive,Influential,Innocent,Intense,Knowledgeable,Large,Lonely,Loud,Loyal,Masculine,Mighty,Miserable,Multiple,Mundane,Mysterious,Natural,Odd,Official,Old,Passive,Peaceful,Playful,Powerful,Professional,"+
 			"Protected,Protecting,Questioning,Quiet,Reassuring,Resourceful,Seeking,Skilled,Slow,Small,Stealthy,Strange,Strong,Tall,Thieving,Threatening,Triumphant,Unexpected,Unnatural,Unusual,Violent,Vocal,Weak,Wild,Young";
-	private static final String OBJECTS = "Active,Artistic,Average,Beautiful,Bizarre,Bright,Clothing,Clue,Cold,Colorful,Communication,Complicated,Confusing,Consumable,Container,Creepy,Crude,Cute,Damaged,Dangerous,Deactivated,Deliberate,Delightful,"+
+	public static final String OBJECT_ADJECTIVES = "Active,Artistic,Average,Beautiful,Bizarre,Bright,Clothing,Clue,Cold,Colorful,Communication,Complicated,Confusing,Consumable,Container,Creepy,Crude,Cute,Damaged,Dangerous,Deactivated,Deliberate,Delightful,"+
 			"Desired,Domestic,Empty,Energy,Enormous,Equipment,Expected,Expended,Extravagant,Faded,Familiar,Fancy,Flora,Fortunate,Fragile,Fragrant,Frightening,Garbage,Guidance,Hard,Harmful,Healing,Heavy,Helpful,Horrible,Important,Inactive,"+
 			"Information,Intriguing,Large,Lethal,Light,Liquid,Loud,Majestic,Meaningful,Mechanical,Modern,Moving,Multiple,Mundane,Mysterious,Natural,New,Odd,Official,Old,Ornate,Personal,Powerful,Prized,"+
 			"Protection,Rare,Ready,Reassuring,Resource,Ruined,Small,Soft,Solitary,Stolen,Strange,Stylish,Threatening,Tool,Travel,Unexpected,Unpleasant,Unusual,Useful,Useless,Valuable,Warm,Weapon,Wet,Worn";
@@ -83,9 +83,9 @@ public class EncounterModel extends DataModel{
 		encounterAdj = new WeightedTable<String>();
 		populate(encounterAdj,ADJECTIVE,",");
 		encounterChar = new WeightedTable<String>();
-		populate(encounterChar,CHARACTERS,",");
+		populate(encounterChar,CHARACTER_ADJECTIVES,",");
 		encounterObj = new WeightedTable<String>();
-		populate(encounterObj,OBJECTS,",");
+		populate(encounterObj,OBJECT_ADJECTIVES,",");
 	}
 	public static String getVerb(Indexible e) {
 		if(encounterVerb==null) populateAllTables();
@@ -183,13 +183,12 @@ public class EncounterModel extends DataModel{
 		e.setCharacter(new String[] {getNPCReference(e, p),getFactionReference(e, p)});
 		e.setObject(new String[] {getObj(e),getObj(e)});
 		if(isCity) {
-			e.setLocation(new String[] {getLocationReference(e, p),getCityRoom(e),getStreet(e),getDiscovery(e, isCity)});
-			//e.setHazard(new String[] {getCityEvent(e)});
+			e.setLocation(new String[] {getLocationReference(e, p),getCityRoom(e),getStreet(e),SettlementModel.getDiscovery(e)});
 		}
 		else {
-			e.setLocation(new String[] {getLocationReference(e, p),getDiscovery(e, isCity)});
-			e.setHazard(new String[] {getWildernessHazard(e)});
+			e.setLocation(new String[] {getLocationReference(e, p),LocationModel.getDiscovery(e)});
 		}
+		e.setHazard(new String[] {getWildernessHazard(e)});
 		return e;
 	}
 	public String getDefaultValue(Point p,int i) {

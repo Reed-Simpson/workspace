@@ -72,39 +72,48 @@ public class LocationModel extends DataModel{
 		descriptors = new WeightedTable<String>();
 		populate(descriptors,DESCRIPTORS,",");
 	}
+	@Deprecated
 	public static String getBiome(int i) {
 		if(biomes==null) populateAllTables();
 		return biomes.getByWeight(i);
 	}
+	@Deprecated
 	public static String getLandmark(int i) {
 		if(landmarks==null) populateAllTables();
 		return landmarks.getByWeight(i);
 	}
+	@Deprecated
 	public static String getStructure(int i) {
 		if(structures==null) populateAllTables();
 		return structures.getByWeight(i);
 	}
+	@Deprecated
 	public static String getStructureOrLandmark(int i) {
 		if(structures==null) populateAllTables();
 		if(i%2==0) return getStructure(i/2);
 		else return getLandmark(i/2);
 	}
+	@Deprecated
 	public static String getActivity(int i) {
 		if(wildactivities==null) populateAllTables();
 		return Util.formatTableResult(wildactivities.getByWeight(i),new Indexible(i/wildactivities.size()));
 	}
+	@Deprecated
 	public static String getDiscovery(int i) {
 		if(discoveries==null) populateAllTables();
 		return Util.formatTableResult(discoveries.getByWeight(i),new Indexible(i/discoveries.size()));
 	}
+	@Deprecated
 	public static String getHazard(int i) {
 		if(hazards==null) populateAllTables();
 		return hazards.getByWeight(i);
 	}
+	@Deprecated
 	public static String getEdiblePlant(int i) {
 		if(edibles==null) populateAllTables();
 		return edibles.getByWeight(i);
 	}
+	@Deprecated
 	public static String getPoisonousPlant(int i) {
 		if(poisons==null) populateAllTables();
 		return poisons.getByWeight(i);
@@ -187,10 +196,12 @@ public class LocationModel extends DataModel{
 		String proprietor = "\r\nProprietor: ${npc index}";
 		return descriptor1+" and "+descriptor2+" "+location+proprietor;
 	}
+	@Deprecated
 	public String getEdible(int i,Point p) {
 		if(edibles==null) populateAllTables();
 		return edibles.getByWeight(getLocationDetailIndex(i*TABLECOUNT+5, p));
 	}
+	@Deprecated
 	public String getPoison(int i,Point p) {
 		if(poisons==null) populateAllTables();
 		return poisons.getByWeight(getLocationDetailIndex(i*TABLECOUNT+6, p));

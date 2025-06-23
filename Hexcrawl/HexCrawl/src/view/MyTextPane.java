@@ -144,7 +144,9 @@ public class MyTextPane extends JTextPane {
 	}
 
 	public void deleteRawText(int a, int b) {
-		rawText = rawText.substring(0, a)+rawText.substring(b);
+		String end = "";
+		if(b<rawText.length()) end = rawText.substring(b);
+		rawText = rawText.substring(0, a)+end;
 	}
 
 	private String removeLinks(String string) {
@@ -292,7 +294,9 @@ public class MyTextPane extends JTextPane {
 			gen.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					controller.genNewData(getType(), getPoint(), index);
+					String newData = controller.genNewData(getType(), getPoint(), getIndex());
+					controller.putData(getType(), getPoint(), getIndex(), newData);
+					MyTextPane.this.doPaint();
 				}
 			});
 			menu.add(gen);

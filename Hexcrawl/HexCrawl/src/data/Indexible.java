@@ -19,7 +19,7 @@ public class Indexible {
 	public static BigInteger getIndex(int... ints) {
 		String s = "";
 		for(int i=0;i<ints.length;i++) {
-			s+=ints[i];
+			s+=Math.abs(ints[i]);
 		}
 		return new BigInteger(s);
 	}

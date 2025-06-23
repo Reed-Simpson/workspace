@@ -51,6 +51,7 @@ public enum DragonType implements CreatureSubtype {
 		weights.put(DRACOLICH, 1);
 	}
 
+	@Deprecated
 	public static DragonType getByWeight(int index) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(index);

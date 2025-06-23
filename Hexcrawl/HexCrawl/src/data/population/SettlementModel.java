@@ -13,7 +13,6 @@ import data.npc.Faction;
 import data.npc.NPCModel;
 import io.SaveRecord;
 import names.FactionNameGenerator;
-import names.InnNameGenerator;
 import util.Util;
 import view.InfoPanel;
 

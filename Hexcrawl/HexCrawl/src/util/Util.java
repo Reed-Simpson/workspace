@@ -134,6 +134,7 @@ public class Util {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, displayPos));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
+			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",getIndexString(obj, "faith", InfoPanel.FACTIONCOUNT, displayPos));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos));
 			if(result.contains("${character index}")) {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
@@ -146,6 +147,7 @@ public class Util {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj));
+			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
 			if(result.contains("${character index}")) {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
@@ -256,7 +258,7 @@ public class Util {
 
 		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
 
-		String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain"};
+		String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index"};
 		for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 		if(result.contains("${")) {
 			throw new IllegalStateException("Unable to process tag: "+result);

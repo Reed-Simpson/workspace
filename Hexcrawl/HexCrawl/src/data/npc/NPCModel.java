@@ -336,7 +336,7 @@ public class NPCModel extends DataModel {
 		npc.setSecret(getSecret(npc));
 	}
 	private void setDomain(int i, Point p, NPC npc) {
-		npc.setDomain(getDomain(npc));
+		npc.setDomain(Util.formatTableResultPOS("${faith index}",npc,p,record.getZero()));
 	}
 	private void setRelationship(int i, Point p, NPC npc) {
 		npc.setRelationship(getRelationship(npc));

@@ -194,7 +194,7 @@ public class NPC extends Indexible{
 		e1Text.append("• Personal: Seeks "+this.getGoal()+". ");
 		e1Text.append(this.getAsset()+" and adept at using "+this.getMethod()+". ");
 		e1Text.append("Likes to study "+this.getHobby()+". ");
-		e1Text.append("Practices a faith that reveres "+this.getDomain()+".");
+		e1Text.append("Practices the faith of "+this.getDomain()+".");
 		e1Text.append("\r\n");
 		//Liabilities
 		e1Text.append("• Liabilities: "+this.getLiability()+" and is currently "+this.getMisfortune()+". ");

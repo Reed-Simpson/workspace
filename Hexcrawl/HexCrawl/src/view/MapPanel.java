@@ -205,6 +205,7 @@ public class MapPanel  extends JPanel{
 		drawSelectedHex(g2, displayScale);
 		if(!wideview)drawSymbols(g2, step, displayScale, borderColor);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
+		drawLegend(g2, step, displayScale);
 
 		printLoadingInfo = false;
 		dialog.removeProgressUI();
@@ -353,6 +354,28 @@ public class MapPanel  extends JPanel{
 			g2.drawLine(getScreenPos(midpoint).x, getScreenPos(midpoint).y, getScreenPos(mouseover).x, getScreenPos(mouseover).y);
 			g2.setStroke(defaultStroke);
 		}
+	}
+
+	private void drawLegend(Graphics2D g2, int step, int displayScale) {
+		Stroke defaultStroke = g2.getStroke();
+		int corneroffset = 50;
+		int inset = 20;
+		int width = 400;
+		int height = 50;
+		int lineDist = (int) ((width-2*inset)*6.0/scale);
+		g2.setColor(Color.WHITE);
+		g2.fillRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
+		g2.setStroke(new BasicStroke(3));
+		g2.setColor(Color.RED);
+		g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/3);
+		g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+inset, this.getHeight()-corneroffset-height/2);
+		g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
+		String str = lineDist+" miles";
+		int stringwidth = g2.getFontMetrics().stringWidth(str);
+		g2.drawString(str, corneroffset+width-inset/2-stringwidth, this.getHeight()-corneroffset-height*2/3);
+		g2.setColor(Color.BLACK);
+		g2.drawRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
+		g2.setStroke(defaultStroke);
 	}
 
 	private void calculateRivers(int displayScale) {

@@ -362,7 +362,7 @@ public class MapPanel  extends JPanel{
 		int inset = 20;
 		int width = 400;
 		int height = 50;
-		int lineDist = (int) ((width-2*inset)*6.0/scale);
+		int lineDist = (int) ((width-2*inset)*6.0/(scale*2));
 		g2.setColor(Color.WHITE);
 		g2.fillRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
 		g2.setStroke(new BasicStroke(3));

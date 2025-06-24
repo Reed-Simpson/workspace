@@ -480,6 +480,7 @@ public class InfoPanel extends JTabbedPane{
 
 	@Override
 	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		changeSelected = false;
 		Point pos;
 		if(panel.isShowDistance()) pos = panel.getMouseoverGridPoint();

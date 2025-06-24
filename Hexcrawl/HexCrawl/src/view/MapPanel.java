@@ -64,6 +64,7 @@ public class MapPanel  extends JPanel{
 	int previousIndex;
 	private DataController controller;
 	private HashMap<Point,Pair<Color,Color>> colorCache;
+	private boolean mouseoverHold;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
@@ -95,6 +96,7 @@ public class MapPanel  extends JPanel{
 			initializing = false;
 		}
 		recenter(record.getPos(),true);
+		mouseover = getSelectedGridPoint();
 		frame.pack();
 		record.setHasUnsavedData(false);
 	}
@@ -246,17 +248,17 @@ public class MapPanel  extends JPanel{
 				}
 				return null;
 			}
-	        @Override
-	        protected void process(List<Integer> chunks) {
-	            int progress = chunks.get(chunks.size() - 1);
-	            System.out.println(progress);
-	        }
-	        @Override
-	        protected void done() {
-	        	frame.repaint();
-	            frame.setVisible(true);
-	        }
-			
+			@Override
+			protected void process(List<Integer> chunks) {
+				int progress = chunks.get(chunks.size() - 1);
+				System.out.println(progress);
+			}
+			@Override
+			protected void done() {
+				frame.repaint();
+				frame.setVisible(true);
+			}
+
 		};
 		worker.execute();
 	}
@@ -574,6 +576,7 @@ public class MapPanel  extends JPanel{
 			}
 			if(printLoadingInfo) counter.increment();
 		}
+		dialog.removeProgressUI();
 		if(printLoadingInfo) logger.logln("Rivers drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
@@ -758,7 +761,7 @@ public class MapPanel  extends JPanel{
 		dialog.removeProgressUI();
 		if(printLoadingInfo) logger.logln("Roads loaded "+(System.currentTimeMillis()-time)+" ms");
 	}
-	
+
 	private void drawRoads(Graphics2D g2, int step, int displayScale, Color roadColor) {
 		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
 		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
@@ -799,8 +802,18 @@ public class MapPanel  extends JPanel{
 	public class MouseAdapter implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			recenter(MapPanel.this.getGridPoint(e.getX(), e.getY()),true);
-			record.setPos(MapPanel.this.getSelectedGridPoint());
+			Point p = MapPanel.this.getGridPoint(e.getX(), e.getY());
+			if(showDistance) {
+				if(mouseoverHold&&p.equals(mouseover)) {
+					mouseoverHold=false;
+				}else {
+					mouseoverHold=true;
+					mouseover = p;
+				}
+			}else {
+				recenter(p,true);
+				record.setPos(MapPanel.this.getSelectedGridPoint());
+			}
 			preprocessThenRepaint();
 		}
 		@Override
@@ -835,7 +848,7 @@ public class MapPanel  extends JPanel{
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			Point gridPoint = MapPanel.this.getGridPoint(e.getX(),e.getY());
-			if((MapPanel.this.mouseover==null)||!MapPanel.this.mouseover.equals(gridPoint)){
+			if(!mouseoverHold&&!MapPanel.this.mouseover.equals(gridPoint)){
 				mouseover = gridPoint;
 				if(showDistance) {
 					Point center = MapPanel.this.getSelectedGridPoint();
@@ -965,6 +978,8 @@ public class MapPanel  extends JPanel{
 
 	public void setShowDistance(boolean selected) {
 		this.showDistance = selected;
+		mouseoverHold = false;
+		mouseover = getSelectedGridPoint();
 		preprocessThenRepaint();
 	}
 	public boolean isShowDistance() {

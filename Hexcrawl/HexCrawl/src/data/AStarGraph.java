@@ -2,6 +2,7 @@ package data;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -30,7 +31,11 @@ import java.util.Set;
 public class AStarGraph implements Set<Point> {
 	protected HashMap<Point,Vertex> vertices = new LinkedHashMap<Point,Vertex>();
 	protected int numberEdges=0;
+	protected double distanceFactor;
 
+	public AStarGraph(double distance) {
+		this.distanceFactor=distance;
+	}
 	/**
 	 * Adds a new vertex to the graph with the given key if it does not already contain a 
 	 * vertex with that key.  
@@ -378,7 +383,7 @@ public class AStarGraph implements Set<Point> {
 			dy=Math.abs(dy);
 			distance = Math.max(dx, dy);
 		}
-		return distance*10;
+		return distance*this.distanceFactor;
 	}
 	public int shortestPath(Point start, Point finish,LinkedList<Point> list){
 		HashMap<Point,Point> previous = new HashMap<Point,Point>();
@@ -493,6 +498,18 @@ public class AStarGraph implements Set<Point> {
 			}
 		}
 
+	}
+
+
+	public Set<Point> getAdjacencyList(Point key){
+		HashSet<Point> result = new HashSet<Point>();
+		Vertex vertex = vertices.get(key);
+		if(vertex!=null&&vertex.getAdjacentVertices()!=null&&vertex.getAdjacentVertices().keySet()!=null) {
+			for(Vertex v:vertex.getAdjacentVertices().keySet()) {
+				result.add(v.key);
+			}
+		}
+		return result;
 	}
 
 }

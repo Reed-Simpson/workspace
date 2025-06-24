@@ -8,7 +8,6 @@ import java.util.Random;
 
 import data.AStarGraph;
 import data.DataModel;
-import data.Graph;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.altitude.AltitudeModel;
@@ -310,7 +309,7 @@ public class BiomeModel extends DataModel {
 	public HashSet<Point> getRegion(Point p) {
 		HashSet<Point> group = new HashSet<Point>();
 		if(precipitation.isLake(p)) {
-			AStarGraph lake = new AStarGraph();
+			AStarGraph lake = new AStarGraph(3);
 			precipitation.findLakeBorders(new HashSet<Point>(), lake, p);
 			group.addAll(lake);
 		}else {

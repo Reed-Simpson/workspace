@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import data.AStarGraph;
 import data.DataModel;
-import data.Graph;
 import data.OpenSimplex2S;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
@@ -184,7 +183,7 @@ public class PrecipitationModel extends DataModel{
 
 	public Point generateLake(Point p) {
 		getFlow(p);
-		AStarGraph lake = new AStarGraph();
+		AStarGraph lake = new AStarGraph(10);
 		HashSet<Point> lakeBorder = new HashSet<Point>();
 		Point outlet = p;
 		Point drain = p;

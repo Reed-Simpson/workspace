@@ -207,12 +207,10 @@ public class MyTextPane extends JTextPane {
 	private class MouseoverAction extends AbstractAction    {
 		private String textLink;
 		private final JTextPane textPane;
-		private InfoPanel info;
 
 		public MouseoverAction(String textLink,JTextPane textPane,InfoPanel info){
 			this.textLink = textLink;
 			this.textPane = textPane;
-			this.info = info;
 		}
 
 		protected void execute(){

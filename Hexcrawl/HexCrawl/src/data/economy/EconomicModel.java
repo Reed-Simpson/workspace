@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import data.AStarGraph;
 import data.DataModel;
-import data.Graph;
 import data.OpenSimplex2S;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
@@ -26,8 +26,8 @@ public class EconomicModel extends DataModel{
 	private BiomeModel biomes;
 	private PrecipitationModel precipitation;
 	private AltitudeModel grid;
-	private Graph<Point> travel;
-	private Graph<Point> roads;
+	private AStarGraph travel;
+	private AStarGraph roads;
 	private HashSet<Point> roadsCache;
 
 	public EconomicModel(SaveRecord record, PopulationModel population,BiomeModel biomes,PrecipitationModel precipitation,AltitudeModel grid) {
@@ -39,8 +39,8 @@ public class EconomicModel extends DataModel{
 		resetCache();
 	}
 	private void resetCache() {
-		this.travel = new Graph<Point>();
-		this.roads = new Graph<Point>();
+		this.travel = new AStarGraph(1);
+		this.roads = new AStarGraph(1);
 		this.roadsCache = new HashSet<Point>();
 	}
 
@@ -189,7 +189,7 @@ public class EconomicModel extends DataModel{
 		roadsCache.add(p);
 	}
 
-	public Graph<Point> getRoads(){
+	public AStarGraph getRoads(){
 		return this.roads;
 	}
 

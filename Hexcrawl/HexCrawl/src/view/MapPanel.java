@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
 import controllers.DataController;
-import data.Graph;
+import data.AStarGraph;
 import data.HexData;
 import data.biome.BiomeModel;
 import data.biome.BiomeType;
@@ -34,7 +34,6 @@ import io.AppData;
 import io.SaveRecord;
 import util.Counter;
 import util.Pair;
-import util.Util;
 
 public class MapPanel  extends JPanel{
 	private static final int WIDEVIEW = 5;
@@ -807,7 +806,7 @@ public class MapPanel  extends JPanel{
 			logger.log("Drawing roads: ");
 			dialog.createProgressUI("Drawing roads: ");
 		}
-		Graph<Point> roads = controller.getEconomy().getRoads();
+		AStarGraph roads = controller.getEconomy().getRoads();
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);

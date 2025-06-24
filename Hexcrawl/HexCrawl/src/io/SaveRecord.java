@@ -23,7 +23,7 @@ import util.Util;
 import view.MapFrame;
 
 public class SaveRecord implements Serializable {
-	private static final long serialVersionUID = 6999712431803441390L;
+	private static final long serialVersionUID = parseBits(MapFrame.VERSION);
 	transient private Random random;
 	transient private boolean hasUnsavedData;
 
@@ -78,6 +78,16 @@ public class SaveRecord implements Serializable {
 		this.campaignThreads = new ArrayList<String>();
 		
 		this.hasUnsavedData = true;
+	}
+
+	private static long parseBits(String version) {
+		long result = 0;
+		char[] charArray = version.toCharArray();
+		for(int i=0;i<charArray.length;i++) {
+			result+= ((long)(charArray[i]))*Character.MAX_VALUE;
+		}
+		// TODO Auto-generated method stub
+		return result;
 	}
 
 	public void setDefaultPos() {

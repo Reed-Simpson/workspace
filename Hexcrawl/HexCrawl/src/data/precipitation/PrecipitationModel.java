@@ -159,10 +159,6 @@ public class PrecipitationModel extends DataModel{
 		updateFlowVolume(p,0,0);
 	}
 	public void updateFlowVolume(Point p, float volume,int depth) {
-		if(System.currentTimeMillis()>time+interval) {
-			System.out.println("updateFlowVolume "+(System.currentTimeMillis()-time));
-			time=System.currentTimeMillis();
-		}
 		if(grid.isWater(p)) return;
 		float precipitation = 0;
 		if(volumeCache.putIfAbsent(p, getPrecipitation(p))==null) {
@@ -208,20 +204,12 @@ public class PrecipitationModel extends DataModel{
 				}
 			}
 			altitude = Float.MAX_VALUE;
-			if(System.currentTimeMillis()>time+interval) {
-				System.out.println("generateLake 1 "+(System.currentTimeMillis()-time));
-				time=System.currentTimeMillis();
-			}
 		}
 		for(Point l:lake) {
 			HashSet<Point> cache = new HashSet<Point>();
 			updateFlowPath(l,outlet,lake,cache);
 			outletCache.put(l, outlet);
 			lakes.put(l,lake.size());
-			if(System.currentTimeMillis()>time+interval) {
-				System.out.println("generateLake 2 "+(System.currentTimeMillis()-time));
-				time=System.currentTimeMillis();
-			}
 		}
 		if(!isFlowingInto(drain, outlet)) {
 			riverCache.put(outlet, drain);

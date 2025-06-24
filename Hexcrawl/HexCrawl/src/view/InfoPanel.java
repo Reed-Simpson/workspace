@@ -50,6 +50,7 @@ public class InfoPanel extends JTabbedPane{
 	private static final int TAB_TITLE_LENGTH = 34;
 	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
 	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
+	private static final int FAITH_TAB_INDEX = 2;
 	private static final int FACTION_TAB_INDEX = 1;
 	private static final int CITY_TAB_INDEX = 0;
 	private static final int DUNGEON_ENCOUNTER_TAB_INDEX = 4;
@@ -667,18 +668,6 @@ public class InfoPanel extends JTabbedPane{
 		changeSelected = true;
 	}
 
-	public String getLinkText(String link) {
-		Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(link);
-		if(matcher.matches()) {
-			link = getLinkText(
-					matcher.group(1),
-					Integer.valueOf(matcher.group(2)),
-					Integer.valueOf(matcher.group(3)),
-					Integer.valueOf(matcher.group(4))-1);
-		}
-		return link;
-	}
-
 	private String getRegionNameText(Point pos,boolean isCity) {
 		String regionNameText = panel.getRecord().getRegionName(pos);
 		if(regionNameText==null) regionNameText = getDefaultRegionNameText(pos,isCity);
@@ -744,99 +733,7 @@ public class InfoPanel extends JTabbedPane{
 		}
 	}
 
-	String getDefaultEncounterText(Point pos,int index) {
-		Encounter n = panel.getController().getEncounters().getEncounter(index, pos);
-		return n.toString();
-	}
-	private String getNPCText(Point pos,int index) {
-		String npcText = panel.getRecord().getNPC(pos,index);
-		if(npcText==null) npcText = getDefaultNPCText(pos,index);
-		return npcText;
-	}
-	private String getDefaultNPCText(Point pos,int index) {
-		NPC n = panel.getController().getNpcs().getNPC(index, pos);
-		return n.toString();
-	}
-	private String getNPCLinkText(Point pos,int index) {
-		String npcText = getNPCText(pos, index);
-		int firstLine = npcText.indexOf("\r\n");
-		if(firstLine>-1&&firstLine<50) {
-			return npcText.substring(0, firstLine);
-		}else {
-			return npcText.substring(0,30);
-		}
-	}
 
-	private String getDistrictLinkText(Point capital,int index) {
-		SettlementModel cities = panel.getController().getSettlements();
-		Settlement city = cities.getSettlement(capital);
-		return city.getDistricts().get(index);
-	}
-	private String getFactionText(Point pos,int i) {
-		String factionText = panel.getRecord().getFaction(pos,i);
-		if(factionText==null) factionText = getDefaultFactionText(pos,i);
-		return factionText;
-	}
-	private String getDefaultFactionText(Point capital,int i) {
-		return panel.getController().getSettlements().getFaction(i, capital).toString();
-	}
-	private String getFactionLinkText(Point pos,int index) {
-		String factionText = getFactionText(pos, index);
-		int firstLine = factionText.indexOf("\r\n");
-		if(firstLine>-1&&firstLine<50) {
-			return factionText.substring(0, firstLine);
-		}else {
-			return factionText.substring(0,30);
-		}
-	}
-
-	private String getPOIText(Point pos,int i, boolean isCity) {
-		String poiText = panel.getRecord().getLocation(pos,i);
-		if(poiText==null) {
-			if(i==0) poiText = getDefaultInnText(pos);
-			else poiText = getDefaultPOIText(pos,i,isCity);
-		}
-		return poiText;
-	}
-	private String getDefaultPOIText(Point pos,int i, boolean isCity) {
-		return panel.getController().getPois().getPOI(i, pos,isCity);
-	}
-	private String getPOILinkText(Point pos,int index, boolean isCity) {
-		String poiText = getPOIText(pos, index,isCity);
-		int firstLine = poiText.indexOf("\r\n");
-		if(firstLine>-1&&firstLine<50) {
-			return poiText.substring(0, firstLine);
-		}else {
-			return poiText.substring(0,30);
-		}
-	}
-	private String getDefaultInnText(Point pos) {
-		AltitudeModel grid = panel.getController().getGrid();
-		PrecipitationModel precipitation = panel.getController().getPrecipitation();
-		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-			return "Inn: none";
-		}else {
-			LocationNameModel names = panel.getController().getNames();
-			return names.getInnText(pos);
-		}
-	}
-	private String getDungeonText(Point pos,int i) {
-		String poiText = panel.getRecord().getDungeon(pos,i);
-		if(poiText==null) poiText = getDefaultDungeonText(pos,i);
-		return poiText;
-	}
-	private String getDefaultDungeonText(Point pos,int i) {
-		return panel.getController().getDungeon().getDungeon(i, pos).toString();
-	}
-	private String getDungeonLinkText(Point pos,int index) {
-		String dungeonText = getDungeonText(pos, index);
-		int firstLine = dungeonText.indexOf("\r\n");
-		if(firstLine>-1&&firstLine<50) {
-			return dungeonText.substring(0, firstLine);
-		}else {
-			return dungeonText.substring(0,30);
-		}
-	}
 
 	public void setPanel(MapPanel panel) {
 		this.panel = panel;
@@ -858,8 +755,10 @@ public class InfoPanel extends JTabbedPane{
 		case "dungeon": selectTab(0,DUNGEON_TAB_INDEX,index);break;
 		case "faction": selectTab(1,FACTION_TAB_INDEX,index);break;
 		case "district": selectTab(1,CITY_TAB_INDEX,index);break;
+		case "faith": selectTab(1,FAITH_TAB_INDEX,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
 		}
+		panel.preprocessThenRepaint();
 	}
 
 	private void selectTab(int maintab, int subtab,int index) {
@@ -924,44 +823,14 @@ public class InfoPanel extends JTabbedPane{
 				this.repaint();
 				break;
 			}
+			case FAITH_TAB_INDEX:{
+				selectedFaith=index;
+				this.repaint();
+				break;
+			}
 			default: throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 			}
 		}
-	}
-
-	public String getToolTipText(HexData type, int x, int y, int index) {
-		Point displayPos = new Point(x,y);
-		Point actualPos = Util.denormalizePos(displayPos, panel.getRecord().getZero());
-		String result = panel.getController().getText(type, actualPos, index);
-		
-		Matcher matcher;
-		matcher = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\})").matcher(result);
-		while(matcher.find()) {
-			result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
-		}
-		return result;
-	}
-
-	private String getLinkText(String tab, int x, int y, int index) {
-		Point p = new Point(x,y);
-		String result;
-		switch(tab) {
-		case "npc": result = getNPCLinkText(p, index);break;
-		case "location": {
-			PopulationModel population = panel.getController().getPopulation();
-			boolean isCity = population.isCity(p);
-			result = getPOILinkText(p, index, isCity);break;
-		}
-		case "dungeon": result = getDungeonLinkText(p, index);break;
-		case "faction": result = getFactionLinkText(p, index);break;
-		case "district": {
-			PopulationModel population = panel.getController().getPopulation();
-			Point capital = population.getAbsoluteFealty(p);
-			result = getDistrictLinkText(capital,index);break;
-		}
-		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
-		}
-		return result;
 	}
 	public MapPanel getPanel() {
 		return panel;

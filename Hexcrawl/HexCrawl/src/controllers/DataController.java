@@ -2,6 +2,7 @@ package controllers;
 
 import java.awt.Point;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import data.DataModel;
 import data.HexData;
@@ -118,7 +119,12 @@ public class DataController {
 		case TOWN: {
 			Point capital = population.getLocalFealty(p);
 			Species species = population.getMajoritySpecies(capital.x,capital.y);
-			value =  names.getName(species.getCityNameGen(), capital);break;
+			if(species==null) {
+				System.err.println("null species "+record.normalizePOS(capital));
+				value = null;break;
+			}else {
+				value =  names.getName(species.getCityNameGen(), capital);break;
+			}
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -137,7 +143,8 @@ public class DataController {
 		case CHARACTER: value = "";break;
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
-		return value.toString();
+		if(value==null) return null;
+		else return value.toString();
 	}
 	private String getDefaultInnText(Point pos) {
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
@@ -296,6 +303,10 @@ public class DataController {
 	}
 	public String getLinkText(HexData type, Point pos,int index) {
 		String fullText = getText(type, pos, index);
+		if(fullText==null) {
+			System.err.println("null link text: {"+type+":"+record.normalizePOS(pos)+","+index+"}");
+			return null;
+		}
 		int firstLine = fullText.indexOf("\r\n");
 		if(firstLine>-1&&firstLine<100) {
 			return fullText.substring(0, firstLine);
@@ -308,6 +319,10 @@ public class DataController {
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		HexData type = HexData.get(tab);
 		String linkText = getLinkText(type, actualPos, index);
+		if(linkText==null) {
+			System.err.println("null link text: {"+type+":"+displayPos+","+index+"}");
+			return null;
+		}
 		Matcher matcher = Reference.PATTERN.matcher(linkText);
 		if(matcher.find()) {
 			linkText = linkText.substring(0,matcher.start())+
@@ -315,6 +330,19 @@ public class DataController {
 					linkText.substring(matcher.end());
 		}
 		return linkText;
+	}
+
+	public String getToolTipText(HexData type, int x, int y, int index) {
+		Point displayPos = new Point(x,y);
+		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
+		String result = this.getText(type, actualPos, index);
+		
+		Matcher matcher;
+		matcher = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\})").matcher(result);
+		while(matcher.find()) {
+			result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
+		}
+		return result;
 	}
 
 

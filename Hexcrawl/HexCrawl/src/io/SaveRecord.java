@@ -19,6 +19,8 @@ import data.Reference;
 import data.altitude.AltitudeModel;
 import data.population.PopulationModel;
 import util.DiceRoller;
+import util.Util;
+import view.MapFrame;
 
 public class SaveRecord implements Serializable {
 	private static final long serialVersionUID = 6999712431803441390L;
@@ -230,11 +232,17 @@ public class SaveRecord implements Serializable {
 	}
 
 	public File getDefaultSaveFile() {
-		return new File(AppData.getDirectory(),"defaultSave.ser");
+		return new File(AppData.getDirectory(),"defaultSave_"+MapFrame.VERSION+".ser");
 	}
 
 	public String toString() {
 		return seed+" - ("+(pos.x-zero.x)+","+(pos.y-zero.y)+") scale: "+scale;
+	}
+	public Point normalizePOS(Point p) {
+		return Util.normalizePos(p, zero);
+	}
+	public Point denormalizePOS(Point p) {
+		return Util.denormalizePos(p, zero);
 	}
 
 	public String putNote(Point p,String s) {

@@ -75,7 +75,7 @@ public class MapPanel  extends JPanel{
 		this.addMouseMotionListener(new MouseMotionAdapter());
 		this.addMouseWheelListener(new MouseWheelAdapter());
 		this.setDisplayData(HexData.ALTITUDE);
-		this.setPreferredSize(new Dimension(1000, 1000));
+		//this.setPreferredSize(new Dimension(1000, 1000));
 		this.printLoadingInfo = true;
 		previousIndex = 0;
 	}
@@ -97,8 +97,9 @@ public class MapPanel  extends JPanel{
 		}
 		recenter(record.getPos(),true);
 		mouseover = getSelectedGridPoint();
-		frame.pack();
+		//frame.pack();
 		record.setHasUnsavedData(false);
+		this.preprocessThenRepaint();
 	}
 
 	public Point getScreenPos(Point p) {
@@ -506,7 +507,7 @@ public class MapPanel  extends JPanel{
 			if(printLoadingInfo) counter.increment();
 		}
 		if(printLoadingInfo) logger.logln("--(100%) Rivers loaded "+(System.currentTimeMillis()-time)+" ms");
-
+		dialog.removeProgressUI();
 		if(initializing) {
 			dialog.createProgressUI("Initializing: ");
 			logger.log("Initializing "+(sum*loadingFactor)+" ~100 seconds: ");
@@ -911,7 +912,7 @@ public class MapPanel  extends JPanel{
 	public void saveAs() {
 		File prevFile = record.getSaveLocation();
 		File directory= AppData.getDirectory();
-		String filename = record.getSeed()+".ser";
+		String filename = record.getSeed()+"_"+MapFrame.VERSION+".ser";
 		if(prevFile!=null) {
 			directory = prevFile.getAbsoluteFile().getParentFile();
 			filename = prevFile.getName();

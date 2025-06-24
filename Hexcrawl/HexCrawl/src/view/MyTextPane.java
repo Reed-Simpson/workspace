@@ -72,8 +72,8 @@ public class MyTextPane extends JTextPane {
 	}
 
 	public void setText(String t) {
-		this.rawText = t;
 		super.setText("");
+		this.rawText = t;
 		links = new HashMap<Interval,Interval>();
 		this.writeStringToDocument(t);
 	}
@@ -104,6 +104,11 @@ public class MyTextPane extends JTextPane {
 		StyledDocument doc = this.getStyledDocument();
 		Style regularBlue = getLinkStyle(link, doc);
 		String linkText = controller.getLinkText(link);
+		if(linkText==null) {
+			System.err.println("null link text: "+link);
+			doc.insertString(doc.getLength(), "null", regularBlue);
+			return new Interval(doc.getLength(),doc.getLength()+4);
+		}
 		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
 		doc.insertString(doc.getLength(), linkText, regularBlue);
 		return result;
@@ -217,7 +222,7 @@ public class MyTextPane extends JTextPane {
 				Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
 				if(matcher.matches()) {
 					HexData type = HexData.get(matcher.group(1));
-					String tooltipText = info.getToolTipText(
+					String tooltipText = controller.getToolTipText(
 							type,
 							Integer.valueOf(matcher.group(2)),
 							Integer.valueOf(matcher.group(3)),
@@ -298,6 +303,7 @@ public class MyTextPane extends JTextPane {
 				public void actionPerformed(ActionEvent e) {
 					String newData = controller.genNewData(getType(), getPoint(), getIndex());
 					controller.putData(getType(), getPoint(), getIndex(), newData);
+					setText(newData);
 					MyTextPane.this.doPaint();
 				}
 			});
@@ -308,6 +314,7 @@ public class MyTextPane extends JTextPane {
 				public void actionPerformed(ActionEvent e) {
 					String defaultText = controller.getDefaultText(getType(), getPoint(), getIndex());
 					controller.putData(getType(), getPoint(), getIndex(), defaultText);
+					setText(defaultText);
 					MyTextPane.this.doPaint();
 				}
 			});

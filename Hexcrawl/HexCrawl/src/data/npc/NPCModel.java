@@ -245,10 +245,6 @@ public class NPCModel extends DataModel {
 	}
 
 	public NPC getNPC(int i,Point p) {
-//		WeightedTable<Species> demo = population.getTransformedDemographics(p);
-//		if(demo.getSumWeight()==0) {
-//			return null;
-//		}
 		float[] floats = new float[TABLECOUNT];
 		for(int x=0;x<floats.length;x++) {
 			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
@@ -341,7 +337,8 @@ public class NPCModel extends DataModel {
 		npc.setSecret(getSecret(npc));
 	}
 	private void setDomain(Point p, NPC npc) {
-		npc.setDomain(Util.formatTableResultPOS("${faith index}",npc,p,record.getZero()));
+		String formatTableResultPOS = Util.formatTableResultPOS("${faith index}",npc,p,record.getZero());
+		npc.setDomain(formatTableResultPOS);
 	}
 	private void setRelationship(Point p, NPC npc) {
 		npc.setRelationship(getRelationship(npc));
@@ -361,23 +358,11 @@ public class NPCModel extends DataModel {
 		String desc2 = EncounterModel.getChar(npc);
 		npc.setDescriptors(new String[]{desc1,desc2});
 	}
-//	public NPC getRandomNPC(int i,Point p) {
-//		float[] floats = new float[TABLECOUNT];
-//		for(int x=0;x<floats.length;x++) {
-//			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
-//		}
-//		NPC result = new NPC(floats);
-//		Species species = getRandomNPCSpecies(result);
-//		result.setSpecies(species);
-//		result.setGoblin(HumanoidNameGenerator.getGoblinoid(result));
-//		populateNPCData(i, p, result);
-//
-//		return result;
-//	}
 	public Species getRandomNPCSpecies(Indexible obj) {
 		Species[] species = Species.getAbeirNPCSpecies();
 		return (Species) Util.getElementFromArray(species, obj);
 	}
+	@Deprecated
 	@Override
 	public NPC getDefaultValue(Point p, int i) {
 		return getNPC(i, p);

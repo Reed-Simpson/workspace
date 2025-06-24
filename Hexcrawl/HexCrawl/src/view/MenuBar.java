@@ -51,8 +51,10 @@ public class MenuBar extends JMenuBar {
 	private ArrayList<JMenuItem> recentFileMenus;
 	private JButton prevButton;
 	private JButton nextButton;
+	private MapFrame frame;
 
-	public MenuBar(MapPanel panel) {
+	public MenuBar(MapPanel panel,MapFrame frame) {
+		this.frame = frame;
 		this.panel=panel;
 
 		this.fileMenu = constructFileMenu(panel);
@@ -78,7 +80,8 @@ public class MenuBar extends JMenuBar {
 		menuNew.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				SaveRecord newRecord = new SaveRecord();
-				panel.reloadFromSaveRecord(newRecord);
+				frame.load(newRecord);
+//				panel.reloadFromSaveRecord(newRecord);
 			}
 		});
 		JMenuItem menuNewSeed = new JMenuItem("New From Seed");
@@ -276,7 +279,8 @@ public class MenuBar extends JMenuBar {
 				public void actionPerformed(ActionEvent e) {
 					SaveRecord newRecord = SaveRecord.load(thisFile,panel.getFrame().getAppData());
 					repopulateRecentFiles(panel);
-					panel.reloadFromSaveRecord(newRecord);
+					frame.load(newRecord);
+//					panel.reloadFromSaveRecord(newRecord);
 				}
 			});
 			recentFileMenus.add(recent);
@@ -337,7 +341,8 @@ public class MenuBar extends JMenuBar {
 		SaveRecord newRecord = new SaveRecord();
 		newRecord.setSeed(seed);
 		repopulateRecentFiles(panel);
-		panel.reloadFromSaveRecord(newRecord);
+		frame.load(newRecord);
+//		panel.reloadFromSaveRecord(newRecord);
 	}
 
 	private void openFile() {
@@ -346,7 +351,8 @@ public class MenuBar extends JMenuBar {
 			File file = fileChooser.getSelectedFile();
 			SaveRecord newRecord = SaveRecord.load(file,panel.getFrame().getAppData());
 			repopulateRecentFiles(panel);
-			panel.reloadFromSaveRecord(newRecord);
+			frame.load(newRecord);
+//			panel.reloadFromSaveRecord(newRecord);
 		}
 	}
 

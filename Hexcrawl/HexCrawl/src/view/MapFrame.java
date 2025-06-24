@@ -18,14 +18,15 @@ import javax.swing.JOptionPane;
 import io.AppData;
 import io.SaveRecord;
 
+@SuppressWarnings("serial")
 public class MapFrame extends JFrame{
-	private static final long serialVersionUID = 843200012193641481L;
+	public static final String VERSION = "v0.1";
 	private AppData data;
 	private SaveRecord record;
 	private InfoPanel info;
 
 	public MapFrame() throws SecurityException, IOException {
-		super("Reed's Hexcrawl Generator v0.1");
+		super("Reed's Hexcrawl Generator "+VERSION);
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
@@ -65,12 +66,13 @@ public class MapFrame extends JFrame{
 	}
 
 	public void load(SaveRecord record) {
+		getContentPane().removeAll();
 		this.record=record;
 		MapPanel panel = new MapPanel(this,record);
 		info = new InfoPanel(panel);
 		this.add(panel,BorderLayout.CENTER);
 		this.add(info,BorderLayout.EAST);
-		MenuBar bar = new MenuBar(panel);
+		MenuBar bar = new MenuBar(panel,this);
 		this.add(bar,BorderLayout.NORTH);
 		this.pack();
 		this.setLocationRelativeTo(null);

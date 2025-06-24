@@ -621,15 +621,15 @@ public class MapPanel  extends JPanel{
 			return BiomeType.WATER.getColor();
 		}else if (height<BiomeModel.WATER_HEIGHT) {
 			return BiomeType.SHALLOWS.getColor();
-		} else if (controller.getPrecipitation().isLake(p)&&!HexData.BIOME.equals(data)) {
+		}else if (!HexData.BIOME.equals(data)&&controller.getPrecipitation().isLake(p)) {
 			return BiomeType.LAKE.getColor();
-		}else if(showCities&&controller.getPopulation().isCity(p)) {
-			return BiomeType.CITY.getColor();
-		}else if(showCities&&controller.getPopulation().isTown(p)) {
-			return BiomeType.TOWN.getColor();
-		}else {
-			return null;
+		}else if(showCities) {
+			BiomeType settlementType = controller.getPopulation().getSettlementType(p);
+			if(settlementType!=null) {
+				return settlementType.getColor();
+			}
 		}
+		return null;
 	}
 	private Color getColor2(int i,int j,HexData data) {
 		Point p = new Point(i,j);

@@ -3,6 +3,7 @@ package data.population;
 import java.awt.Color;
 import java.awt.Point;
 import java.text.DecimalFormat;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -158,14 +159,23 @@ public class PopulationModel extends DataModel{
 		}
 		return 0;
 	}
+	public Entry<Species, Float> getMajorityPopAndSpecies(int x,int y) {
+		LinkedHashMap<Species,Float> pop = getDemographics(x,y);
+		for(Entry<Species, Float> e:pop.entrySet()) {
+			return e;
+		}
+		return new AbstractMap.SimpleEntry<Species, Float>(null, 0f);
+	}
 
 	public Point getLocalFealty(Point p) {
-		float pop = getMajorityPop(p.x, p.y);
-		Species s = getMajoritySpecies(p.x, p.y);
+		Entry<Species,Float> e = getMajorityPopAndSpecies(p.x, p.y);
+		float pop = e.getValue();
+		Species s = e.getKey();
 		Point result = p;
 		for(Point p1:Util.getAdjacentPoints(p)) {
-			float pop1=getMajorityPop(p1.x, p1.y);
-			Species s1 = getMajoritySpecies(p1.x, p1.y);
+			Entry<Species,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
+			float pop1 = e1.getValue();
+			Species s1 = e1.getKey();
 			if(pop1>pop && s1!=null && s1.equals(s)) {
 				pop=pop1;
 				result = p1;
@@ -183,8 +193,34 @@ public class PopulationModel extends DataModel{
 	public boolean isTown(Point p) {
 		if(p==null||getUniversalPopulation(p.x,p.y)<0.08f) return false;
 		else {
-			return p.equals(getLocalFealty(p));
+			Entry<Species,Float> e = getMajorityPopAndSpecies(p.x, p.y);
+			float pop = e.getValue();
+			Species s = e.getKey();
+			Point result = p;
+			for(Point p1:Util.getAdjacentPoints(p)) {
+				Entry<Species,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
+				float pop1 = e1.getValue();
+				Species s1 = e1.getKey();
+				if(pop1>pop && s1!=null && s1.equals(s)) {
+					pop=pop1;
+					result = p1;
+					break;
+				}
+			}
+			return p.equals(result);
 		}
+	}
+	public BiomeType getSettlementType(Point p) {
+		float pop = getUniversalPopulation(p.x,p.y);
+		if(pop>0.08f) {
+			boolean isTown = isTown(p);
+			if(pop>0.16f&&isTown&&p.equals(getParentCity(p))) {
+				return BiomeType.CITY;
+			}else if(isTown) {
+				return BiomeType.TOWN;
+			}
+		}
+		return null;
 	}
 
 	public Point getAbsoluteFealty(Point p) {
@@ -238,7 +274,7 @@ public class PopulationModel extends DataModel{
 		}
 		return populationStringFormat.format(pop)+" ("+populationPercentStringFormat.format(((float)pop)/total)+")";
 	}
-	
+
 	private float popTransform(float pop) {
 		if(pop>0) return pop*pop*2;
 		else return pop;

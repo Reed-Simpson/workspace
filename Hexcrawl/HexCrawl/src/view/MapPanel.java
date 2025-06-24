@@ -2,7 +2,6 @@ package view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -68,9 +67,9 @@ public class MapPanel  extends JPanel{
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
-		this.dialog = new ProgressBarDialog(frame);
+		this.showRivers=true;
+		this.showCities=true;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
-		this.reloadFromSaveRecord(record);
 		this.addMouseListener(new MouseAdapter());
 		this.addMouseMotionListener(new MouseMotionAdapter());
 		this.addMouseWheelListener(new MouseWheelAdapter());
@@ -78,6 +77,8 @@ public class MapPanel  extends JPanel{
 		//this.setPreferredSize(new Dimension(1000, 1000));
 		this.printLoadingInfo = true;
 		previousIndex = 0;
+		this.reloadFromSaveRecord(record);
+		
 	}
 
 	public void reloadFromSaveRecord(SaveRecord record) {
@@ -87,14 +88,41 @@ public class MapPanel  extends JPanel{
 		this.printLoadingInfo = false;
 		this.scale = record.getScale();
 		this.previous=new ArrayList<Point>();
+		this.dialog = new ProgressBarDialog(frame);
+		this.recenter(record.getPos(),false);
+	}
+	public void initialize() {
 		if(!record.isInitialized()) {
 			initializing = true;
-			this.recenter(record.getPos(),false);
 			record.initialize(controller.getGrid(),controller.getPopulation());
-			calculateRivers();
-			record.initialize(controller.getGrid(),controller.getPopulation());
-			initializing = false;
+
+			SwingWorker<Void, Integer> worker = new SwingWorker<Void,Integer>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					calculateRivers();
+					return null;
+				}
+				@Override
+				protected void process(List<Integer> chunks) {
+					int progress = chunks.get(chunks.size() - 1);
+					System.out.println(progress);
+				}
+				@Override
+				protected void done() {
+					record.initialize(controller.getGrid(),controller.getPopulation());
+					initializing = false;
+					postinitialize(record);
+					dialog.removeProgressUI();
+				}
+
+			};
+			worker.execute();
+		}else {
+			postinitialize(record);
 		}
+	}
+
+	private void postinitialize(SaveRecord record) {
 		recenter(record.getPos(),true);
 		mouseover = getSelectedGridPoint();
 		//frame.pack();
@@ -197,7 +225,6 @@ public class MapPanel  extends JPanel{
 	@Override
 	public void paintComponent(Graphics g){
 		time = System.currentTimeMillis();
-		this.dialog = new ProgressBarDialog(frame);
 		Graphics2D g2 = (Graphics2D) g;
 		int step = getStep();
 		int displayScale = getDisplayScale();
@@ -257,7 +284,6 @@ public class MapPanel  extends JPanel{
 			@Override
 			protected void done() {
 				frame.repaint();
-				frame.setVisible(true);
 			}
 
 		};
@@ -316,7 +342,6 @@ public class MapPanel  extends JPanel{
 			logger.log("Drawing hexes: ");
 			dialog.createProgressUI("Drawing hexes: ");
 		}
-		int errorcount = 0;
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				if(!controller.getGrid().isWater(i,j)) {
@@ -327,21 +352,12 @@ public class MapPanel  extends JPanel{
 					if(cached!=null) {
 						color1 = cached.key1;
 						color2 = cached.key2;
-					}else {
-						errorcount++;
-						System.out.println("uncached color:"+Util.normalizePos(p, record.getZero())+" "+errorcount);
-						color1 = getColor1(i,j,displayData);
-						color2 = getColor2(i,j,displayData);
-						if(color1==null) {
-							color1 = color2;
-							color2 = null;
+						this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
+						if(borderColor!=null) {
+							g2.setColor(borderColor);
+							Character c = controller.getBiomes().getBiome(i, j).getCh();
+							if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
 						}
-					}
-					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
-					if(borderColor!=null) {
-						g2.setColor(borderColor);
-						Character c = controller.getBiomes().getBiome(i, j).getCh();
-						if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
 					}
 				}
 			}
@@ -507,13 +523,13 @@ public class MapPanel  extends JPanel{
 			if(printLoadingInfo) counter.increment();
 		}
 		if(printLoadingInfo) logger.logln("--(100%) Rivers loaded "+(System.currentTimeMillis()-time)+" ms");
-		dialog.removeProgressUI();
 		if(initializing) {
 			dialog.createProgressUI("Initializing: ");
 			logger.log("Initializing "+(sum*loadingFactor)+" ~100 seconds: ");
 			counter.resetCounter();
 		}
 		if(printLoadingInfo) {
+			dialog.removeProgressUI();
 			counter.resetCounter();
 			dialog.createProgressUI("Loading lakes: ");
 			logger.log("Loading lakes "+(sum*loadingFactor)+" ~10000ms: ");
@@ -531,6 +547,7 @@ public class MapPanel  extends JPanel{
 
 		counter.resetCounter();
 		if(printLoadingInfo) {
+			dialog.removeProgressUI();
 			dialog.createProgressUI("Loading river volume: ");
 			logger.log("Loading river volume "+(sum*loadingFactor)+" ~60000ms: ");
 		}
@@ -547,9 +564,9 @@ public class MapPanel  extends JPanel{
 			}
 			if(printLoadingInfo||initializing) counter.increment();
 		}
-		dialog.removeProgressUI();
 		if(printLoadingInfo) logger.logln("--(100%) Volumes loaded "+(System.currentTimeMillis()-time)+" ms");
 		if(initializing) logger.logln("--(100%) Initialized "+(System.currentTimeMillis()-time)+" ms");
+		dialog.removeProgressUI();
 	}
 	private void drawRivers(Graphics2D g2, int step, int displayScale, Color borderColor) {
 		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
@@ -849,7 +866,7 @@ public class MapPanel  extends JPanel{
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			Point gridPoint = MapPanel.this.getGridPoint(e.getX(),e.getY());
-			if(!mouseoverHold&&!MapPanel.this.mouseover.equals(gridPoint)){
+			if(mouseover!=null&&!mouseoverHold&&!MapPanel.this.mouseover.equals(gridPoint)){
 				mouseover = gridPoint;
 				if(showDistance) {
 					Point center = MapPanel.this.getSelectedGridPoint();

@@ -212,33 +212,33 @@ public class MenuBar extends JMenuBar {
 		
 //		dataFieldsPanel.add(new JLabel("show rivers:"));
 		wBox = new JCheckBox();
+		wBox.setSelected(true);
 		wBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowRivers(wBox.isSelected());
 			}
 		});
 //		dataFieldsPanel.add(wBox);
-		wBox.setSelected(true);
 		
 //		dataFieldsPanel.add(new JLabel("show towns:"));
 		cBox = new JCheckBox();
+		cBox.setSelected(true);
 		cBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowCities(cBox.isSelected());
 			}
 		});
 //		dataFieldsPanel.add(cBox);
-		cBox.setSelected(true);
 		
 		dataFieldsPanel.add(new JLabel("mouseover:"));
 		dBox = new JCheckBox();
+		dBox.setSelected(false);
 		dBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowDistance(dBox.isSelected());
 			}
 		});
 		dataFieldsPanel.add(dBox);
-		dBox.setSelected(false);
 		
 		dataFieldsPanel.add(new JLabel("highlight region:"));
 		regionMenu = new JComboBox<HexData>(HexData.getRegionTypes());

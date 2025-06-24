@@ -155,6 +155,7 @@ public class BiomeModel extends DataModel {
 		if(flowVolume>25) biomes.add( BiomeType.DELTA);
 		if(flowVolume>64) biomes.add( BiomeType.DELTA);
 		if(flowVolume>100) biomes.add( BiomeType.DELTA);
+		if(flowVolume>144) return biomes;
 		if(cliffs) biomes.add(BiomeType.CLIFFS);
 		biomes.add(BiomeType.BEACH);
 		if(humidity>TROPICS_HUMIDITY) {

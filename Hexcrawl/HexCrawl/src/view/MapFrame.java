@@ -24,9 +24,12 @@ public class MapFrame extends JFrame{
 	private AppData data;
 	private SaveRecord record;
 	private InfoPanel info;
+	private boolean isInitialized;
+	private MapPanel panel;
 
 	public MapFrame() throws SecurityException, IOException {
 		super("Reed's Hexcrawl Generator "+VERSION);
+		isInitialized=false;
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
@@ -62,22 +65,26 @@ public class MapFrame extends JFrame{
 			record.setSaveLocation(record.getDefaultSaveFile());
 		}
 		this.load(record);
-
 	}
 
 	public void load(SaveRecord record) {
 		getContentPane().removeAll();
 		this.record=record;
-		MapPanel panel = new MapPanel(this,record);
+		panel = new MapPanel(this,record);
 		info = new InfoPanel(panel);
 		this.add(panel,BorderLayout.CENTER);
 		this.add(info,BorderLayout.EAST);
 		MenuBar bar = new MenuBar(panel,this);
 		this.add(bar,BorderLayout.NORTH);
-		this.pack();
-		this.setLocationRelativeTo(null);
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
-		panel.preprocessThenRepaint();
+		if(!isInitialized) {
+			this.setLocationRelativeTo(null);
+			this.setExtendedState(Frame.MAXIMIZED_BOTH);
+			this.setVisible(true);
+			isInitialized = true;
+		}else {
+			this.setVisible(true);
+		}
+		panel.initialize();
 	}
 
 	public AppData getAppData() {
@@ -85,7 +92,7 @@ public class MapFrame extends JFrame{
 	}
 	
 
-	public static void main(String[] args) throws SecurityException, IOException{
+	public static void main(String[] args) throws SecurityException, IOException, InterruptedException{
 		Logger logger = Logger.getLogger("HexCrawlGenerator");
 		File file = new File(System.getenv("APPDATA")+"/ReedsHexcrawl/logs/");
 		file.mkdirs();
@@ -101,6 +108,7 @@ public class MapFrame extends JFrame{
 			e.printStackTrace();
 			logger.log(Level.SEVERE,e.toString(),e);
 		}
+        Thread.sleep(5000);
 	}
 
 

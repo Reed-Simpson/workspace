@@ -294,7 +294,12 @@ public class PrecipitationModel extends DataModel{
 
 	public float getLakeFlow(Point p) {
 		int lakeSize = lakes.get(p);
-		float flow = volumeCache.get(getOutlet(p));
+		Point outlet = getOutlet(p);
+		Float flow = volumeCache.get(outlet);
+		if(flow==null) {
+			System.err.println("cache not populated: "+Util.posString(outlet, record.getZero()));
+			flow = getFlowVolume(outlet);
+		}
 		return flow/lakeSize;
 	}
 	public boolean isOutlet(Point p) {

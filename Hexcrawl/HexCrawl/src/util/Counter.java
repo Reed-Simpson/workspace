@@ -31,7 +31,6 @@ public class Counter {
 		this.counter++;
 		if(bar!=null) {
 			bar.setValue((int) (counter*bar.getMaximum()/counterMax));
-			//bar.repaint();
 		}
 		if(counter>=counterThresh*counterThreshcount) {
 			String s = "("+(counter*100/counterMax)+"%)";
@@ -48,6 +47,9 @@ public class Counter {
 		this.counterThresh = ((double)counterMax)/messageCount;
 		this.counterThreshcount = 1;
 		if(this.logger!=null) logger.reset();
+		if(bar!=null) {
+			bar.setValue(0);
+		}
 	}
 	public void resetCounter(long max) {
 		resetCounter(max,20);

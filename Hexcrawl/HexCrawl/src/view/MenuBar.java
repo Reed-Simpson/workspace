@@ -285,7 +285,7 @@ public class MenuBar extends JMenuBar {
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paintComponent(Graphics g) {
 		SaveRecord record = panel.getRecord();
 		if(panel.isShowDistance()) {
 			distance.setText("Distance: "+distanceString());
@@ -299,7 +299,6 @@ public class MenuBar extends JMenuBar {
 		dataMenu.setSelectedItem(panel.getDisplayData());
 		nextButton.setEnabled(panel.hasNext());
 		prevButton.setEnabled(panel.hasPrevious());
-		super.paint(g);
 	}
 
 	public String scaleString() {

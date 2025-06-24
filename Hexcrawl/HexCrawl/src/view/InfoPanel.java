@@ -479,7 +479,7 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	@Override
-	public void paint(Graphics g){
+	public void paintComponent(Graphics g){
 		changeSelected = false;
 		Point pos;
 		if(panel.isShowDistance()) pos = panel.getMouseoverGridPoint();
@@ -663,7 +663,6 @@ public class InfoPanel extends JTabbedPane{
 		}
 
 		hexNote1.doPaint();
-		super.paint(g);
 		changeSelected = true;
 	}
 

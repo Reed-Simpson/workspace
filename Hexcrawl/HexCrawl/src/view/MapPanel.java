@@ -262,8 +262,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void calculateHexColors() {
-		Point p1 = getGridPoint(-80,this.getHeight()+120);
-		Point p2 = getGridPoint(this.getWidth()+80,-80);
+		Point p1 = getGridPoint(-20,this.getHeight()+60);
+		Point p2 = getGridPoint(this.getWidth()+20,-20);
 		int sum = (p2.x-p1.x);
 		int step = getStep();
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -271,7 +271,7 @@ public class MapPanel  extends JPanel{
 		counter.setLog(logger);
 		if(printLoadingInfo) {
 			logger.log("Loading colors: ");
-			dialog.createProgressUI("Loading colors: ");
+			dialog.createProgressUI("Loading view data: ");
 		}
 		HashMap<Point,Pair<Color,Color>> newCache = new HashMap<Point,Pair<Color,Color>>();
 		for(int i=p1.x;i<p2.x;i+=step) {
@@ -492,7 +492,7 @@ public class MapPanel  extends JPanel{
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
 		if(printLoadingInfo) {
-			dialog.createProgressUI("Loading rivers "+(sum*loadingFactor)+" ~300ms: ");
+			dialog.createProgressUI("Loading rivers: ");
 			logger.log("Loading rivers "+(sum*loadingFactor)+" ~300ms: ");
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
@@ -506,13 +506,13 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo) logger.logln("--(100%) Rivers loaded "+(System.currentTimeMillis()-time)+" ms");
 
 		if(initializing) {
-			dialog.createProgressUI("Initializing ~2 minutes: ");
+			dialog.createProgressUI("Initializing: ");
 			logger.log("Initializing "+(sum*loadingFactor)+" ~100 seconds: ");
 			counter.resetCounter();
 		}
 		if(printLoadingInfo) {
 			counter.resetCounter();
-			dialog.createProgressUI("Loading lakes ~10 s: ");
+			dialog.createProgressUI("Loading lakes: ");
 			logger.log("Loading lakes "+(sum*loadingFactor)+" ~10000ms: ");
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
@@ -528,7 +528,7 @@ public class MapPanel  extends JPanel{
 
 		counter.resetCounter();
 		if(printLoadingInfo) {
-			dialog.createProgressUI("Loading river volume ~1 minute: ");
+			dialog.createProgressUI("Loading river volume: ");
 			logger.log("Loading river volume "+(sum*loadingFactor)+" ~60000ms: ");
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {

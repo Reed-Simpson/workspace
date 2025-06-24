@@ -169,7 +169,7 @@ public class MenuBar extends JMenuBar {
 				if(!c.equals(actualPos)||scale!=panel.getScale()) {
 					panel.setScale(scale);
 					panel.recenter(actualPos,true);
-					panel.repaint();
+					panel.preprocessThenRepaint();
 					sLabel.repaint();
 				}
 			}
@@ -200,7 +200,7 @@ public class MenuBar extends JMenuBar {
 				if(!dataMenu.getSelectedItem().equals(selectedData)) {
 					selectedData = (HexData) dataMenu.getSelectedItem();
 					panel.setDisplayData(selectedData);
-					panel.repaint();
+					panel.preprocessThenRepaint();
 				}
 			}
 		});
@@ -246,7 +246,7 @@ public class MenuBar extends JMenuBar {
 				if(!regionMenu.getSelectedItem().equals(selectedRegion)) {
 					selectedRegion = (HexData) regionMenu.getSelectedItem();
 					panel.setDisplayRegion(selectedRegion);
-					panel.repaint();
+					panel.preprocessThenRepaint();
 				}
 			}
 		});

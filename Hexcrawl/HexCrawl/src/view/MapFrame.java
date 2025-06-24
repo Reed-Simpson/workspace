@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import io.AppData;
 import io.SaveRecord;
@@ -23,6 +22,7 @@ public class MapFrame extends JFrame{
 	private static final long serialVersionUID = 843200012193641481L;
 	private AppData data;
 	private SaveRecord record;
+	private InfoPanel info;
 
 	public MapFrame() throws SecurityException, IOException {
 		super("Reed's Hexcrawl Generator v0.1");
@@ -67,24 +67,21 @@ public class MapFrame extends JFrame{
 	public void load(SaveRecord record) {
 		this.record=record;
 		MapPanel panel = new MapPanel(this,record);
-		InfoPanel info = new InfoPanel(panel);
-		RegionPanel region = new RegionPanel();
-		JTabbedPane tabs = new JTabbedPane();
-		tabs.add("Info Panel",info);
-		tabs.add("Region Panel",region);
+		info = new InfoPanel(panel);
 		this.add(panel,BorderLayout.CENTER);
 		this.add(info,BorderLayout.EAST);
 		MenuBar bar = new MenuBar(panel);
 		this.add(bar,BorderLayout.NORTH);
 		this.pack();
-		this.setVisible(true);
 		this.setLocationRelativeTo(null);
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
+		panel.preprocessThenRepaint();
 	}
 
 	public AppData getAppData() {
 		return this.data;
 	}
+	
 
 	public static void main(String[] args) throws SecurityException, IOException{
 		Logger logger = Logger.getLogger("HexCrawlGenerator");

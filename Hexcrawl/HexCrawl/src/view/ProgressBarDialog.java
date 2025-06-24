@@ -19,7 +19,7 @@ public class ProgressBarDialog extends JDialog {
 		progressBar.setStringPainted(true);
         this.motherFrame = frame;
         
-        //setUndecorated(true);
+        setUndecorated(true);
         add(label, BorderLayout.NORTH);
         add(progressBar, BorderLayout.CENTER);
         setSize(1000, 800);

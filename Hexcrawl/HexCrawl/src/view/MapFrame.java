@@ -77,6 +77,7 @@ public class MapFrame extends JFrame{
 		MenuBar bar = new MenuBar(panel,this);
 		this.add(bar,BorderLayout.NORTH);
 		if(!isInitialized) {
+			this.pack();
 			this.setLocationRelativeTo(null);
 			this.setExtendedState(Frame.MAXIMIZED_BOTH);
 			this.setVisible(true);

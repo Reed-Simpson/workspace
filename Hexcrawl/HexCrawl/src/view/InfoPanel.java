@@ -121,6 +121,7 @@ public class InfoPanel extends JTabbedPane{
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+		this.setPreferredSize(new Dimension(INFOPANELWIDTH,800));
 		this.setMaximumSize(new Dimension(INFOPANELWIDTH,99999));
 
 		createHexTab(panel);

@@ -2,11 +2,14 @@ package view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Stroke;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -74,9 +77,15 @@ public class MapPanel  extends JPanel{
 		this.addMouseMotionListener(new MouseMotionAdapter());
 		this.addMouseWheelListener(new MouseWheelAdapter());
 		this.setDisplayData(HexData.ALTITUDE);
-		//this.setPreferredSize(new Dimension(1000, 1000));
+		this.setPreferredSize(new Dimension(800, 800));
 		this.printLoadingInfo = true;
 		previousIndex = 0;
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+            	preprocessThenRepaint();
+            }
+        });
 		this.reloadFromSaveRecord(record);
 		
 	}

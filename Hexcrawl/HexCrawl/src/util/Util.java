@@ -29,6 +29,7 @@ public class Util {
 	private static double SCALAR_1 = 0.001; // continent scale
 	private static double SCALAR_2 = 0.01; // national scale
 	private static double SCALAR_3 = 0.1; // city scale
+	private static double SCALAR_4 = 1; // micro scale
 	private static final int SEED_OFFSET_FACTOR = 1000;
 
 	public static double getSScale() {
@@ -42,6 +43,9 @@ public class Util {
 	}
 	public static double getLScale() {
 		return SCALAR_3;
+	}
+	public static double getMScale() {
+		return SCALAR_4;
 	}
 	public static int getOffsetX() {
 		return SEED_OFFSET_FACTOR;
@@ -124,7 +128,7 @@ public class Util {
 		Point displayPos = normalizePos(p, zero);
 		return getIndexString(obj, "town", 1, displayPos);
 	}
-	
+
 	public static String formatTableResultPOS(String result,Indexible obj) {
 		return formatTableResultPOS(result, obj, null,null);
 	}
@@ -158,7 +162,8 @@ public class Util {
 		return result;
 	}
 
-	public static String formatTableResult(String result,Indexible obj) {
+	public static String formatTableResult(String string,Indexible obj) {
+		String result = string;
 		if(result.contains("${fancy color}")) result = Util.replace(result,"${fancy color}",GenericTables.getFancyColor(obj));
 		if(result.contains("${basic color}")) result = Util.replace(result,"${basic color}",GenericTables.getBasicColor(obj));
 		if(result.contains("${color}")) result = Util.replace(result,"${color}",GenericTables.getColor(obj));
@@ -258,12 +263,16 @@ public class Util {
 
 		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
 
-		String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index"};
-		for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
-		if(result.contains("${")) {
-			throw new IllegalStateException("Unable to process tag: "+result);
+		if(!result.equals(string)) {
+			result = formatTableResult(result, obj);
+		}else {
+			String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index"};
+			for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
+			if(result.contains("${")) {
+				throw new IllegalStateException("Unable to process tag: "+result);
+			}
+			for(String s:encode) {if(result.contains(RANDOMSTRING+s)) result = Util.replace(result,RANDOMSTRING+s,"${"+s+"}");}//decode
 		}
-		for(String s:encode) {if(result.contains(RANDOMSTRING+s)) result = Util.replace(result,RANDOMSTRING+s,"${"+s+"}");}//decode
 		return result;
 	}
 
@@ -331,7 +340,7 @@ public class Util {
 			return result;
 		}
 	}
-	
+
 	public static String pad(String s,int width) {
 		if(width<s.length()) return s;
 		if(s.length()%2!=width%2) s+=" ";

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
+import data.AStarGraph;
 import data.DataModel;
 import data.Graph;
 import data.Indexible;
@@ -309,7 +310,7 @@ public class BiomeModel extends DataModel {
 	public HashSet<Point> getRegion(Point p) {
 		HashSet<Point> group = new HashSet<Point>();
 		if(precipitation.isLake(p)) {
-			Graph<Point> lake = new Graph<Point>();
+			AStarGraph lake = new AStarGraph();
 			precipitation.findLakeBorders(new HashSet<Point>(), lake, p);
 			group.addAll(lake);
 		}else {

@@ -80,14 +80,14 @@ public class MapPanel  extends JPanel{
 		this.setPreferredSize(new Dimension(800, 800));
 		this.printLoadingInfo = true;
 		previousIndex = 0;
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-            	preprocessThenRepaint();
-            }
-        });
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				preprocessThenRepaint();
+			}
+		});
 		this.reloadFromSaveRecord(record);
-		
+
 	}
 
 	public void reloadFromSaveRecord(SaveRecord record) {
@@ -514,12 +514,16 @@ public class MapPanel  extends JPanel{
 		Point p2 = getGridPoint(this.getWidth()+40,-40);
 		p1.translate(-100, 100);
 		p2.translate(100, -100);
+		time = System.currentTimeMillis();
 		int sum = (p2.x-p1.x);
 		int loadingFactor = (p1.y-p2.y);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
-		if(printLoadingInfo) {
+		if(initializing) {
+			dialog.createProgressUI("Initializing rivers: ");
+			logger.log("Initializing rivers "+(sum*loadingFactor)+" ~300ms: ");
+		}else if(printLoadingInfo) {
 			dialog.createProgressUI("Loading rivers: ");
 			logger.log("Loading rivers "+(sum*loadingFactor)+" ~300ms: ");
 		}
@@ -529,15 +533,16 @@ public class MapPanel  extends JPanel{
 					controller.getPrecipitation().getFlow(new Point(i,j));
 				}
 			}
-			if(printLoadingInfo) counter.increment();
+			if(printLoadingInfo||initializing) counter.increment();
 		}
-		if(printLoadingInfo) logger.logln("--(100%) Rivers loaded "+(System.currentTimeMillis()-time)+" ms");
 		if(initializing) {
-			dialog.createProgressUI("Initializing: ");
-			logger.log("Initializing "+(sum*loadingFactor)+" ~100 seconds: ");
+			dialog.removeProgressUI();
+			dialog.createProgressUI("Initializing lakes: ");
+			logger.log("Initializing lakes "+(sum*loadingFactor)+" ~100 seconds: ");
 			counter.resetCounter();
-		}
-		if(printLoadingInfo) {
+		}else if(printLoadingInfo) {
+			logger.logln("--(100%) Rivers loaded "+(System.currentTimeMillis()-time)+" ms");
+			time = System.currentTimeMillis();
 			dialog.removeProgressUI();
 			counter.resetCounter();
 			dialog.createProgressUI("Loading lakes: ");
@@ -550,12 +555,17 @@ public class MapPanel  extends JPanel{
 					controller.getPrecipitation().generateLake(p);
 				}
 			}
-			if(printLoadingInfo) counter.increment();
+			if(printLoadingInfo||initializing) counter.increment();
 		}
-		if(printLoadingInfo) logger.logln("--(100%) Lakes loaded "+(System.currentTimeMillis()-time)+" ms");
 
 		counter.resetCounter();
-		if(printLoadingInfo) {
+		if(initializing) {
+			dialog.removeProgressUI();
+			dialog.createProgressUI("Initializing river volume: ");
+			logger.log("Initializing river volume "+(sum*loadingFactor)+" ~60000ms: ");
+		}else if(printLoadingInfo) {
+			logger.logln("--(100%) Lakes loaded "+(System.currentTimeMillis()-time)+" ms");
+			time = System.currentTimeMillis();
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Loading river volume: ");
 			logger.log("Loading river volume "+(sum*loadingFactor)+" ~60000ms: ");
@@ -564,11 +574,7 @@ public class MapPanel  extends JPanel{
 			for(int j=p2.y;j<p1.y;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
-					controller.getPrecipitation().updateFlowVolume(new Point(i,j), 0, 0);
-					//					UpdateFlowVolumeThread thread = precipitation.getThread(new Point(i,j));
-					//					thread.run();
-					controller.getPrecipitation().getRiver(p);
-					controller.getPrecipitation().getFlowVolume(p);
+					controller.getPrecipitation().updateFlowVolume(p);
 				}
 			}
 			if(printLoadingInfo||initializing) counter.increment();

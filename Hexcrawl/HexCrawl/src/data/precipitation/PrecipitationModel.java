@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import data.AStarGraph;
 import data.DataModel;
 import data.Graph;
 import data.OpenSimplex2S;
@@ -39,6 +40,8 @@ public class PrecipitationModel extends DataModel{
 	private ConcurrentHashMap<Point,Float> volumeCache;
 	private ConcurrentHashMap<Point,Integer> lakes;
 	private ConcurrentHashMap<Point,Point> outletCache;
+	private long time;
+	private long interval = 1000;
 
 	public PrecipitationModel(SaveRecord record, AltitudeModel grid) {
 		super(record);
@@ -138,7 +141,7 @@ public class PrecipitationModel extends DataModel{
 					alt=alt1;
 				}
 			}
-			if(index%2==0&&!isFlowingInto(result2,p)) {//chance of fudge is 1 in 2
+			if(index%4==0&&!isFlowingInto(result2,p)) {//chance of fudge is 1 in 2
 				result = result2;
 			}
 			flowCache.put(p, result);
@@ -147,16 +150,20 @@ public class PrecipitationModel extends DataModel{
 		return flowCache.get(p);
 	}
 
-	public Point getFlow(int i, int j) {
-		return getFlow(new Point(i,j));
-	}
-
 	public Point getRiver(Point p) {
 		if(grid.isWater(p)) return p;
 		else return riverCache.get(p);
 	}
 
+	public void updateFlowVolume(Point p) {
+		this.time = System.currentTimeMillis();
+		updateFlowVolume(p,0,0);
+	}
 	public void updateFlowVolume(Point p, float volume,int depth) {
+		if(System.currentTimeMillis()>time+interval) {
+			System.out.println("updateFlowVolume "+(System.currentTimeMillis()-time));
+			time=System.currentTimeMillis();
+		}
 		if(grid.isWater(p)) return;
 		float precipitation = 0;
 		if(volumeCache.putIfAbsent(p, getPrecipitation(p))==null) {
@@ -177,7 +184,7 @@ public class PrecipitationModel extends DataModel{
 
 	public Point generateLake(Point p) {
 		getFlow(p);
-		Graph<Point> lake = new Graph<Point>();
+		AStarGraph lake = new AStarGraph();
 		HashSet<Point> lakeBorder = new HashSet<Point>();
 		Point outlet = p;
 		Point drain = p;
@@ -202,12 +209,20 @@ public class PrecipitationModel extends DataModel{
 				}
 			}
 			altitude = Float.MAX_VALUE;
+			if(System.currentTimeMillis()>time+interval) {
+				System.out.println("generateLake 1 "+(System.currentTimeMillis()-time));
+				time=System.currentTimeMillis();
+			}
 		}
 		for(Point l:lake) {
 			HashSet<Point> cache = new HashSet<Point>();
 			updateFlowPath(l,outlet,lake,cache);
 			outletCache.put(l, outlet);
 			lakes.put(l,lake.size());
+			if(System.currentTimeMillis()>time+interval) {
+				System.out.println("generateLake 2 "+(System.currentTimeMillis()-time));
+				time=System.currentTimeMillis();
+			}
 		}
 		if(!isFlowingInto(drain, outlet)) {
 			riverCache.put(outlet, drain);
@@ -217,26 +232,27 @@ public class PrecipitationModel extends DataModel{
 		}
 		return outlet;
 	}
-	private void addEdges(Graph<Point> lake, Point outlet) {
+	private void addEdges(AStarGraph lake, Point outlet) {
 		for(Point p:Util.getAdjacentPoints(outlet)) {
 			if(lake.contains(p)) {
 				addEdge(lake, outlet, p);
 			}
 		}
 	}
-	private void addEdge(Graph<Point> lake, Point p1,Point p2) {
+	private void addEdge(AStarGraph lake, Point p1,Point p2) {
 		lake.addEdge(p1, p2, getEdgeWeight(p1,p2));
 		lake.addEdge(p2, p1, getEdgeWeight(p2,p1));
 	}
 	private int getEdgeWeight(Point p1,Point p2) {
-		float alt = 1+grid.getHeight(p2)-grid.getHeight(p1);
-		if(alt>1) alt+=20;
-		return ((int) alt*1000);
+		float alt = grid.getHeight(p2)-grid.getHeight(p1);
+		if(alt>0) return 40+(int)(alt*20);
+		else return 20+(int)(alt*10);
 	}
 
-	private void updateFlowPath(Point l, Point outlet,Graph<Point> lake,HashSet<Point> cache) {
+	private void updateFlowPath(Point l, Point outlet,AStarGraph lake,HashSet<Point> cache) {
 		if(!cache.contains(l)) {
-			LinkedList<Point> path = lake.shortestPath(l, outlet);
+			LinkedList<Point> path = new LinkedList<Point>();
+			lake.shortestPath(l, outlet,path);
 			Iterator<Point> iterator = path.iterator();
 			Point p = iterator.next();
 			Point next;
@@ -247,10 +263,14 @@ public class PrecipitationModel extends DataModel{
 				if(!cache.add(p)) break;
 				p = next;
 			}
+			if(System.currentTimeMillis()>time+interval) {
+				System.out.println("updateFlowPath "+(System.currentTimeMillis()-time));
+				time=System.currentTimeMillis();
+			}
 		}
 	}
 
-	public Point findLakeBorders(Set<Point> lakeBorder,Graph<Point> lake,Point newLake) {
+	public Point findLakeBorders(Set<Point> lakeBorder,AStarGraph lake,Point newLake) {
 		Point result = null;
 		for(Point p1:Util.getNearbyPoints(newLake,1)) {
 			if(!lakeBorder.contains(p1)&&!lake.contains(p1)) {
@@ -266,7 +286,7 @@ public class PrecipitationModel extends DataModel{
 		}
 		return result;
 	}
-	private Point checkDrainage(Point p,Graph<Point> lake) {
+	private Point checkDrainage(Point p,AStarGraph lake) {
 		Point result = p;
 		for(Point p1:Util.getNearbyPoints(p,LAKEFLOWDISTANCE)) {
 			if(!lake.contains(p1)&&grid.getHeight(p1)<grid.getHeight(result)&&!isFlowingInto(p1, p)) {
@@ -310,6 +330,7 @@ public class PrecipitationModel extends DataModel{
 		else return getFlow(p);
 	}
 
+	@Deprecated
 	public class UpdateFlowVolumeThread implements Runnable {
 		Point p;
 
@@ -323,6 +344,7 @@ public class PrecipitationModel extends DataModel{
 		}
 	}
 
+	@Deprecated
 	@Override
 	public Float getDefaultValue(Point p, int i) {
 		return getPrecipitation(p);

@@ -1,4 +1,5 @@
 package graph;
+import java.awt.Point;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,13 +22,13 @@ import java.util.Set;
  * <p>The parameter type K is used as the key for each vertex.  The behavior of the class is
  * undefined if K is mutable and is modified.  
  *
- * @author Reed Simpson.  Based on work by Reed Simpson and Tim Snyder.  
+ * @author Reed Simpson.  
  *
- * @param <K> - Vertex key type.  The key type should be immutable.  The behavior of 
+ * @param <Point> - Vertex key type.  The key type should be immutable.  The behavior of 
  * the graph is undefined if K is mutable and is modified after being added to the graph.  
  */
-public class Graph<K> implements Set<K> {
-	protected HashMap<K,Vertex<K>> vertices = new LinkedHashMap<K,Vertex<K>>();
+public class AStarGraph implements Set<Point> {
+	protected HashMap<Point,Vertex> vertices = new LinkedHashMap<Point,Vertex>();
 	protected int numberEdges=0;
 
 	/**
@@ -37,11 +38,11 @@ public class Graph<K> implements Set<K> {
 	 * @return true if the key was successfully added to the graph, false otherwise. 
 	 */
 	@Override
-	public boolean add(K key){
+	public boolean add(Point key){
 		if(vertices.containsKey(key)) {
 			return false;
 		}else{
-			vertices.put(key, new Vertex<K>(key));
+			vertices.put(key, new Vertex(key));
 			return true;
 		}
 	}
@@ -51,7 +52,7 @@ public class Graph<K> implements Set<K> {
 	 * @return true if the key was successfully added to the graph, false otherwise. 
 	 */
 	@Deprecated
-	public boolean addVertex(K key){
+	public boolean addVertex(Point key){
 		return this.add(key);
 	}
 
@@ -62,12 +63,12 @@ public class Graph<K> implements Set<K> {
 	 * @param weight - The weight of the edge (must be non-negative).
 	 * @return true if the edge was successfully added to the graph, false otherwise. 
 	 */
-	public boolean addEdge(K key1, K key2, int weight){
+	public boolean addEdge(Point key1,Point key2, int weight){
 		if(weight<0){
 			throw new IllegalArgumentException("Edge weight must be non-negative");
 		}
-		Vertex<K> startpoint = vertices.get(key1);
-		Vertex<K> endpoint = vertices.get(key2);
+		Vertex startpoint = vertices.get(key1);
+		Vertex endpoint = vertices.get(key2);
 		if(startpoint==null||endpoint==null){
 			throw new IllegalArgumentException("key not found");
 		}
@@ -84,7 +85,7 @@ public class Graph<K> implements Set<K> {
 	 * @param key2 - The key of the vertex that the edge connects to.
 	 * @return true if the edge was successfully added to the graph, false otherwise. 
 	 */
-	public boolean addEdge(K key1, K key2){
+	public boolean addEdge(Point key1,Point key2){
 		return this.addEdge(key1, key2, 1);
 	}
 
@@ -94,9 +95,9 @@ public class Graph<K> implements Set<K> {
 	 * @param key2 - The key of the vertex that the edge connects to.  
 	 * @return The weight of the edge, or -1 if the edge does not exist.  
 	 */
-	public int getEdgeWeight(K key1, K key2) {
-		Vertex<K> v1 = vertices.get(key1);
-		Vertex<K> v2 = vertices.get(key2);
+	public int getEdgeWeight(Point key1,Point key2) {
+		Vertex v1 = vertices.get(key1);
+		Vertex v2 = vertices.get(key2);
 		return this.getEdgeWeight(v1, v2);
 	}
 	/*
@@ -107,7 +108,7 @@ public class Graph<K> implements Set<K> {
 	 * @param v2 - The vertex that the edge connects to.  
 	 * @return The weight of the edge, or -1 if the edge does not exist.  
 	 */
-	private int getEdgeWeight(Vertex<K> v1,Vertex<K> key2){
+	private int getEdgeWeight(Vertex v1,Vertex key2){
 		if(v1==null) return -1;
 		else return v1.getEdgeWeight(key2);
 	}
@@ -120,8 +121,8 @@ public class Graph<K> implements Set<K> {
 	 * @return The distance from start to finish along existing edges, or -1 if no path 
 	 * exists. 
 	 */
-	public int shortestDistance(K start, K finish){
-		HashMap<K,K> previous = new HashMap<K,K>();
+	public int shortestDistance(Point start, Point finish){
+		HashMap<Point,Point> previous = new HashMap<Point,Point>();
 		Integer distance = this.dijkstras(previous,start, finish);
 		if(distance==null) return -1;
 		else return distance;
@@ -134,17 +135,17 @@ public class Graph<K> implements Set<K> {
 	 * @return The path from start to finish along existing edges in the form of a 
 	 * LinkedList, or null if no path exists. 
 	 */
-	public LinkedList<K> shortestPath(K start, K finish){
-		HashMap<K,K> previous = new HashMap<K,K>();
+	public LinkedList<Point> shortestPath(Point start, Point finish){
+		HashMap<Point,Point> previous = new HashMap<Point,Point>();
 		this.dijkstras(previous,start, finish);
-		LinkedList<K> result = new LinkedList<K>();
+		LinkedList<Point> result = new LinkedList<Point>();
 		if(start.equals(finish)){
 			result.add(start);
 			return result;
 		}else if(previous.get(finish)==null){
 			return null;
 		}
-		K current = finish;
+		Point current = finish;
 		while(previous.get(current)!=null){
 			result.push(current);//adds the previous key to the beginning of the list
 			current = previous.get(current);
@@ -167,24 +168,24 @@ public class Graph<K> implements Set<K> {
 	 * @return A wrapper object for an integer representing the distance of the path, 
 	 * and a hashmap containing the information needed to reconstruct the path
 	 */
-	public Integer dijkstras(HashMap<K,K> previous,K start, K finish){
+	public Integer dijkstras(HashMap<Point,Point> previous,Point start, Point finish){
 		//this hashmap is used to reconstruct a correct path post algorithm
-		if(previous==null) previous = new HashMap<K,K>();
+		if(previous==null) previous = new HashMap<Point,Point>();
 		//this hashmap is used to compare different paths to find a shortest one
-		HashMap<K,Integer> distance = new HashMap<K,Integer>();
+		HashMap<Point,Integer> distance = new HashMap<Point,Integer>();
 
 		//the starting vertex is added to the hashmap.  
 		//null in this context indicates that this vertex is the beginning of the route
 		previous.put(start, null);
 		distance.put(start, 0);
 
-		LinkedList<Vertex<K>> list = new LinkedList<Vertex<K>>();
+		LinkedList<Vertex> list = new LinkedList<Vertex>();
 		list.add(vertices.get(start));
 		while(!list.isEmpty()){
-			Iterator<Vertex<K>> iterator = list.iterator();
-			Vertex<K> min = iterator.next();
+			Iterator<Vertex> iterator = list.iterator();
+			Vertex min = iterator.next();
 			while(iterator.hasNext()){
-				Vertex<K> v = iterator.next();
+				Vertex v = iterator.next();
 				Integer dist1 = distance.get(min.key);
 				Integer dist2 = distance.get(v.key);
 				if(dist2<dist1) min=v;
@@ -192,10 +193,10 @@ public class Graph<K> implements Set<K> {
 			//break out of the loop early if the target vertex is the lowest distance
 			if((min.key==null&&finish==null)||min.key.equals(finish)) break;
 			list.remove(min);
-			Set<Entry<Vertex<K>, Integer>> adj = min.getAdjacentVertices().entrySet();
-			for(Entry<Vertex<K>, Integer> entry:adj){
+			Set<Entry<Vertex, Integer>> adj = min.getAdjacentVertices().entrySet();
+			for(Entry<Vertex, Integer> entry:adj){
 				int newDist = distance.get(min.key)+entry.getValue();
-				K key = entry.getKey().key;
+				Point key = entry.getKey().key;
 				if(!distance.containsKey(key)){
 					previous.put(key, min.key);
 					distance.put(key, newDist);
@@ -210,7 +211,7 @@ public class Graph<K> implements Set<K> {
 	}
 	
 
-	public Integer dijkstras(K start, K finish){
+	public Integer dijkstras(Point start, Point finish){
 		return dijkstras(null, start, finish);
 	}
 
@@ -247,13 +248,13 @@ public class Graph<K> implements Set<K> {
 	 * @return The sum total of the weights of all the edges in the path, or -1 if any 
 	 * two adjoining vertices do not have an edge.  
 	 */
-	public int pathWeight(List<K> path){
+	public int pathWeight(List<Point> path){
 		if(path==null) return -1;
 		int result = 0;
-		Iterator<K> iterator = path.iterator();
-		Vertex<K> prev = vertices.get(iterator.next());
+		Iterator<Point> iterator = path.iterator();
+		Vertex prev = vertices.get(iterator.next());
 		while(iterator.hasNext()){
-			Vertex<K> next = vertices.get(iterator.next());
+			Vertex next = vertices.get(iterator.next());
 			int weight = prev.getEdgeWeight(next);
 			if(weight==-1) return -1;
 			else result+=weight;
@@ -274,12 +275,12 @@ public class Graph<K> implements Set<K> {
 	@Override
 	public String toString(){
 		StringBuilder result = new StringBuilder();
-		for(Entry<K, Vertex<K>> e:vertices.entrySet()){
+		for(Entry<Point, Vertex> e:vertices.entrySet()){
 			if(e.getKey()==null) result.append("null");
 			else result.append(e.getKey().toString());
 			result.append(" - ");
-			Set<Entry<Vertex<K>, Integer>> adjacentvertices = e.getValue().getAdjacentVertices().entrySet();
-			for(Entry<Vertex<K>, Integer> adj:adjacentvertices){
+			Set<Entry<Vertex, Integer>> adjacentvertices = e.getValue().getAdjacentVertices().entrySet();
+			for(Entry<Vertex, Integer> adj:adjacentvertices){
 				result.append(adj.getKey().toString());
 				result.append("("+adj.getValue()+")");
 				result.append(", ");
@@ -292,9 +293,9 @@ public class Graph<K> implements Set<K> {
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends K> c) {
+	public boolean addAll(Collection<? extends Point> c) {
 		boolean result = false;
-		for(K key:c){
+		for(Point key:c){
 			if(this.add(key)) result=true;
 		}
 		return result;
@@ -320,13 +321,13 @@ public class Graph<K> implements Set<K> {
 	}
 
 	@Override
-	public Iterator<K> iterator() {
+	public Iterator<Point> iterator() {
 		return this.vertices.keySet().iterator();
 	}
 
 	@Override
 	public boolean remove(Object key) {
-		for(Vertex<K> v:this.vertices.values()){
+		for(Vertex v:this.vertices.values()){
 			if(v.removeEdge(key)){
 				this.numberEdges--;
 			};
@@ -365,27 +366,76 @@ public class Graph<K> implements Set<K> {
 	public <T> T[] toArray(T[] a) {
 		return this.vertices.keySet().toArray(a);
 	}
+	
+	public double dist(Point p1,Point p2) {
+		int dx = p2.x-p1.x;
+		int dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx+dy*dy);
+	}
+	
 
-	private static class Vertex<K>{
-		public final K key;
+	public Integer aStar(HashMap<Point,Point> previous,Point start, Point finish){
+		//this hashmap is used to reconstruct a correct path post algorithm
+		if(previous==null) previous = new HashMap<Point,Point>();
+		//this hashmap is used to compare different paths to find a shortest one
+		HashMap<Point,Integer> distance = new HashMap<Point,Integer>();
+
+		//the starting vertex is added to the hashmap.  
+		//null in this context indicates that this vertex is the beginning of the route
+		previous.put(start, null);
+		distance.put(start, 0);
+
+		LinkedList<Vertex> list = new LinkedList<Vertex>();
+		list.add(vertices.get(start));
+		while(!list.isEmpty()){
+			Iterator<Vertex> iterator = list.iterator();
+			Vertex min = iterator.next();
+			while(iterator.hasNext()){
+				Vertex v = iterator.next();
+				double dist1 = distance.get(min.key)+dist(min.key,finish);
+				double dist2 = distance.get(v.key)+dist(v.key,finish);
+				if(dist2<dist1) min=v;
+			}
+			//break out of the loop early if the target vertex is the lowest distance
+			if((min.key==null&&finish==null)||min.key.equals(finish)) break;
+			list.remove(min);
+			Set<Entry<Vertex, Integer>> adj = min.getAdjacentVertices().entrySet();
+			for(Entry<Vertex, Integer> entry:adj){
+				int newDist = distance.get(min.key)+entry.getValue();
+				Point key = entry.getKey().key;
+				if(!distance.containsKey(key)){
+					previous.put(key, min.key);
+					distance.put(key, newDist);
+					list.add(entry.getKey());
+				}else if(newDist<distance.get(key)){
+					previous.put(key, min.key);
+					distance.put(key, newDist);
+				}
+			}
+		}
+		return distance.get(finish);
+	}
+
+	private static class Vertex{
+		public final Point key;
 		private Integer hashCode;
-		private HashMap<Vertex<K>,Integer> adjacent;
+		private HashMap<Vertex,Integer> adjacent;
 
-		public Vertex(K key) {
+		public Vertex(Point key) {
 			this.key = key;
 			this.hashCode = null;
-			this.adjacent=new LinkedHashMap<Vertex<K>,Integer>();
+			this.adjacent=new LinkedHashMap<Vertex,Integer>();
 		}
 
-		public HashMap<Vertex<K>, Integer> getAdjacentVertices(){
+		public HashMap<Vertex, Integer> getAdjacentVertices(){
 			return adjacent;
 		}
 
-		public boolean addEdge(Vertex<K> endpoint, int weight){
+		public boolean addEdge(Vertex endpoint, int weight){
 			return adjacent.put(endpoint, weight)==null;
 		}
 
-		public int getEdgeWeight(Vertex<K> endpoint) {
+		public int getEdgeWeight(Vertex endpoint) {
 			Integer result = adjacent.get(endpoint);
 			if(result==null) return -1;
 			else return result;
@@ -408,8 +458,8 @@ public class Graph<K> implements Set<K> {
 		}
 		
 		public boolean equals(Object o){
-			if(o instanceof Graph.Vertex<?>){
-				Vertex<?> v = (Vertex<?>) o;
+			if(o instanceof AStarGraph.Vertex){
+				Vertex v = (Vertex) o;
 				return this.key.equals(v.key);
 			}else{
 				return false;

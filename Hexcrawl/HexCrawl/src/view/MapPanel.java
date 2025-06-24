@@ -429,13 +429,13 @@ public class MapPanel  extends JPanel{
 		Stroke defaultStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		Point p = this.getSelectedGridPoint();
-		Color color1 = getColor1(p.x,p.y,displayData);
-		Color color2 = getColor2(p.x,p.y,displayData);
-		if(color1==null) {
-			color1 = color2;
-			color2 = null;
-		}
-		this.drawHex(g2, getScreenPos(p),Color.CYAN,color1,color2,Math.max((int)scale,1),null);
+//		Color color1 = getColor1(p.x,p.y,displayData);
+//		Color color2 = getColor2(p.x,p.y,displayData);
+//		if(color1==null) {
+//			color1 = color2;
+//			color2 = null;
+//		}
+		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null);
 		g2.setStroke(defaultStroke);
 	}
 

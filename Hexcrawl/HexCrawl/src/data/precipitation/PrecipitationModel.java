@@ -129,7 +129,7 @@ public class PrecipitationModel extends DataModel{
 	public Point getFlow(Point p) {
 		if(grid.isWater(p)) return p;
 		if(flowCache.get(p)==null) {
-			long index = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+2), p.x, p.y));
+			int index = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+2), p.x, p.y));
 			float alt = grid.getHeight(p.x, p.y);
 			Point result = p;
 			Point result2 = p;
@@ -147,6 +147,12 @@ public class PrecipitationModel extends DataModel{
 			flowCache.put(p, result);
 		}
 		return flowCache.get(p);
+	}
+	
+	public Point getWiggleFactor(Point p) {
+		int x = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+3), p.x, p.y));
+		int y = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+4), p.x, p.y));
+		return new Point(x%199-99,y%199-99);
 	}
 
 	public Point getRiver(Point p) {

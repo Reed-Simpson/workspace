@@ -15,6 +15,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Path2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,15 +36,17 @@ import io.AppData;
 import io.SaveRecord;
 import util.Counter;
 import util.Pair;
+import util.Util;
 
 public class MapPanel  extends JPanel{
+	private static final double RIVER_STEP = 0.01;
 	private static final int WIDEVIEW = 5;
 	private static final long serialVersionUID = 6922738675563657970L;
 	private static final Color LINE_COLOR = Color.BLACK;
 	private static final double sqrt3 = Math.sqrt(3.0);
 	public static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 500;
-	private static final int HIDE_BORDERS_SCALE = 16;
+	private static final int HIDE_BORDERS_SCALE = 9;
 	private static final int LOG_THRESHOLD = 500;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
@@ -494,7 +498,7 @@ public class MapPanel  extends JPanel{
 				dialog.createProgressUI("Drawing symbols: ");
 			}
 
-			g2.setFont(g2.getFont().deriveFont(displayScale));
+//			g2.setFont(g2.getFont().(displayScale));
 			for(int i=p1.x;i<p2.x;i+=step) {
 				for(int j=p2.y;j<p1.y;j+=step) {
 					List<Icon> icons = iconCache.get(new Point(i,j));
@@ -554,6 +558,7 @@ public class MapPanel  extends JPanel{
 		g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/3);
 		g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+inset, this.getHeight()-corneroffset-height/2);
 		g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
+		g2.setFont(g2.getFont().deriveFont(12f));
 		String str = lineDist+" miles";
 		int stringwidth = g2.getFontMetrics().stringWidth(str);
 		g2.drawString(str, corneroffset+width-inset/2-stringwidth, this.getHeight()-corneroffset-height*2/3);
@@ -650,21 +655,76 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Drawing rivers: ");
 			logger.log("Drawing rivers: ");
 		}
+		Stroke defaultStroke = g2.getStroke();
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				if(!controller.getGrid().isWater(i,j)) {
-					Point p = new Point(i,j);
-					Point pr = controller.getPrecipitation().getRiver(p);
-					float volume = controller.getPrecipitation().getFlowVolume(p);
-					int width = (int) (Math.sqrt(volume)/15.0*displayScale);
-					if(width>displayScale) width = displayScale;
-					if(width>1) this.drawRiver(g2, getScreenPos(i,j), getScreenPos(pr), width);
+					drawCurvedRiver(g2, displayScale, i, j);
 				}
 			}
 			if(printLoadingInfo) counter.increment();
 		}
+		g2.setStroke(defaultStroke);
 		dialog.removeProgressUI();
 		if(printLoadingInfo) logger.logln("Rivers drawn "+(System.currentTimeMillis()-time)+" ms");
+	}
+
+	@SuppressWarnings("unused")
+	private void drawStraightRiver(Graphics2D g2, int displayScale, int i, int j) {
+		Point p = new Point(i,j);
+		Point pr = controller.getPrecipitation().getRiver(p);
+		float volume = controller.getPrecipitation().getFlowVolume(p);
+		float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
+		if(width>displayScale) width = displayScale;
+		if(width>2) {
+			Point p1 = wiggle(p);
+			Point p2 = wiggle(pr);
+			g2.setStroke(new BasicStroke(width));
+			g2.setColor(BiomeType.RIVER.getColor());
+			g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+		}
+	}
+
+	private void drawCurvedRiver(Graphics2D g2, int displayScale, int i, int j) {
+		Point p0 = new Point(i,j);
+		Point p1 = controller.getPrecipitation().getRiver(p0);
+		if(p1!=null) {
+			Point p2 = controller.getPrecipitation().getFlow(p1);
+			Point p3 = controller.getPrecipitation().getFlow(p2);
+			float volume = controller.getPrecipitation().getFlowVolume(p0);
+			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
+			if(width>displayScale) width = displayScale;
+			if(width>2) {
+				BasicSpline spline = new BasicSpline();
+				spline.addPoint(wiggle(p0));
+				spline.addPoint(wiggle(p1));
+				spline.addPoint(wiggle(p2));
+				spline.addPoint(wiggle(p3));
+				spline.calcSpline();
+
+				Point pointBefore = null;
+				for(float f = 0; f<=1f/3; f+=RIVER_STEP) {
+					Point p = spline.getPoint(f);
+					Point pnt = new Point(p.x, p.y);
+					g2.setColor(BiomeType.RIVER.getColor());
+					g2.fillOval(p.x-(int)width/2, p.y-(int)width/2, (int)width, (int)width);
+
+					if(pointBefore != null) {
+						g2.setColor(BiomeType.RIVER.getColor());
+						g2.setStroke(new BasicStroke(width));
+						g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
+					}
+
+					pointBefore = pnt;
+				}
+			}
+		}
+	}
+
+	private Point wiggle(Point p) {
+		Point wigglefactor = controller.getPrecipitation().getWiggleFactor(p);
+		Point hexCenter = getScreenPos(p);
+		return new Point((int)(hexCenter.x+wigglefactor.x*scale/200),(int)(hexCenter.y+wigglefactor.y*scale/200));
 	}
 
 	private void drawRegion(Graphics2D g2, int displayScale) {
@@ -780,14 +840,6 @@ public class MapPanel  extends JPanel{
 	}
 	public void drawHex(Graphics2D g2, Point p,Color borderColor,Color background,Color center,int scale,Color crosshatch) {
 		this.drawHex(g2, p.x, p.y,borderColor,background,center,scale,crosshatch);
-	}
-	public void drawRiver(Graphics2D g2, Point p1, Point p2, int width) {
-		Stroke defaultStroke = g2.getStroke();
-		g2.setStroke(new BasicStroke(width));
-		g2.setColor(BiomeType.RIVER.getColor());
-		g2.drawLine(p1.x, p1.y, p2.x, p2.y);
-		g2.setStroke(defaultStroke);
-
 	}
 	public void highlightTowns(Graphics2D g2, int step, int displayScale, Color borderColor) {
 		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);

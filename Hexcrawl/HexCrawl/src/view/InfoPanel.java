@@ -44,14 +44,6 @@ public class InfoPanel extends JTabbedPane{
 	private static final int TAB_TITLE_LENGTH = 34;
 	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
 	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
-	private static final int FAITH_TAB_INDEX = 2;
-	private static final int FACTION_TAB_INDEX = 1;
-	private static final int CITY_TAB_INDEX = 0;
-	private static final int DUNGEON_ENCOUNTER_TAB_INDEX = 4;
-	private static final int DUNGEON_TAB_INDEX = 3;
-	private static final int LOCATION_TAB_INDEX = 2;
-	private static final int NPC_TAB_INDEX = 1;
-	private static final int ENCOUNTER_TAB_INDEX = 0;
 	public static final int INFOPANELWIDTH = 450;
 	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
@@ -59,6 +51,15 @@ public class InfoPanel extends JTabbedPane{
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
+	
+	private int FAITH_TAB_INDEX;
+	private int FACTION_TAB_INDEX;
+	private int CITY_TAB_INDEX;
+	private int DUNGEON_ENCOUNTER_TAB_INDEX;
+	private int DUNGEON_TAB_INDEX;
+	private int LOCATION_TAB_INDEX;
+	private int NPC_TAB_INDEX;
+	private int ENCOUNTER_TAB_INDEX;
 	private MapPanel panel;
 
 	private JLabel biome;
@@ -75,7 +76,7 @@ public class InfoPanel extends JTabbedPane{
 	private MyTextPane city1;
 	private JScrollPane cityScrollPane;
 	private JScrollPane poiScrollPane;
-	private JScrollPane dungeonScrollPane;
+//	private JScrollPane dungeonScrollPane;
 	private MyTextPane hexNote1;
 	private JScrollPane hexNoteScrollPane;
 	public boolean expandHexNotePane;
@@ -85,9 +86,9 @@ public class InfoPanel extends JTabbedPane{
 	private JTabbedPane regionTabs;
 	private JTextField regionNameField;
 	private JLabel citySizeLabel;
-	private ArrayList<MyTextPane> encounterTexts;
+//	private ArrayList<MyTextPane> encounterTexts;
 	private ArrayList<MyTextPane> npcTexts;
-	private ArrayList<MyTextPane> dungeonTexts;
+//	private ArrayList<MyTextPane> dungeonTexts;
 	private ArrayList<MyTextPane> poiTexts;
 	private ArrayList<MyTextPane> dEntranceTexts;
 	private JScrollPane dEntranceScrollPane;
@@ -96,14 +97,14 @@ public class InfoPanel extends JTabbedPane{
 	int selectedNPC;
 	int selectedDungeon;
 	int selectedPOI;
-	int selectedDEncounter;
+//	int selectedDEncounter;
 	int selectedFaction;
-	int selectedEncounter;
+//	int selectedEncounter;
 	boolean changeSelected;
 
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
-	private JScrollPane encounterScrollPane;
+//	private JScrollPane encounterScrollPane;
 	private MyTextPane charactersEmpty;
 	private ArrayList<MyTextPane> charactersList;
 	private ArrayList<MyTextPane> threadsList;
@@ -147,21 +148,21 @@ public class InfoPanel extends JTabbedPane{
 
 		detailsTabs = new JTabbedPane();
 
-		//encounterPanel = new EncountersPanel(this);
-		JPanel encounterPanel = new JPanel();
-		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
-		encounterTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<ENCOUNTERCOUNT;i++) {
-			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
-			MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
-			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-			encounterPanel.add(encounteri);
-			encounterTexts.add(encounteri);
-		}
-		encounterScrollPane = new JScrollPane(encounterPanel);
-		encounterScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		encounterScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		detailsTabs.addTab("Encounters", encounterScrollPane);
+//		JPanel encounterPanel = new JPanel();
+//		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
+//		encounterTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<ENCOUNTERCOUNT;i++) {
+//			encounterPanel.add(new JLabel("~~~~~ Encounter #"+(i+1)+" ~~~~~"));
+//			MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
+//			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+//			encounterPanel.add(encounteri);
+//			encounterTexts.add(encounteri);
+//		}
+//		encounterScrollPane = new JScrollPane(encounterPanel);
+//		encounterScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		encounterScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//		detailsTabs.addTab("Encounters", encounterScrollPane);
+//		this.ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount();
 
 		JPanel npcPanel = new JPanel();
 		npcPanel.setLayout(new BoxLayout(npcPanel, BoxLayout.Y_AXIS));
@@ -176,6 +177,8 @@ public class InfoPanel extends JTabbedPane{
 		npcScrollPane = new JScrollPane(npcPanel);
 		npcScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("NPCs", npcScrollPane);
+		this.NPC_TAB_INDEX = detailsTabs.getTabCount()-1;
+		System.out.println("NPC Tab index: "+NPC_TAB_INDEX);
 
 
 		JPanel poiPanel = new JPanel();
@@ -196,6 +199,8 @@ public class InfoPanel extends JTabbedPane{
 		poiScrollPane = new JScrollPane(poiPanel);
 		poiScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("Locations", poiScrollPane);
+		this.LOCATION_TAB_INDEX = detailsTabs.getTabCount()-1;
+		System.out.println("locations Tab index: "+LOCATION_TAB_INDEX);
 
 		JPanel dEntrancePanel = new JPanel();
 		dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
@@ -210,20 +215,23 @@ public class InfoPanel extends JTabbedPane{
 		dEntranceScrollPane = new JScrollPane(dEntrancePanel);
 		dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("Dungeon", dEntranceScrollPane);
+		this.DUNGEON_TAB_INDEX = detailsTabs.getTabCount()-1;
+		System.out.println("dungeons Tab index: "+DUNGEON_TAB_INDEX);
 
-		JPanel dungeonPanel = new JPanel();
-		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
-		dungeonTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<ENCOUNTERCOUNT;i++) {
-			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
-			MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
-			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-			dungeonPanel.add(encounteri);
-			dungeonTexts.add(encounteri);
-		}
-		dungeonScrollPane = new JScrollPane(dungeonPanel);
-		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("D.Encounters", dungeonScrollPane);
+//		JPanel dungeonPanel = new JPanel();
+//		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
+//		dungeonTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<ENCOUNTERCOUNT;i++) {
+//			dungeonPanel.add(new JLabel("~~~~~ Dungeon Encounter #"+(i+1)+" ~~~~~"));
+//			MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
+//			encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+//			dungeonPanel.add(encounteri);
+//			dungeonTexts.add(encounteri);
+//		}
+//		dungeonScrollPane = new JScrollPane(dungeonPanel);
+//		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		detailsTabs.addTab("D.Encounters", dungeonScrollPane);
+//		this.DUNGEON_ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount();
 
 		JPanel hexNotePanel = new JPanel();
 		hexNotePanel.setLayout(new BorderLayout());
@@ -305,6 +313,8 @@ public class InfoPanel extends JTabbedPane{
 		city1 = new MyTextPane(this, -1, HexData.CITY);
 		cityScrollPane = new JScrollPane(city1);
 		regionTabs.addTab("Parent City", cityScrollPane);
+		this.CITY_TAB_INDEX = regionTabs.getTabCount()-1;
+		System.out.println("city Tab index: "+CITY_TAB_INDEX);
 
 		//Faction tab
 		JPanel factionPanel = new JPanel();
@@ -320,6 +330,8 @@ public class InfoPanel extends JTabbedPane{
 		factionScrollPane = new JScrollPane(factionPanel);
 		factionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Factions", factionScrollPane);
+		this.FACTION_TAB_INDEX = regionTabs.getTabCount()-1;
+		System.out.println("factions Tab index: "+FACTION_TAB_INDEX);
 		
 		//Faiths tab
 		JPanel faithsPanel = new JPanel();
@@ -335,6 +347,8 @@ public class InfoPanel extends JTabbedPane{
 		faithsScrollPane = new JScrollPane(faithsPanel);
 		faithsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Faiths", faithsScrollPane);
+		this.FAITH_TAB_INDEX = regionTabs.getTabCount()-1;
+		System.out.println("faiths Tab index: "+FAITH_TAB_INDEX);
 
 		
 		regionPanel.add(regionTabs);
@@ -466,9 +480,9 @@ public class InfoPanel extends JTabbedPane{
 
 
 	public void resetSelection() {
-		selectedEncounter = -1;
+//		selectedEncounter = -1;
 		selectedNPC = -1;
-		selectedDEncounter = -1;
+//		selectedDEncounter = -1;
 		selectedDungeon = -1;
 		selectedPOI = -1;
 		selectedFaction = -1;
@@ -555,18 +569,18 @@ public class InfoPanel extends JTabbedPane{
 			positivePopComponents();
 
 
-			for(int i = 0;i<this.encounterTexts.size();i++) {
-				MyTextPane pane = this.encounterTexts.get(i);
-				if(i==selectedEncounter) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
-				pane.doPaint();
-				//pane.setText(getEncounterText(pos,i));
-
-			}
-			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
+//			for(int i = 0;i<this.encounterTexts.size();i++) {
+//				MyTextPane pane = this.encounterTexts.get(i);
+//				if(i==selectedEncounter) {
+//					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+//				}else {
+//					pane.setBackground(TEXTBACKGROUNDCOLOR);
+//				}
+//				pane.doPaint();
+//				//pane.setText(getEncounterText(pos,i));
+//
+//			}
+//			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
 
 			if(transformedUniversalPopulation>0) {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
@@ -615,17 +629,17 @@ public class InfoPanel extends JTabbedPane{
 			}
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
-			for(int i = 0;i<this.dungeonTexts.size();i++) {
-				MyTextPane pane = this.dungeonTexts.get(i);
-				if(i==selectedDEncounter) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
-				pane.doPaint();
-				//pane.setText(getDungeonEncounterText(pos,i));
-			}
-			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
+//			for(int i = 0;i<this.dungeonTexts.size();i++) {
+//				MyTextPane pane = this.dungeonTexts.get(i);
+//				if(i==selectedDEncounter) {
+//					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+//				}else {
+//					pane.setBackground(TEXTBACKGROUNDCOLOR);
+//				}
+//				pane.doPaint();
+//				//pane.setText(getDungeonEncounterText(pos,i));
+//			}
+//			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
 			for(int i = 0;i<this.faithsTexts.size();i++) {
 				MyTextPane pane = this.faithsTexts.get(i);
@@ -760,71 +774,32 @@ public class InfoPanel extends JTabbedPane{
 		this.setSelectedIndex(maintab);
 		if(maintab==0) {
 			detailsTabs.setSelectedIndex(subtab);
-			switch(subtab) {
-			case ENCOUNTER_TAB_INDEX: {
-				selectedEncounter=index;
-				this.repaint();
-//				MyTextPane pane = encounterTexts.get(index);
-//				pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//				encounterScrollPane.scrollRectToVisible(pane.getBounds());
-//				SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
-				break;
-			}
-			case NPC_TAB_INDEX: {
+			if(ENCOUNTER_TAB_INDEX==subtab) {
+//				selectedEncounter=index;
+//				this.repaint();
+			}else if(NPC_TAB_INDEX==subtab) {
 				selectedNPC=index;
 				this.repaint();
-//				MyTextPane pane = npcTexts.get(index);
-//				pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//				npcScrollPane.scrollRectToVisible(pane.getBounds());
-//				SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
-				break;
-			}
-			case LOCATION_TAB_INDEX: {
+			}else if(LOCATION_TAB_INDEX==subtab) {
 				selectedPOI=index;
 				this.repaint();
-//				MyTextPane pane = poiTexts.get(index);
-//				pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//				poiScrollPane.scrollRectToVisible(pane.getBounds());
-//				SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
-				break;
-			}
-			case DUNGEON_TAB_INDEX: {
+			}else if(DUNGEON_TAB_INDEX==subtab) {
 				selectedDungeon=index;
 				this.repaint();
-//				MyTextPane pane = dEntranceTexts.get(index);
-//				pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//				dEntranceScrollPane.scrollRectToVisible(pane.getBounds());
-//				SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
-				break;
-			}
-			case DUNGEON_ENCOUNTER_TAB_INDEX: {
-				selectedDEncounter=index;
-				this.repaint();
-//				MyTextPane pane = dungeonTexts.get(index);
-//				pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//				dungeonScrollPane.scrollRectToVisible(pane.getBounds());
-//				SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
-				break;
-			}
-			default: throw new IllegalArgumentException("unrecognized tab index: "+subtab);
-			}
+			}else if(DUNGEON_ENCOUNTER_TAB_INDEX==subtab) {
+//				selectedDEncounter=index;
+//				this.repaint();
+			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}else {
 			regionTabs.setSelectedIndex(subtab);
-			switch(subtab) {
-			case CITY_TAB_INDEX: break;
-			case FACTION_TAB_INDEX: {
+			if(CITY_TAB_INDEX==subtab) {
+			}else if(FACTION_TAB_INDEX==subtab) {
 				selectedFaction=index;
-				//factionTexts.get(index).setCaretPosition(0);
 				this.repaint();
-				break;
-			}
-			case FAITH_TAB_INDEX:{
+			}else if(FAITH_TAB_INDEX==subtab) {
 				selectedFaith=index;
 				this.repaint();
-				break;
-			}
-			default: throw new IllegalArgumentException("unrecognized tab index: "+subtab);
-			}
+			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}
 	}
 	public MapPanel getPanel() {

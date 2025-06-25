@@ -26,7 +26,7 @@ public class LocationNameModel {
 	}
 	public String getInnText(Point p) {
 		Indexible obj = new Indexible(getIndexValue(p,0),getIndexValue(p,1),getIndexValue(p,2),getIndexValue(p,3));
-		return getInnText(obj);
+		return Util.formatTableResultPOS(getInnText(obj),obj,p,record.getZero());
 	}
 	public String getInnText(Random random) {
 		Indexible obj = new Indexible(random.nextInt(),random.nextInt(),random.nextInt(),random.nextInt());
@@ -36,7 +36,8 @@ public class LocationNameModel {
 		String innname = "Inn: "+getInnName(obj);
 		String innquirk = "\r\nQuirk: "+getInnQuirk(obj);
 		String inndescriptors = "\r\nDescriptors: "+getInnDescriptor(obj)+" and "+getInnDescriptor(obj);
-		return innname+innquirk+inndescriptors;
+		String proprietor = "\r\nProprietor: ${npc index}";
+		return innname+innquirk+inndescriptors+proprietor;
 	}
 	
 	public String getInnName(Indexible obj) {

@@ -113,7 +113,7 @@ public class MyTextPane extends JTextPane {
 		doc.insertString(doc.getLength(), linkText, regularBlue);
 		return result;
 	}
-	
+
 	private Style getDefaultStyle(StyledDocument doc) {
 		Style basic = doc.addStyle("basic", DEFAULT);
 		basic.addAttribute("linkmouseover", new MouseoverAction(null, this,info));
@@ -184,6 +184,13 @@ public class MyTextPane extends JTextPane {
 	}
 	public void setRef(Reference reference) {
 		this.ref = reference;
+	}
+
+	public void genNewData() {
+		String newData = controller.genNewData(getType(), getPoint(), getIndex());
+		controller.putData(getType(), getPoint(), getIndex(), newData);
+		setText(newData);
+		MyTextPane.this.doPaint();
 	}
 
 
@@ -299,10 +306,7 @@ public class MyTextPane extends JTextPane {
 			gen.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					String newData = controller.genNewData(getType(), getPoint(), getIndex());
-					controller.putData(getType(), getPoint(), getIndex(), newData);
-					setText(newData);
-					MyTextPane.this.doPaint();
+					genNewData();
 				}
 			});
 			menu.add(gen);
@@ -317,6 +321,20 @@ public class MyTextPane extends JTextPane {
 				}
 			});
 			menu.add(revert);
+			JMenuItem encounter = new JMenuItem("Encounter");
+			encounter.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(HexData.DUNGEON.equals(getType())) {
+						System.out.println("dungeon encounter");
+						info.createDungeonEncounter();
+					}else {
+						System.out.println("encounter");
+						info.createEncounter();
+					}
+				}
+			});
+			menu.add(encounter);
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}

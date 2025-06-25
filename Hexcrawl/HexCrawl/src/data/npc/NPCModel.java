@@ -75,8 +75,8 @@ public class NPCModel extends DataModel {
 			"often rapid-fire,fond of rhyming,robotic,often speaking slowly,often speechifying,squeaky,fond of street slang,often stuttering,often talking to self,often trailing off,very loud,often whispering";
 	private static WeightedTable<String> mannerisms;
 	private static final String SECRETS = "addicted,artificial,an assassin,bankrupt,beholden,a counterspy,a cultist,a demigod,of evil lineage,an exile,a fence,a fugitive,"+
-			"a ghost,a parent,a heretic,high born,hiding a huge fortune,an illusion,an insurrectionist,low born,married,mind-controlled,frequently ${misfortune},a monster hunter,"+
-			"a non-human,hiding a(n) ${relationship},an adulterer,protects a relic,hiding a scandalous birth,a secret police,a serial killer,a smuggler,a spy,a planar traveler,transformed,a war criminal";
+			"a ghost,a parent,a heretic,high born,hiding a huge fortune,a shapeshifter,an insurrectionist,low born,married,mind-controlled,frequently ${misfortune},a monster hunter,"+
+			"a non-human,hiding a ${relationship},an adulterer,protecting a relic,hiding a scandalous birth,a secret police,a serial killer,a smuggler,a spy,a planar traveler,transformed,a war criminal";
 	private static WeightedTable<String> secrets;
 	private static final String REPUTATION_ADJECTIVES = "ambitious,authoritative,boorish,indebted,famous,charitable,deceitful,dangerous,entertaining,gossipy,hardworking,holy,"+
 			"honest,neurotic,idiotic,influential,lazy,leaderly,misanthropic,miserly,neighborly,nutty,obnoxious,overeducated,"+

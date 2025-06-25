@@ -94,7 +94,7 @@ public class DataController {
 			Point center = threats.getCenter(p);
 			value = threats.getThreat(center).toString();break;
 		}
-		case ENCOUNTER: value = encounters.getEncounter(i, p).toString();break;
+		case ENCOUNTER: value = "";break;
 		case NPC: {
 			value =  npcs.getNPC(i,p).toString(); break;
 		}
@@ -103,7 +103,7 @@ public class DataController {
 			else value = pois.getPOI(i, p,population.isCity(p));break;
 		}
 		case DUNGEON: value = dungeons.getDungeon(i, p).toString();break;
-		case D_ENCOUNTER: value = encounters.getDungeonEncounter(i, p).toString();break;
+		case D_ENCOUNTER: value = "";break;
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getFaction(i, capital).toString(); break;

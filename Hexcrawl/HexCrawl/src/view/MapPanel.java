@@ -15,8 +15,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Path2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +34,6 @@ import io.AppData;
 import io.SaveRecord;
 import util.Counter;
 import util.Pair;
-import util.Util;
 
 public class MapPanel  extends JPanel{
 	private static final double RIVER_STEP = 0.01;

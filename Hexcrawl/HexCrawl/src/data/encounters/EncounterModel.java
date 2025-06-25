@@ -179,7 +179,7 @@ public class EncounterModel extends DataModel{
 		populateEncounterDetail(p, isCity, e);
 		return e;
 	}
-	public Object getEncounter(Point p, Random random) {
+	public Encounter getEncounter(Point p, Random random) {
 		boolean isCity = pop.isCity(p);
 		int[] ints = new int[TABLECOUNT];
 		for(int n=0;n<ints.length;n++) {

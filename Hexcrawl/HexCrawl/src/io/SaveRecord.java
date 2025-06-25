@@ -324,6 +324,10 @@ public class SaveRecord implements Serializable {
 		if(encounters==null||encounters.size()<=i) return null;
 		return encounters.get(i);
 	}
+	public ArrayList<String> getEncounters(Point p) {
+		if(!this.encounters2.containsKey(p)) this.encounters2.put(p, new ArrayList<String>());
+		return this.encounters2.get(p);
+	}
 	public String removeEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.encounters2.get(p);
 		if(encounters==null||encounters.size()<=i) return null;
@@ -473,6 +477,11 @@ public class SaveRecord implements Serializable {
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
 		if(encounters==null||encounters.size()<=i) return null;
 		return encounters.get(i);
+	}
+
+	public ArrayList<String> getDungeonEncounters(Point p) {
+		if(!this.dungeonEncounters2.containsKey(p)) this.dungeonEncounters2.put(p, new ArrayList<String>());
+		return this.dungeonEncounters2.get(p);
 	}
 	public String removeDungeonEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);

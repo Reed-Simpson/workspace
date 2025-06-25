@@ -24,12 +24,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 
-import controllers.DataController;
 import data.HexData;
 import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
-import data.encounters.Encounter;
 import data.magic.MagicModel;
 import data.population.PopulationModel;
 import data.population.SettlementSize;

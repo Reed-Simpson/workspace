@@ -4,8 +4,10 @@ import java.awt.Point;
 import java.util.Random;
 
 import data.DataModel;
+import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
+import data.Reference;
 import data.WeightedTable;
 import data.dungeon.DungeonModel;
 import data.location.LocationModel;
@@ -53,7 +55,7 @@ public class EncounterModel extends DataModel{
 	private static WeightedTable<String> encounterFocus;
 	private static WeightedTable<String> encounterVerb;
 	private static WeightedTable<String> encounterNoun;
-	
+
 	private static void populateEncounterFocus() {
 		encounterFocus = new WeightedTable<String>();
 		encounterFocus.put("Remote Event",5);
@@ -112,10 +114,10 @@ public class EncounterModel extends DataModel{
 		if(encounterObj==null) populateAllTables();
 		return encounterObj.getByWeight(e);
 	}
-	
+
 	//NON_STATIC CODE
 	private PopulationModel pop;
-	
+
 	public EncounterModel(SaveRecord record,PopulationModel pop) {
 		super(record);
 		this.pop = pop;
@@ -176,32 +178,50 @@ public class EncounterModel extends DataModel{
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+i*TABLECOUNT), p.x, p.y);
 		}
 		Encounter e = new Encounter(floats);
-		populateEncounterDetail(p, isCity, e);
+		populateEncounterDetail(p, isCity, e,null);
 		return e;
 	}
-	public Encounter getEncounter(Point p, Random random) {
+	public Encounter getEncounter(Point p, Random random,Reference ref) {
 		boolean isCity = pop.isCity(p);
 		int[] ints = new int[TABLECOUNT];
 		for(int n=0;n<ints.length;n++) {
 			ints[n] = random.nextInt();
 		}
 		Encounter e = new Encounter(ints);
-		populateEncounterDetail(p, isCity, e);
+		populateEncounterDetail(p, isCity, e,ref);
 		return e;
 	}
-	private void populateEncounterDetail(Point p, boolean isCity, Encounter e) {
+	private void populateEncounterDetail(Point p, boolean isCity, Encounter e,Reference ref) {
+		HexData refType = null;
+		if(ref!=null) {
+			switch(ref.getType()) {
+			case LOCATION: refType = HexData.LOCATION;break;
+			case NPC:case THREAT:case FACTION:case FAITH:
+				refType = HexData.CHARACTER; break;
+			default: break;
+			}
+		}
 		if(isCity) e.setType("City");
 		else e.setType("Wilderness");
 		e.setFocus(getFocus(e));
 		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getActivity(e,isCity)+'"'});
 		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
-		e.setCharacter(new String[] {getNPCReference(e, p),getFactionReference(e, p)});
-		e.setObject(new String[] {getObj(e),getObj(e)});
-		if(isCity) {
-			e.setLocation(new String[] {getLocationReference(e, p),getCityRoom(e),getStreet(e),SettlementModel.getDiscovery(e)});
+		if(HexData.CHARACTER.equals(refType)) {
+			e.setCharacter(new String[] {ref.toString()});
+		}else {
+			e.setCharacter(new String[] {getNPCReference(e, p),getFactionReference(e, p)});
 		}
-		else {
-			e.setLocation(new String[] {getLocationReference(e, p),LocationModel.getDiscovery(e)});
+		e.setObject(new String[] {getObj(e),getObj(e)});
+		String locationRef;
+		if(HexData.LOCATION.equals(refType)) {
+			locationRef = ref.toString();
+		}else {
+			locationRef = getLocationReference(e, p);
+		}
+		if(isCity) {
+			e.setLocation(new String[] {locationRef,getCityRoom(e),getStreet(e),SettlementModel.getDiscovery(e)});
+		}else {
+			e.setLocation(new String[] {locationRef,LocationModel.getDiscovery(e)});
 		}
 		e.setHazard(new String[] {getWildernessHazard(e)});
 	}

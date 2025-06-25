@@ -263,10 +263,10 @@ public class DataController {
 		if(isDefault) this.removeData(type, p,index);
 		else this.putData(type, p,index, text);
 	}
-	public String genNewData(HexData type, Point p, int i) {
+	public String genNewData(HexData type, Point p, int i,Reference ref) {
 		switch(type) {
 		case THREAT: return threats.getThreat(p,record.getRandom()).toString();
-		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom()).toString();
+		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom(),ref).toString();
 		case NPC: return npcs.getNPC(p,record.getRandom()).toString();
 		case LOCATION: {
 			if(i==0) return names.getInnText(record.getRandom());

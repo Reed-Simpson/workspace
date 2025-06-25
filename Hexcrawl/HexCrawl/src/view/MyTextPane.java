@@ -186,8 +186,8 @@ public class MyTextPane extends JTextPane {
 		this.ref = reference;
 	}
 
-	public void genNewData() {
-		String newData = controller.genNewData(getType(), getPoint(), getIndex());
+	public void genNewData(Reference ref) {
+		String newData = controller.genNewData(getType(), getPoint(), getIndex(),ref);
 		controller.putData(getType(), getPoint(), getIndex(), newData);
 		setText(newData);
 		MyTextPane.this.doPaint();
@@ -306,7 +306,7 @@ public class MyTextPane extends JTextPane {
 			gen.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					genNewData();
+					genNewData(null);
 				}
 			});
 			menu.add(gen);
@@ -326,12 +326,13 @@ public class MyTextPane extends JTextPane {
 				encounter.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						Reference ref = new Reference(getType(), controller.getRecord().normalizePOS(getPoint()), getIndex());
 						if(HexData.DUNGEON.equals(getType())) {
 							MyTextPane pane = info.createDungeonEncounter();
-							pane.genNewData();
+							pane.genNewData(ref);
 						}else {
 							MyTextPane pane = info.createEncounter();
-							pane.genNewData();
+							pane.genNewData(ref);
 						}
 					}
 				});

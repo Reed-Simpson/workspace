@@ -31,6 +31,7 @@ public class PrecipitationModel extends DataModel{
 	public static final int RIVERFLOWDISTANCE = 1;
 	public static final int RIVERRENDERDISTANCE = 7;
 	public static final int LAKEFLOWDISTANCE = 3;
+	private static final int MAXDEPTH = 40;
 
 	private AltitudeModel grid;
 	private HashMap<Point,Float> evapCache;
@@ -39,7 +40,7 @@ public class PrecipitationModel extends DataModel{
 	private ConcurrentHashMap<Point,Float> volumeCache;
 	private ConcurrentHashMap<Point,Integer> lakes;
 	private ConcurrentHashMap<Point,Point> outletCache;
-	private long time;
+	public long time;
 	private long interval = 1000;
 
 	public PrecipitationModel(SaveRecord record, AltitudeModel grid) {
@@ -144,7 +145,6 @@ public class PrecipitationModel extends DataModel{
 				result = result2;
 			}
 			flowCache.put(p, result);
-			riverCache.put(p, result);
 		}
 		return flowCache.get(p);
 	}
@@ -161,18 +161,28 @@ public class PrecipitationModel extends DataModel{
 	public void updateFlowVolume(Point p, float volume,int depth) {
 		if(grid.isWater(p)) return;
 		float precipitation = 0;
-		if(volumeCache.putIfAbsent(p, getPrecipitation(p))==null) {
+		Float prevVal;
+		if((prevVal=volumeCache.putIfAbsent(p, getPrecipitation(p)))==null) {
 			precipitation=getPrecipitation(p);
+			prevVal = 0f;
 		}
 		if(volume+precipitation>0.000001f){
 			volumeCache.replace(p, volume+volumeCache.get(p));
 			Point p1 = getFlow(p);
-			if(p1!=p) updateFlowVolume(p1,volume+precipitation,depth+1);
-			else {
-				if(!lakes.contains(p)) {
-					Point outlet = generateLake(p);
-					updateFlowVolume(outlet, getFlowVolume(p),depth+1);
+			if(depth<MAXDEPTH) {
+				Point prevP = riverCache.put(p, p1);
+				if(prevP==null) {
+					precipitation+=prevVal;
 				}
+				if(p1!=p) updateFlowVolume(p1,volume+precipitation,depth+1);
+				else {
+					if(!lakes.contains(p)) {
+						Point outlet = generateLake(p);
+						updateFlowVolume(outlet, getFlowVolume(p),depth+1);
+					}
+				}
+			}else {
+				//System.out.println("Max river length reached: "+Util.posString(p, record.getZero()));
 			}
 		}
 	}
@@ -212,7 +222,6 @@ public class PrecipitationModel extends DataModel{
 			lakes.put(l,lake.size());
 		}
 		if(!isFlowingInto(drain, outlet)) {
-			riverCache.put(outlet, drain);
 			flowCache.put(outlet, drain);
 		}else {
 			flowCache.put(outlet, outlet);
@@ -295,10 +304,6 @@ public class PrecipitationModel extends DataModel{
 		return (volumeCache.get(p)==null ? 0 : volumeCache.get(p));
 	}
 
-	public UpdateFlowVolumeThread getThread(Point p) {
-		return new UpdateFlowVolumeThread(p);
-	}
-
 	public float getLakeFlow(Point p) {
 		int lakeSize = lakes.get(p);
 		Point outlet = getOutlet(p);
@@ -315,20 +320,6 @@ public class PrecipitationModel extends DataModel{
 	public Point getOutlet(Point p) {
 		if(isLake(p)) return outletCache.get(p);
 		else return getFlow(p);
-	}
-
-	@Deprecated
-	public class UpdateFlowVolumeThread implements Runnable {
-		Point p;
-
-		public UpdateFlowVolumeThread(Point p) {
-			this.p = p;
-		}
-
-		@Override
-		public void run() {
-			updateFlowVolume(p, 0f,0);
-		}
 	}
 
 	@Deprecated

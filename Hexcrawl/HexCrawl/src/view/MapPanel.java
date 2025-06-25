@@ -66,12 +66,14 @@ public class MapPanel  extends JPanel{
 	private DataController controller;
 	private HashMap<Point,Pair<Color,Color>> colorCache;
 	private boolean mouseoverHold;
+	private HashMap<Point,List<Icon>> iconCache;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
 		this.showRivers=true;
 		this.showCities=true;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
+		iconCache = new HashMap<Point,List<Icon>>();
 		this.addMouseListener(new MouseAdapter());
 		this.addMouseMotionListener(new MouseMotionAdapter());
 		this.addMouseWheelListener(new MouseWheelAdapter());
@@ -93,7 +95,7 @@ public class MapPanel  extends JPanel{
 		this.record = record;
 		this.controller = new DataController(record);
 		//this.recenter(record.getPos());
-		this.printLoadingInfo = false;
+		//		this.printLoadingInfo = false;
 		this.scale = record.getScale();
 		this.previous=new ArrayList<Point>();
 		this.dialog = new ProgressBarDialog(frame);
@@ -202,6 +204,7 @@ public class MapPanel  extends JPanel{
 	public void setScale(double d) {
 		if(this.scale<WIDEVIEW&&d>=WIDEVIEW) {
 			colorCache = new HashMap<Point,Pair<Color,Color>>();
+			iconCache = new HashMap<Point,List<Icon>>();
 		}
 		this.scale=d;
 		record.setScale(scale);
@@ -215,6 +218,7 @@ public class MapPanel  extends JPanel{
 			printLoadingInfo = true;
 			this.displayData = displayData;
 			colorCache = new HashMap<Point,Pair<Color,Color>>();
+			iconCache = new HashMap<Point,List<Icon>>();
 		}
 	}
 
@@ -273,7 +277,7 @@ public class MapPanel  extends JPanel{
 		SwingWorker<Void, Integer> worker = new SwingWorker<Void,Integer>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-
+				printLoadingInfo = true;
 				boolean wideview = scale<WIDEVIEW;
 				if(!isDragging&&!wideview) {
 					calculateRivers();
@@ -311,32 +315,86 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Loading view data: ");
 		}
 		HashMap<Point,Pair<Color,Color>> newCache = new HashMap<Point,Pair<Color,Color>>();
+		HashMap<Point,List<Icon>> newIconCache = new HashMap<Point,List<Icon>>();
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
-				if(!controller.getGrid().isWater(i,j)) {
-					Point p = new Point(i,j);
-					Color color1;
-					Color color2;
+				Point p = new Point(i,j);
+				if(!controller.getGrid().isWater(p)) {
 					Pair<Color,Color> cached = colorCache.get(p);
 					if(cached!=null) {
-						color1 = cached.key1;
-						color2 = cached.key2;
+						newCache.put(p, new Pair<Color,Color>(cached.key1,cached.key2));
 					}else {
-						color1 = getColor1(i,j,displayData);
-						color2 = getColor2(i,j,displayData);
+						Color color1 = getColor1(i,j,displayData);
+						Color color2 = getColor2(i,j,displayData);
 						if(color1==null) {
 							color1 = color2;
 							color2 = null;
 						}
+						newCache.put(p, new Pair<Color,Color>(color1,color2));
 					}
-					newCache.put(p, new Pair<Color,Color>(color1,color2));
 				}
+
+				List<Icon> icons = iconCache.get(p);
+				if(icons==null) icons = getIcons(p);
+				newIconCache.put(p, icons);
 			}
 			if(printLoadingInfo) counter.increment();
 		}
 		colorCache = newCache;
+		iconCache = newIconCache;
+		System.out.println("iconCache "+iconCache.size());
 		dialog.removeProgressUI();
 		if(printLoadingInfo) logger.logln("Colors loaded "+(System.currentTimeMillis()-time)+" ms");
+	}
+
+	private List<Icon> getIcons(Point p) {
+		List<Icon> result = new ArrayList<Icon>();
+		BiomeType biome = controller.getBiomes().getBiome(p);
+		Character c = biome.getCh();
+		Point offset;
+		if(BiomeType.CITY.getCh().equals(c)) {
+			offset = new Point(-80,60);
+			result.add( new Icon(c, offset, Color.black,2));
+		}else if(BiomeType.WATER.getCh().equals(c)) {
+			offset = new Point(-80,10);
+			result.add( new Icon(c, offset, Color.black,0.7));
+			offset = new Point(-30,60);
+			result.add( new Icon(c, offset, Color.black,0.7));
+			offset = new Point(10,-10);
+			result.add( new Icon(c, offset, Color.black,0.7));
+		}else if(BiomeType.ROCKYHILLS.getCh().equals(c)) {
+			offset = new Point(-20,20);
+			result.add( new Icon(c, offset, Color.black,1));
+			offset = new Point(40,-20);
+			result.add( new Icon(c, offset, Color.black,1));
+		}else if(BiomeType.CLIFFS.getCh().equals(c)) {
+			offset = new Point(-60,0);
+			result.add( new Icon(c, offset, Color.black,0.7));
+			offset = new Point(-20,40);
+			result.add( new Icon(c, offset, Color.black,0.7));
+			offset = new Point(20,0);
+			result.add( new Icon(c, offset, Color.black,0.7));
+		}else if(BiomeType.MOUNTAINS.getCh().equals(c)) {
+			offset = new Point(-30,30);
+			result.add( new Icon(c, offset, Color.black,1.5));
+			offset = new Point(10,10);
+			result.add( new Icon(BiomeType.ROCKYHILLS.getCh(), offset, Color.black,1.5));
+		}else if(BiomeType.DESERT.getCh().equals(c)) {
+			offset = new Point(-60,40);
+			result.add( new Icon(c, offset, Color.black,1));
+			offset = new Point(-20,60);
+			result.add( new Icon(c, offset, Color.black,1));
+			offset = new Point(20,20);
+			result.add( new Icon(c, offset, Color.black,1));
+		}else {
+			offset = new Point(-60,20);
+			result.add( new Icon(c, offset, Color.black,0.7));
+			offset = new Point(-20,40);
+			result.add( new Icon(c, offset, Color.black,0.7));
+			offset = new Point(20,0);
+			result.add( new Icon(c, offset, Color.black,0.7));
+		}
+		return result;
 	}
 
 	private void drawHexes(Graphics2D g2, int step, int displayScale, Color borderColor) {
@@ -352,21 +410,17 @@ public class MapPanel  extends JPanel{
 		}
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
-				if(!controller.getGrid().isWater(i,j)) {
-					Point p = new Point(i,j);
+				Point p = new Point(i,j);
+				BiomeType type = controller.getGrid().getAltitudeBiome(p);
+				if(!BiomeType.WATER.equals(type)&&!BiomeType.SHALLOWS.equals(type)) {
 					Pair<Color,Color> cached = colorCache.get(p);
-					Color color1;
-					Color color2;
+					Color color1 = type.getColor();
+					Color color2 = null;
 					if(cached!=null) {
 						color1 = cached.key1;
 						color2 = cached.key2;
-						this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
-						if(borderColor!=null) {
-							g2.setColor(borderColor);
-							Character c = controller.getBiomes().getBiome(i, j).getCh();
-							if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
-						}
 					}
+					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
 				}
 			}
 			if(printLoadingInfo) counter.increment();
@@ -395,11 +449,6 @@ public class MapPanel  extends JPanel{
 						color2 = null;
 					}
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
-					if(borderColor!=null) {
-						g2.setColor(borderColor);
-						Character c = controller.getBiomes().getBiome(i, j).getCh();
-						if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
-					}
 				}
 			}
 			if(printLoadingInfo) counter.increment();
@@ -428,12 +477,6 @@ public class MapPanel  extends JPanel{
 		Stroke defaultStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		Point p = this.getSelectedGridPoint();
-//		Color color1 = getColor1(p.x,p.y,displayData);
-//		Color color2 = getColor2(p.x,p.y,displayData);
-//		if(color1==null) {
-//			color1 = color2;
-//			color2 = null;
-//		}
 		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null);
 		g2.setStroke(defaultStroke);
 	}
@@ -450,12 +493,23 @@ public class MapPanel  extends JPanel{
 				logger.log("Drawing symbols: ");
 				dialog.createProgressUI("Drawing symbols: ");
 			}
+
+			g2.setFont(g2.getFont().deriveFont(displayScale));
 			for(int i=p1.x;i<p2.x;i+=step) {
 				for(int j=p2.y;j<p1.y;j+=step) {
-					g2.setColor(borderColor);
-					g2.setFont(g2.getFont().deriveFont(displayScale));
-					Character c = controller.getBiomes().getBiome(i, j).getCh();
-					if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x, getScreenPos(i,j).y);
+					List<Icon> icons = iconCache.get(new Point(i,j));
+					if(icons!=null) {
+						for(Icon icon:icons) {
+							Character ch = icon.getCh();
+							Point offset = icon.offset;
+							Color c = icon.getC();
+							double cScale = icon.getScale();
+							g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
+							if(c==null) c=borderColor;
+							g2.setColor(c);
+							if(ch!=null) g2.drawString(ch.toString(), getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
+						}
+					}
 				}
 				if(printLoadingInfo) counter.increment();
 			}
@@ -551,6 +605,7 @@ public class MapPanel  extends JPanel{
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
 				if(!controller.getGrid().isWater(i,j)&&p.equals(controller.getPrecipitation().getFlow(p))) {
+					controller.getPrecipitation().time = System.currentTimeMillis();
 					controller.getPrecipitation().generateLake(p);
 				}
 			}

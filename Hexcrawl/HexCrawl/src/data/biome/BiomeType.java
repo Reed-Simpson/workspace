@@ -56,10 +56,6 @@ public enum BiomeType {
 		return ch;
 	}
 
-	public void setCh(Character ch) {
-		this.ch = ch;
-	}
-
 	public String getTrait() {
 		return trait;
 	}

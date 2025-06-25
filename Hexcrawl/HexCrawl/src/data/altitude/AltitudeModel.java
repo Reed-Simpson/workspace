@@ -6,18 +6,21 @@ import java.awt.Point;
 import data.DataModel;
 import data.OpenSimplex2S;
 import data.biome.BiomeModel;
+import data.biome.BiomeType;
 import io.SaveRecord;
 import util.Util;
 
 public class AltitudeModel extends DataModel{
 	private static float SCALAR_VARIABILITY_1 = 0.5f;
-	private static int WEIGHT_0 = 1;
-	private static int WEIGHT_1 = 10;
-	private static int WEIGHT_2 = 6;
-	private static int WEIGHT_3 = 1;
+	private static double WEIGHT_0 = 1;
+	private static double WEIGHT_1 = 10;
+	private static double WEIGHT_2 = 6;
+	private static double WEIGHT_3 = 1;
+	private static double WEIGHT_4 = 0.1;
 	private static float WEIGHT_VARIABILITY_1 = 0.90f;
 	private static float WEIGHT_VARIABILITY_2 = 0.90f;
 	private static float WEIGHT_VARIABILITY_3 = 0.90f;
+	private static float WEIGHT_VARIABILITY_4 = 0.90f;
 	private static int ALTITUDE_SCALE = 15000; // max altitude in feet
 	
 	public AltitudeModel(SaveRecord record) {
@@ -25,28 +28,32 @@ public class AltitudeModel extends DataModel{
 	}
 
 	public float getHeight(int x,int y) {
-		float weight0 = WEIGHT_0;
+		float weight0 = (float) WEIGHT_0;
 		float megaHeight = weight0*OpenSimplex2S.noise2(record.getSeed(0), Util.getSScale()*x, Util.getSScale()*y);
 		megaHeight=-megaHeight*megaHeight*2+1;
 		
 		float scalarX1 = OpenSimplex2S.noise2(record.getSeed(1), Util.getCScale()*x, Util.getCScale()*y)*SCALAR_VARIABILITY_1;
 		float scalarY1 = OpenSimplex2S.noise2(record.getSeed(2), Util.getCScale()*x, Util.getCScale()*y)*SCALAR_VARIABILITY_1;
 		float weightVariability1 = OpenSimplex2S.noise2(record.getSeed(3), Util.getCScale()*x, Util.getCScale()*y)*WEIGHT_VARIABILITY_1;
-		float weight1 = WEIGHT_1+WEIGHT_1*weightVariability1;
+		float weight1 = (float) (WEIGHT_1+WEIGHT_1*weightVariability1);
 		float macroHeight = weight1*OpenSimplex2S.noise2(record.getSeed(4), Util.getCScale()*x+scalarX1, Util.getCScale()*y+scalarY1);
 
 		float scalarX2 = OpenSimplex2S.noise2(record.getSeed(5), Util.getNScale()*x, Util.getNScale()*y)*SCALAR_VARIABILITY_1;
 		float scalarY2 = OpenSimplex2S.noise2(record.getSeed(6), Util.getNScale()*x, Util.getNScale()*y)*SCALAR_VARIABILITY_1;
 		float weightVariability2 = OpenSimplex2S.noise2(record.getSeed(7), Util.getNScale()*x, Util.getNScale()*y)*WEIGHT_VARIABILITY_2;
-		float weight2 = WEIGHT_2+WEIGHT_2*weightVariability2;
+		float weight2 = (float) (WEIGHT_2+WEIGHT_2*weightVariability2);
 		float midiHeight = weight2*OpenSimplex2S.noise2(record.getSeed(8), Util.getNScale()*x+scalarX2, Util.getNScale()*y+scalarY2);
 		
 		float weightVariability3 = OpenSimplex2S.noise2(record.getSeed(9), Util.getLScale()*x, Util.getLScale()*y)*WEIGHT_VARIABILITY_3;
-		float weight3 = WEIGHT_3+WEIGHT_3*weightVariability3;
-		float microHeight = weight3*OpenSimplex2S.noise2(record.getSeed(10), Util.getLScale()*x, Util.getLScale()*y);
+		float weight3 = (float) (WEIGHT_3+WEIGHT_3*weightVariability3);
+		float localHeight = weight3*OpenSimplex2S.noise2(record.getSeed(10), Util.getLScale()*x, Util.getLScale()*y);
+		
+		float weightVariability4 = OpenSimplex2S.noise2(record.getSeed(11), Util.getMScale()*x, Util.getMScale()*y)*WEIGHT_VARIABILITY_4;
+		float weight4 = (float) (WEIGHT_4+WEIGHT_4*weightVariability4);
+		float microHeight = weight4*OpenSimplex2S.noise2(record.getSeed(12), Util.getMScale()*x, Util.getMScale()*y);
 
-		float weightSum = weight0+weight1+weight2+weight3;
-		return (megaHeight+macroHeight+midiHeight+microHeight)/weightSum;
+		float weightSum = weight0+weight1+weight2+weight3+weight4;
+		return (megaHeight+macroHeight+midiHeight+localHeight+microHeight)/weightSum;
 	}
 	public float getHeight(Point p) {
 		return getHeight(p.x,p.y);
@@ -98,6 +105,28 @@ public class AltitudeModel extends DataModel{
 	@Override
 	public Float getDefaultValue(Point p,int i) {
 		return getHeight(p);
+	}
+
+	public BiomeType getAltitudeBiome(Point p) {
+		float height = getHeight(p);
+		BiomeType type;
+		if(height>BiomeModel.SNOW_HEIGHT) {
+			type = BiomeType.MOUNTAINS;
+		}
+		else if(height>BiomeModel.HIGHLAND_HEIGHT) {
+			type = BiomeType.ROCKYHILLS;
+		}
+		else if(height>BiomeModel.COAST_HEIGHT) {
+			type = BiomeType.GRASSLAND;
+		}
+		else if(height>BiomeModel.WATER_HEIGHT) {
+			type = BiomeType.BEACH;
+		}
+		else if(height>BiomeModel.SHALLOWS_HEIGHT) {
+			type = BiomeType.SHALLOWS;
+		}
+		else type = BiomeType.WATER;
+		return type;
 	}
 	
 	

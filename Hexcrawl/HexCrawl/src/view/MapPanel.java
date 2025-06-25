@@ -495,7 +495,6 @@ public class MapPanel  extends JPanel{
 				dialog.createProgressUI("Drawing symbols: ");
 			}
 
-//			g2.setFont(g2.getFont().(displayScale));
 			for(int i=p1.x;i<p2.x;i+=step) {
 				for(int j=p2.y;j<p1.y;j+=step) {
 					List<Icon> icons = iconCache.get(new Point(i,j));
@@ -684,44 +683,57 @@ public class MapPanel  extends JPanel{
 
 	private void drawCurvedRiver(Graphics2D g2, int displayScale, int i, int j) {
 		Point p0 = new Point(i,j);
-		Point p1 = controller.getPrecipitation().getRiver(p0);
-		if(p1!=null) {
-			Point p2 = controller.getPrecipitation().getFlow(p1);
-			Point p3 = controller.getPrecipitation().getFlow(p2);
+		BasicSpline spline = getRiverSpline(p0);
+		if(spline!=null) {
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 			if(width>displayScale) width = displayScale;
 			if(width>2) {
-				BasicSpline spline = new BasicSpline();
-				spline.addPoint(wiggle(p0));
-				spline.addPoint(wiggle(p1));
-				spline.addPoint(wiggle(p2));
-				spline.addPoint(wiggle(p3));
-				spline.calcSpline();
-
-				Point pointBefore = null;
-				for(float f = 0; f<=1f/3; f+=RIVER_STEP) {
-					Point p = spline.getPoint(f);
-					Point pnt = new Point(p.x, p.y);
-					g2.setColor(BiomeType.RIVER.getColor());
-					g2.fillOval(p.x-(int)width/2, p.y-(int)width/2, (int)width, (int)width);
-
-					if(pointBefore != null) {
-						g2.setColor(BiomeType.RIVER.getColor());
-						g2.setStroke(new BasicStroke(width));
-						g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
-					}
-
-					pointBefore = pnt;
-				}
+				drawSpline(g2, spline, width,BiomeType.RIVER.getColor());
 			}
 		}
 	}
 
+	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color) {
+		Point pointBefore = null;
+		for(float f = 0; f<=1f/3; f+=RIVER_STEP) {
+			Point p = spline.getPoint(f);
+			Point pnt = new Point(p.x, p.y);
+			g2.setColor(color);
+			g2.fillOval(p.x-(int)width/2, p.y-(int)width/2, (int)width, (int)width);
+
+			if(pointBefore != null) {
+				g2.setColor(color);
+				g2.setStroke(new BasicStroke(width));
+				g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
+			}
+
+			pointBefore = pnt;
+		}
+	}
+
+	private BasicSpline getRiverSpline(Point p0) {
+		Point p1 = controller.getPrecipitation().getRiver(p0);
+		if(p1!=null) {
+			Point p2 = controller.getPrecipitation().getFlow(p1);
+			Point p3 = controller.getPrecipitation().getFlow(p2);
+			BasicSpline spline = new BasicSpline();
+			spline.addPoint(wiggle(p0));
+			spline.addPoint(wiggle(p1));
+			spline.addPoint(wiggle(p2));
+			spline.addPoint(wiggle(p3));
+			spline.calcSpline();
+			return spline;
+		}else return null;
+	}
+
 	private Point wiggle(Point p) {
-		Point wigglefactor = controller.getPrecipitation().getWiggleFactor(p);
 		Point hexCenter = getScreenPos(p);
-		return new Point((int)(hexCenter.x+wigglefactor.x*scale/200),(int)(hexCenter.y+wigglefactor.y*scale/200));
+		if(controller.getGrid().isWater(p)) return hexCenter;
+		else {
+			Point wigglefactor = controller.getPrecipitation().getWiggleFactor(p);
+			return new Point((int)(hexCenter.x+wigglefactor.x*scale/200),(int)(hexCenter.y+wigglefactor.y*scale/200));
+		}
 	}
 
 	private void drawRegion(Graphics2D g2, int displayScale) {
@@ -914,10 +926,10 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
-				Point pScreen = getScreenPos(p);
+				Point pScreen = wiggle(p);
 				for(Point near:roads.getAdjacencyList(p)) {
 					int weight = roads.getEdgeWeight(p, near);
-					Point nScreen = getScreenPos(near);
+					Point nScreen = wiggle(near);
 					Stroke defaultStroke = g2.getStroke();
 					g2.setStroke(new BasicStroke(displayScale/(14-weight*6)+1));
 					g2.setColor(roadColor);

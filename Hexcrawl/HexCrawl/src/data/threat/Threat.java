@@ -2,6 +2,7 @@ package data.threat;
 
 import data.Indexible;
 import data.npc.NPC;
+import util.Util;
 
 public class Threat extends Indexible{
 	private CreatureType type;
@@ -65,9 +66,10 @@ public class Threat extends Indexible{
 	
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
-		e1Text.append("~~ THREAT: "+this.getType().name()+" - "+this.getSubtype().getName()+" ~~\r\n");
-		String name = (this.name!=null?" "+this.name:"None");
-		e1Text.append("Name: "+name+"\r\n");
+		if(this.name!=null) {
+			e1Text.append(name+"\r\n");
+		}
+		e1Text.append(Util.toCamelCase(this.getType().name()+" - "+this.getSubtype().getName())+"\r\n");
 		e1Text.append("Motive: "+this.getMotive()+"\r\n");
 		e1Text.append("Flaw: "+this.getFlaw()+"\r\n");
 		e1Text.append("Plan: "+this.getPlan());

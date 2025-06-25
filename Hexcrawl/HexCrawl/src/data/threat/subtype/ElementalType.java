@@ -9,24 +9,26 @@ public enum ElementalType implements CreatureSubtype {
 	WATER(2,"WATER"),
 	EARTH(3,"EARTH"),
 	AIR(4,"AIR"),
-	MAGMA(5,"MAGMA"),
-	OOZE(6,"OOZE"),
-	ICE(7,"ICE"),
-	LIGHTNING(8,"LIGHTNING"),
-	VOID(9,"VOID"),
-	SALT(10,"SALT"),
-	ENTROPY(11,"ENTROPY"),
-	CHAOS(12,"CHAOS"),
-	SPACE(13,"SPACE"),
+	MAGMA(5,"MAGMA"),//fire+earth
+	OOZE(6,"OOZE"),//water+earth
+	ICE(7,"ICE"),//water+air
+	LIGHTNING(8,"LIGHTNING"),//fire+air
+	
+	VOID(9,"VOID"),//air
+	SALT(10,"SALT"),//water
+	ENTROPY(11,"ENTROPY"),//water
+	CHAOS(12,"CHAOS"),//fire
+	SPACE(13,"SPACE"),//earth
 	MIND(14,"MIND"),
 	EMOTION(15,"EMOTION"),
-	RADIANT(16,"RADIANT"),
+	RADIANT(16,"RADIANT"),//fire
 	BLOOD(17,"BLOOD"),
-	NECROTIC(18,"NECROTIC"),
+	NECROTIC(18,"NECROTIC"),//earth
 	RAGE(19,"RAGE"),
-	SOUND(20,"SOUND"),
-	STEAM(21,"STEAM"),
-	SAND(22,"SAND");
+	SOUND(20,"SOUND"),//air
+	
+	STEAM(21,"STEAM"),//water+fire
+	SAND(22,"SAND");//air+earth
 	
 
 	private static WeightedTable<ElementalType> weights;

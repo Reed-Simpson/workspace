@@ -103,7 +103,7 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 		}
 	}
 	public static String getBeastName(Indexible threat) {
-		return "The "+getBeastAdj(threat)+getBeastNoun(threat);
+		return "The "+getBeastAdj(threat)+" "+getBeastNoun(threat);
 	}
 	private String getLycanthropeName(Threat threat) {
 		threat.setSubtype(HumanoidType.LYCANTHROPE);

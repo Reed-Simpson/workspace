@@ -343,7 +343,6 @@ public class MapPanel  extends JPanel{
 		}
 		colorCache = newCache;
 		iconCache = newIconCache;
-		System.out.println("iconCache "+iconCache.size());
 		dialog.removeProgressUI();
 		if(printLoadingInfo) logger.logln("Colors loaded "+(System.currentTimeMillis()-time)+" ms");
 	}

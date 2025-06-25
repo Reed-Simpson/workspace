@@ -164,7 +164,6 @@ public class InfoPanel extends JTabbedPane{
 		npcScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("NPCs", npcScrollPane);
 		this.NPC_TAB_INDEX = detailsTabs.getTabCount()-1;
-		System.out.println("NPC Tab index: "+NPC_TAB_INDEX);
 
 
 		JPanel poiPanel = new JPanel();
@@ -186,7 +185,6 @@ public class InfoPanel extends JTabbedPane{
 		poiScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("Locations", poiScrollPane);
 		this.LOCATION_TAB_INDEX = detailsTabs.getTabCount()-1;
-		System.out.println("locations Tab index: "+LOCATION_TAB_INDEX);
 
 		JPanel dEntrancePanel = new JPanel();
 		dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
@@ -202,7 +200,6 @@ public class InfoPanel extends JTabbedPane{
 		dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		detailsTabs.addTab("Dungeon", dEntranceScrollPane);
 		this.DUNGEON_TAB_INDEX = detailsTabs.getTabCount()-1;
-		System.out.println("dungeons Tab index: "+DUNGEON_TAB_INDEX);
 
 		JPanel hexNotePanel = new JPanel();
 		hexNotePanel.setLayout(new BorderLayout());
@@ -343,7 +340,6 @@ public class InfoPanel extends JTabbedPane{
 		JScrollPane cityScrollPane = new JScrollPane(city1);
 		regionTabs.addTab("Parent City", cityScrollPane);
 		this.CITY_TAB_INDEX = regionTabs.getTabCount()-1;
-		System.out.println("city Tab index: "+CITY_TAB_INDEX);
 
 		//Faction tab
 		JPanel factionPanel = new JPanel();
@@ -360,7 +356,6 @@ public class InfoPanel extends JTabbedPane{
 		factionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Factions", factionScrollPane);
 		this.FACTION_TAB_INDEX = regionTabs.getTabCount()-1;
-		System.out.println("factions Tab index: "+FACTION_TAB_INDEX);
 		
 		//Faiths tab
 		JPanel faithsPanel = new JPanel();
@@ -377,7 +372,6 @@ public class InfoPanel extends JTabbedPane{
 		faithsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Faiths", faithsScrollPane);
 		this.FAITH_TAB_INDEX = regionTabs.getTabCount()-1;
-		System.out.println("faiths Tab index: "+FAITH_TAB_INDEX);
 
 		
 		regionPanel.add(regionTabs);

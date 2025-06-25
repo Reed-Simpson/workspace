@@ -2,31 +2,37 @@ package names.threat;
 
 import data.threat.Threat;
 import data.threat.subtype.ElementalType;
+import util.Util;
 
 public class ElementalNameGenerator extends ThreatNameGenerator{
-	private static final String[] FIRE = {"Fueg","Blyz","Smoldr","Ign","Scald"};
-	private static final String[] WATER = {"Mons","Aqual","Typh","Moonfl","Firm"};
-	private static final String[] EARTH = {"Valanch","Carb","Ther","Terr","Cor"};
-	private static final String[] AIR = {"Tumul","Xyg","Av","Flurr","Cerull"};
-	private static final String[] MAGMA = {"Volc","Erupt"};
-	private static final String[] OOZE = {"Slim","Mois"};
-	private static final String[] ICE = {"Glaci","Cry"};
-	private static final String[] LIGHTNING = {"Plasm","Skar"};
-	private static final String[] VOID = {"Cimmer","Obscur"};
-	private static final String[] SALT = {"Lim","Sla"};
-	private static final String[] ENTROPY = {"Nigh","Aeon"};
-	private static final String[] CHAOS = {"Narch","Disar"};
-	private static final String[] SPACE = {"Nex","Circ"};
-	private static final String[] MIND = {"Precip","Luss"};
-	private static final String[] EMOTION = {"Sens","Elan"};
-	private static final String[] RADIANT = {"Lumin","Hal"};
-	private static final String[] BLOOD = {"Hem","Art"};
-	private static final String[] NECROTIC = {"Necr","Malign"};
-	private static final String[] RAGE = {"Ragn","Spyt"};
-	private static final String[] SOUND = {"Son","Temp"};
-	private static final String[] STEAM = {"Fern","Vent"};
-	private static final String[] SAND = {"Chron","Aev"};
-	private static final String[] SUFFIX = {"is","e","us","all","a","os","it","en","ian","or","onne","ere","er","ise","um","ios","ate"};
+	private static final String[] FIRE = {"Ach","Agn","Aodh","Azar","Blyz","Bryn","Cinaed","Dian","Eguzk","Fajr","Fiammett","Haul","Fueg","Helen","Heliod","Hest",
+			"Ign","Ignat","Int","Iskr","Joash","Keah","Mz","Nin","Pel","Plam","Pyrrh","Rav","Sams","Savitr","Scald","Seraph","Shul","Smoldr","Sol","Tesn"};
+	private static final String[] WATER = {"Aalt","Afon","Agam","Ald","Aqual","Arethus","Belin","Burim","Daml","Dary","Entem","Eur","Firm","Gal","Heremoan","Iar","Ib","Indr",
+			"Jubal","Lain","Llyr","Maraj","May","Meraud","Mer","Moan","Moonfl","Mons","Mort","Muirg","Nanam","Nereid","On","Pelag","Rosem","Saew","Sarasv","Tirt","Tas","Typh","Undin","Yam"};
+	private static final String[] EARTH = {"Aramb","Arl","Avant","Atl","Bhum","Carb","Cirotral","Cobal","Cor","Datol","Demet","Dr","Eard","G","Gnom","Iron","Lamb","Mason","Pap","Petr","Rik",
+			"Rolan","Steel","Ston","Terr","Titan","Ther","Tlall","Vlanch"};
+	private static final String[] AIR = {"Aly","Amater","Anan","Anemon","Anil","Aracel","Ar","Av","Caelest","Cerull","Er","Esen","Eter","Heiran","Hod","Ilm","Inann",
+			"Lan","Nephel","Pilv","Rang","Samir","Sor","Tsis","Tumul","Tuul","Vay","Xyg","Yanseb","Yun","Zeph","Zer"};
+	private static final String[] MAGMA = {"Volc","Erupt","Maeg","Heatm","Mantl","Slag","Labes"};
+	private static final String[] OOZE = {"Slim","Mois","Bwimb","Burbl","Tox","Corros","Ulig"};
+	private static final String[] ICE = {"Flurr","Glaci","Cry","Durbaag","Meltem","Nebul","Nix"};
+	private static final String[] LIGHTNING = {"Plasm","Skar","Auror","Hal","Zenon","Lichten","Fulg"};
+	private static final String[] VOID = {"Cimmer","Obscur","Nothing"};
+	private static final String[] SALT = {"Lim","Sla","Saltom"};
+	private static final String[] ENTROPY = {"Nigh","Aeon","Decay"};
+	private static final String[] CHAOS = {"Narch","Disar","Anarch"};
+	private static final String[] SPACE = {"Nex","Circ","Cosm"};
+	private static final String[] MIND = {"Precip","Luss","Mentim"};
+	private static final String[] EMOTION = {"Sens","Elan","Mot"};
+	private static final String[] RADIANT = {"Lumin","Alb","Anatol","Apoll","Ausr","Avtand","Belen","Drit","Eos","Fioral","Lucast","Luc","Lug","Luz"};
+	private static final String[] BLOOD = {"Hem","Art","Sang"};
+	private static final String[] NECROTIC = {"Necr","Malign","Atrop"};
+	private static final String[] RAGE = {"Ragn","Spyt","Ir"};
+	private static final String[] SOUND = {"Son","Temp","Tonitr"};
+	private static final String[] STEAM = {"Fern","Vent","Vapor"};
+	private static final String[] SAND = {"Chron","Aev","Haran"};
+	private static final String[] SUFFIX = {"","i","is","us","all","a","en","ian","or","onne","um","ius","ate","eron","azar","ix"};
+	private static final String[] TITLE = {"Primordial","Archomental","Prince","God","Ancient","Elder","First"};
 	
 	@Deprecated
 	@Override
@@ -75,7 +81,8 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 		String[] prefixArray = getPrefixArray((ElementalType) threat.getSubtype());
 		String part1 = getElementFromArray(prefixArray, threat);
 		String part2 = getElementFromArray(SUFFIX, threat);
-		return part1+part2;
+		String title = getElementFromArray(TITLE, threat);
+		return part1+part2+", "+title+" of "+Util.toCamelCase(threat.getSubtype().getName());
 	}
 
 }

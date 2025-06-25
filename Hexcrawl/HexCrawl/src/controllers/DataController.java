@@ -274,8 +274,8 @@ public class DataController {
 		}
 		case DUNGEON: return dungeons.getDungeon(record.getRandom(), p).toString();
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
-		case FACTION: return settlements.getFaction(record.getRandom()).toString(); 
-		case FAITH: return settlements.getFaith(record.getRandom()).toString(); 
+		case FACTION: return settlements.getFaction(record.getRandom(),p).toString(); 
+		case FAITH: return settlements.getFaith(record.getRandom(),p).toString(); 
 		case DISTRICT: return SettlementModel.getDistrict(new Indexible(record.getRandom().nextInt())); 
 		case TOWN: {
 			Species species = population.getMajoritySpecies(p.x,p.y);

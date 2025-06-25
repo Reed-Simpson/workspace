@@ -90,7 +90,7 @@ public class SettlementModel extends DataModel{
 		government = new WeightedTable<String>();
 		populate(government,GOVERNMENT,",");
 	}
-	
+
 
 	public static String getTheme(Indexible obj) {
 		if(themes==null) populateAllTables();
@@ -152,7 +152,7 @@ public class SettlementModel extends DataModel{
 		super(record);
 		this.controller = controller;
 	}
-	
+
 	public Settlement getSettlement(Point p) {
 		float[] vals = new float[SETTLEMENTTABLES];
 		for(int j=0;j<SETTLEMENTTABLES;j++) {
@@ -201,24 +201,25 @@ public class SettlementModel extends DataModel{
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j+i*FACTIONTABLES), p.x, p.y);
 		}
 		Faction result = new Faction(vals);
-		populateFactionDetails(result);
+		populateFactionDetails(result,p);
 		return result;
 	}
-	public Faction getFaction(Random random) {
+	public Faction getFaction(Random random,Point p) {
 		int[] ints = new int[FACTIONTABLES];
 		for(int n=0;n<ints.length;n++) {
 			ints[n] = random.nextInt();
 		}
 		Faction result = new Faction(ints);
-		populateFactionDetails(result);
+		populateFactionDetails(result,p);
 		return result;
 	}
-	private void populateFactionDetails(Faction result) {
+	private void populateFactionDetails(Faction result,Point p) {
 		String type = FactionNameGenerator.getFaction(result);
 		result.setType(type);
 		result.setName(formatName(result, type));
 		result.setTrait(FactionNameGenerator.getTrait(result));
-		result.setGoal(FactionNameGenerator.getGoal(result));
+		String goal = formatGoal(FactionNameGenerator.getGoal(result),result,false);
+		result.setGoal(Util.formatTableResultPOS(goal,result,p,record.getZero()));
 	}
 	public Faction getFaith(int i,Point p) {
 		float[] vals = new float[FACTIONTABLES];
@@ -226,26 +227,36 @@ public class SettlementModel extends DataModel{
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j+(i+Util.getOffsetX()/2)*FACTIONTABLES), p.x, p.y);
 		}
 		Faction result = new Faction(vals);
-		populateFaithDetails(result);
+		populateFaithDetails(result,p);
 		return result;
 	}
-	public Faction getFaith(Random random) {
+	public Faction getFaith(Random random,Point p) {
 		int[] vals = new int[FACTIONTABLES];
 		for(int j=0;j<vals.length;j++) {
 			vals[j] = random.nextInt();
 		}
 		Faction result = new Faction(vals);
-		populateFaithDetails(result);
+		populateFaithDetails(result,p);
 		return result;
 	}
-	private void populateFaithDetails(Faction result) {
+	private void populateFaithDetails(Faction result,Point p) {
 		String type = FactionNameGenerator.getFaith(result);
 		result.setType(type);
 		result.setDomain(NPCModel.getDomain(result));
 		result.setName(formatName(result, type));
 		result.setTrait(FactionNameGenerator.getTrait(result));
-		result.setGoal(FactionNameGenerator.getGoal(result));
+		String goal = formatGoal(FactionNameGenerator.getGoal(result),result,true);
+		result.setGoal(Util.formatTableResultPOS(goal,result,p,record.getZero()));
 	}
+	private String formatGoal(String goal, Faction result,boolean faith) {
+		boolean edge = result.reduceTempId(10)<2;
+		if(faith!=edge) {
+			goal = Util.replace(goal, "${faction index}", "${faith index}");
+		}
+		return goal;
+	}
+
+
 	private String formatName(Faction result, String type) {
 		String name = FactionNameGenerator.getName(type,result);
 		if(name.contains("${placeholder domain}")) {
@@ -253,7 +264,7 @@ public class SettlementModel extends DataModel{
 		}
 		return Util.toCamelCase(name);
 	}
-	
+
 	@Override
 	public Settlement getDefaultValue(Point p, int i) {
 		return getSettlement(p);

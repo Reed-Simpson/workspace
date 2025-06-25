@@ -331,7 +331,7 @@ public class SaveRecord implements Serializable {
 	public String removeEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.encounters2.get(p);
 		if(encounters==null||encounters.size()<=i) return null;
-		String set = encounters.set(i, null);
+		String set = encounters.remove(i);
 		if(set!=null) {
 			this.hasUnsavedData = true;
 		}
@@ -486,7 +486,7 @@ public class SaveRecord implements Serializable {
 	public String removeDungeonEncounter(Point p, int i) {
 		ArrayList<String> encounters = this.dungeonEncounters2.get(p);
 		if(encounters==null||encounters.size()<=i) return null;
-		String set = encounters.set(i, null);
+		String set = encounters.remove(i);
 		if(set!=null) {
 			this.hasUnsavedData = true;
 		}

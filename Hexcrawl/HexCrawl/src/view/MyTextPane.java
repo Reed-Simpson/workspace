@@ -321,20 +321,35 @@ public class MyTextPane extends JTextPane {
 				}
 			});
 			menu.add(revert);
-			JMenuItem encounter = new JMenuItem("Encounter");
-			encounter.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(HexData.DUNGEON.equals(getType())) {
-						System.out.println("dungeon encounter");
-						info.createDungeonEncounter();
-					}else {
-						System.out.println("encounter");
-						info.createEncounter();
+			if(!HexData.ENCOUNTER.equals(getType())&&!HexData.D_ENCOUNTER.equals(getType())) {
+				JMenuItem encounter = new JMenuItem("Encounter");
+				encounter.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if(HexData.DUNGEON.equals(getType())) {
+							MyTextPane pane = info.createDungeonEncounter();
+							pane.genNewData();
+						}else {
+							MyTextPane pane = info.createEncounter();
+							pane.genNewData();
+						}
 					}
-				}
-			});
-			menu.add(encounter);
+				});
+				menu.add(encounter);
+			}else {
+				JMenuItem encounter = new JMenuItem("Remove");
+				encounter.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if(HexData.D_ENCOUNTER.equals(getType())) {
+							info.removeDungeonEncounter(index);
+						}else {
+							info.removeEncounter(index);
+						}
+					}
+				});
+				menu.add(encounter);
+			}
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}

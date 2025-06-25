@@ -263,7 +263,6 @@ public class InfoPanel extends JTabbedPane{
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 		dungeonPanel.add(encounteri,0);
 		dungeonTexts.add(encounteri);
-		encounteri.genNewData();
 		return encounteri;
 	}
 
@@ -274,8 +273,19 @@ public class InfoPanel extends JTabbedPane{
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 		encounterPanel.add(encounteri,0);
 		encounterTexts.add(encounteri);
-		encounteri.genNewData();
 		return encounteri;
+	}
+
+	public void removeDungeonEncounter(int index) {
+		panel.getController().removeData(HexData.D_ENCOUNTER, panel.getSelectedGridPoint(), index);
+		dungeonTexts.remove(dungeonTexts.size()-1).setVisible(false);
+		repaint();
+	}
+
+	public void removeEncounter(int index) {
+		panel.getController().removeData(HexData.ENCOUNTER, panel.getSelectedGridPoint(), index);
+		encounterTexts.remove(encounterTexts.size()-1).setVisible(false);
+		repaint();
 	}
 
 	private void createRegionTab(MapPanel panel) {
@@ -590,18 +600,17 @@ public class InfoPanel extends JTabbedPane{
 			positivePopComponents();
 
 
-//			for(int i = 0;i<this.encounterTexts.size();i++) {
-//				MyTextPane pane = this.encounterTexts.get(i);
-//				if(i==selectedEncounter) {
-//					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-//				}else {
-//					pane.setBackground(TEXTBACKGROUNDCOLOR);
-//				}
-//				pane.doPaint();
-//				//pane.setText(getEncounterText(pos,i));
-//
-//			}
-//			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
+			for(int i = 0;i<this.encounterTexts.size();i++) {
+				MyTextPane pane = this.encounterTexts.get(i);
+				if(i==selectedEncounter) {
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+				}else {
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
+				}
+				pane.doPaint();
+
+			}
+			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
 
 			if(transformedUniversalPopulation>0) {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
@@ -613,7 +622,6 @@ public class InfoPanel extends JTabbedPane{
 						pane.setBackground(TEXTBACKGROUNDCOLOR);
 					}
 					pane.doPaint();
-					//pane.setText(getNPCText(pos,i));
 				}
 				if(selectedNPC>-1) {
 //					MyTextPane pane = npcTexts.get(selectedNPC);
@@ -634,7 +642,6 @@ public class InfoPanel extends JTabbedPane{
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
 				pane.doPaint();
-				//pane.setText(getPOIText(pos,i,pos.equals(capital)));
 			}
 			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
 
@@ -646,21 +653,19 @@ public class InfoPanel extends JTabbedPane{
 					pane.setBackground(TEXTBACKGROUNDCOLOR);
 				}
 				pane.doPaint();
-				//pane.setText(getDungeonText(pos,i));
 			}
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
-//			for(int i = 0;i<this.dungeonTexts.size();i++) {
-//				MyTextPane pane = this.dungeonTexts.get(i);
-//				if(i==selectedDEncounter) {
-//					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-//				}else {
-//					pane.setBackground(TEXTBACKGROUNDCOLOR);
-//				}
-//				pane.doPaint();
-//				//pane.setText(getDungeonEncounterText(pos,i));
-//			}
-//			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
+			for(int i = 0;i<this.dungeonTexts.size();i++) {
+				MyTextPane pane = this.dungeonTexts.get(i);
+				if(i==selectedDEncounter) {
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+				}else {
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
+				}
+				pane.doPaint();
+			}
+			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
 			for(int i = 0;i<this.faithsTexts.size();i++) {
 				MyTextPane pane = this.faithsTexts.get(i);

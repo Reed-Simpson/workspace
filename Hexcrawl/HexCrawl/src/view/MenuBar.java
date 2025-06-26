@@ -53,10 +53,13 @@ public class MenuBar extends JMenuBar {
 	private JButton prevButton;
 	private JButton nextButton;
 	private MapFrame frame;
+	private MythicFateRoller mythicroller;
+	private InfoPanel info;
 
-	public MenuBar(MapPanel panel,MapFrame frame) {
+	public MenuBar(MapPanel panel,MapFrame frame,InfoPanel info) {
 		this.frame = frame;
 		this.panel=panel;
+		this.info = info;
 
 		this.fileMenu = constructFileMenu(panel);
 		this.add(fileMenu);
@@ -72,6 +75,7 @@ public class MenuBar extends JMenuBar {
 
 		this.add(dataFieldsPanel);
 		this.distanceStringFormat = new DecimalFormat("#0 miles");
+		mythicroller = new MythicFateRoller(info);
 	}
 
 	private JMenu constructFileMenu(MapPanel panel) {
@@ -135,9 +139,9 @@ public class MenuBar extends JMenuBar {
 
 		JMenuItem gme = new JMenuItem("GME Roller");
 		gme.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				MythicFateRoller roller = new MythicFateRoller();
-				roller.showDialog(panel.getFrame());
+				mythicroller.showDialog(panel.getFrame());
 			}
 		});
 		menu.add(gme);

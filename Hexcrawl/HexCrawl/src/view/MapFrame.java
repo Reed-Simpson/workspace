@@ -74,7 +74,7 @@ public class MapFrame extends JFrame{
 		info = new InfoPanel(panel);
 		this.add(panel,BorderLayout.CENTER);
 		this.add(info,BorderLayout.EAST);
-		MenuBar bar = new MenuBar(panel,this);
+		MenuBar bar = new MenuBar(panel,this,info);
 		this.add(bar,BorderLayout.NORTH);
 		if(!isInitialized) {
 			this.pack();

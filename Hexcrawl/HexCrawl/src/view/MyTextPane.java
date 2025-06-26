@@ -19,6 +19,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
+import javax.swing.Timer;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
@@ -39,6 +40,8 @@ import view.infopanels.TextLinkAction;
 @SuppressWarnings("serial")
 public class MyTextPane extends JTextPane {
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
+	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
 	private final Style basic;
 	private InfoPanel info;
 	private String rawText;
@@ -78,8 +81,10 @@ public class MyTextPane extends JTextPane {
 		this.writeStringToDocument(t);
 	}
 	public void doPaint() {
-		String text = controller.getText(getType(), getPoint(), getIndex());
-		this.setText(text);
+		if(getIndex()>-1) {
+			String text = controller.getText(getType(), getPoint(), getIndex());
+			this.setText(text);
+		}
 	}
 
 	private void writeStringToDocument(String string) {
@@ -188,7 +193,9 @@ public class MyTextPane extends JTextPane {
 
 	public void genNewData(Reference ref) {
 		String newData = controller.genNewData(getType(), getPoint(), getIndex(),ref);
-		controller.putData(getType(), getPoint(), getIndex(), newData);
+		if(getIndex()>-1) {
+			controller.putData(getType(), getPoint(), getIndex(), newData);
+		}
 		setText(newData);
 		MyTextPane.this.doPaint();
 	}
@@ -201,8 +208,10 @@ public class MyTextPane extends JTextPane {
 		public void focusGained(FocusEvent e) {
 		}
 		public void focusLost(FocusEvent e) {
-			String text = MyTextPane.this.getRawText();
-			controller.updateData(getType(), text, getPoint(), getIndex());
+			if(getIndex()>-1) {
+				String text = MyTextPane.this.getRawText();
+				controller.updateData(getType(), text, getPoint(), getIndex());
+			}
 		}
 	}
 	private class NoScrollCaret extends DefaultCaret {
@@ -282,76 +291,84 @@ public class MyTextPane extends JTextPane {
 
 		private void doPopupMenu(MouseEvent e) {
 			JPopupMenu menu = new JPopupMenu();
-			if(HexData.CHARACTER.equals(type)) {
-				if("None".equals(getRawText())) return;
-				JMenuItem remove = new JMenuItem("Remove From Characters List");
-				remove.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						info.removeCharacter(index);
-					}
-				});
-				menu.add(remove);
-			}else {
-				JMenuItem add = new JMenuItem("Add To Characters List");
-				add.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						info.addCharacter(type,getPoint(),index);
-					}
-				});
-				menu.add(add);
+			if(index>-1) {
+				if(HexData.CHARACTER.equals(type)) {
+					if("None".equals(getRawText())) return;
+					JMenuItem remove = new JMenuItem("Remove From Characters List");
+					remove.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							info.removeCharacter(index);
+						}
+					});
+					menu.add(remove);
+				}else {
+					JMenuItem add = new JMenuItem("Add To Characters List");
+					add.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							info.addCharacter(type,getPoint(),index);
+						}
+					});
+					menu.add(add);
+				}
 			}
 			JMenuItem gen = new JMenuItem("Generate New");
 			gen.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					genNewData(null);
+					flicker();
 				}
 			});
 			menu.add(gen);
-			JMenuItem revert = new JMenuItem("Revert to Default");
-			revert.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String defaultText = controller.getDefaultText(getType(), getPoint(), getIndex());
-					controller.putData(getType(), getPoint(), getIndex(), defaultText);
-					setText(defaultText);
-					MyTextPane.this.doPaint();
+			if(index>-1) {
+				JMenuItem revert = new JMenuItem("Revert to Default");
+				revert.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						String defaultText = controller.getDefaultText(getType(), getPoint(), getIndex());
+						controller.putData(getType(), getPoint(), getIndex(), defaultText);
+						setText(defaultText);
+						MyTextPane.this.doPaint();
+						flicker();
+					}
+				});
+				menu.add(revert);
+				if(!HexData.ENCOUNTER.equals(getType())&&!HexData.D_ENCOUNTER.equals(getType())) {
+					JMenuItem encounter = new JMenuItem("Encounter");
+					encounter.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Reference ref = new Reference(getType(), controller.getRecord().normalizePOS(getPoint()), getIndex());
+							if(HexData.DUNGEON.equals(getType())) {
+								MyTextPane pane = info.createDungeonEncounter();
+								pane.genNewData(ref);
+								pane.flicker();
+							}else {
+								MyTextPane pane = info.createEncounter();
+								pane.genNewData(ref);
+								pane.flicker();
+							}
+						}
+					});
+					menu.add(encounter);
+				}else {
+					JMenuItem encounter = new JMenuItem("Remove");
+					encounter.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if(HexData.D_ENCOUNTER.equals(getType())) {
+								info.removeDungeonEncounter(index);
+							}else {
+								info.removeEncounter(index);
+							}
+						}
+					});
+					menu.add(encounter);
 				}
-			});
-			menu.add(revert);
-			if(!HexData.ENCOUNTER.equals(getType())&&!HexData.D_ENCOUNTER.equals(getType())) {
-				JMenuItem encounter = new JMenuItem("Encounter");
-				encounter.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						Reference ref = new Reference(getType(), controller.getRecord().normalizePOS(getPoint()), getIndex());
-						if(HexData.DUNGEON.equals(getType())) {
-							MyTextPane pane = info.createDungeonEncounter();
-							pane.genNewData(ref);
-						}else {
-							MyTextPane pane = info.createEncounter();
-							pane.genNewData(ref);
-						}
-					}
-				});
-				menu.add(encounter);
-			}else {
-				JMenuItem encounter = new JMenuItem("Remove");
-				encounter.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if(HexData.D_ENCOUNTER.equals(getType())) {
-							info.removeDungeonEncounter(index);
-						}else {
-							info.removeEncounter(index);
-						}
-					}
-				});
-				menu.add(encounter);
+				menu.show(e.getComponent(), e.getX(), e.getY());
 			}
-			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
 	private class Interval {
@@ -441,6 +458,35 @@ public class MyTextPane extends JTextPane {
 			super.insertString(fb, doc.getLength(), linkText, regularBlue);
 			return result;
 		}
+	}
+	public void setHighlight(boolean b) {
+		if(b) this.setBackground(TEXTHIGHLIGHTCOLOR);
+		else this.setBackground(TEXTBACKGROUNDCOLOR);
+	}
+	public void flicker() {
+		int on = 300;
+		int off = 50;
+		Timer timer = new Timer(on, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MyTextPane.this.setHighlight(false);
+				Timer timer = new Timer(off, new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						MyTextPane.this.setHighlight(true);
+						Timer timer = new Timer(on, new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								MyTextPane.this.setHighlight(false);
+							}
+						});
+						timer.setRepeats(false);
+						timer.start();
+					}
+				});
+				timer.setRepeats(false);
+				timer.start();
+			}
+		});
+		timer.setRepeats(false);
+		timer.start();
 	}
 
 }

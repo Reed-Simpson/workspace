@@ -1,7 +1,10 @@
 package util;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
@@ -14,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,6 +27,10 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.TableView.TableRow;
 
+import data.HexData;
+import view.InfoPanel;
+import view.MyTextPane;
+
 public class MythicFateRoller {
 	private static final Trinterval[] ranges = 
 		{tri( 0, 1,81),tri( 1, 5,82),tri( 2,10,83),tri( 3,15,84),tri( 5,25,86),tri( 7,35,88),tri(10,50,91),tri(13,65,94),tri(15,75,96),tri(17,85,98),tri(18,90,99),tri(19,95,100),tri(20,99,101)};
@@ -30,6 +38,7 @@ public class MythicFateRoller {
 	private static final String[] outcomes = {"Exceptional Yes","Yes","No","Exceptional No","Random Event"};
 	transient Random rand;
 	int chaosFactor;
+	private InfoPanel info;
 	
 	private static Trinterval tri(int q1, int q2,int q3) {
 		return new Trinterval(q1, q2, q3);
@@ -40,8 +49,9 @@ public class MythicFateRoller {
 		else return ranges[index];
 	}
 	
-	public MythicFateRoller() {
+	public MythicFateRoller(InfoPanel info) {
 		chaosFactor = 5;
+		this.info = info;
 	}
 	
 	public MythicFateRollerDialog showDialog(JFrame parent) {
@@ -62,6 +72,7 @@ public class MythicFateRoller {
 	public class MythicFateRollerDialog extends JDialog {
 		private JSlider slider;
 		private JTable table;
+		private MyTextPane field;
 
 		public MythicFateRollerDialog(JFrame parent) {
 			super(parent);
@@ -94,7 +105,10 @@ public class MythicFateRoller {
 						Trinterval obj = (Trinterval) table.getValueAt(row, column);
 						int roll = getRand().nextInt(100)+1;
 						String message = getOutcome(roll, obj);
-						JOptionPane.showMessageDialog(MythicFateRollerDialog.this, message, "Fate Question Roll", JOptionPane.INFORMATION_MESSAGE);
+						field.setText(message);
+						field.setHighlight(true);
+						field.flicker();
+						//JOptionPane.showMessageDialog(MythicFateRollerDialog.this, message, "Fate Question Roll", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				public void mousePressed(MouseEvent e) {}
@@ -120,10 +134,12 @@ public class MythicFateRoller {
 					MythicFateRollerDialog.this.repaint();
 				}
 			});
-			
-
-			
 			this.add(slider);
+			
+			this.field = new MyTextPane(info, -1, HexData.ENCOUNTER);
+			field.setPreferredSize(new Dimension(270,270));
+			this.add(field);
+			
 			this.pack();
 	        setLocationRelativeTo(this.getOwner());
 			this.setVisible(true);

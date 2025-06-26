@@ -322,7 +322,7 @@ public class InfoPanel extends JTabbedPane{
 		regionPanel.add(dummy4);
 		regionPanel.add(getSeparator());
 
-		threatText = new MyTextPane(this, -1, HexData.THREAT);
+		threatText = new MyTextPane(this, 0, HexData.THREAT);
 		threatScrollPane = new JScrollPane(threatText);
 		threatScrollPane.setMaximumSize(new Dimension(9999,125));
 		threatScrollPane.setPreferredSize(new Dimension(9999,125));
@@ -336,7 +336,7 @@ public class InfoPanel extends JTabbedPane{
 
 		//City tab
 		regionTabs = new JTabbedPane();
-		city1 = new MyTextPane(this, -1, HexData.CITY);
+		city1 = new MyTextPane(this, 0, HexData.CITY);
 		JScrollPane cityScrollPane = new JScrollPane(city1);
 		regionTabs.addTab("Parent City", cityScrollPane);
 		this.CITY_TAB_INDEX = regionTabs.getTabCount()-1;
@@ -576,6 +576,7 @@ public class InfoPanel extends JTabbedPane{
 		this.magic.setText("Magic Type: "+magics);
 
 		threatText.doPaint();
+		System.out.println(threatText.getIndex());
 //		this.threatText.setText(getThreatText(pos));
 		city1.doPaint();
 
@@ -778,9 +779,12 @@ public class InfoPanel extends JTabbedPane{
 		case "npc": selectTab(0,NPC_TAB_INDEX,index);break;
 		case "location": selectTab(0,LOCATION_TAB_INDEX,index);break;
 		case "dungeon": selectTab(0,DUNGEON_TAB_INDEX,index);break;
+		case "encounter": selectTab(0,ENCOUNTER_TAB_INDEX,index);break;
+		case "d.encounter": selectTab(0,DUNGEON_ENCOUNTER_TAB_INDEX,index);break;
 		case "faction": selectTab(1,FACTION_TAB_INDEX,index);break;
 		case "district": selectTab(1,CITY_TAB_INDEX,index);break;
 		case "faith": selectTab(1,FAITH_TAB_INDEX,index);break;
+		case "character": selectTab(2,0,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
 		}
 		panel.preprocessThenRepaint();

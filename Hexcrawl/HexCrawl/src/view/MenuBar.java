@@ -54,12 +54,10 @@ public class MenuBar extends JMenuBar {
 	private JButton nextButton;
 	private MapFrame frame;
 	private MythicFateRoller mythicroller;
-	private InfoPanel info;
 
 	public MenuBar(MapPanel panel,MapFrame frame,InfoPanel info) {
 		this.frame = frame;
 		this.panel=panel;
-		this.info = info;
 
 		this.fileMenu = constructFileMenu(panel);
 		this.add(fileMenu);

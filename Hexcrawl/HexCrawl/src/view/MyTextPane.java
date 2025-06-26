@@ -183,7 +183,7 @@ public class MyTextPane extends JTextPane {
 		if(this.ref!=null) return this.ref.getType();
 		else return type;
 	}
-	private int getIndex() {
+	int getIndex() {
 		if(this.ref!=null) return this.ref.getIndex();
 		else return index;
 	}
@@ -193,6 +193,9 @@ public class MyTextPane extends JTextPane {
 
 	public void genNewData(Reference ref) {
 		String newData = controller.genNewData(getType(), getPoint(), getIndex(),ref);
+		saveData(newData);
+	}
+	private void saveData(String newData) {
 		if(getIndex()>-1) {
 			controller.putData(getType(), getPoint(), getIndex(), newData);
 		}
@@ -308,6 +311,7 @@ public class MyTextPane extends JTextPane {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							info.addCharacter(type,getPoint(),index);
+							info.selectTabAndIndex(HexData.CHARACTER.getText(),0,0,-1);
 						}
 					});
 					menu.add(add);
@@ -322,6 +326,7 @@ public class MyTextPane extends JTextPane {
 				}
 			});
 			menu.add(gen);
+			System.out.println(e.getButton());
 			if(index>-1) {
 				JMenuItem revert = new JMenuItem("Revert to Default");
 				revert.addActionListener(new ActionListener() {
@@ -335,27 +340,9 @@ public class MyTextPane extends JTextPane {
 					}
 				});
 				menu.add(revert);
-				if(!HexData.ENCOUNTER.equals(getType())&&!HexData.D_ENCOUNTER.equals(getType())) {
-					JMenuItem encounter = new JMenuItem("Encounter");
-					encounter.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Reference ref = new Reference(getType(), controller.getRecord().normalizePOS(getPoint()), getIndex());
-							if(HexData.DUNGEON.equals(getType())) {
-								MyTextPane pane = info.createDungeonEncounter();
-								pane.genNewData(ref);
-								pane.flicker();
-							}else {
-								MyTextPane pane = info.createEncounter();
-								pane.genNewData(ref);
-								pane.flicker();
-							}
-						}
-					});
-					menu.add(encounter);
-				}else {
-					JMenuItem encounter = new JMenuItem("Remove");
-					encounter.addActionListener(new ActionListener() {
+				if(HexData.ENCOUNTER.equals(getType())&&HexData.D_ENCOUNTER.equals(getType())){
+					JMenuItem remove = new JMenuItem("Remove");
+					remove.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							if(HexData.D_ENCOUNTER.equals(getType())) {
@@ -365,10 +352,40 @@ public class MyTextPane extends JTextPane {
 							}
 						}
 					});
-					menu.add(encounter);
+					menu.add(remove);
 				}
-				menu.show(e.getComponent(), e.getX(), e.getY());
 			}
+			JMenuItem encounter = new JMenuItem("Add Encounter");
+			encounter.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Point point = controller.getRecord().normalizePOS(getPoint());
+					Reference ref = new Reference(getType(), point, getIndex());
+					if(HexData.DUNGEON.equals(getType())) {
+						MyTextPane pane = info.createDungeonEncounter();
+						pane.genNewData(ref);
+						info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
+						pane.flicker();
+					}else if(HexData.ENCOUNTER.equals(getType())) {
+						MyTextPane pane = info.createEncounter();
+						pane.saveData(MyTextPane.this.rawText);
+						info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
+						pane.flicker();
+					}else if(HexData.D_ENCOUNTER.equals(getType())) {
+						MyTextPane pane = info.createDungeonEncounter();
+						pane.saveData(MyTextPane.this.rawText);
+						info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
+						pane.flicker();
+					}else {
+						MyTextPane pane = info.createEncounter();
+						pane.genNewData(ref);
+						info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
+						pane.flicker();
+					}
+				}
+			});
+			menu.add(encounter);
+			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
 	private class Interval {
@@ -466,6 +483,7 @@ public class MyTextPane extends JTextPane {
 	public void flicker() {
 		int on = 300;
 		int off = 50;
+		this.setHighlight(true);
 		Timer timer = new Timer(on, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MyTextPane.this.setHighlight(false);

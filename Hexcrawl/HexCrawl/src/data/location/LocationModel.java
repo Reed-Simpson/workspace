@@ -193,7 +193,10 @@ public class LocationModel extends DataModel{
 		else location = getStructure(obj);
 		String descriptor1 = getDescriptor(obj);
 		String descriptor2 = getDescriptor(obj);
-		String proprietor = "\r\nProprietor: ${npc index}";
+		String proprietor = "";
+		if(isCity) {
+			proprietor = "\r\nProprietor: ${npc index}";
+		}
 		return descriptor1+" and "+descriptor2+" "+location+proprietor;
 	}
 	@Deprecated

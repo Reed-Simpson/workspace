@@ -99,16 +99,19 @@ public class MythicFateRoller {
 			table.addMouseListener(new MouseListener() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
+					chaosFactor = slider.getValue();
 					int row = table.rowAtPoint(e.getPoint());
 					int column = table.columnAtPoint(e.getPoint());
 					if(column>0) {
 						Trinterval obj = (Trinterval) table.getValueAt(row, column);
 						int roll = getRand().nextInt(100)+1;
 						String message = getOutcome(roll, obj);
-						field.setText(message);
-						field.setHighlight(true);
+						if(isDoubles(roll)<chaosFactor) {
+							field.genNewData(null);
+						}else {
+							field.setText(message);
+						}
 						field.flicker();
-						//JOptionPane.showMessageDialog(MythicFateRollerDialog.this, message, "Fate Question Roll", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				public void mousePressed(MouseEvent e) {}

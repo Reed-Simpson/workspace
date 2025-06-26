@@ -6,8 +6,10 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import data.HexData;
 import io.AppData;
@@ -101,6 +104,7 @@ public class MenuBar extends JMenuBar {
 				openFile();
 			}
 		});
+		menuOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuSave = new JMenuItem("Save");
 		fileMenu.add(menuSave);
 		menuSave.addActionListener(new ActionListener(){
@@ -109,6 +113,7 @@ public class MenuBar extends JMenuBar {
 				repopulateRecentFiles(panel);
 			}
 		});
+		menuSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuSaveAs = new JMenuItem("Save As");
 		fileMenu.add(menuSaveAs);
 		menuSaveAs.addActionListener(new ActionListener(){
@@ -118,6 +123,7 @@ public class MenuBar extends JMenuBar {
 				repopulateRecentFiles(panel);
 			}
 		});
+		menuSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		fileMenu.addSeparator();
 		fileMenu.add(new JLabel("recent"));
 		return fileMenu;

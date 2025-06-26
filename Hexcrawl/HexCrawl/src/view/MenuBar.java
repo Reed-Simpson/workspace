@@ -29,6 +29,7 @@ import data.HexData;
 import io.AppData;
 import io.SaveRecord;
 import util.DiceRoller;
+import util.MythicFateRoller;
 import util.Util;
 
 public class MenuBar extends JMenuBar {
@@ -122,6 +123,7 @@ public class MenuBar extends JMenuBar {
 
 	private JMenu constructUtilityMenu() {
 		JMenu menu = new JMenu("Utilities");
+		
 		JMenuItem roller = new JMenuItem("Dice Roller");
 		roller.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -130,6 +132,15 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		menu.add(roller);
+
+		JMenuItem gme = new JMenuItem("GME Roller");
+		gme.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MythicFateRoller roller = new MythicFateRoller();
+				roller.showDialog(panel.getFrame());
+			}
+		});
+		menu.add(gme);
 		return menu;
 	}
 

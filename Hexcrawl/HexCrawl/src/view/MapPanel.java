@@ -1020,7 +1020,7 @@ public class MapPanel  extends JPanel{
 			if(!printLoadingInfo) {
 				Point c = getSelectedGridPoint();
 				double newscale = scale;
-				double wheelRotation = -1*e.getWheelRotation();
+				double wheelRotation = -1*e.getWheelRotation()*scale/4;
 				if(e.isShiftDown()) wheelRotation = wheelRotation*5;
 				if(scale+wheelRotation<1) {
 					newscale = 1;

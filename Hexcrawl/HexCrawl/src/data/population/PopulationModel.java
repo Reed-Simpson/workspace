@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,26 +146,17 @@ public class PopulationModel extends DataModel{
 	}
 
 	public Species getMajoritySpecies(int x,int y) {
-		LinkedHashMap<Species,Float> pop = getDemographics(x,y);
-		for(Species s:pop.keySet()) {
-			return s;
-		}
-		return null;
+		return getMajorityPopAndSpecies(x, y).getKey();
 	}
 
 	public float getMajorityPop(int x,int y) {
-		LinkedHashMap<Species,Float> pop = getDemographics(x,y);
-		for(Species s:pop.keySet()) {
-			return pop.get(s);
-		}
-		return 0;
+		return getMajorityPopAndSpecies(x, y).getValue();
 	}
 	public Entry<Species, Float> getMajorityPopAndSpecies(int x,int y) {
 		LinkedHashMap<Species,Float> pop = getDemographics(x,y);
-		for(Entry<Species, Float> e:pop.entrySet()) {
-			return e;
-		}
-		return new AbstractMap.SimpleEntry<Species, Float>(null, 0f);
+		Iterator<Entry<Species, Float>> iterator = pop.entrySet().iterator();
+		if(iterator.hasNext()) return iterator.next();
+		else return new AbstractMap.SimpleEntry<Species, Float>(null, 0f);
 	}
 
 	public Point getLocalFealty(Point p) {
@@ -193,27 +185,13 @@ public class PopulationModel extends DataModel{
 	public boolean isTown(Point p) {
 		if(p==null||getUniversalPopulation(p.x,p.y)<0.08f) return false;
 		else {
-			Entry<Species,Float> e = getMajorityPopAndSpecies(p.x, p.y);
-			float pop = e.getValue();
-			Species s = e.getKey();
-			Point result = p;
-			for(Point p1:Util.getAdjacentPoints(p)) {
-				Entry<Species,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
-				float pop1 = e1.getValue();
-				Species s1 = e1.getKey();
-				if(pop1>pop && s1!=null && s1.equals(s)) {
-					pop=pop1;
-					result = p1;
-					break;
-				}
-			}
-			return p.equals(result);
+			return p.equals(getLocalFealty(p));
 		}
 	}
 	public BiomeType getSettlementType(Point p) {
 		float pop = getUniversalPopulation(p.x,p.y);
-		if(pop>0.08f) {
-			boolean isTown = isTown(p);
+		if(pop>=0.08f) {
+			boolean isTown = p.equals(getLocalFealty(p));
 			if(pop>0.16f&&isTown&&p.equals(getParentCity(p))) {
 				return BiomeType.CITY;
 			}else if(isTown) {
@@ -277,7 +255,7 @@ public class PopulationModel extends DataModel{
 
 	private float popTransform(float pop) {
 		if(pop>0) return pop*pop*2;
-		else return pop;
+		else return 0;
 	}
 
 	public HashSet<Point> getRegion(Point p) {

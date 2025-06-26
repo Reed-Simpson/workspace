@@ -136,7 +136,6 @@ public class MapPanel  extends JPanel{
 	private void postinitialize(SaveRecord record) {
 		recenter(record.getPos(),true);
 		mouseover = getSelectedGridPoint();
-		//frame.pack();
 		record.setHasUnsavedData(false);
 		this.preprocessThenRepaint();
 	}
@@ -957,7 +956,7 @@ public class MapPanel  extends JPanel{
 					mouseoverHold=true;
 					mouseover = p;
 				}
-			}else {
+			}else if(!printLoadingInfo) {
 				recenter(p,true);
 				record.setPos(MapPanel.this.getSelectedGridPoint());
 			}
@@ -1018,31 +1017,24 @@ public class MapPanel  extends JPanel{
 	public class MouseWheelAdapter implements MouseWheelListener {
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
-			Point c = getSelectedGridPoint();
-			double effectiveScale = scale;
-			double wheelRotation = -1*e.getWheelRotation();
-			if(e.isShiftDown()) wheelRotation = wheelRotation*5;
-			if(effectiveScale+wheelRotation<1) {
-				int cardinality = (int) (-1*Math.log10(effectiveScale));
-				int remainder = (int) (10*effectiveScale/Math.pow(0.1, cardinality));
-				effectiveScale = 1-10*cardinality-(10-remainder);
-
-				effectiveScale = effectiveScale + wheelRotation;
-			}else if(effectiveScale+wheelRotation>MAX_SCALE) {
-				effectiveScale = MAX_SCALE;
-			}else {
-				effectiveScale = effectiveScale + wheelRotation;
+			if(!printLoadingInfo) {
+				Point c = getSelectedGridPoint();
+				double newscale = scale;
+				double wheelRotation = -1*e.getWheelRotation();
+				if(e.isShiftDown()) wheelRotation = wheelRotation*5;
+				if(scale+wheelRotation<1) {
+					newscale = 1;
+				}else if(scale+wheelRotation>MAX_SCALE) {
+					newscale = MAX_SCALE;
+				}else {
+					newscale = Math.floor(scale+wheelRotation);
+				}
+				if(newscale!=scale) {
+					setScale(newscale);
+					recenter(c,false);
+					preprocessThenRepaint();
+				}
 			}
-			System.out.println(effectiveScale+" "+scale+" "+wheelRotation);
-			if(effectiveScale<1) {
-				int cardinality = (int) ((effectiveScale-10)/-10);
-				int remainder = (int) (effectiveScale-1+cardinality*10);
-				setScale(Math.pow(0.1, cardinality)*remainder);
-			}else {
-				setScale(effectiveScale);
-			}
-			recenter(c,false);
-			preprocessThenRepaint();
 		}
 
 	}

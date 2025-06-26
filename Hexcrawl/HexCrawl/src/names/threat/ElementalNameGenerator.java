@@ -6,7 +6,7 @@ import util.Util;
 
 public class ElementalNameGenerator extends ThreatNameGenerator{
 	private static final String[] FIRE = {"Ach","Agn","Aodh","Azar","Blyz","Bryn","Cinaed","Dian","Eguzk","Fajr","Fiammett","Haul","Fueg","Helen","Heliod","Hest",
-			"Ign","Ignat","Int","Iskr","Joash","Keah","Mz","Nin","Pel","Plam","Pyrrh","Rav","Sams","Savitr","Scald","Seraph","Shul","Smoldr","Sol","Tesn"};
+			"Ign","Ignat","Int","Iskr","Joash","Keah","Mz","Nin","Pel","Pyrrh","Rav","Sams","Savitr","Scald","Seraph","Shul","Smoldr","Sol","Tesn"};
 	private static final String[] WATER = {"Aalt","Afon","Agam","Ald","Aqual","Arethus","Belin","Burim","Daml","Dary","Entem","Eur","Firm","Gal","Heremoan","Iar","Ib","Indr",
 			"Jubal","Lain","Llyr","Maraj","May","Meraud","Mer","Moan","Moonfl","Mons","Mort","Muirg","Nanam","Nereid","On","Pelag","Rosem","Saew","Sarasv","Tirt","Tas","Typh","Undin","Yam"};
 	private static final String[] EARTH = {"Aramb","Arl","Avant","Atl","Bhum","Carb","Cirotral","Cobal","Cor","Datol","Demet","Dr","Eard","G","Gnom","Iron","Lamb","Mason","Pap","Petr","Rik",

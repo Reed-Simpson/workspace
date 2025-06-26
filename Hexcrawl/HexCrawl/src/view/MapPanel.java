@@ -135,7 +135,7 @@ public class MapPanel  extends JPanel{
 
 	private void postinitialize(SaveRecord record) {
 		recenter(record.getPos(),true);
-		mouseover = getSelectedGridPoint();
+		mouseover = getMiddleGridPoint();
 		record.setHasUnsavedData(false);
 		this.preprocessThenRepaint();
 	}
@@ -172,6 +172,10 @@ public class MapPanel  extends JPanel{
 		return new Point(x0,y0);
 	}
 	public Point getSelectedGridPoint() {
+		if(showDistance) return getMouseoverGridPoint();
+		return getGridPoint(getMiddleOfScreen());
+	}
+	public Point getMiddleGridPoint() {
 		return getGridPoint(getMiddleOfScreen());
 	}
 	public Point getMouseoverGridPoint() {
@@ -181,7 +185,7 @@ public class MapPanel  extends JPanel{
 		return new Point(this.getWidth()/2, (int) (this.getHeight()/2+scale/2));
 	}
 	public void recenter() {
-		recenter(getSelectedGridPoint(),true);
+		recenter(getMiddleGridPoint(),true);
 	}
 	public void recenter(Point p,boolean updatePrevious) {
 		if(updatePrevious&&previousIndex>-1) {
@@ -194,7 +198,7 @@ public class MapPanel  extends JPanel{
 		center= new Point(targetHexPos.x-middle.x, targetHexPos.y-middle.y);
 		printLoadingInfo = true;
 		if(updatePrevious) {
-			previous.add(getSelectedGridPoint());
+			previous.add(getMiddleGridPoint());
 			previousIndex=previous.size()-1;
 		}
 	}
@@ -256,7 +260,7 @@ public class MapPanel  extends JPanel{
 			highlightTowns(g2,step,displayScale,Color.RED);
 		}
 		drawRegion(g2, displayScale);
-		drawSelectedHex(g2, displayScale);
+		drawCenterHex(g2, displayScale);
 		if(!wideview)drawSymbols(g2, step, displayScale, borderColor);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
@@ -471,11 +475,11 @@ public class MapPanel  extends JPanel{
 		g2.setStroke(defaultStroke);
 	}
 
-	private void drawSelectedHex(Graphics2D g2, int displayScale) {
+	private void drawCenterHex(Graphics2D g2, int displayScale) {
 		int strokeSize = displayScale/7;
 		Stroke defaultStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
-		Point p = this.getSelectedGridPoint();
+		Point p = this.getMiddleGridPoint();
 		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null);
 		g2.setStroke(defaultStroke);
 	}
@@ -521,7 +525,7 @@ public class MapPanel  extends JPanel{
 			Stroke defaultStroke = g2.getStroke();
 			g2.setColor(c);
 			g2.setStroke(new BasicStroke(1+displayScale/2));
-			Point center = this.getSelectedGridPoint();
+			Point center = this.getMiddleGridPoint();
 			Point midpoint;
 			int dx = mouseover.x-center.x;
 			int dy = mouseover.y-center.y;
@@ -958,7 +962,7 @@ public class MapPanel  extends JPanel{
 				}
 			}else if(!printLoadingInfo) {
 				recenter(p,true);
-				record.setPos(MapPanel.this.getSelectedGridPoint());
+				record.setPos(MapPanel.this.getMiddleGridPoint());
 			}
 			preprocessThenRepaint();
 		}
@@ -997,7 +1001,7 @@ public class MapPanel  extends JPanel{
 			if(mouseover!=null&&!mouseoverHold&&!MapPanel.this.mouseover.equals(gridPoint)){
 				mouseover = gridPoint;
 				if(showDistance) {
-					Point center = MapPanel.this.getSelectedGridPoint();
+					Point center = MapPanel.this.getMiddleGridPoint();
 					int dx=mouseover.x-center.x;
 					int dy=mouseover.y-center.y;
 					double distance;
@@ -1018,7 +1022,7 @@ public class MapPanel  extends JPanel{
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if(!printLoadingInfo) {
-				Point c = getSelectedGridPoint();
+				Point c = getMiddleGridPoint();
 				double newscale = scale;
 				double wheelRotation = -1*e.getWheelRotation()*scale/4;
 				if(e.isShiftDown()) wheelRotation = wheelRotation*5;
@@ -1061,7 +1065,7 @@ public class MapPanel  extends JPanel{
 			File file = fileChooser.getSelectedFile();
 			if(!file.getName().contains(".")) file = new File(file.getAbsolutePath()+".ser");
 			record.setSaveLocation(file);
-			record.setPos(this.getSelectedGridPoint());
+			record.setPos(this.getMiddleGridPoint());
 			record.setScale(scale);
 			if(record.save(frame.getAppData())) {
 				frame.getAppData().removeRecent(prevFile);
@@ -1118,7 +1122,7 @@ public class MapPanel  extends JPanel{
 	public void setShowDistance(boolean selected) {
 		this.showDistance = selected;
 		mouseoverHold = false;
-		mouseover = getSelectedGridPoint();
+		mouseover = getMiddleGridPoint();
 		preprocessThenRepaint();
 	}
 	public boolean isShowDistance() {

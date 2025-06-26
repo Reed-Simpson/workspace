@@ -175,7 +175,7 @@ public class MenuBar extends JMenuBar {
 		xField.setMaximumSize(new Dimension(50,50));
 		ActionListener posActionListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				Point c = panel.getSelectedGridPoint();
+				Point c = panel.getMiddleGridPoint();
 				Point zero = panel.getRecord().getZero();
 				Point displayPos = new Point(Integer.parseInt(xField.getText()),Integer.parseInt(yField.getText()));
 				Point actualPos = Util.denormalizePos(displayPos, zero);
@@ -306,7 +306,7 @@ public class MenuBar extends JMenuBar {
 			distance.setText("Distance: "+distanceString());
 		}
 		distance.setVisible(panel.isShowDistance());
-		Point adjustedPoint = Util.normalizePos(panel.getSelectedGridPoint(), record.getZero());
+		Point adjustedPoint = Util.normalizePos(panel.getMiddleGridPoint(), record.getZero());
 		xField.setText(String.valueOf(adjustedPoint.x));
 		yField.setText(String.valueOf(adjustedPoint.y));
 		sField.setText(String.valueOf(panel.getScale()));

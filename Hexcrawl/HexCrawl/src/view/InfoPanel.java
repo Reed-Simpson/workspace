@@ -515,9 +515,7 @@ public class InfoPanel extends JTabbedPane{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		changeSelected = false;
-		Point pos;
-		if(panel.isShowDistance()) pos = panel.getMouseoverGridPoint();
-		else pos = panel.getSelectedGridPoint();
+		Point pos = panel.getSelectedGridPoint();
 		AltitudeModel grid = panel.getController().getGrid();
 		PrecipitationModel precipitation = panel.getController().getPrecipitation();
 		BiomeModel biomes = panel.getController().getBiomes();

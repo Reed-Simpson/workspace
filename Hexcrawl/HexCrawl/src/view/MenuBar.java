@@ -141,7 +141,7 @@ public class MenuBar extends JMenuBar {
 		});
 		menu.add(roller);
 
-		JMenuItem gme = new JMenuItem("GME Roller");
+		JMenuItem gme = new JMenuItem("GME2 Events and Scenes");
 		gme.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {

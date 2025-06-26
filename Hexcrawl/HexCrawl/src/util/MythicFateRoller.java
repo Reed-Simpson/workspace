@@ -1,8 +1,6 @@
 package util;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -11,21 +9,18 @@ import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.text.TableView.TableRow;
 
 import data.HexData;
 import view.InfoPanel;
@@ -36,10 +31,11 @@ public class MythicFateRoller {
 		{tri( 0, 1,81),tri( 1, 5,82),tri( 2,10,83),tri( 3,15,84),tri( 5,25,86),tri( 7,35,88),tri(10,50,91),tri(13,65,94),tri(15,75,96),tri(17,85,98),tri(18,90,99),tri(19,95,100),tri(20,99,101)};
 	private static final String[] odds = {"Certain","Nearly Certain","Very Likely","Likely","50/50","Unlikely","Very Unlikely","Nearly Impossible","Impossible"};
 	private static final String[] outcomes = {"Exceptional Yes","Yes","No","Exceptional No","Random Event"};
+	private static final String[] scenes = {"Remove a Character","Add a Character","Reduce/Remove an Activity","Increase an Activity","Remove an Object","Add an Object"};
 	transient Random rand;
 	int chaosFactor;
 	private InfoPanel info;
-	
+
 	private static Trinterval tri(int q1, int q2,int q3) {
 		return new Trinterval(q1, q2, q3);
 	}
@@ -48,17 +44,17 @@ public class MythicFateRoller {
 		else if(index>11) return ranges[12];
 		else return ranges[index];
 	}
-	
+
 	public MythicFateRoller(InfoPanel info) {
 		chaosFactor = 5;
 		this.info = info;
 	}
-	
+
 	public MythicFateRollerDialog showDialog(JFrame parent) {
 		MythicFateRollerDialog dialog = new MythicFateRollerDialog(parent);
 		return dialog;
 	}
-	
+
 	private static int isDoubles(int val) {
 		if(val%10==val/10) return val%10;
 		else return 10;
@@ -66,6 +62,16 @@ public class MythicFateRoller {
 	private String getOutcome(int roll, Trinterval values) {
 		if(isDoubles(roll)<chaosFactor) return outcomes[4];
 		else return outcomes[values.compare(roll)];
+	}
+
+	private boolean isExpectedScene(int roll) {
+		return roll>chaosFactor;
+	}
+	private boolean isAlteredScene(int roll) {
+		return roll<=chaosFactor&&roll%2==1;
+	}
+	private boolean isInterrupScene(int roll) {
+		return roll<=chaosFactor&&roll%2==0;
 	}
 
 	@SuppressWarnings("serial")
@@ -78,8 +84,8 @@ public class MythicFateRoller {
 			super(parent);
 			this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 			getRootPane().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-	        setResizable(false);
-	        this.setTitle("Mythic GME2 Fate Question Roller");
+			setResizable(false);
+			this.setTitle("Mythic GME2 Fate Question and Scene Adjustment Roller");
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			Object[][] data = new Object[9][2];
 			for(int i=0;i<data.length;i++) {
@@ -88,11 +94,11 @@ public class MythicFateRoller {
 			}
 			String[] headers = {"","1"};
 			DefaultTableModel model = new DefaultTableModel(data,headers) {
-	            @Override
-	            public boolean isCellEditable(int row, int column) {
-	                return false; 
-	            }
-	        };
+				@Override
+				public boolean isCellEditable(int row, int column) {
+					return false; 
+				}
+			};
 			table = new JTable(model);
 			table.setFont(table.getFont().deriveFont(20f));
 			setColumnWidths(table);
@@ -101,18 +107,15 @@ public class MythicFateRoller {
 				public void mouseClicked(MouseEvent e) {
 					chaosFactor = slider.getValue();
 					int row = table.rowAtPoint(e.getPoint());
-					int column = table.columnAtPoint(e.getPoint());
-					if(column>0) {
-						Trinterval obj = (Trinterval) table.getValueAt(row, column);
-						int roll = getRand().nextInt(100)+1;
-						String message = getOutcome(roll, obj);
-						if(isDoubles(roll)<chaosFactor) {
-							field.genNewData(null);
-						}else {
-							field.setText(message);
-						}
-						field.flicker();
+					Trinterval obj = (Trinterval) table.getValueAt(row, 1);
+					int roll = getRand().nextInt(100)+1;
+					String message = getOutcome(roll, obj);
+					if(isDoubles(roll)<chaosFactor) {
+						field.genNewData(null);
+					}else {
+						field.setText(message);
 					}
+					field.flicker();
 				}
 				public void mousePressed(MouseEvent e) {}
 				public void mouseReleased(MouseEvent e) {}
@@ -120,7 +123,7 @@ public class MythicFateRoller {
 				public void mouseExited(MouseEvent e) {}
 			});
 			this.add(table);
-			
+
 			slider = new JSlider(JSlider.VERTICAL);
 			slider.setInverted(true);
 			slider.setMinimum(1);
@@ -138,23 +141,46 @@ public class MythicFateRoller {
 				}
 			});
 			this.add(slider);
-			
+
 			this.field = new MyTextPane(info, -1, HexData.ENCOUNTER);
 			field.setPreferredSize(new Dimension(270,270));
 			this.add(field);
-			
+
+			JButton sceneAdjustment = new JButton("Scene Adjustment");
+			sceneAdjustment.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int roll = getRand().nextInt(10)+1;
+					if(isExpectedScene(roll)) field.setText("Expected Scene");
+					else if(isInterrupScene(roll)) field.genNewData(null);
+					else {
+						String message = "Altered Scene: ";
+						int roll1 = getRand().nextInt(10);
+						if(roll1>=scenes.length) {
+							int roll2 = getRand().nextInt(scenes.length);
+							int roll3 = getRand().nextInt(scenes.length);
+							message+="\r\n"+scenes[roll2]+"\r\n"+scenes[roll3];
+						}else {
+							message+="\r\n"+scenes[roll1];
+						}
+						field.setText(message);
+					}
+				}
+			});
+			this.add(sceneAdjustment);
+
 			this.pack();
-	        setLocationRelativeTo(this.getOwner());
+			setLocationRelativeTo(this.getOwner());
 			this.setVisible(true);
 		}
-		
+
 		private void setColumnWidths(JTable table) {
-            table.setRowHeight(30);
-            TableColumn column = table.getColumnModel().getColumn(0);
-            column.setPreferredWidth(170 + table.getIntercellSpacing().width); // Add spacing
-            TableColumn column1 = table.getColumnModel().getColumn(1);
-            column1.setPreferredWidth(120 + table.getIntercellSpacing().width); // Add spacing
-            table.setRowHeight(30);
+			table.setRowHeight(30);
+			TableColumn column = table.getColumnModel().getColumn(0);
+			column.setPreferredWidth(170 + table.getIntercellSpacing().width); // Add spacing
+			TableColumn column1 = table.getColumnModel().getColumn(1);
+			column1.setPreferredWidth(120 + table.getIntercellSpacing().width); // Add spacing
+			table.setRowHeight(30);
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 			centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 			table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
@@ -168,22 +194,22 @@ public class MythicFateRoller {
 			}
 			String[] headers = {"","1"};
 			DefaultTableModel model = new DefaultTableModel(data,headers) {
-	            @Override
-	            public boolean isCellEditable(int row, int column) {
-	                return false; 
-	            }
-	        };
+				@Override
+				public boolean isCellEditable(int row, int column) {
+					return false; 
+				}
+			};
 			table.setModel(model);
 			setColumnWidths(table);
 		}
-		
+
 	}
-	
+
 	public Random getRand() {
 		if(this.rand==null) rand = new Random(System.currentTimeMillis());
 		return this.rand;
 	}
-	
+
 	private static class Trinterval{
 		int q1;
 		int q2;
@@ -213,5 +239,5 @@ public class MythicFateRoller {
 			else return "  "+s;
 		}
 	}
-	
+
 }

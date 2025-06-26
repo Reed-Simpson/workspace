@@ -576,20 +576,15 @@ public class InfoPanel extends JTabbedPane{
 		this.magic.setText("Magic Type: "+magics);
 
 		threatText.doPaint();
-		System.out.println(threatText.getIndex());
-//		this.threatText.setText(getThreatText(pos));
 		city1.doPaint();
 
 		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
 		
 
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-//			this.city1.setText("None");
-
 			zeroPopComponents();
 		}else {
 			positivePopComponents();
-
 
 			for(int i = 0;i<this.encounterTexts.size();i++) {
 				MyTextPane pane = this.encounterTexts.get(i);

@@ -72,7 +72,6 @@ public class MapPanel  extends JPanel{
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
-		this.showRivers=true;
 		this.showCities=true;
 		this.showIcons=true;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
@@ -252,7 +251,7 @@ public class MapPanel  extends JPanel{
 			borderColor = null;
 		}
 		drawHexes(g2, step, displayScale, borderColor);
-		if(showRivers&&!wideview) {
+		if(!wideview) {
 			drawRivers(g2, step, displayScale, borderColor);
 		}
 		drawOceans(g2, step, displayScale, borderColor);
@@ -692,7 +691,7 @@ public class MapPanel  extends JPanel{
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 			if(width>displayScale) width = displayScale;
-			if(width>2) {
+			if(showRivers||width>1.5) {
 				drawSpline(g2, spline, width,BiomeType.RIVER.getColor());
 			}
 		}

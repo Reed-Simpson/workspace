@@ -230,15 +230,14 @@ public class MenuBar extends JMenuBar {
 		dataFieldsPanel.add(dataMenu);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
 		
-//		dataFieldsPanel.add(new JLabel("show rivers:"));
+		dataFieldsPanel.add(new JLabel("watersheds:"));
 		wBox = new JCheckBox();
-		wBox.setSelected(true);
 		wBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowRivers(wBox.isSelected());
 			}
 		});
-//		dataFieldsPanel.add(wBox);
+		dataFieldsPanel.add(wBox);
 		
 //		dataFieldsPanel.add(new JLabel("show towns:"));
 		cBox = new JCheckBox();

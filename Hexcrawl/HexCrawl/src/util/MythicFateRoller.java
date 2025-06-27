@@ -67,9 +67,6 @@ public class MythicFateRoller {
 	private boolean isExpectedScene(int roll) {
 		return roll>chaosFactor;
 	}
-	private boolean isAlteredScene(int roll) {
-		return roll<=chaosFactor&&roll%2==1;
-	}
 	private boolean isInterrupScene(int roll) {
 		return roll<=chaosFactor&&roll%2==0;
 	}

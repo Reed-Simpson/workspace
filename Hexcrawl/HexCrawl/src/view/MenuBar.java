@@ -57,6 +57,7 @@ public class MenuBar extends JMenuBar {
 	private JButton nextButton;
 	private MapFrame frame;
 	private MythicFateRoller mythicroller;
+	private JCheckBox iBox;
 
 	public MenuBar(MapPanel panel,MapFrame frame,InfoPanel info) {
 		this.frame = frame;
@@ -248,6 +249,16 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 //		dataFieldsPanel.add(cBox);
+		
+		dataFieldsPanel.add(new JLabel("show icons:"));
+		iBox = new JCheckBox();
+		iBox.setSelected(true);
+		iBox.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent e) {
+				panel.setShowIcons(iBox.isSelected());
+			}
+		});
+		dataFieldsPanel.add(iBox);
 		
 		dataFieldsPanel.add(new JLabel("mouseover:"));
 		dBox = new JCheckBox();

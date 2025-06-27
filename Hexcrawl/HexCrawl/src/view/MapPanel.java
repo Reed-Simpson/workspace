@@ -36,10 +36,10 @@ import util.Counter;
 import util.Pair;
 
 public class MapPanel  extends JPanel{
-	private static final double RIVER_STEP = 0.01;
+	private static final double RIVER_STEP = 0.03;
 	private static final int WIDEVIEW = 5;
 	private static final long serialVersionUID = 6922738675563657970L;
-	private static final Color LINE_COLOR = Color.BLACK;
+	private static final Color LINE_COLOR = null;
 	private static final double sqrt3 = Math.sqrt(3.0);
 	public static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 500;
@@ -68,11 +68,13 @@ public class MapPanel  extends JPanel{
 	private HashMap<Point,Pair<Color,Color>> colorCache;
 	private boolean mouseoverHold;
 	private HashMap<Point,List<Icon>> iconCache;
+	private boolean showIcons;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
 		this.showRivers=true;
 		this.showCities=true;
+		this.showIcons=true;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
 		iconCache = new HashMap<Point,List<Icon>>();
 		this.addMouseListener(new MouseAdapter());
@@ -246,7 +248,7 @@ public class MapPanel  extends JPanel{
 		int displayScale = getDisplayScale();
 		boolean wideview = scale<WIDEVIEW;
 		Color borderColor = LINE_COLOR;
-		if(scale<HIDE_BORDERS_SCALE) {
+		if(scale<HIDE_BORDERS_SCALE||!showIcons) {
 			borderColor = null;
 		}
 		drawHexes(g2, step, displayScale, borderColor);
@@ -261,7 +263,7 @@ public class MapPanel  extends JPanel{
 		}
 		drawRegion(g2, displayScale);
 		drawCenterHex(g2, displayScale);
-		if(!wideview)drawSymbols(g2, step, displayScale, borderColor);
+		drawSymbols(g2, step, displayScale, borderColor);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
 
@@ -485,38 +487,38 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawSymbols(Graphics2D g2, int step, int displayScale, Color borderColor) {
-		if(borderColor!=null) {
-			Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-			Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
-			int sum = (p2.x-p1.x);
-			MyLogger logger = new MyLogger(LOG_THRESHOLD);
-			Counter counter = new Counter(sum, dialog.getProgressBar());
-			counter.setLog(logger);
-			if(printLoadingInfo) {
-				logger.log("Drawing symbols: ");
-				dialog.createProgressUI("Drawing symbols: ");
-			}
+		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
+		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
+		int sum = (p2.x-p1.x);
+		MyLogger logger = new MyLogger(LOG_THRESHOLD);
+		Counter counter = new Counter(sum, dialog.getProgressBar());
+		counter.setLog(logger);
+		if(printLoadingInfo) {
+			logger.log("Drawing symbols: ");
+			dialog.createProgressUI("Drawing symbols: ");
+		}
 
-			for(int i=p1.x;i<p2.x;i+=step) {
-				for(int j=p2.y;j<p1.y;j+=step) {
-					List<Icon> icons = iconCache.get(new Point(i,j));
-					if(icons!=null) {
-						for(Icon icon:icons) {
-							Character ch = icon.getCh();
-							Point offset = icon.offset;
-							Color c = icon.getC();
-							double cScale = icon.getScale();
-							g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
-							if(c==null) c=borderColor;
-							g2.setColor(c);
-							if(ch!=null) g2.drawString(ch.toString(), getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
-						}
+		for(int i=p1.x;i<p2.x;i+=step) {
+			for(int j=p2.y;j<p1.y;j+=step) {
+				List<Icon> icons = iconCache.get(new Point(i,j));
+				if(icons!=null) {
+					if((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh()))) {
+					for(Icon icon:icons) {
+						Character ch = icon.getCh();
+						Point offset = icon.offset;
+						Color c = icon.getC();
+						double cScale = icon.getScale();
+						g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
+						if(c==null) c=borderColor;
+						g2.setColor(c);
+						if(ch!=null) g2.drawString(ch.toString(), getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
+					}
 					}
 				}
-				if(printLoadingInfo) counter.increment();
 			}
-			logger.logln("Symbols drawn "+(System.currentTimeMillis()-time)+" ms");
+			if(printLoadingInfo) counter.increment();
 		}
+		logger.logln("Symbols drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
 	private void drawDistanceMarker(Graphics2D g2, int step, int displayScale, Color c) {
@@ -818,8 +820,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	public void drawHex(Graphics2D g2,int x,int y,Color borderColor,Color background,Color center,int scale,Color crosshatch) {
-		int[] xs = new int[] {x,						x+scale,				x+scale,				x,						x-scale,				x-scale};
-		int[] ys = new int[] {(int)(y+scale*2/sqrt3),	(int)(y+scale/sqrt3),	(int)(y-scale/sqrt3),	(int)(y-scale*2/sqrt3),	(int)(y-scale/sqrt3),	(int)(y+scale/sqrt3)};
+		int[] xs = new int[] {x,						x+scale+1,				x+scale,				x,						x-scale,				x-scale};
+		int[] ys = new int[] {(int)(y+scale*2/sqrt3),	(int)(y+scale/sqrt3+1),	(int)(y-scale/sqrt3),	(int)(y-scale*2/sqrt3),	(int)(y-scale/sqrt3),	(int)(y+scale/sqrt3)};
 		Polygon p = new Polygon(xs,ys,6);
 		if(background!=null) {
 			g2.setColor(background);
@@ -1153,6 +1155,11 @@ public class MapPanel  extends JPanel{
 	public void setHighlight(Color selectedColor) {
 		Point p = this.getSelectedGridPoint();
 		record.setHighlight(p,selectedColor);
+	}
+
+	public void setShowIcons(boolean selected) {
+		this.showIcons = selected;
+		this.preprocessThenRepaint();
 	}
 
 }

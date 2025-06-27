@@ -150,12 +150,12 @@ public class Util {
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
-			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj));
+			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj).toString());
 			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
 			if(result.contains("${character index}")) {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
-				else result = Util.replace(result,"${character index}",FactionNameGenerator.getFaction(obj));
+				else result = Util.replace(result,"${character index}",FactionNameGenerator.getFaction(obj).toString());
 			}
 			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",Species.GOLIATH.getCityNameGen().getName(obj));
 		}
@@ -177,7 +177,7 @@ public class Util {
 		if(result.contains("${building}")) result = Util.replace(result,"${building}",SettlementModel.getBuilding(obj));
 		if(result.contains("${building room}")) result = Util.replace(result,"${building room}",SettlementModel.getRoom(obj));
 
-		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionNameGenerator.getFaction(obj));
+		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionNameGenerator.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));
 
 		if(result.contains("${job}")) result = Util.replace(result,"${job}",NPCModel.getJob(obj));

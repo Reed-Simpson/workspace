@@ -24,7 +24,7 @@ public class NPC extends Indexible{
 	private transient String relationship;
 	private transient String domain;
 	private transient String name;
-	private transient String goblin;
+	private transient String subspecies;
 	private transient String faction;
 	private transient String[] descriptors;
 
@@ -178,9 +178,8 @@ public class NPC extends Indexible{
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		String name = (this.name!=null?this.name+", the ":"");
-		//e1Text.append("~~~~~ NPC #"+(i)+name+" ~~~~~\r\n");
 		String species = this.getSpecies().name();
-		if(Species.GOBLINOID.equals(this.species)) species = this.getGoblin();
+		if(this.getSubspecies()!=null) species = this.getSubspecies();
 		e1Text.append(name+Util.toCamelCase(species)+" "+this.getJob() + "\r\n");
 		e1Text.append("• Descriptors: "+Util.parseArray(this.getDescriptors()));
 		e1Text.append("\r\n");
@@ -213,12 +212,12 @@ public class NPC extends Indexible{
 		this.name = name;
 	}
 
-	public String getGoblin() {
-		return goblin;
+	public String getSubspecies() {
+		return subspecies;
 	}
 
-	public void setGoblin(String goblin) {
-		this.goblin = goblin;
+	public void setSubspecies(String goblin) {
+		this.subspecies = goblin;
 	}
 	public String getFaction() {
 		return faction;

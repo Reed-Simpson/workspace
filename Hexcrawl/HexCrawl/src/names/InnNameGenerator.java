@@ -4,7 +4,7 @@ import data.Indexible;
 import data.WeightedTable;
 import util.Util;
 
-public class InnNameGenerator extends NameGenerator{
+public class InnNameGenerator extends IndexibleNameGenerator{
 	private static final String PREFIXES = "Bellowing,Blazing,Bleak,Blessed,Bloody,Crimson,Cunning,Copper,Dancing,Dead,Drunken,Flying,"+//Maze rats
 			"Ghastly,Golden,Helpful,Hideous,Howling,Hungry,Moldy,Muttering,Nimble,Oozing,Petrified,Prancing,"+
 			"Romantic,Salty,Singing,Shivering,Shrieking,Silver,Smoking,Thirsty,Wicked,Tipsy,Whistling,Wanton,"+

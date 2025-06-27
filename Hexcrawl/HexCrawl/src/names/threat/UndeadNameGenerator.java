@@ -122,7 +122,7 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
 		String speciesName = species.name();
-		if(Species.GOBLINOID.equals(species)) speciesName = HumanoidNameGenerator.getGoblinoid(threat);
+		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
 		String result = npc.getName();
 		if(result==null) result = species.getNPCNameGen().getName(threat);
 		return result+", The "+speciesName+" "+subtype;

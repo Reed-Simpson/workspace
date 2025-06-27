@@ -256,7 +256,7 @@ public class NPCModel extends DataModel {
 	}
 	private void populateNPCData(Point p, NPC npc) {
 		setSpecies(p, npc);
-		setGoblin(p, npc);
+		setSubspecies(p, npc);
 		setJob(p, npc);
 		setAsset(p, npc);
 		setLiability(p, npc);
@@ -291,8 +291,10 @@ public class NPCModel extends DataModel {
 			}
 		}
 	}
-	private void setGoblin(Point p, NPC result) {
-		result.setGoblin(HumanoidNameGenerator.getGoblinoid(result));
+	private void setSubspecies(Point p, NPC result) {
+		if(Species.GOBLINOID.equals(result.getSpecies())) {
+			result.setSubspecies(HumanoidNameGenerator.getGoblinoid(result));
+		}
 	}
 	private void setJob(Point p, NPC npc) {
 		npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));

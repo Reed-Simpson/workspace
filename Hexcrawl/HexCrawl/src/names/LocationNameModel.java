@@ -50,7 +50,7 @@ public class LocationNameModel {
 		return LocationModel.getDescriptor(obj);
 	}
 	
-	public String getName(NameGenerator gen,Point p) {
+	public String getName(IndexibleNameGenerator gen,Point p) {
 		int[] indexes = new int[20];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getIndexValue(p,3+i);
@@ -59,7 +59,7 @@ public class LocationNameModel {
 	}
 
 
-	public String getName(NameGenerator gen, Random random) {
+	public String getName(IndexibleNameGenerator gen, Random random) {
 		int[] indexes = new int[20];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = random.nextInt();

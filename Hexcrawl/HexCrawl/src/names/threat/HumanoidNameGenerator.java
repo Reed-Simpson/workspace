@@ -182,8 +182,8 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 	private String getGoblinoidName(Threat threat) {
 		String goblinoid = getGoblinoid(threat);
 		NPC npc = threat.getNPC();
-		String result = npc.getName();
-		if(result==null) result = Species.GOBLINOID.getNPCNameGen().getName(threat);
+		npc.setSubspecies(goblinoid);
+		String result = Species.GOBLINOID.getNPCNameGen().getName(threat);
 		return result+", The "+goblinoid+" Warlord";
 	}
 	private String getKoboldName(Threat threat) {

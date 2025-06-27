@@ -158,7 +158,7 @@ public class ThreatModel extends DataModel{
 		return npc;
 	}
 
-	public Object getMinion(DataController controller, Random random, Point p,Threat threat) {
+	public NPC getMinion(DataController controller, Random random, Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
 		NPC npc = controller.getNpcs().getNPC(p,random);
 		return npc;

@@ -2,7 +2,6 @@ package data.population;
 
 import data.Indexible;
 import names.IndexibleNameGenerator;
-import names.NameGenerator;
 import names.city.DragonbornCityNameGenerator;
 import names.city.DwarfCityNameGenerator;
 import names.city.ElfCityNameGenerator;
@@ -50,12 +49,12 @@ public enum Species {
 	
 	private float isolationFactor;
 	private float hue;
-	private NameGenerator cityNames;
+	private IndexibleNameGenerator cityNames;
 	private int index;
 	private IndexibleNameGenerator npcNames;
 	private float weight;
 	
-	private Species(int index,float isolationFactor,float hue,NameGenerator cityNames,IndexibleNameGenerator npcNames,float weight) {
+	private Species(int index,float isolationFactor,float hue,IndexibleNameGenerator cityNames,IndexibleNameGenerator npcNames,float weight) {
 		this.index = index;
 		this.isolationFactor=isolationFactor;
 		this.hue = hue;
@@ -70,7 +69,7 @@ public enum Species {
 	public float getHue() {
 		return this.hue;
 	}
-	public NameGenerator getCityNameGen() {
+	public IndexibleNameGenerator getCityNameGen() {
 		return cityNames;
 	}
 	public IndexibleNameGenerator getNPCNameGen() {

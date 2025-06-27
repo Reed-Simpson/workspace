@@ -1,9 +1,10 @@
 package data.npc;
 
 import data.Indexible;
+import names.FactionType;
 
 public class Faction extends Indexible {
-	String type;
+	FactionType type;
 
 	String trait;
 	String goal;
@@ -18,7 +19,7 @@ public class Faction extends Indexible {
 		super(ints);
 	}
 
-	public String getType() {
+	public FactionType getType() {
 		return type;
 	}
 
@@ -33,7 +34,7 @@ public class Faction extends Indexible {
 	public String getName() {
 		return name;
 	}
-	public void setType(String type) {
+	public void setType(FactionType type) {
 		this.type = type;
 	}
 

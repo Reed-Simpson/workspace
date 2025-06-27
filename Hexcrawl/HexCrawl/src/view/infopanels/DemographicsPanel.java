@@ -58,7 +58,11 @@ public class DemographicsPanel extends JPanel {
 		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
 		this.setDemoLabel("Demographics: "+getDemoLabelText(pop, popScale,transformedUniversalPopulation));
 
-		this.demographics.setText(this.getDemoString(pos));
+		setText(this.getDemoString(pos));
+	}
+
+	public void setText(String string) {
+		this.demographics.setText(string);
 	}
 
 	public void setDemoLabel(String string) {

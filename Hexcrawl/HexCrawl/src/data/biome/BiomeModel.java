@@ -81,7 +81,7 @@ public class BiomeModel extends DataModel {
 		}
 		return Util.toCamelCase(WildernessNameGenerator.getRegionName(new Indexible(vals)));
 	}
-	
+
 	public String getRegionName(Random random) {
 		int[] vals = new int[NAMEINDEXES];
 		for(int i=0;i<vals.length;i++) {
@@ -106,7 +106,13 @@ public class BiomeModel extends DataModel {
 		ArrayList<BiomeType> biomes = new ArrayList<BiomeType>();
 		Point outlet = precipitation.getOutlet(p);
 		float depth = grid.getHeight(outlet)-height;
-		if(precipitation.isOutlet(p)) biomes.add(BiomeType.LAKE);
+		if(precipitation.isOutlet(p)) {
+			biomes.add(BiomeType.FLOODPLAIN);
+			if(precipitation.getLakeFlow(p)>7) biomes.add(BiomeType.LAKE);
+			if(precipitation.getLakeFlow(p)<14) biomes.add(BiomeType.WETLAND);
+			if(precipitation.getLakeFlow(p)>21) biomes.add(BiomeType.LAKE);
+			if(precipitation.getLakeFlow(p)<28) biomes.add(BiomeType.WETLAND);
+		}
 		else if(depth<0.005) biomes.add(BiomeType.FLOODPLAIN);
 		else {
 			if(precipitation.getLakeFlow(p)*depth<0.02) biomes.add(BiomeType.WETLAND);

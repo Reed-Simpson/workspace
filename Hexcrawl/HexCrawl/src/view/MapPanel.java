@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -104,6 +105,7 @@ public class MapPanel  extends JPanel{
 		this.recenter(record.getPos(),false);
 	}
 	public void initialize() {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		if(!record.isInitialized()) {
 			initializing = true;
 			record.initialize(controller.getGrid(),controller.getPopulation());
@@ -125,6 +127,7 @@ public class MapPanel  extends JPanel{
 			worker.execute();
 		}else {
 			postinitialize(record);
+            frame.setCursor(Cursor.getDefaultCursor());
 		}
 	}
 
@@ -274,6 +277,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	public void preprocessThenRepaint() {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		SwingWorker<Void, Integer> worker = new SwingWorker<Void,Integer>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -286,6 +290,7 @@ public class MapPanel  extends JPanel{
 				if(HexData.ECONOMY.equals(displayData)&&!wideview) {
 					loadRoads();
 				}
+	            frame.setCursor(Cursor.getDefaultCursor());
 				return null;
 			}
 			@Override
@@ -637,6 +642,7 @@ public class MapPanel  extends JPanel{
 		dialog.removeProgressUI();
 		System.out.println("done 1");
 		if(initializing) {
+            frame.setCursor(Cursor.getDefaultCursor());
 			record.initialize(controller.getGrid(),controller.getPopulation());
 			initializing = false;
 			postinitialize(record);

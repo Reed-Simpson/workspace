@@ -260,9 +260,9 @@ public class MapPanel  extends JPanel{
 			drawRoads(g2,step,displayScale,Color.RED);
 			highlightTowns(g2,step,displayScale,Color.RED);
 		}
+		drawSymbols(g2, step, displayScale, borderColor);
 		drawRegion(g2, displayScale);
 		drawCenterHex(g2, displayScale);
-		drawSymbols(g2, step, displayScale, borderColor);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
 
@@ -872,11 +872,6 @@ public class MapPanel  extends JPanel{
 						color2 = null;
 					}
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
-					if(borderColor!=null) {
-						g2.setColor(borderColor);
-						Character c = controller.getBiomes().getBiome(i, j).getCh();
-						if(c!=null) g2.drawString(c.toString(), getScreenPos(i,j).x-10, getScreenPos(i,j).y+6);
-					}
 				}
 			}
 			if(printLoadingInfo) {

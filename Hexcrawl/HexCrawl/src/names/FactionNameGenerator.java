@@ -358,6 +358,8 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		faithNameGenerators.put(FactionType.NATIONAL_CHURCH,new NationalChurchNameGen());
 		faithNameGenerators.put(FactionType.RELIGIOUS_ORDER,new ReligiousOrderNameGen());
 		faithNameGenerators.put(FactionType.RELIGIOUS_SECT,new ReligiousSectNameGen());
+		faithNameGenerators.put(FactionType.DRUID_CIRCLE,new ReligiousSectNameGen());
+		faithNameGenerators.put(FactionType.MONASTIC_ORDER,new ReligiousSectNameGen());
 		faiths = new WeightedTable<FactionType>();
 		for(FactionType s:faithNameGenerators.keySet()) {
 			faiths.put(s);
@@ -380,6 +382,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		factionNameGenerators.put(FactionType.HEIST_CREW,new HeistCrewNameGen());
 		factionNameGenerators.put(FactionType.HIGH_COUNCIL,new HighCouncilNameGen());
 		factionNameGenerators.put(FactionType.HIRED_KILLERS,new HiredKillersNameGen());
+		factionNameGenerators.put(FactionType.KNIGHTLY_ORDER,new RoyalArmyNameGen());
 		factionNameGenerators.put(FactionType.LOCAL_MILITIA,new LocalMilitiaNameGen());
 		factionNameGenerators.put(FactionType.NOBLE_HOUSE,new NobleHouseNameGen());
 		factionNameGenerators.put(FactionType.OUTLANDER_CLAN,new OutlanderClanNameGen());
@@ -393,9 +396,10 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		factionNameGenerators.put(FactionType.SPY_NETWORK,new SpyNetworkNameGen());
 		factionNameGenerators.put(FactionType.STREET_ARTISTS,new StreetArtistsNameGen());
 		factionNameGenerators.put(FactionType.STREET_GANG,new StreetGangNameGen());
-		factionNameGenerators.put(FactionType.STREET_MUSICIANS,new StreetMusiciansNameGen());
+		factionNameGenerators.put(FactionType.BARD_COLLEGE,new StreetMusiciansNameGen());
 		factionNameGenerators.put(FactionType.THEATER_TROUPE,new TheaterTroupeNameGen());
 		factionNameGenerators.put(FactionType.TRADE_COMPANY,new TradeCompanyNameGen());
+		factionNameGenerators.put(FactionType.WIZARD_CIRCLE,new ScholarCircleNameGen());
 
 		factions = new WeightedTable<FactionType>();
 		for(FactionType s:factionNameGenerators.keySet()) {
@@ -726,7 +730,10 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		else gen = factionNameGenerators.get(type);
 		return gen;
 	}
-
+	public static boolean isFaith(FactionType type) {
+		return faiths.containsKey(type);
+	}
+	
 	private static class ArtMovementNameGen extends AdjectiveNounNameGenerator{
 		@Override
 		public String getName(Indexible obj) {

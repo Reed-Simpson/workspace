@@ -23,7 +23,7 @@ public enum AberrationType implements CreatureSubtype{
 		weights.put(ABOLETH, 100);
 		weights.put(BEHOLDER, 100);
 		weights.put(SLAAD, 100);
-		weights.put(MINDFLAYER, 100);
+		weights.put(ELDERBRAIN, 100);
 		weights.put(ELDERBRAINDRAGON, 10);
 		weights.put(FEYR, 10);
 		weights.put(GRIMLOCK, 10);

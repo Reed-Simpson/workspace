@@ -50,6 +50,7 @@ public class SaveRecord implements Serializable {
 	private DiceRoller roller;
 	private ArrayList<Reference> campaignCharacters;
 	private ArrayList<String> campaignThreads;
+	private HashMap<Point,ArrayList<String>> minions;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -73,6 +74,7 @@ public class SaveRecord implements Serializable {
 		this.factions = new HashMap<Point,ArrayList<String>>();
 		this.faiths = new HashMap<Point,ArrayList<String>>();
 		this.highlights = new HashMap<Point,Color>();
+		this.minions = new HashMap<Point,ArrayList<String>>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
 		this.campaignThreads = new ArrayList<String>();
@@ -86,7 +88,6 @@ public class SaveRecord implements Serializable {
 		for(int i=0;i<charArray.length;i++) {
 			result+= ((long)(charArray[i]))*Character.MAX_VALUE;
 		}
-		// TODO Auto-generated method stub
 		return result;
 	}
 
@@ -212,6 +213,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.factions==null) loadedRecord.factions = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.faiths==null) loadedRecord.faiths = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.highlights==null) loadedRecord.highlights = new HashMap<Point,Color>();
+			if(loadedRecord.minions==null) loadedRecord.minions = new HashMap<Point,ArrayList<String>>();
 			
 			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
 			if(loadedRecord.campaignThreads==null) loadedRecord.campaignThreads = new ArrayList<String>();
@@ -576,5 +578,32 @@ public class SaveRecord implements Serializable {
 	public String removeCampaignThread(int index) {
 		System.out.println("removeCampaignThread "+index);
 		return this.campaignThreads.remove(index);
+	}
+
+	
+
+	public String putMinion(Point p,int i,String s) {
+		if(!this.minions.containsKey(p)) this.minions.put(p, new ArrayList<String>());
+		ArrayList<String> minion = this.minions.get(p);
+		while(minion.size()<i+1) minion.add(null);
+		String set = minion.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getMinion(Point p,int i) {
+		ArrayList<String> minion = this.minions.get(p);
+		if(minion==null||minion.size()<=i) return null;
+		return minion.get(i);
+	}
+	public String removeMinion(Point p,int i) {
+		ArrayList<String> minion = this.minions.get(p);
+		if(minion==null||minion.size()<=i) return null;
+		String set = minion.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 }

@@ -7,13 +7,16 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import controllers.DataController;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
+import data.npc.Faction;
 import data.npc.NPC;
 import data.npc.NPCModel;
 import io.SaveRecord;
 import util.Util;
+import view.InfoPanel;
 
 public class ThreatModel extends DataModel{
 	private static final int SEED_OFFSET = 7*Util.getOffsetX();
@@ -93,8 +96,7 @@ public class ThreatModel extends DataModel{
 	public Threat getThreat(Point p) {
 		Point threatSource = getCenter(p);
 		if(threatCache.get(threatSource)!=null) return threatCache.get(threatSource);
-		NPC npc = npcs.getNPC(40, threatSource);
-//		if(npc==null) npc = npcs.getRandomNPC(40,threatSource);
+		NPC npc = npcs.getNPC(InfoPanel.NPCCOUNT*2+1, threatSource);
 		int[] indexes = new int[25];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getThreatDetailIndex(p,i);
@@ -143,6 +145,23 @@ public class ThreatModel extends DataModel{
 		result.setPlan(ThreatDetails.getPlan(result));
 		result.setName(getThreatName(result ));
 		return result;
+	}
+	
+	public Faction getFaction(DataController controller,Point p,Threat threat) {
+		if(threat==null) threat = getThreat(p);
+		Faction faction = controller.getSettlements().getFaction(InfoPanel.FACTIONCOUNT+1, p);
+		return faction;
+	}
+	public NPC getMinion(DataController controller,Point p,int i,Threat threat) {
+		if(threat==null) threat = getThreat(p);
+		NPC npc = controller.getNpcs().getNPC(i+InfoPanel.NPCCOUNT, p);
+		return npc;
+	}
+
+	public Object getMinion(DataController controller, Random random, Point p,Threat threat) {
+		if(threat==null) threat = getThreat(p);
+		NPC npc = controller.getNpcs().getNPC(p,random);
+		return npc;
 	}
 
 }

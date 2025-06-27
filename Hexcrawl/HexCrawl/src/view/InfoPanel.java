@@ -60,6 +60,7 @@ public class InfoPanel extends JTabbedPane{
 	private int LOCATION_TAB_INDEX;
 	private int NPC_TAB_INDEX;
 	private int ENCOUNTER_TAB_INDEX;
+	private int MINIONS_TAB_INDEX;
 	private MapPanel panel;
 
 	private JLabel biome;
@@ -114,6 +115,7 @@ public class InfoPanel extends JTabbedPane{
 	private int selectedFaith;
 	private JPanel encounterPanel;
 	private JPanel dungeonPanel;
+	private ArrayList<MyTextPane> minionsTexts;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -324,8 +326,8 @@ public class InfoPanel extends JTabbedPane{
 
 		threatText = new MyTextPane(this, 0, HexData.THREAT);
 		threatScrollPane = new JScrollPane(threatText);
-		threatScrollPane.setMaximumSize(new Dimension(9999,125));
-		threatScrollPane.setPreferredSize(new Dimension(9999,125));
+		threatScrollPane.setMaximumSize(new Dimension(9999,375));
+		threatScrollPane.setPreferredSize(new Dimension(9999,375));
 		regionPanel.add(threatScrollPane);
 
 		regionPanel.add(getSeparator());
@@ -373,6 +375,27 @@ public class InfoPanel extends JTabbedPane{
 		regionTabs.addTab("Faiths", faithsScrollPane);
 		this.FAITH_TAB_INDEX = regionTabs.getTabCount()-1;
 
+
+		//Minions tab
+		JPanel minionsPanel = new JPanel();
+		minionsPanel.setLayout(new BoxLayout(minionsPanel, BoxLayout.Y_AXIS));
+		minionsTexts = new ArrayList<MyTextPane>();
+		minionsPanel.add(new JLabel("~~~~~ Faction ~~~~~"));
+		MyTextPane threatFaction = new MyTextPane(this, 0, HexData.MINION);
+		threatFaction.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		minionsPanel.add(threatFaction);
+		minionsTexts.add(threatFaction);
+		for(int i=1;i<NPCCOUNT;i++) {
+			minionsPanel.add(new JLabel("~~~~~ Minion #"+(i)+" ~~~~~"));
+			MyTextPane minion = new MyTextPane(this, i, HexData.MINION);
+			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			minionsPanel.add(minion);
+			minionsTexts.add(minion);
+		}
+		JScrollPane minionsScrollPane = new JScrollPane(minionsPanel);
+		minionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("Minions", minionsScrollPane);
+		this.MINIONS_TAB_INDEX = regionTabs.getTabCount()-1;
 		
 		regionPanel.add(regionTabs);
 
@@ -382,7 +405,6 @@ public class InfoPanel extends JTabbedPane{
 	private void createCampaignTab() {
 		JPanel campaignPanel = new JPanel();
 		campaignPanel.setLayout(new BoxLayout(campaignPanel,BoxLayout.Y_AXIS));
-		//TODO populate campaign tab
 
 
 		JPanel charactersHeader = new JPanel();
@@ -750,7 +772,6 @@ public class InfoPanel extends JTabbedPane{
 		city1.setEnabled(enabled);
 		if(!enabled) {
 			this.city1.setText("None");
-			regionTabs.setSelectedIndex(CITY_TAB_INDEX);
 		}
 	}
 
@@ -779,6 +800,7 @@ public class InfoPanel extends JTabbedPane{
 		case "faction": selectTab(1,FACTION_TAB_INDEX,index);break;
 		case "district": selectTab(1,CITY_TAB_INDEX,index);break;
 		case "faith": selectTab(1,FAITH_TAB_INDEX,index);break;
+		case "minion": selectTab(1,MINIONS_TAB_INDEX,index);break;
 		case "character": selectTab(2,0,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
 		}
@@ -813,6 +835,9 @@ public class InfoPanel extends JTabbedPane{
 				this.repaint();
 			}else if(FAITH_TAB_INDEX==subtab) {
 				selectedFaith=index;
+				this.repaint();
+			}else if(MINIONS_TAB_INDEX==subtab) {
+				//selectedMinion=index;
 				this.repaint();
 			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}

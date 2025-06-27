@@ -112,6 +112,11 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getFaith(i, capital).toString(); break;
 		}
+		case MINION: {
+			Point center = threats.getCenter(p);
+			if(i==0) value = threats.getFaction(this, center,null).toString();
+			else value = threats.getMinion(this, center, i-1,null).toString();break;
+		}
 		case DISTRICT: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getDistrict(i, capital); break;
@@ -172,6 +177,10 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getFaith(capital, i);
 		}
+		case MINION: {
+			Point center = threats.getCenter(p);
+			return record.getMinion(center,i);
+		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getCity(capital);
@@ -209,6 +218,10 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.removeFaith(capital, i);
 		}
+		case MINION: {
+			Point center = threats.getCenter(p);
+			return record.removeMinion(center,i);
+		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.removeCity(capital);
@@ -241,6 +254,10 @@ public class DataController {
 		case FAITH: {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.putFaith(capital, i, s);
+		}
+		case MINION: {
+			Point center = threats.getCenter(p);
+			return record.putMinion(center, i-1, s);
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -276,6 +293,7 @@ public class DataController {
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
 		case FACTION: return settlements.getFaction(record.getRandom(),p).toString(); 
 		case FAITH: return settlements.getFaith(record.getRandom(),p).toString(); 
+		case MINION: return threats.getMinion(this,record.getRandom(),p,null).toString(); 
 		case DISTRICT: return SettlementModel.getDistrict(new Indexible(record.getRandom().nextInt())); 
 		case TOWN: {
 			Species species = population.getMajoritySpecies(p.x,p.y);

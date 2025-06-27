@@ -15,6 +15,7 @@ import data.npc.Faction;
 import data.npc.NPC;
 import data.npc.NPCModel;
 import io.SaveRecord;
+import names.FactionType;
 import util.Util;
 import view.InfoPanel;
 
@@ -149,7 +150,8 @@ public class ThreatModel extends DataModel{
 	
 	public Faction getFaction(DataController controller,Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
-		Faction faction = controller.getSettlements().getFaction(InfoPanel.FACTIONCOUNT+1, p);
+		FactionType[] factionTypes = FactionType.getFactionList(threat.getType());
+		Faction faction = controller.getSettlements().getFaction(InfoPanel.FACTIONCOUNT*2+1, p,factionTypes);
 		return faction;
 	}
 	public NPC getMinion(DataController controller,Point p,int i,Threat threat) {

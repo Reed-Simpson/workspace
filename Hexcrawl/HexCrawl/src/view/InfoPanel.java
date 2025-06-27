@@ -116,6 +116,7 @@ public class InfoPanel extends JTabbedPane{
 	private JPanel encounterPanel;
 	private JPanel dungeonPanel;
 	private ArrayList<MyTextPane> minionsTexts;
+	private int selectedMinion;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -678,6 +679,16 @@ public class InfoPanel extends JTabbedPane{
 			for(int i = 0;i<this.faithsTexts.size();i++) {
 				MyTextPane pane = this.faithsTexts.get(i);
 				if(i==selectedFaith) {
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+				}else {
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
+				}
+				pane.doPaint();
+			}
+
+			for(int i = 0;i<this.minionsTexts.size();i++) {
+				MyTextPane pane = this.minionsTexts.get(i);
+				if(i==selectedMinion) {
 					pane.setBackground(TEXTHIGHLIGHTCOLOR);
 				}else {
 					pane.setBackground(TEXTBACKGROUNDCOLOR);

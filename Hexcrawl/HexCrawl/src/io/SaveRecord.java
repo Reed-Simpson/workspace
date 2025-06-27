@@ -33,6 +33,7 @@ public class SaveRecord implements Serializable {
 	private Point zero;
 	private double scale;
 	private boolean initialized;
+	private int chaosFactor;
 	private LinkedHashMap<Point,String> notes;
 	private HashMap<Point,String> threats;
 	private HashMap<Point,String> cities;
@@ -58,6 +59,7 @@ public class SaveRecord implements Serializable {
 		this.setScale(20);
 		setDefaultPos();
 		initialized=false;
+		chaosFactor=5;
 		this.notes = new LinkedHashMap<Point,String>();
 		this.threats = new HashMap<Point,String>();
 		this.cities = new HashMap<Point,String>();
@@ -605,5 +607,14 @@ public class SaveRecord implements Serializable {
 			this.hasUnsavedData = true;
 		}
 		return set;
+	}
+
+	public int getChaosFactor() {
+		return chaosFactor;
+	}
+
+	public void setChaosFactor(int chaosFactor) {
+		if(this.chaosFactor!=chaosFactor) this.hasUnsavedData=true;
+		this.chaosFactor = chaosFactor;
 	}
 }

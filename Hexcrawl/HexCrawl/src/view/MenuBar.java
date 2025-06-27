@@ -77,7 +77,7 @@ public class MenuBar extends JMenuBar {
 
 		this.add(dataFieldsPanel);
 		this.distanceStringFormat = new DecimalFormat("#0 miles");
-		mythicroller = new MythicFateRoller(info);
+		mythicroller = new MythicFateRoller(info,panel.getRecord());
 	}
 
 	private JMenu constructFileMenu(MapPanel panel) {

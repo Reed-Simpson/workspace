@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import data.HexData;
+import io.SaveRecord;
 import view.InfoPanel;
 import view.MyTextPane;
 
@@ -33,8 +34,8 @@ public class MythicFateRoller {
 	private static final String[] outcomes = {"Exceptional Yes","Yes","No","Exceptional No","Random Event"};
 	private static final String[] scenes = {"Remove a Character","Add a Character","Reduce/Remove an Activity","Increase an Activity","Remove an Object","Add an Object"};
 	transient Random rand;
-	int chaosFactor;
 	private InfoPanel info;
+	private SaveRecord record;
 
 	private static Trinterval tri(int q1, int q2,int q3) {
 		return new Trinterval(q1, q2, q3);
@@ -45,8 +46,8 @@ public class MythicFateRoller {
 		else return ranges[index];
 	}
 
-	public MythicFateRoller(InfoPanel info) {
-		chaosFactor = 5;
+	public MythicFateRoller(InfoPanel info, SaveRecord saveRecord) {
+		this.record = saveRecord;
 		this.info = info;
 	}
 
@@ -60,15 +61,15 @@ public class MythicFateRoller {
 		else return 10;
 	}
 	private String getOutcome(int roll, Trinterval values) {
-		if(isDoubles(roll)<chaosFactor) return outcomes[4];
+		if(isDoubles(roll)<record.getChaosFactor()) return outcomes[4];
 		else return outcomes[values.compare(roll)];
 	}
 
 	private boolean isExpectedScene(int roll) {
-		return roll>chaosFactor;
+		return roll>record.getChaosFactor();
 	}
 	private boolean isInterrupScene(int roll) {
-		return roll<=chaosFactor&&roll%2==0;
+		return roll<=record.getChaosFactor()&&roll%2==0;
 	}
 
 	@SuppressWarnings("serial")
@@ -102,12 +103,12 @@ public class MythicFateRoller {
 			table.addMouseListener(new MouseListener() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					chaosFactor = slider.getValue();
+					record.setChaosFactor(slider.getValue());
 					int row = table.rowAtPoint(e.getPoint());
 					Trinterval obj = (Trinterval) table.getValueAt(row, 1);
 					int roll = getRand().nextInt(100)+1;
 					String message = getOutcome(roll, obj);
-					if(isDoubles(roll)<chaosFactor) {
+					if(isDoubles(roll)<record.getChaosFactor()) {
 						field.genNewData(null);
 					}else {
 						field.setText(message);
@@ -125,14 +126,14 @@ public class MythicFateRoller {
 			slider.setInverted(true);
 			slider.setMinimum(1);
 			slider.setMaximum(9);
-			slider.setValue(chaosFactor);
+			slider.setValue(record.getChaosFactor());
 			slider.setMajorTickSpacing(1);
 			slider.setPaintTicks(true);
 			slider.setPaintLabels(true);
 			slider.setPaintTrack(false);
 			slider.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
-					chaosFactor = slider.getValue();
+					record.setChaosFactor(slider.getValue());
 					refreshTable();
 					MythicFateRollerDialog.this.repaint();
 				}

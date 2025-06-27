@@ -526,9 +526,9 @@ public class InfoPanel extends JTabbedPane{
 
 
 	public void resetSelection() {
-//		selectedEncounter = -1;
+		selectedEncounter = -1;
 		selectedNPC = -1;
-//		selectedDEncounter = -1;
+		selectedDEncounter = -1;
 		selectedDungeon = -1;
 		selectedPOI = -1;
 		selectedFaction = -1;

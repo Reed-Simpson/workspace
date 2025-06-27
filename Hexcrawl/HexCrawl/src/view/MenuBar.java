@@ -66,10 +66,7 @@ public class MenuBar extends JMenuBar {
 		this.fileMenu = constructFileMenu(panel);
 		this.add(fileMenu);
 		repopulateRecentFiles(panel);
-		
-		//JMenu campaignMenu = constructCampaignMenu();
-		//this.add(campaignMenu);
-		
+
 		JMenu utilityMenu = constructUtilityMenu();
 		this.add(utilityMenu);
 
@@ -86,23 +83,28 @@ public class MenuBar extends JMenuBar {
 		fileMenu.add(menuNew);
 		menuNew.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				SaveRecord newRecord = new SaveRecord();
-				frame.load(newRecord);
-//				panel.reloadFromSaveRecord(newRecord);
+				if(frame.unsavedDataConfirmation()) {
+					SaveRecord newRecord = new SaveRecord();
+					frame.load(newRecord);
+				}
 			}
 		});
 		JMenuItem menuNewSeed = new JMenuItem("New From Seed");
 		fileMenu.add(menuNewSeed);
 		menuNewSeed.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				newFromSeed();
+				if(frame.unsavedDataConfirmation()) {
+					newFromSeed();
+				}
 			}
 		});
 		JMenuItem menuOpen = new JMenuItem("Open");
 		fileMenu.add(menuOpen);
 		menuOpen.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				openFile();
+				if(frame.unsavedDataConfirmation()) {
+					openFile();
+				}
 			}
 		});
 		menuOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -132,7 +134,7 @@ public class MenuBar extends JMenuBar {
 
 	private JMenu constructUtilityMenu() {
 		JMenu menu = new JMenu("Utilities");
-		
+
 		JMenuItem roller = new JMenuItem("Dice Roller");
 		roller.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -155,12 +157,12 @@ public class MenuBar extends JMenuBar {
 
 	private JPanel constructDataFields(MapPanel panel) {
 		JPanel dataFieldsPanel = new JPanel();
-		
+
 		dataFieldsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		distance = new JLabel("distance:");
 		dataFieldsPanel.add(distance);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
-		
+
 
 		prevButton = new JButton("🢀");
 		prevButton.addActionListener(new ActionListener() {
@@ -177,7 +179,7 @@ public class MenuBar extends JMenuBar {
 		});
 		dataFieldsPanel.add(nextButton);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
-		
+
 		dataFieldsPanel.add(new JLabel("x:"));
 		xField = new JTextField();
 		xField.setPreferredSize(new Dimension(50,20));
@@ -215,7 +217,7 @@ public class MenuBar extends JMenuBar {
 		dataFieldsPanel.add(sLabel);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
 		dataFieldsPanel.add(new JLabel("view:"));
-		
+
 		dataMenu = new JComboBox<HexData>(HexData.getMapViews());
 		dataMenu.setMaximumSize(new Dimension(100,100));
 		dataMenu.addActionListener(new ActionListener(){
@@ -229,7 +231,7 @@ public class MenuBar extends JMenuBar {
 		});
 		dataFieldsPanel.add(dataMenu);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
-		
+
 		dataFieldsPanel.add(new JLabel("watersheds:"));
 		wBox = new JCheckBox();
 		wBox.addItemListener(new ItemListener(){
@@ -238,8 +240,8 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		dataFieldsPanel.add(wBox);
-		
-//		dataFieldsPanel.add(new JLabel("show towns:"));
+
+		//		dataFieldsPanel.add(new JLabel("show towns:"));
 		cBox = new JCheckBox();
 		cBox.setSelected(true);
 		cBox.addItemListener(new ItemListener(){
@@ -247,8 +249,8 @@ public class MenuBar extends JMenuBar {
 				panel.setShowCities(cBox.isSelected());
 			}
 		});
-//		dataFieldsPanel.add(cBox);
-		
+		//		dataFieldsPanel.add(cBox);
+
 		dataFieldsPanel.add(new JLabel("show icons:"));
 		iBox = new JCheckBox();
 		iBox.setSelected(true);
@@ -258,7 +260,7 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		dataFieldsPanel.add(iBox);
-		
+
 		dataFieldsPanel.add(new JLabel("mouseover:"));
 		dBox = new JCheckBox();
 		dBox.setSelected(false);
@@ -268,7 +270,7 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		dataFieldsPanel.add(dBox);
-		
+
 		dataFieldsPanel.add(new JLabel("highlight region:"));
 		regionMenu = new JComboBox<HexData>(HexData.getRegionTypes());
 		regionMenu.setMaximumSize(new Dimension(100,100));
@@ -306,10 +308,11 @@ public class MenuBar extends JMenuBar {
 			recent.addActionListener(new ActionListener(){
 				File thisFile = file;
 				public void actionPerformed(ActionEvent e) {
-					SaveRecord newRecord = SaveRecord.load(thisFile,panel.getFrame().getAppData());
-					repopulateRecentFiles(panel);
-					frame.load(newRecord);
-//					panel.reloadFromSaveRecord(newRecord);
+					if(frame.unsavedDataConfirmation()) {
+						SaveRecord newRecord = SaveRecord.load(thisFile,panel.getFrame().getAppData());
+						repopulateRecentFiles(panel);
+						frame.load(newRecord);
+					}
 				}
 			});
 			recentFileMenus.add(recent);
@@ -371,7 +374,7 @@ public class MenuBar extends JMenuBar {
 		newRecord.setSeed(seed);
 		repopulateRecentFiles(panel);
 		frame.load(newRecord);
-//		panel.reloadFromSaveRecord(newRecord);
+		//		panel.reloadFromSaveRecord(newRecord);
 	}
 
 	private void openFile() {
@@ -381,7 +384,7 @@ public class MenuBar extends JMenuBar {
 			SaveRecord newRecord = SaveRecord.load(file,panel.getFrame().getAppData());
 			repopulateRecentFiles(panel);
 			frame.load(newRecord);
-//			panel.reloadFromSaveRecord(newRecord);
+			//			panel.reloadFromSaveRecord(newRecord);
 		}
 	}
 

@@ -33,27 +33,14 @@ public class MapFrame extends JFrame{
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
-	        @Override
-	        public void windowClosing(WindowEvent e) {
-	        	int result = JOptionPane.NO_OPTION;
-	        	if(record.hasUnsavedData()) {
-		        	result = JOptionPane.showConfirmDialog(MapFrame.this,
-		                    "You have unsaved changes. Would you like to save before you exit?",
-		                    "Save Changes?",
-		                    JOptionPane.YES_NO_CANCEL_OPTION);
-	        	}
-	        	if(result==JOptionPane.NO_OPTION) {
-		        	MapFrame.this.dispose();
-		        	System.exit(0);
-	        	}else if(result==JOptionPane.YES_OPTION) {
-	        		record.save(data);
-		        	MapFrame.this.dispose();
-		        	System.exit(0);
-	        	}else {
-	        		//Do nothing
-	        	}
-	        }
-	    });
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if(unsavedDataConfirmation()) {
+					MapFrame.this.dispose();
+					System.exit(0);
+				}
+			}
+		});
 		this.data = AppData.load();
 		if(data==null) {
 			data = new AppData();
@@ -65,6 +52,27 @@ public class MapFrame extends JFrame{
 			record.setSaveLocation(record.getDefaultSaveFile());
 		}
 		this.load(record);
+	}
+
+	public void save() {
+		record.save(data);
+	}
+	public boolean unsavedDataConfirmation() {
+		int result = JOptionPane.NO_OPTION;
+		if(record.hasUnsavedData()) {
+			result = JOptionPane.showConfirmDialog(MapFrame.this,
+					"You have unsaved changes. Would you like to save before you exit?",
+					"Save Changes?",
+					JOptionPane.YES_NO_CANCEL_OPTION);
+		}
+		if(result==JOptionPane.NO_OPTION) {
+			return true;
+		}else if(result==JOptionPane.YES_OPTION) {
+			save();
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	public void load(SaveRecord record) {
@@ -91,7 +99,7 @@ public class MapFrame extends JFrame{
 	public AppData getAppData() {
 		return this.data;
 	}
-	
+
 
 	public static void main(String[] args) throws SecurityException, IOException, InterruptedException{
 		Logger logger = Logger.getLogger("HexCrawlGenerator");
@@ -109,7 +117,7 @@ public class MapFrame extends JFrame{
 			e.printStackTrace();
 			logger.log(Level.SEVERE,e.toString(),e);
 		}
-        Thread.sleep(5000);
+		Thread.sleep(5000);
 	}
 
 

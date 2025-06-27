@@ -112,19 +112,13 @@ public class MapPanel  extends JPanel{
 				@Override
 				protected Void doInBackground() throws Exception {
 					calculateRivers();
+					System.out.println("done 2");
 					return null;
 				}
 				@Override
 				protected void process(List<Integer> chunks) {
 					int progress = chunks.get(chunks.size() - 1);
 					System.out.println(progress);
-				}
-				@Override
-				protected void done() {
-					record.initialize(controller.getGrid(),controller.getPopulation());
-					initializing = false;
-					postinitialize(record);
-					dialog.removeProgressUI();
 				}
 
 			};
@@ -136,6 +130,7 @@ public class MapPanel  extends JPanel{
 
 	private void postinitialize(SaveRecord record) {
 		recenter(record.getPos(),true);
+		System.out.println("postinitialize recenter to: "+record.normalizePOS(record.getPos()));
 		mouseover = getMiddleGridPoint();
 		record.setHasUnsavedData(false);
 		this.preprocessThenRepaint();
@@ -640,6 +635,12 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo) logger.logln("--(100%) Volumes loaded "+(System.currentTimeMillis()-time)+" ms");
 		if(initializing) logger.logln("--(100%) Initialized "+(System.currentTimeMillis()-time)+" ms");
 		dialog.removeProgressUI();
+		System.out.println("done 1");
+		if(initializing) {
+			record.initialize(controller.getGrid(),controller.getPopulation());
+			initializing = false;
+			postinitialize(record);
+		}
 	}
 	private void drawRivers(Graphics2D g2, int step, int displayScale, Color borderColor) {
 		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);

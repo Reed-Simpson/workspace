@@ -107,6 +107,7 @@ public class SaveRecord implements Serializable {
 			this.setPos(grid.findLand(this.getPos()));
 		}
 		this.setZero(pos);
+		System.out.println("record initialized to: "+this.normalizePOS(this.getPos()));
 		initialized=true;
 		this.hasUnsavedData = true;
 	}

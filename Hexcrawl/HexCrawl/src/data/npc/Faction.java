@@ -2,6 +2,7 @@ package data.npc;
 
 import data.Indexible;
 import names.FactionType;
+import util.Util;
 
 public class Faction extends Indexible {
 	FactionType type;
@@ -58,10 +59,19 @@ public class Faction extends Indexible {
 		this.domain = domain;
 	}
 
+
+
+	private String formatName() {
+		String name = this.getName();
+		if(this.getName().contains("${placeholder domain}")) {
+			name = Util.replace(name,"${placeholder domain}",this.getDomain());
+		}
+		return Util.toCamelCase(name);
+	}
 	
 	public String toString() {
 		StringBuilder c1Text = new StringBuilder();
-		c1Text.append(this.getName()+"\r\n");
+		c1Text.append(formatName()+"\r\n");
 		if(this.getDomain()!=null) c1Text.append("   Domain: "+this.getDomain()+"\r\n");
 		c1Text.append("   Type: "+this.getType()+"\r\n");
 		c1Text.append("   Trait: "+this.getTrait()+"\r\n");

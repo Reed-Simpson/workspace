@@ -266,7 +266,7 @@ public class Util {
 		if(!result.equals(string)) {
 			result = formatTableResult(result, obj);
 		}else {
-			String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index"};
+			String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index","job placeholder"};
 			for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 			if(result.contains("${")) {
 				throw new IllegalStateException("Unable to process tag: "+result);

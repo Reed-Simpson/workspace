@@ -1,6 +1,7 @@
 package names.threat;
 
 import data.Indexible;
+import data.npc.NPCModel;
 import data.threat.Threat;
 import names.IndexibleNameGenerator;
 import util.Util;
@@ -34,5 +35,9 @@ public abstract class ThreatNameGenerator extends IndexibleNameGenerator{
 	
 	public abstract String getName(Threat threat) ;
 
-
+	public abstract String getFactionAdjective(Indexible threat);
+	public abstract String getFactionNoun(Indexible threat);
+	public String getDomain(Threat threat) {
+		return NPCModel.getDomain(threat);
+	}
 }

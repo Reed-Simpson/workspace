@@ -9,26 +9,42 @@ import data.npc.NPCModel;
 import data.population.Species;
 import data.threat.Threat;
 import data.threat.subtype.ConstructType;
+import names.FactionNameGenerator;
 import util.Util;
 
 public class ConstructNameGenerator extends ThreatNameGenerator {
 	private static final String INEVITABLE_NOUNS= "Watcher,Sentry,Vanguard,Enforcer,Raider,Killer,Marauder,Crusader,Assassin,Punisher,Tracker,Hunter,Stalker,Pursuer,Investigator,Slayer";
 	private static final String JOB_NOUNS= "Sentinel,Guard,Warden,Shield,Bastion,Gatekeeper,Aegis,Protector,Watcher,Sentry,Vanguard,Enforcer,Raider,Killer,Marauder,Slayer";
-	private static final String[] ADJECTIVES = {"${material}","${metal}","${color},Metal,Stone"};
+	private static final String ADJECTIVES = "${material},${metal},${color},Metal,Stone";
 	private static final String NAME_NOUNS = "${physical element},${ethereal element},${physical form},${animal}";
 	private static final String DEFECTS = "${insanity},is ${item trait},is ${object element}";
 
-	private static WeightedTable<String> namenouns;
-	private static WeightedTable<String> jobNouns;
 	private static WeightedTable<String> inevitableNouns;
+	private static WeightedTable<String> jobNouns;
+	private static WeightedTable<String> adjectives;
+	private static WeightedTable<String> namenouns;
 	private static WeightedTable<String> modrons;
 	private static WeightedTable<String> defects;
+	
+	private static final String FACTION_ADJECTIVES = ADJECTIVES;
+	private static final String FACTION_NOUNS = FactionNameGenerator.MERCHANT_NOUNS;
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 	
 	private static void populateAll() {
 		jobNouns = new WeightedTable<String>();
 		populate(jobNouns,JOB_NOUNS,",");
 		namenouns = new WeightedTable<String>();
 		populate(namenouns,NAME_NOUNS,",");
+		adjectives = new WeightedTable<String>();
+		populate(adjectives,ADJECTIVES,",");
 		modrons = new WeightedTable<String>();
 		modrons.put("Decaton", 100);
 		modrons.put("Nonaton", 81);
@@ -50,6 +66,10 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		if(jobNouns==null) populateAll();
 		return namenouns.getByWeight(obj);
 	}	
+	public static String getNameAdj(Indexible obj) {
+		if(adjectives==null) populateAll();
+		return adjectives.getByWeight(obj);
+	}
 	public static String getNameNoun(Indexible obj) {
 		if(namenouns==null) populateAll();
 		return namenouns.getByWeight(obj);
@@ -116,7 +136,7 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		return "The "+title;
 	}
 	private String getPartialName(Threat threat) {
-		String part1 = getElementFromArray(ADJECTIVES, threat);
+		String part1 = getNameAdj(threat);
 		String part2 = getNameNoun(threat);
 		String name = part1+part2;
 		return name;
@@ -138,6 +158,17 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		int number = threat.reduceTempId(count)+1;
 		String defect = getDefect(threat);
 		return "#"+number+" The "+type+" who "+defect;
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
 	}
 
 }

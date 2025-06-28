@@ -7,192 +7,195 @@ import data.WeightedTable;
 import util.Util;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
-	private static HashMap<FactionType,IndexibleNameGenerator> factionNameGenerators;
-	private static HashMap<FactionType, IndexibleNameGenerator> faithNameGenerators;
+	private static HashMap<FactionType,AdjectiveNounNameGenerator> factionNameGenerators;
+	private static HashMap<FactionType, AdjectiveNounNameGenerator> faithNameGenerators;
 	//	private static final String FACTIONS = "art movement,beggar's guild,black market,brotherhood,city guard,conspiracy,craft guild,crime family,crime ring,dark cult,explorer's club,free company,"+
 	//			"gourmand club,heist crew,heretical sect,high council,hired killers,local militia,national church,noble house,outlander clan,outlaw gang,political party,religious order,"+
 	//			"religious sect,resistance,royal army,royal house,scholar's circle,secret society,spy network,street artists,street gang,street musicians,theater troupe,trade company";
 	private static WeightedTable<FactionType> factions;
 	private static WeightedTable<FactionType> faiths;
-	private static final String TRAITS = "bankrupt,bureaucratic,charitable,confused,connected,corrupt,decadent,decaying,delusional,divided,dwindling,efficient,"+
+	public static final String TRAITS = "bankrupt,bureaucratic,charitable,confused,connected,corrupt,decadent,decaying,delusional,divided,dwindling,efficient,"+
 			"esoteric,expanding,hunted,incompetent,incorruptible,insane,insular,manipulative,martial,${personality},pious,popular,"+
 			"righteous,ruthless,secret,subversive,suppressed,threatened,thriving,unpopular,up-and-coming,wealthy,well-prepared,xenophobic";
 	private static WeightedTable<String> traits;
-	private static final String GOALS = "advise leader,avoid detection,awaken being,collect artifacts,construct base,control ${faction index},control politics,create artifact,create monster,defeat ${faction index},defend borders,defend leader,"+
+	public static final String GOALS = "advise leader,avoid detection,awaken being,collect artifacts,construct base,control ${faction index},control politics,create artifact,create monster,defeat ${faction index},defend borders,defend leader,"+
 			"destroy artifacts,destroy being,destroy villain,enforce law,enrich members,entertain,exchange goods,hear rumors,indulge tastes,infiltrate ${faction index},map the wilds,overthrow order,"+
 			"preserve lineage,preserve lore,produce goods,promote arts,promote craft,purge traitors,sell services,share knowledge,spread beliefs,summon evil,survive,transport goods";
 	private static WeightedTable<String> goals;
 
-	private static final String CHURCH_ADJECTIVES = "Eldritch,Infernal,Abyssal,Draconic,Elemental,Celestial,Humanist";
-	private static final String CHURCH_NOUNS = "Church of ${placeholder domain},Temple of ${placeholder domain},Servants of ${placeholder domain},Order of the ${spell},Children of the ${spell},Cult of the ${spell}";
-	private static final String CRIMINAL_ADJECTIVES= "${underworld npc},${color} Cloak,Hidden,Secret,Whispering,Masked,Shrouded,Midnight,Shadow,Veiled,Dusk,Twilight,Lurking,Hollow,Silent,Desperate";
-	private static final String CRIMINAL_NOUNS= "Veil,Cartel,Defiance,Syndicate,Brotherhood,Shadows,Network,Ring,Hands,Gang,Clan";
-	private static final String UNDERCLASS_ADJECTIVES= "Shattered,Ragged,Forgotten,Lost,Tattered,Hollow,Gutter,Shivering,Silent,Desperate,${misfortune}";
-	private static final String UNDERCLASS_NOUNS= "Rags,Plea,Dregs,Lurks,Children,Beggars,Watchers";
-	private static final String MERCHANT_ADJECTIVES= "${color} Lotus,${last name},Gilded,Wandering,Exotic,Mirage,${material} Caravan";
-	private static final String MERCHANT_NOUNS= "Guild,Consortium,Syndicate,Merchant Alliance,Brokers,Market,Auctionhouse,Traders,League";
-	private static final String ESOTERIC_ADJECTIVES= "Occult,Celestial,Starlit,${weirdness},Mystic,Illumnated,Enigmatic,Arcane,Esoteric,Divine,${effect},Shadowed";
-	private static final String ESOTERIC_NOUNS= "Brotherhood of the ${material} ${physical form},Sons of the ${structure},Covenant of ${dungeon room},Order of the ${color} ${element},"+
+	public static final String CHURCH_ADJECTIVES = "Eldritch,Infernal,Abyssal,Draconic,Elemental,Celestial,Humanist";
+	public static final String CHURCH_NOUNS = "Church of ${placeholder domain},Temple of ${placeholder domain},Servants of ${placeholder domain},Order of the ${spell},Children of the ${spell},Cult of the ${spell}";
+	public static final String CRIMINAL_ADJECTIVES= "${underworld npc},${color} Cloak,Hidden,Secret,Whispering,Masked,Shrouded,Midnight,Shadow,Veiled,Dusk,Twilight,Lurking,Hollow,Silent,Desperate";
+	public static final String CRIMINAL_NOUNS= "Veil,Cartel,Defiance,Syndicate,Brotherhood,Shadows,Network,Ring,Hands,Gang,Clan";
+	public static final String UNDERCLASS_ADJECTIVES= "Shattered,Ragged,Forgotten,Lost,Tattered,Hollow,Gutter,Shivering,Silent,Desperate,${misfortune}";
+	public static final String UNDERCLASS_NOUNS= "Rags,Plea,Dregs,Lurks,Children,Beggars,Watchers";
+	public static final String MERCHANT_ADJECTIVES= "${color} Lotus,${last name},Gilded,Wandering,Exotic,Mirage,${material} Caravan";
+	public static final String MERCHANT_NOUNS= "Guild,Consortium,Syndicate,Merchant Alliance,Brokers,Market,Auctionhouse,Traders,League";
+	public static final String ESOTERIC_ADJECTIVES= "Occult,Celestial,Starlit,${weirdness},Mystic,Illumnated,Enigmatic,Arcane,Esoteric,Divine,${effect},Shadowed";
+	public static final String ESOTERIC_NOUNS= "Brotherhood of the ${material} ${physical form},Sons of the ${structure},Covenant of ${dungeon room},Order of the ${color} ${element},"+
 			"Daughters of the ${color} Veil,Keepers of the ${fancy color} Oath,Fellowship of the ${fancy color} ${form},Knights of the ${material} Heart,"+
 			"Society of the ${monster trait} ${monster feature}";
-	private static final String DEFENDER_ADJECTIVES= "Ironclad,${color} Shield,Watchful,King's,Resolute,Sentinel's,Queen's,Royal,Vigilant,Unbreakable,Unyielding,"+
+	public static final String DEFENDER_ADJECTIVES= "Ironclad,${color} Shield,Watchful,King's,Resolute,Sentinel's,Queen's,Royal,Vigilant,Unbreakable,Unyielding,"+
 			"Adamantine,${basic color} Steel,Iron ${landmark},${metal} Heart";
-	private static final String DEFENDER_NOUNS= "Sentinels,Watchers,Garrison,Guard,Patrol,Wardens,Shields,Sentries,Bastion,Gatekeepers,Aegis,Protectors,"+
+	public static final String DEFENDER_NOUNS= "Sentinels,Watchers,Garrison,Guard,Patrol,Wardens,Shields,Sentries,Bastion,Gatekeepers,Aegis,Protectors,"+
 			"Company,Legion,Brigade,Companions,${animal}s,${weapon}s";
-	private static final String ATTACKER_ADJECTIVES= "Lethal,${basic color} Steel,Iron ${landmark},${metal} Heart,Bloody,${basic color} ${animal},${color} ${weapon},${monster trait} ${weapon}";
-	private static final String ATTACKER_NOUNS= "Vanguard,Enforcers,Company,Legion,Brigade,Raiders,Companions,Killers,Marauders,Slayers,Hunters";
+	public static final String ATTACKER_ADJECTIVES= "Lethal,${basic color} Steel,Iron ${landmark},${metal} Heart,Bloody,${basic color} ${animal},${color} ${weapon},${monster trait} ${weapon}";
+	public static final String ATTACKER_NOUNS= "Vanguard,Enforcers,Company,Legion,Brigade,Raiders,Companions,Killers,Marauders,Slayers,Hunters";
 
 
-	private static final String GENERIC_ADJECTIVES= "${material},${animal},Lost,Forgotten,Aetheric,Fateful,Illumnated,Shadowed,Esoteric,Gilded,${fancy color},${effect}";
-	private static final String GENERIC_NOUNS= "Collective,Society,Circle,Enclave,Accord,Assembly,Covenant,Brotherhood,Masquerade,Group,Faction";
+	public static final String GENERIC_ADJECTIVES= "${material},${animal},Lost,Forgotten,Aetheric,Fateful,Illumnated,Shadowed,Esoteric,Gilded,${fancy color},${effect}";
+	public static final String GENERIC_NOUNS= "Collective,Society,Circle,Enclave,Accord,Assembly,Covenant,Brotherhood,Masquerade,Group,Faction";
 	private static WeightedTable<String> adjectives;
 	private static WeightedTable<String> nouns;
-	private static final String ARTMOVEMENT_ADJECTIVES= "Claybound,Marble,Quillbound,Brushbound,Prismatic,Chromatic,Canvas,Mosaic,Echoing,Inkbound,Theatric";
-	private static final String ARTMOVEMENT_NOUNS= "Sculptors,Writers,Painters,Artisans,Architects,Actors,Musicians,Lyricists,Palette,Brush,Chorus,Visionaries";
+	public static final String ARTMOVEMENT_ADJECTIVES= "Claybound,Marble,Quillbound,Brushbound,Prismatic,Chromatic,Canvas,Mosaic,Echoing,Inkbound,Theatric";
+	public static final String ARTMOVEMENT_NOUNS= "Sculptors,Writers,Painters,Artisans,Architects,Actors,Musicians,Lyricists,Palette,Brush,Chorus,Visionaries";
 	private static WeightedTable<String> art_adjectives;
 	private static WeightedTable<String> art_nouns;
-	private static final String BEGGAR_ADJECTIVES= UNDERCLASS_ADJECTIVES+",Mendicant,Lurking,Dead ${animal}";
-	private static final String BEGGAR_NOUNS= CRIMINAL_NOUNS+","+UNDERCLASS_NOUNS;
+	public static final String BEGGAR_ADJECTIVES= UNDERCLASS_ADJECTIVES+",Mendicant,Lurking,Dead ${animal}";
+	public static final String BEGGAR_NOUNS= CRIMINAL_NOUNS+","+UNDERCLASS_NOUNS;
 	private static WeightedTable<String> beggar_adjectives;
 	private static WeightedTable<String> beggar_nouns;
-	private static final String BLACKMARKET_ADJECTIVES= CRIMINAL_ADJECTIVES+","+MERCHANT_ADJECTIVES+",Obsidian,Gloomweaver";
-	private static final String BLACKMARKET_NOUNS= CRIMINAL_NOUNS+","+MERCHANT_NOUNS;
+	public static final String BLACKMARKET_ADJECTIVES= CRIMINAL_ADJECTIVES+","+MERCHANT_ADJECTIVES+",Obsidian,Gloomweaver";
+	public static final String BLACKMARKET_NOUNS= CRIMINAL_NOUNS+","+MERCHANT_NOUNS;
 	private static WeightedTable<String> blackmarket_adjectives;
 	private static WeightedTable<String> blackmarket_nouns;
-	private static final String BROTHERHOOD_ADJECTIVES= ESOTERIC_ADJECTIVES;
-	private static final String BROTHERHOOD_NOUNS= ESOTERIC_NOUNS;
+	public static final String BROTHERHOOD_ADJECTIVES= ESOTERIC_ADJECTIVES;
+	public static final String BROTHERHOOD_NOUNS= ESOTERIC_NOUNS;
 	private static WeightedTable<String> brotherhood_adjectives;
 	private static WeightedTable<String> brotherhood_nouns;
-	private static final String GUARD_ADJECTIVES= DEFENDER_ADJECTIVES;
-	private static final String GUARD_NOUNS= DEFENDER_NOUNS;
+	public static final String GUARD_ADJECTIVES= DEFENDER_ADJECTIVES;
+	public static final String GUARD_NOUNS= DEFENDER_NOUNS;
 	private static WeightedTable<String> guard_adjectives;
 	private static WeightedTable<String> guard_nouns;
-	private static final String CONSPIRACY_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ESOTERIC_ADJECTIVES+","+UNDERCLASS_ADJECTIVES;
-	private static final String CONSPIRACY_NOUNS = "Veiled ${job}s,Circle of the ${city theme},Conclave of the ${district} District,Society of the ${building},Keepers of the ${city event}";
+	public static final String CONSPIRACY_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ESOTERIC_ADJECTIVES+","+UNDERCLASS_ADJECTIVES;
+	public static final String CONSPIRACY_NOUNS = "Veiled ${job}s,Circle of the ${city theme},Conclave of the ${district} District,Society of the ${building},Keepers of the ${city event}";
 	private static WeightedTable<String> conspiracy_adjectives;
 	private static WeightedTable<String> conspiracy_nouns;
-	private static final String CRAFTGUILD_ADJECTIVES = "Forgemaster's,Alchemists',Stonecarvers',Illuminated,Weaver's,Tinker's,${basic color} Anvil,${basic color} Hammer,${basic color} Chisel";
-	private static final String CRAFTGUILD_NOUNS = MERCHANT_NOUNS+",Fellowship,Makers,Workbench,Artificers";
+	public static final String CRAFTGUILD_ADJECTIVES = "Forgemaster's,Alchemists',Stonecarvers',Illuminated,Weaver's,Tinker's,${basic color} Anvil,${basic color} Hammer,${basic color} Chisel";
+	public static final String CRAFTGUILD_NOUNS = MERCHANT_NOUNS+",Fellowship,Makers,Workbench,Artificers";
 	private static WeightedTable<String> craftguild_adjectives;
 	private static WeightedTable<String> craftguild_nouns;
-	private static final String CRIMERING_ADJECTIVES = CRIMINAL_ADJECTIVES+","+MERCHANT_ADJECTIVES;
-	private static final String CRIMERING_NOUNS = CRIMINAL_NOUNS+","+MERCHANT_NOUNS+",Talons,Claws,Teeth,Pact,Family,Serpents";
+	public static final String CRIMERING_ADJECTIVES = CRIMINAL_ADJECTIVES+","+MERCHANT_ADJECTIVES;
+	public static final String CRIMERING_NOUNS = CRIMINAL_NOUNS+","+MERCHANT_NOUNS+",Talons,Claws,Teeth,Pact,Family,Serpents";
 	private static WeightedTable<String> crimering_adjectives;
 	private static WeightedTable<String> crimering_nouns;
-	private static final String CRIMEFAMILY_ADJECTIVES = CRIMINAL_ADJECTIVES+",${last name}";
-	private static final String CRIMEFAMILY_NOUNS = CRIMINAL_NOUNS+",Guild,Family,Consortium";
+	public static final String CRIMEFAMILY_ADJECTIVES = CRIMINAL_ADJECTIVES+",${last name}";
+	public static final String CRIMEFAMILY_NOUNS = CRIMINAL_NOUNS+",Guild,Family,Consortium";
 	private static WeightedTable<String> crimefamily_adjectives;
 	private static WeightedTable<String> crimefamily_nouns;
-	private static final String DARKCULT_ADJECTIVES = CHURCH_ADJECTIVES+","+ESOTERIC_ADJECTIVES;
-	private static final String DARKCULT_NOUNS = CHURCH_NOUNS+","+ESOTERIC_NOUNS+",Sons of the ${monster trait} ${monster feature},Daughters of ${dungeon ruination},"+
+	public static final String DARKCULT_ADJECTIVES = CHURCH_ADJECTIVES+","+ESOTERIC_ADJECTIVES;
+	public static final String DARKCULT_NOUNS = CHURCH_NOUNS+","+ESOTERIC_NOUNS+",Sons of the ${monster trait} ${monster feature},Daughters of ${dungeon ruination},"+
 			"Order of the Dark ${dungeon trick},Faithful Who ${insanity},Children of the ${monster trait} ${animal},Acolytes of the ${weirdness} ${structure},Disciples of the ${hazard}";
 	private static WeightedTable<String> darkcult_adjectives;
 	private static WeightedTable<String> darkcult_nouns;
-	private static final String EXPLORERCLUB_ADJECTIVES = "${color} Summit,${biome},Horizon and ${apparel},${landmark},${color} Horizon,${material} Compass";
-	private static final String EXPLORERCLUB_NOUNS = "Wanderers,Wayfarers,Explorers,Club,Chasers,Pathfinders,Adventurers,Seekers,Navigators";
+	public static final String EXPLORERCLUB_ADJECTIVES = "${color} Summit,${biome},Horizon and ${apparel},${landmark},${color} Horizon,${material} Compass";
+	public static final String EXPLORERCLUB_NOUNS = "Wanderers,Wayfarers,Explorers,Club,Chasers,Pathfinders,Adventurers,Seekers,Navigators";
 	private static WeightedTable<String> explorerclub_adjectives;
 	private static WeightedTable<String> explorerclub_nouns;
-	private static final String FREECOMPANY_ADJECTIVES = DEFENDER_ADJECTIVES+","+ATTACKER_ADJECTIVES;
-	private static final String FREECOMPANY_NOUNS = DEFENDER_NOUNS+","+ATTACKER_NOUNS+",Mercenaries,Free Company";
+	public static final String FREECOMPANY_ADJECTIVES = DEFENDER_ADJECTIVES+","+ATTACKER_ADJECTIVES;
+	public static final String FREECOMPANY_NOUNS = DEFENDER_NOUNS+","+ATTACKER_NOUNS+",Mercenaries,Free Company";
 	private static WeightedTable<String> freecompany_adjectives;
 	private static WeightedTable<String> freecompany_nouns;
-	private static final String GOURMANDCLUB_ADJECTIVES = "Culinary,Dinner,Flavor,Elegant,Gourmet,${edible plant},Spiced,Hungry";
-	private static final String GOURMANDCLUB_NOUNS = "Gastronomes,Gourmands,Eaters,Gluttons,Pioneers,Gurus,Platter,Buffet";
+	public static final String GOURMANDCLUB_ADJECTIVES = "Culinary,Dinner,Flavor,Elegant,Gourmet,${edible plant},Spiced,Hungry";
+	public static final String GOURMANDCLUB_NOUNS = "Gastronomes,Gourmands,Eaters,Gluttons,Pioneers,Gurus,Platter,Buffet";
 	private static WeightedTable<String> gourmandclub_adjectives;
 	private static WeightedTable<String> gourmandclub_nouns;
-	private static final String HEISTCREW_ADJECTIVES = "${misfortune},${reputation},Second-story,Elite";
-	private static final String HEISTCREW_NOUNS = CRIMINAL_NOUNS+",Phantoms,Ghosts,Spectres,Phantasms,Bogeymen";
+	public static final String HEISTCREW_ADJECTIVES = "${misfortune},${reputation},Second-story,Elite";
+	public static final String HEISTCREW_NOUNS = CRIMINAL_NOUNS+",Phantoms,Ghosts,Spectres,Phantasms,Bogeymen";
 	private static WeightedTable<String> heistcrew_adjectives;
 	private static WeightedTable<String> heistcrew_nouns;
-	private static final String HERETICALSECT_ADJECTIVES = CHURCH_ADJECTIVES;
-	private static final String HERETICALSECT_NOUNS = CHURCH_NOUNS+",Prophets of ${placeholder domain},Seekers of the ${spell},Conclave of ${placeholder domain},Heralds of the ${spell},Reformists of ${placeholder domain}";
+	public static final String HERETICALSECT_ADJECTIVES = CHURCH_ADJECTIVES;
+	public static final String HERETICALSECT_NOUNS = CHURCH_NOUNS+",Prophets of ${placeholder domain},Seekers of the ${spell},Conclave of ${placeholder domain},Heralds of the ${spell},Reformists of ${placeholder domain}";
 	private static WeightedTable<String> hereticalsect_adjectives;
 	private static WeightedTable<String> hereticalsect_nouns;
-	private static final String HIGHCOUNCIL_ADJECTIVES = "Summit,Prime,Supreme,${color} Robed,${rare material},${material}-Masked";
-	private static final String HIGHCOUNCIL_NOUNS = "Circle,Assembly,Council,Tribunal,Court,Elders,Delegates,Representatives,Congress,Senate";
+	public static final String HIGHCOUNCIL_ADJECTIVES = "Summit,Prime,Supreme,${color} Robed,${rare material},${material}-Masked";
+	public static final String HIGHCOUNCIL_NOUNS = "Circle,Assembly,Council,Tribunal,Court,Elders,Delegates,Representatives,Congress,Senate";
 	private static WeightedTable<String> highcouncil_adjectives;
 	private static WeightedTable<String> highcouncil_nouns;
-	private static final String HIREDKILLERS_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ATTACKER_ADJECTIVES+",${weirdness} Death,Vicious ${animal}";
-	private static final String HIREDKILLERS_NOUNS = CRIMINAL_NOUNS+","+ATTACKER_NOUNS+",Vultures,Revenants,Assassins";
+	public static final String HIREDKILLERS_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ATTACKER_ADJECTIVES+",${weirdness} Death,Vicious ${animal}";
+	public static final String HIREDKILLERS_NOUNS = CRIMINAL_NOUNS+","+ATTACKER_NOUNS+",Vultures,Revenants,Assassins";
 	private static WeightedTable<String> hiredkillers_adjectives;
 	private static WeightedTable<String> hiredkillers_nouns;
-	private static final String LOCALMILITIA_ADJECTIVES = DEFENDER_ADJECTIVES;
-	private static final String LOCALMILITIA_NOUNS = DEFENDER_NOUNS+",Rabble,Irregulars,Militia";
+	public static final String LOCALMILITIA_ADJECTIVES = DEFENDER_ADJECTIVES;
+	public static final String LOCALMILITIA_NOUNS = DEFENDER_NOUNS+",Rabble,Irregulars,Militia";
 	private static WeightedTable<String> localmilitia_adjectives;
 	private static WeightedTable<String> localmilitia_nouns;
-	private static final String NATIONALCHURCH_ADJECTIVES = CHURCH_ADJECTIVES;
-	private static final String NATIONALCHURCH_NOUNS = CHURCH_NOUNS;
+	public static final String NATIONALCHURCH_ADJECTIVES = CHURCH_ADJECTIVES;
+	public static final String NATIONALCHURCH_NOUNS = CHURCH_NOUNS;
 	private static WeightedTable<String> nationalchurch_adjectives;
 	private static WeightedTable<String> nationalchurch_nouns;
-	private static final String NOBLEHOUSE_ADJECTIVES = "${last name}";
-	private static final String NOBLEHOUSE_NOUNS = "House,Lineage,Clan,Line,Lord";
+	public static final String NOBLEHOUSE_ADJECTIVES = "${last name}";
+	public static final String NOBLEHOUSE_NOUNS = "House,Lineage,Clan,Line,Lord";
 	private static WeightedTable<String> noblehouse_adjectives;
 	private static WeightedTable<String> noblehouse_nouns;
-	private static final String OUTLANDERCLAN_ADJECTIVES = "${city name},${last name},${material}blood,${landmark}warden,${element}${landmark},${basic color}${form},${animal}-lord";
-	private static final String OUTLANDERCLAN_NOUNS = "Clan,Tribe,Alliance,Folk,People,Nation,Horde";
+	public static final String OUTLANDERCLAN_ADJECTIVES = "${city name},${last name},${material}blood,${landmark}warden,${element}${landmark},${basic color}${form},${animal}-lord";
+	public static final String OUTLANDERCLAN_NOUNS = "Clan,Tribe,Alliance,Folk,People,Nation,Horde";
 	private static WeightedTable<String> outlanderclan_adjectives;
 	private static WeightedTable<String> outlanderclan_nouns;
-	private static final String OUTLAWGANG_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ATTACKER_ADJECTIVES+",Cunning ${animal}";
-	private static final String OUTLAWGANG_NOUNS = CRIMINAL_NOUNS+","+ATTACKER_NOUNS+",Mercenaries,Outlaws";
+	public static final String OUTLAWGANG_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ATTACKER_ADJECTIVES+",Cunning ${animal}";
+	public static final String OUTLAWGANG_NOUNS = CRIMINAL_NOUNS+","+ATTACKER_NOUNS+",Mercenaries,Outlaws";
 	private static WeightedTable<String> outlawgang_adjectives;
 	private static WeightedTable<String> outlawgang_nouns;
-	private static final String POLITICALPARTY_ADJECTIVES = "${city theme} Advocacy,${city event} Planning,${district} Management,Regional ${building},${job} Patronage";
-	private static final String POLITICALPARTY_NOUNS = "Party,Alliance,Accord,Coalition,Association,Commission,Council,Institute,League,Union,Society,Group";
+	public static final String POLITICALPARTY_ADJECTIVES = "${city theme} Advocacy,${city event} Planning,${district} Management,Regional ${building},${job} Patronage";
+	public static final String POLITICALPARTY_NOUNS = "Party,Alliance,Accord,Coalition,Association,Commission,Council,Institute,League,Union,Society,Group";
 	private static WeightedTable<String> politicalparty_adjectives;
 	private static WeightedTable<String> politicalparty_nouns;
-	private static final String RELIGIOUSORDER_ADJECTIVES = CHURCH_ADJECTIVES;
-	private static final String RELIGIOUSORDER_NOUNS = CHURCH_NOUNS;
+	public static final String RELIGIOUSORDER_ADJECTIVES = CHURCH_ADJECTIVES;
+	public static final String RELIGIOUSORDER_NOUNS = CHURCH_NOUNS;
 	private static WeightedTable<String> religiousorder_adjectives;
 	private static WeightedTable<String> religiousorder_nouns;
-	private static final String RELIGIOUSSECT_ADJECTIVES = CHURCH_ADJECTIVES;
-	private static final String RELIGIOUSSECT_NOUNS = CHURCH_NOUNS;
+	public static final String RELIGIOUSSECT_ADJECTIVES = CHURCH_ADJECTIVES;
+	public static final String RELIGIOUSSECT_NOUNS = CHURCH_NOUNS;
 	private static WeightedTable<String> religioussect_adjectives;
 	private static WeightedTable<String> religioussect_nouns;
-	private static final String RESISTANCE_ADJECTIVES = CRIMINAL_ADJECTIVES+",Freedom";
-	private static final String RESISTANCE_NOUNS = ATTACKER_NOUNS+",Rebellion,Insurgency,Alliance,Roots";
+	public static final String RESISTANCE_ADJECTIVES = CRIMINAL_ADJECTIVES+",Freedom";
+	public static final String RESISTANCE_NOUNS = ATTACKER_NOUNS+",Rebellion,Insurgency,Alliance,Roots";
 	private static WeightedTable<String> resistance_adjectives;
 	private static WeightedTable<String> resistance_nouns;
-	private static final String ROYALARMY_ADJECTIVES = DEFENDER_ADJECTIVES;
-	private static final String ROYALARMY_NOUNS = DEFENDER_NOUNS;
+	public static final String ROYALARMY_ADJECTIVES = DEFENDER_ADJECTIVES;
+	public static final String ROYALARMY_NOUNS = DEFENDER_NOUNS;
 	private static WeightedTable<String> royalarmy_adjectives;
 	private static WeightedTable<String> royalarmy_nouns;
-	private static final String ROYALHOUSE_ADJECTIVES = NOBLEHOUSE_ADJECTIVES;
-	private static final String ROYALHOUSE_NOUNS = NOBLEHOUSE_NOUNS;
+	public static final String ROYALHOUSE_ADJECTIVES = NOBLEHOUSE_ADJECTIVES;
+	public static final String ROYALHOUSE_NOUNS = NOBLEHOUSE_NOUNS;
 	private static WeightedTable<String> royalhouse_adjectives;
 	private static WeightedTable<String> royalhouse_nouns;
-	private static final String SCHOLARCIRCLE_ADJECTIVES = ESOTERIC_ADJECTIVES+",${color} Quill,${effect},${weirdness},${last name}";
-	private static final String SCHOLARCIRCLE_NOUNS = "Scholarium,Academy,University,Library,Literary Society,Historians,Theorists,Scribes,Cartographers,Philosophers,Archivists,"+
+	public static final String SCHOLARCIRCLE_ADJECTIVES = ESOTERIC_ADJECTIVES+",${color} Quill,${effect},${weirdness},${last name}";
+	public static final String SCHOLARCIRCLE_NOUNS = "Scholarium,Academy,University,Library,Literary Society,Historians,Theorists,Scribes,Cartographers,Philosophers,Archivists,"+
 			"Theologists,University of ${book},Library of ${hobby},Academy of ${domain}";
 	private static WeightedTable<String> scholarcircle_adjectives;
 	private static WeightedTable<String> scholarcircle_nouns;
-	private static final String SECRETSOCIETY_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ESOTERIC_ADJECTIVES;
-	private static final String SECRETSOCIETY_NOUNS = ESOTERIC_NOUNS;
+	public static final String SECRETSOCIETY_ADJECTIVES = CRIMINAL_ADJECTIVES+","+ESOTERIC_ADJECTIVES;
+	public static final String SECRETSOCIETY_NOUNS = ESOTERIC_NOUNS;
 	private static WeightedTable<String> secretsociety_adjectives;
 	private static WeightedTable<String> secretsociety_nouns;
-	private static final String SPYNETWORK_ADJECTIVES = CRIMINAL_ADJECTIVES;
-	private static final String SPYNETWORK_NOUNS = CRIMINAL_NOUNS;
+	public static final String SPYNETWORK_ADJECTIVES = CRIMINAL_ADJECTIVES;
+	public static final String SPYNETWORK_NOUNS = CRIMINAL_NOUNS;
 	private static WeightedTable<String> spynetwork_adjectives;
 	private static WeightedTable<String> spynetwork_nouns;
-	private static final String STREETARTISTS_ADJECTIVES = UNDERCLASS_ADJECTIVES+",${color}";
-	private static final String STREETARTISTS_NOUNS = "Muralists,Jugglers,Acrobats,Puppeteers";
+	public static final String STREETARTISTS_ADJECTIVES = UNDERCLASS_ADJECTIVES+",${color}";
+	public static final String STREETARTISTS_NOUNS = "Muralists,Jugglers,Acrobats,Puppeteers";
 	private static WeightedTable<String> streetartists_adjectives;
 	private static WeightedTable<String> streetartists_nouns;
-	private static final String STREETGANG_ADJECTIVES = OUTLAWGANG_ADJECTIVES;
-	private static final String STREETGANG_NOUNS = OUTLAWGANG_NOUNS;
+	public static final String STREETGANG_ADJECTIVES = OUTLAWGANG_ADJECTIVES;
+	public static final String STREETGANG_NOUNS = OUTLAWGANG_NOUNS;
 	private static WeightedTable<String> streetgang_adjectives;
 	private static WeightedTable<String> streetgang_nouns;
-	private static final String STREETMUSICIANS_ADJECTIVES = UNDERCLASS_ADJECTIVES;
-	private static final String STREETMUSICIANS_NOUNS = "Lutists,Lyrists,Percussionists,Flutists,Bagpipers,Horn blowers,Violists,Fiddlers,Harpists,Recorderists,Hurdy-gurdyists";
+	public static final String STREETMUSICIANS_ADJECTIVES = UNDERCLASS_ADJECTIVES;
+	public static final String STREETMUSICIANS_NOUNS = "Lutists,Lyrists,Percussionists,Flutists,Bagpipers,Horn blowers,Violists,Fiddlers,Harpists,Recorderists,Hurdy-gurdyists";
 	private static WeightedTable<String> streetmusicians_adjectives;
 	private static WeightedTable<String> streetmusicians_nouns;
-	private static final String THEATERTROUPE_ADJECTIVES = ESOTERIC_ADJECTIVES+",${fancy color} Stage,${personality} Mask";
-	private static final String THEATERTROUPE_NOUNS = "Troupe,Actors' Guild,Theatre,Thespians,Playhouse,Productions";
+	public static final String THEATERTROUPE_ADJECTIVES = ESOTERIC_ADJECTIVES+",${fancy color} Stage,${personality} Mask";
+	public static final String THEATERTROUPE_NOUNS = "Troupe,Actors' Guild,Theatre,Thespians,Playhouse,Productions";
 	private static WeightedTable<String> theatertroupe_adjectives;
 	private static WeightedTable<String> theatertroupe_nouns;
-	private static final String TRADECOMPANY_ADJECTIVES = MERCHANT_ADJECTIVES;
-	private static final String TRADECOMPANY_NOUNS = MERCHANT_NOUNS;
+	public static final String TRADECOMPANY_ADJECTIVES = MERCHANT_ADJECTIVES;
+	public static final String TRADECOMPANY_NOUNS = MERCHANT_NOUNS;
 	private static WeightedTable<String> tradecompany_adjectives;
 	private static WeightedTable<String> tradecompany_nouns;
+
+	
+	
 
 
 	private static void populateAllTables() {
@@ -352,7 +355,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		populateFaiths();
 	}
 	private static void populateFaiths() {
-		faithNameGenerators = new HashMap<FactionType, IndexibleNameGenerator>();
+		faithNameGenerators = new HashMap<FactionType, AdjectiveNounNameGenerator>();
 		faithNameGenerators.put(FactionType.DARK_CULT,new DarkCultNameGen());
 		faithNameGenerators.put(FactionType.HERETICAL_SECT,new HereticalSectNameGen());
 		faithNameGenerators.put(FactionType.NATIONAL_CHURCH,new NationalChurchNameGen());
@@ -366,7 +369,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		}
 	}
 	private static void populateFaction() {
-		factionNameGenerators = new HashMap<FactionType, IndexibleNameGenerator>();
+		factionNameGenerators = new HashMap<FactionType, AdjectiveNounNameGenerator>();
 		factionNameGenerators.put(FactionType.ART_MOVEMENT,new ArtMovementNameGen());
 		factionNameGenerators.put(FactionType.BEGGAR_GUILD,new BeggarGuildNameGen());
 		factionNameGenerators.put(FactionType.BLACK_MARKET,new BlackMarketNameGen());
@@ -710,6 +713,15 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		return result;
 	}
 
+	public static String getAdj(Indexible obj) {
+		if(adjectives==null) populateAllTables();
+		return adjectives.getByWeight(obj);
+	}
+	public static String getNoun(Indexible obj) {
+		if(nouns==null) populateAllTables();
+		return nouns.getByWeight(obj);
+	}
+
 	@Override
 	public String getName(Indexible obj) {
 		if(adjectives==null) populateAllTables();
@@ -724,8 +736,8 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		name = Util.formatTableResult(name,obj);
 		return name;
 	}
-	public static IndexibleNameGenerator getNameGenerator(FactionType type) {
-		IndexibleNameGenerator gen;
+	public static AdjectiveNounNameGenerator getNameGenerator(FactionType type) {
+		AdjectiveNounNameGenerator gen;
 		if(type.isFaith()) gen = faithNameGenerators.get(type);
 		else gen = factionNameGenerators.get(type);
 		return gen;

@@ -1,7 +1,10 @@
 package names.threat;
 
+import data.Indexible;
+import data.WeightedTable;
 import data.threat.Threat;
 import data.threat.subtype.ElementalType;
+import names.FactionNameGenerator;
 import util.Util;
 
 public class ElementalNameGenerator extends ThreatNameGenerator{
@@ -33,7 +36,18 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 	private static final String[] SAND = {"Chron","Aev","Haran"};
 	private static final String[] SUFFIX = {"","i","is","us","all","a","en","ian","or","onne","um","ius","ate","eron","azar","ix"};
 	private static final String[] TITLE = {"Primordial","Archomental","Prince","God","Ancient","Elder","First"};
-	
+
+	private static final String FACTION_ADJECTIVES = "Primalist,Elementalist,${subtype},${subtype},${subtype}";
+	private static final String FACTION_NOUNS = FactionNameGenerator.CHURCH_NOUNS;
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 	@Deprecated
 	@Override
 	public String getName(int... val) {
@@ -83,6 +97,22 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 		String part2 = getElementFromArray(SUFFIX, threat);
 		String title = getElementFromArray(TITLE, threat);
 		return part1+part2+", "+title+" of "+Util.toCamelCase(threat.getSubtype().getName());
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
+	}
+
+	@Override
+	public String getDomain(Threat threat) {
+		return threat.getSubtype().getName();
 	}
 
 }

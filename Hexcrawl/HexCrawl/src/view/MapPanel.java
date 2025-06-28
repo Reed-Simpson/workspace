@@ -1072,7 +1072,6 @@ public class MapPanel  extends JPanel{
 			record.setScale(scale);
 			if(record.save(frame.getAppData())) {
 				frame.getAppData().removeRecent(prevFile);
-				prevFile.delete();
 			}
 
 		}

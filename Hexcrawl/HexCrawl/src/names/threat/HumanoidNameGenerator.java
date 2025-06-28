@@ -1,6 +1,7 @@
 package names.threat;
 
 import data.Indexible;
+import data.WeightedTable;
 import data.magic.MagicModel;
 import data.npc.NPC;
 import data.population.Species;
@@ -12,6 +13,17 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 	private static final String[] GOBLINOIDS = {"Goblin","Hobgoblin","Bugbear"};
 	private static final String[] LYCANTHROPE = {"Tiger","Bear","Boar","Rat","Rat","Wolf","Wolf","${animal}"};
 
+	private static final String FACTION_ADJECTIVES = "";
+	private static final String FACTION_NOUNS = "";
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 	@Deprecated
 	public static String getGoblinoid(int val) {
 		return getElementFromArray(GOBLINOIDS,val);
@@ -213,6 +225,17 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 	private String getTrogName(Threat threat) {
 		String result = Species.TROG.getNPCNameGen().getName(threat);
 		return result+", The Troglodyte Chieftan";
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
 	}
 
 }

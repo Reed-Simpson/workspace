@@ -132,6 +132,11 @@ public enum CreatureType {
 		return gen.getName(threat);
 		
 	}
+	public static String getDomain(Threat threat) {
+		ThreatNameGenerator gen = threat.getType().getNameGenerator();
+		return gen.getDomain(threat);
+		
+	}
 	public static CreatureType getFromID(int id) {
 		id = id%CreatureType.values().length;
 		if(id<0) id+=CreatureType.values().length;

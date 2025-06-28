@@ -2,8 +2,12 @@ package names.threat;
 
 import java.util.ArrayList;
 
+import data.Indexible;
+import data.WeightedTable;
+import data.threat.CreatureSubtype;
 import data.threat.Threat;
 import data.threat.subtype.DragonType;
+import names.FactionNameGenerator;
 import util.Util;
 
 public class DragonNameGenerator extends ThreatNameGenerator{
@@ -33,6 +37,37 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 	private static final String[] DRACOLICH = {"The Immortal ${noun}","${adjective} Fiend"};
 	private static final String[] NOUNS = {"Enigma","Conqueror","Tyrant","Mastermind","Slumberer","Glutton","Sorcerer","Beguiler","Missile"};
 
+	private static final String FACTION_ADJECTIVES = "Draconic,Winged,${subtype} Scaled,${subtype} Winged,${subtype} Shield,${subtype} Fang,${subtype} Claw,${subtype} Steel,${subtype} Heart";
+	private static final String FACTION_NOUNS = FactionNameGenerator.CHURCH_NOUNS+","+FactionNameGenerator.FREECOMPANY_NOUNS;
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static final String[] BLACK_DOMAIN = {"Swamps","Acid"};
+	private static final String[] BLUE_DOMAIN = {"Deserts","Lightning"};
+	private static final String[] GREEN_DOMAIN = {"Forests","Poison"};
+	private static final String[] RED_DOMAIN = {"Mountains","Fire"};
+	private static final String[] WHITE_DOMAIN = {"Tundra","Frost"};
+	private static final String[] BRASS_DOMAIN = {"Sand","Diplomacy"};
+	private static final String[] BRONZE_DOMAIN = {"Sea","Justice"};
+	private static final String[] COPPER_DOMAIN = {"Stone","Knowledge"};
+	private static final String[] GOLD_DOMAIN = {"Plains","Pride"};
+	private static final String[] SILVER_DOMAIN = {"City","Protection"};
+	private static final String[] AMETHYST_DOMAIN = {"Logic","Philosophy"};
+	private static final String[] CRYSTAL_DOMAIN = {"Diplomacy","Stars"};
+	private static final String[] EMERALD_DOMAIN = {"Isolation","History"};
+	private static final String[] SAPPHIRE_DOMAIN = {"Strategy","Military"};
+	private static final String[] TOPAZ_DOMAIN = {"Cynicism","Technology"};
+	private static final String[] DEEP_DOMAIN = {"Underdark","Survival"};
+	private static final String[] MOONSTONE_DOMAIN = {"Inspiration"};
+	private static final String[] SHADOW_DOMAIN = {"Shadows","Deception"};
+	private static final String[] DRACOLICH_DOMAIN = {"Undead","Immortality"};
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 	@Deprecated
 	@Override
 	public String getName(int... val) {
@@ -89,6 +124,33 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 			throw new IllegalArgumentException("Unexpected value: " + type);
 		}
 	}
+	private static String[] getDomainArray(CreatureSubtype creatureSubtype) {
+		if(creatureSubtype instanceof DragonType) {
+			DragonType type = (DragonType) creatureSubtype;
+			switch (type) {
+			case BLACK: return BLACK_DOMAIN;
+			case BLUE: return BLUE_DOMAIN;
+			case GREEN: return GREEN_DOMAIN;
+			case RED: return RED_DOMAIN;
+			case WHITE: return WHITE_DOMAIN;
+			case BRASS: return BRASS_DOMAIN;
+			case BRONZE: return BRONZE_DOMAIN;
+			case COPPER: return COPPER_DOMAIN;
+			case GOLD: return GOLD_DOMAIN;
+			case SILVER: return SILVER_DOMAIN;
+			case AMETHYST: return AMETHYST_DOMAIN;
+			case CRYSTAL: return CRYSTAL_DOMAIN;
+			case EMERALD: return EMERALD_DOMAIN;
+			case SAPPHIRE: return SAPPHIRE_DOMAIN;
+			case TOPAZ: return TOPAZ_DOMAIN;
+			case DEEP: return DEEP_DOMAIN;
+			case MOONSTONE: return MOONSTONE_DOMAIN;
+			case SHADOW: return SHADOW_DOMAIN;
+			case DRACOLICH: return DRACOLICH_DOMAIN;
+			}
+		}
+		throw new IllegalArgumentException("Unexpected value: " + creatureSubtype);
+	}
 
 	@Override
 	public String getName(Threat threat) {
@@ -119,6 +181,25 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 			}
 		}
 		return getElementFromArray(array.toArray(new String[0]),threat);
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
+	}
+
+	@Override
+	public String getDomain(Threat threat) {
+		if(threat.reduceTempId(2)==0) return super.getDomain(threat);
+		else{
+			return (String) Util.getElementFromArray(getDomainArray(threat.getSubtype()),threat);
+		}
 	}
 
 }

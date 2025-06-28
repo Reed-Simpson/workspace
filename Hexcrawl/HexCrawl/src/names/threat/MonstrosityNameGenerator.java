@@ -17,7 +17,18 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 	private static final String SNAKENAMES = "chizsal,shashir,crelsaakkass,ircecshal,ilsoree,ahas,jyama,otralu,ushnihas,ayanshtripas,"
 			+ "nulshih,shahu,zsuszuis,eszi,zhultlies,ssehtli,sheztahlie,sshussehlu,sotsosi,ssaltloyu";
 	private static WeightedTable<String> snakenames;
-	
+
+	private static final String FACTION_ADJECTIVES = "";
+	private static final String FACTION_NOUNS = "";
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 	public static void populateAll() {
 		greeknames = new WeightedTable<String>();
 		populate(greeknames, GREEKNAMES, ",");
@@ -78,6 +89,17 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 	}
 	private String getMimicName(Threat threat) {
 		return Util.formatTableResult("${object element}", threat)+" "+EquipmentModel.getMisc(threat);
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
 	}
 }
 

@@ -217,7 +217,8 @@ public class SettlementModel extends DataModel{
 	private void populateFactionDetails(Faction result, Point p) {
 		boolean isFaith = result.getType().isFaith();
 		if(isFaith) result.setDomain(NPCModel.getDomain(result));
-		result.setName(formatName(result, result.getType()));
+		String name = FactionNameGenerator.getName(result.getType(),result);
+		result.setName(name);
 		result.setTrait(FactionNameGenerator.getTrait(result));
 		String goal = formatGoal(FactionNameGenerator.getGoal(result),result,isFaith);
 		result.setGoal(Util.formatTableResultPOS(goal,result,p,record.getZero()));
@@ -272,15 +273,6 @@ public class SettlementModel extends DataModel{
 			goal = Util.replace(goal, "${faction index}", "${faith index}");
 		}
 		return goal;
-	}
-
-
-	private String formatName(Faction result, FactionType type) {
-		String name = FactionNameGenerator.getName(type,result);
-		if(name.contains("${placeholder domain}")) {
-			name = Util.replace(name,"${placeholder domain}",result.getDomain());
-		}
-		return Util.toCamelCase(name);
 	}
 
 	@Override

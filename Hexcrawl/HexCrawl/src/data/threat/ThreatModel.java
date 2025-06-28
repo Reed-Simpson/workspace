@@ -15,7 +15,10 @@ import data.npc.Faction;
 import data.npc.NPC;
 import data.npc.NPCModel;
 import io.SaveRecord;
+import names.AdjectiveNounNameGenerator;
+import names.FactionNameGenerator;
 import names.FactionType;
+import names.threat.ThreatNameGenerator;
 import util.Util;
 import view.InfoPanel;
 
@@ -103,14 +106,24 @@ public class ThreatModel extends DataModel{
 			indexes[i] = getThreatDetailIndex(p,i);
 		}
 		Threat result = new Threat(indexes);
+		result.setNPC(npc);
+		populateThreatDetails( result);
+		threatCache.put(threatSource, result);
+		return result;
+	}
+
+	private Threat populateThreatDetails( Threat result) {
 		result.setType(getThreatCreatureType(result));
 		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), result));
-		result.setNPC(npc);
 		result.setMotive(ThreatDetails.getMotivation(result));
 		result.setFlaw(ThreatDetails.getFlaw(result));
 		result.setPlan(ThreatDetails.getPlan(result));
 		result.setName(getThreatName(result ));
-		threatCache.put(threatSource, result);
+		if(result.getName().contains("${job placeholder}")) {
+			result.setDomain(NPCModel.getJob(result)+"s");
+		}else {
+			result.setDomain(CreatureType.getDomain(result));
+		}
 		return result;
 	}
 
@@ -138,28 +151,50 @@ public class ThreatModel extends DataModel{
 			indexes[i] = random.nextInt();
 		}
 		Threat result = new Threat(indexes);
-		result.setType(getThreatCreatureType(result));
-		result.setSubtype(CreatureType.getSubtypeByWeight(result.getType(), result));
 		result.setNPC(npc);
-		result.setMotive(ThreatDetails.getMotivation(result));
-		result.setFlaw(ThreatDetails.getFlaw(result));
-		result.setPlan(ThreatDetails.getPlan(result));
-		result.setName(getThreatName(result ));
+		populateThreatDetails( result);
 		return result;
 	}
-	
+
+
+	private void populateFactionDetails(Threat threat, Faction faction) {
+		AdjectiveNounNameGenerator factionGen = FactionNameGenerator.getNameGenerator(faction.getType());
+		ThreatNameGenerator threatGen = threat.getType().getNameGenerator();
+		int index = faction.reduceTempId(6);
+		String adj = threatGen.getFactionAdjective(faction);
+		if("".equals(adj)) adj = factionGen.getAdj(faction);
+		String noun = threatGen.getFactionNoun(faction);
+		if("".equals(noun)) noun = factionGen.getNoun(faction);
+		if(index==0) adj = FactionNameGenerator.getAdj(faction);
+		else if(index==1) adj = factionGen.getAdj(faction);
+		else if(index==2) noun = FactionNameGenerator.getNoun(faction);
+		else if(index==3) noun = factionGen.getNoun(faction);
+		String name = Util.formatTableResult("The "+adj+" "+noun,faction);
+		if(name.contains("${subtype}")) name = Util.replace(name, "${subtype}", threat.getSubtype().getName());
+		faction.setName(name);
+		String domain = threat.getDomain();
+		if(domain!=null) faction.setDomain(domain);
+	}
 	public Faction getFaction(DataController controller,Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
 		FactionType[] factionTypes = FactionType.getFactionList(threat.getType());
 		Faction faction = controller.getSettlements().getFaction(InfoPanel.FACTIONCOUNT*2+1, p,factionTypes);
+		populateFactionDetails(threat, faction);
 		return faction;
 	}
+	public Faction getFaction(DataController controller, Random random,Point p,Threat threat) {
+		if(threat==null) threat = getThreat(p);
+		FactionType[] factionTypes = FactionType.getFactionList(threat.getType());
+		Faction faction = controller.getSettlements().getFaction(random, p,factionTypes);
+		populateFactionDetails(threat, faction);
+		return faction;
+	}
+	
 	public NPC getMinion(DataController controller,Point p,int i,Threat threat) {
 		if(threat==null) threat = getThreat(p);
 		NPC npc = controller.getNpcs().getNPC(i+InfoPanel.NPCCOUNT, p);
 		return npc;
 	}
-
 	public NPC getMinion(DataController controller, Random random, Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
 		NPC npc = controller.getNpcs().getNPC(p,random);

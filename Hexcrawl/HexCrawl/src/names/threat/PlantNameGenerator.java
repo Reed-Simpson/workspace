@@ -16,6 +16,17 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 			+ "Mycota,Trufflejade";
 	private static WeightedTable<String> myconids;
 
+	private static final String FACTION_ADJECTIVES = "";
+	private static final String FACTION_NOUNS = "";
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 	public static String getMyconidName(Indexible obj) {
 		if(myconids==null) {
 			myconids = new WeightedTable<String>();
@@ -65,5 +76,16 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 		return "Treants of the "+WildernessNameGenerator.getRegionName(threat)+" Forest";
 	}
 
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
+	}
 
 }

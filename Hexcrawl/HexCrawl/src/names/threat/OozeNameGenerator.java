@@ -15,6 +15,17 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 	private static final String DISEASEADJS = "${weirdness},${effect},${mutation},${insanity}";
 	private static WeightedTable<String> diseaseadjs;
 
+	private static final String FACTION_ADJECTIVES = "";
+	private static final String FACTION_NOUNS = "";
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
 
 	public static String getDiseaseNoun(Indexible obj) {
 		if(diseases==null) {
@@ -68,6 +79,17 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 	private String getDisease(Threat threat) {
 		String adj = Util.formatTableResult(getDiseaseAdj(threat),threat);
 		return "The "+adj+" "+getDiseaseNoun(threat);
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
 	}
 
 }

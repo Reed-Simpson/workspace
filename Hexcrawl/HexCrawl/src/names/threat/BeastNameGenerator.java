@@ -10,6 +10,7 @@ import data.threat.CreatureType;
 import data.threat.Threat;
 import data.threat.subtype.BeastType;
 import data.threat.subtype.HumanoidType;
+import names.FactionNameGenerator;
 import util.Util;
 
 public class BeastNameGenerator extends ThreatNameGenerator{
@@ -17,6 +18,26 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 			"Beast,Horror,Creature,Menace,Threat,Nuisance,Plague,Pest,Curse,Scourge,Thorn,Bristle,Shadow,Hunter,Killer,Raider,Invader";
 	private static WeightedTable<String> beastnouns;
 	private static final String BEASTADJS = "${monster personality},${basic color}";
+
+	private static final String FACTION_ADJECTIVES = "Primal,Natural,Beastial";
+	private static final String FACTION_NOUNS = FactionNameGenerator.CHURCH_NOUNS;
+	private static final String FACTION_DOMAINS = "${animal}s,balance,betrayal,chaos,conquest,cycles,death,destiny,dreams,${element},"+
+			"judgement,monsters,moon,motherhood,plague,purification,summer,sun,sea,wild,winter";
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+	private static WeightedTable<String> faction_domains;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+		faction_domains = new WeightedTable<String>();
+		populate(faction_domains,FACTION_DOMAINS,",");
+	}
+	
+	
+	
 	private static WeightedTable<String> beastadjs;
 	public static String getBeastNoun(Indexible obj) {
 		if(beastnouns==null) {
@@ -116,6 +137,23 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 		String result = npc.getName();
 		if(result==null) result = species.getNPCNameGen().getName(threat);
 		return result+", The "+Species.getString(species, npc)+" "+druid;
+	}
+
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		if(faction_domains==null) populateAllTables();
+		return faction_domains.getByWeight(threat);
 	}
 
 }

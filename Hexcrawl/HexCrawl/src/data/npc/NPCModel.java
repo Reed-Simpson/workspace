@@ -167,9 +167,9 @@ public class NPCModel extends DataModel {
 	}
 	public static String getJob(Indexible obj) {
 		int id = obj.reduceTempId(3);
-		if(id==0) return getCivilized(obj);//50%
-		else if(id==1) return getUnderworld(obj);//40%
-		else return getWilderness(obj);//10%
+		if(id==0) return getCivilized(obj);
+		else if(id==1) return getUnderworld(obj);
+		else return getWilderness(obj);
 	}
 	public static String getAsset(Indexible obj) {
 		if(assets==null) populateAllTables();

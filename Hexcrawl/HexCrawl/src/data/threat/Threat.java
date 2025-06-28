@@ -11,6 +11,7 @@ public class Threat extends Indexible{
 	private String motive;
 	private String flaw;
 	private String plan;
+	private String domain;
 	private NPC npc;
 
 	public Threat(float... floats) {
@@ -67,6 +68,12 @@ public class Threat extends Indexible{
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		if(this.name!=null) {
+			if(name.contains("${placeholder domain}")) {
+				name = Util.replace(name,"${placeholder domain}",this.getDomain());
+			}
+			if(name.contains("${job placeholder}")) {
+				name = Util.replace(name,"${job placeholder}",this.getDomain());
+			}
 			e1Text.append(name+"\r\n");
 		}
 		e1Text.append(Util.toCamelCase(this.getType().name()+" - "+this.getSubtype().getName())+"\r\n");
@@ -74,6 +81,12 @@ public class Threat extends Indexible{
 		e1Text.append("Flaw: "+this.getFlaw()+"\r\n");
 		e1Text.append("Plan: "+this.getPlan());
 		return e1Text.toString();
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 	
 

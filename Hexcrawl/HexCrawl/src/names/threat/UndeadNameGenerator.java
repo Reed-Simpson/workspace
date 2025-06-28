@@ -1,5 +1,7 @@
 package names.threat;
 
+import data.Indexible;
+import data.WeightedTable;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.CreatureType;
@@ -14,6 +16,19 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 			"Silence","Finality","Darkness","Oblivion","Terminus","Eradication","Obliteration","Extermination","Quiet","Desolation"};
 	private static final String[] NIGHTWALKER_ADJ = {"Final","Last","Unavoidable","Inevitable","Inescapable","Inexorable","Destined","Certain","Fated",
 			"Fatal","Unstoppable","Approaching","Impending","Oncoming","Awaited","Foretold","Prophesied"};
+	
+	private static final String FACTION_ADJECTIVES = "";
+	private static final String FACTION_NOUNS = "";
+	private static WeightedTable<String> faction_adjectives;
+	private static WeightedTable<String> faction_nouns;
+
+	private static void populateAllTables() {
+		faction_adjectives = new WeightedTable<String>();
+		populate(faction_adjectives,FACTION_ADJECTIVES,",");
+		faction_nouns = new WeightedTable<String>();
+		populate(faction_nouns,FACTION_NOUNS,",");
+	}
+	
 	@Deprecated
 	public static String getNightwalkerName(int val) {
 		return getElementFromArray(NIGHTWALKER,val);
@@ -140,6 +155,17 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 	private String getGhostDragonName(Threat threat) {
 		DragonType type = DragonType.getByWeight(threat);
 		return DragonNameGenerator.getName(threat, type);
+	}
+	@Override
+	public String getFactionAdjective(Indexible threat) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(threat);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible threat) {
+		if(faction_nouns==null) populateAllTables();
+		return faction_nouns.getByWeight(threat);
 	}
 
 }

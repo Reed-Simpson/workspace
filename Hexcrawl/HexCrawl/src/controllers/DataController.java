@@ -257,7 +257,7 @@ public class DataController {
 		}
 		case MINION: {
 			Point center = threats.getCenter(p);
-			return record.putMinion(center, i-1, s);
+			return record.putMinion(center, i, s);
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -293,7 +293,10 @@ public class DataController {
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
 		case FACTION: return settlements.getFaction(record.getRandom(),p).toString(); 
 		case FAITH: return settlements.getFaith(record.getRandom(),p).toString(); 
-		case MINION: return threats.getMinion(this,record.getRandom(),p,null).toString(); 
+		case MINION:{
+			if(i==0) return threats.getFaction(this, record.getRandom(), p, null).toString();
+			else return threats.getMinion(this,record.getRandom(),p,null).toString(); 
+		}
 		case DISTRICT: return SettlementModel.getDistrict(new Indexible(record.getRandom().nextInt())); 
 		case TOWN: {
 			Species species = population.getMajoritySpecies(p.x,p.y);

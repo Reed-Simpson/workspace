@@ -74,7 +74,7 @@ public class MapPanel  extends JPanel{
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
 		this.showCities=true;
-		this.showIcons=true;
+		this.showIcons=false;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
 		iconCache = new HashMap<Point,List<Icon>>();
 		this.addMouseListener(new MouseAdapter());
@@ -1159,6 +1159,13 @@ public class MapPanel  extends JPanel{
 	public void setShowIcons(boolean selected) {
 		this.showIcons = selected;
 		this.preprocessThenRepaint();
+	}
+	public boolean isShowIcons() {
+		return this.showIcons;
+	}
+
+	public boolean isShowCities() {
+		return this.showCities;
 	}
 
 }

@@ -234,6 +234,7 @@ public class MenuBar extends JMenuBar {
 
 		dataFieldsPanel.add(new JLabel("watersheds:"));
 		wBox = new JCheckBox();
+		wBox.setSelected(panel.isShowRivers());
 		wBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowRivers(wBox.isSelected());
@@ -243,7 +244,7 @@ public class MenuBar extends JMenuBar {
 
 		//		dataFieldsPanel.add(new JLabel("show towns:"));
 		cBox = new JCheckBox();
-		cBox.setSelected(true);
+		cBox.setSelected(panel.isShowCities());
 		cBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowCities(cBox.isSelected());
@@ -253,7 +254,7 @@ public class MenuBar extends JMenuBar {
 
 		dataFieldsPanel.add(new JLabel("show icons:"));
 		iBox = new JCheckBox();
-		iBox.setSelected(true);
+		iBox.setSelected(panel.isShowIcons());
 		iBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowIcons(iBox.isSelected());
@@ -263,7 +264,7 @@ public class MenuBar extends JMenuBar {
 
 		dataFieldsPanel.add(new JLabel("mouseover:"));
 		dBox = new JCheckBox();
-		dBox.setSelected(false);
+		dBox.setSelected(panel.isShowDistance());
 		dBox.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
 				panel.setShowDistance(dBox.isSelected());

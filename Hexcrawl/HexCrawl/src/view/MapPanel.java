@@ -114,7 +114,6 @@ public class MapPanel  extends JPanel{
 				@Override
 				protected Void doInBackground() throws Exception {
 					calculateRivers();
-					System.out.println("done 2");
 					return null;
 				}
 				@Override
@@ -133,7 +132,6 @@ public class MapPanel  extends JPanel{
 
 	private void postinitialize(SaveRecord record) {
 		recenter(record.getPos(),true);
-		System.out.println("postinitialize recenter to: "+record.normalizePOS(record.getPos()));
 		mouseover = getMiddleGridPoint();
 		record.setHasUnsavedData(false);
 		this.preprocessThenRepaint();
@@ -264,7 +262,6 @@ public class MapPanel  extends JPanel{
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
 
-		printLoadingInfo = false;
 		dialog.removeProgressUI();
 	}
 
@@ -291,6 +288,7 @@ public class MapPanel  extends JPanel{
 					loadRoads();
 				}
 	            frame.setCursor(Cursor.getDefaultCursor());
+	    		printLoadingInfo = false;
 				return null;
 			}
 			@Override
@@ -301,6 +299,7 @@ public class MapPanel  extends JPanel{
 			@Override
 			protected void done() {
 				frame.repaint();
+				printLoadingInfo = false;
 			}
 
 		};
@@ -640,7 +639,6 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo) logger.logln("--(100%) Volumes loaded "+(System.currentTimeMillis()-time)+" ms");
 		if(initializing) logger.logln("--(100%) Initialized "+(System.currentTimeMillis()-time)+" ms");
 		dialog.removeProgressUI();
-		System.out.println("done 1");
 		if(initializing) {
             frame.setCursor(Cursor.getDefaultCursor());
 			record.initialize(controller.getGrid(),controller.getPopulation());
@@ -963,11 +961,12 @@ public class MapPanel  extends JPanel{
 					mouseoverHold=true;
 					mouseover = p;
 				}
+				preprocessThenRepaint();
 			}else if(!printLoadingInfo) {
 				recenter(p,true);
 				record.setPos(MapPanel.this.getMiddleGridPoint());
+				preprocessThenRepaint();
 			}
-			preprocessThenRepaint();
 		}
 		@Override
 		public void mouseEntered(MouseEvent e) {}

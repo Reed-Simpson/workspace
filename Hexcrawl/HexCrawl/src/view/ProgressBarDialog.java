@@ -15,7 +15,6 @@ public class ProgressBarDialog extends JDialog {
     private JLabel label = new JLabel("loading.. ");
 
     public ProgressBarDialog(JFrame frame) {
-    	this.setModalityType(ModalityType.MODELESS);
     	this.progressBar = new JProgressBar(0, 100);
 		progressBar.setStringPainted(true);
         this.motherFrame = frame;

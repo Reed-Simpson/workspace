@@ -694,16 +694,17 @@ public class MapPanel  extends JPanel{
 		BasicSpline spline = getRiverSpline(p0);
 		if(spline!=null) {
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
-			Point p1 = controller.getPrecipitation().getRiver(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 			if(width>displayScale) width = displayScale;
 			if(showRivers||width>1.5) {
-				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0,calcDistance(p0, p1));
+				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0);
 			}
 		}
 	}
 
-	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0,double distance) {
+	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0) {
+		Point p1 = controller.getPrecipitation().getRiver(p0);
+		double distance = calcDistance(p0, p1);
 		Point anchor = getScreenPos(p0);
 		Point pointBefore = null;
 		float step = (float) (1f/3/scale/distance);

@@ -205,10 +205,10 @@ public class MapPanel  extends JPanel{
 		return this.scale;
 	}
 	public void setScale(double d) {
-		if(this.scale<WIDEVIEW&&d>=WIDEVIEW) {
-			colorCache = new HashMap<Point,Pair<Color,Color>>();
-			iconCache = new HashMap<Point,List<Icon>>();
-		}
+//		if(this.scale<WIDEVIEW&&d>=WIDEVIEW) {
+//			colorCache = new HashMap<Point,Pair<Color,Color>>();
+//			iconCache = new HashMap<Point,List<Icon>>();
+//		}
 		this.scale=d;
 		record.setScale(scale);
 	}
@@ -221,7 +221,7 @@ public class MapPanel  extends JPanel{
 			printLoadingInfo = true;
 			this.displayData = displayData;
 			colorCache = new HashMap<Point,Pair<Color,Color>>();
-			iconCache = new HashMap<Point,List<Icon>>();
+//			iconCache = new HashMap<Point,List<Icon>>();
 		}
 	}
 
@@ -972,14 +972,19 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
-				Point pScreen = wiggle(p,p);
+				Point p_ = getScreenPos(p);
+				Point pWiggle = wiggle(p,p);
+				Point pStart = new Point((int)(p_.x+pWiggle.x*scale/WIGGLERADIUS), (int)(p_.y+pWiggle.y*scale/WIGGLERADIUS));
 				for(Point near:roads.getAdjacencyList(p)) {
+					Point near_ = getScreenPos(near);
+					Point nearWiggle = wiggle(near,near);
+					Point pEnd = new Point((int)(near_.x+nearWiggle.x*scale/WIGGLERADIUS), (int)(near_.y+nearWiggle.y*scale/WIGGLERADIUS));
 					int weight = roads.getEdgeWeight(p, near);
-					Point nScreen = wiggle(near,p);
+//					Point nScreen = wiggle(near,p);
 					Stroke defaultStroke = g2.getStroke();
 					g2.setStroke(new BasicStroke(displayScale/(14-weight*6)+1));
 					g2.setColor(roadColor);
-					g2.drawLine(pScreen.x, pScreen.y, nScreen.x, nScreen.y);
+					g2.drawLine(pStart.x, pStart.y, pEnd.x, pEnd.y);
 					g2.setStroke(defaultStroke);
 				}
 			}

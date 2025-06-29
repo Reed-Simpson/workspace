@@ -37,7 +37,7 @@ import util.Counter;
 import util.Pair;
 
 public class MapPanel  extends JPanel{
-	private static final double RIVER_STEP = 0.03;
+	public static final int WIGGLERADIUS = 100;
 	private static final int WIDEVIEW = 5;
 	private static final long serialVersionUID = 6922738675563657970L;
 	private static final Color LINE_COLOR = null;
@@ -681,8 +681,8 @@ public class MapPanel  extends JPanel{
 		float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 		if(width>displayScale) width = displayScale;
 		if(width>2) {
-			Point p1 = wiggle(p);
-			Point p2 = wiggle(pr);
+			Point p1 = wiggle(p,p);
+			Point p2 = wiggle(pr,p);
 			g2.setStroke(new BasicStroke(width));
 			g2.setColor(BiomeType.RIVER.getColor());
 			g2.drawLine(p1.x, p1.y, p2.x, p2.y);
@@ -694,25 +694,28 @@ public class MapPanel  extends JPanel{
 		BasicSpline spline = getRiverSpline(p0);
 		if(spline!=null) {
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
+			Point p1 = controller.getPrecipitation().getRiver(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 			if(width>displayScale) width = displayScale;
 			if(showRivers||width>1.5) {
-				drawSpline(g2, spline, width,BiomeType.RIVER.getColor());
+				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0,calcDistance(p0, p1));
 			}
 		}
 	}
 
-	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color) {
+	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0,double distance) {
+		Point anchor = getScreenPos(p0);
 		Point pointBefore = null;
-		for(float f = 0; f<=1f/3; f+=RIVER_STEP) {
+		float step = (float) (1f/3/scale/distance);
+		for(float f = 0; f<=1f/3+step; f+=step) {
 			Point p = spline.getPoint(f);
-			Point pnt = new Point(p.x, p.y);
+			Point pnt = new Point((int)(anchor.x+p.x*scale/WIGGLERADIUS), (int)(anchor.y+p.y*scale/WIGGLERADIUS));
 			g2.setColor(color);
-			g2.fillOval(p.x-(int)width/2, p.y-(int)width/2, (int)width, (int)width);
+			g2.fillOval(pnt.x-(int)width/2, pnt.y-(int)width/2, (int)width, (int)width);
 
-			if(pointBefore != null) {
+			if(pointBefore != null && width < 5) {
 				g2.setColor(color);
-				g2.setStroke(new BasicStroke(width));
+				g2.setStroke(new BasicStroke(width-1));
 				g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
 			}
 
@@ -726,21 +729,29 @@ public class MapPanel  extends JPanel{
 			Point p2 = controller.getPrecipitation().getFlow(p1);
 			Point p3 = controller.getPrecipitation().getFlow(p2);
 			BasicSpline spline = new BasicSpline();
-			spline.addPoint(wiggle(p0));
-			spline.addPoint(wiggle(p1));
-			spline.addPoint(wiggle(p2));
-			spline.addPoint(wiggle(p3));
+			spline.addPoint(wiggle(p0,p0));
+			spline.addPoint(wiggle(p1,p0));
+			spline.addPoint(wiggle(p2,p0));
+			spline.addPoint(wiggle(p3,p0));
 			spline.calcSpline();
 			return spline;
 		}else return null;
 	}
 
-	private Point wiggle(Point p) {
-		Point hexCenter = getScreenPos(p);
+	private Point wiggle(Point p,Point relativeTo) {
+//		Point hexCenter = getScreenPos(p);
+//		if(controller.getGrid().isWater(p)) return hexCenter;
+//		else {
+//			Point wigglefactor = controller.getPrecipitation().getWiggleFactor(p);
+//			return new Point((int)(hexCenter.x+wigglefactor.x*scale/WIGGLERADIUS/2),(int)(hexCenter.y+wigglefactor.y*scale/WIGGLERADIUS/2));
+//		}
+		Point p_ = getScreenPos(p);
+		Point relative_ = getScreenPos(relativeTo);
+		Point hexCenter = new Point((int)((p_.x-relative_.x)*WIGGLERADIUS/scale),(int)((p_.y-relative_.y)*WIGGLERADIUS/scale));
 		if(controller.getGrid().isWater(p)) return hexCenter;
 		else {
 			Point wigglefactor = controller.getPrecipitation().getWiggleFactor(p);
-			return new Point((int)(hexCenter.x+wigglefactor.x*scale/200),(int)(hexCenter.y+wigglefactor.y*scale/200));
+			return new Point((int)(hexCenter.x+wigglefactor.x),(int)(hexCenter.y+wigglefactor.y));
 		}
 	}
 
@@ -929,10 +940,10 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
-				Point pScreen = wiggle(p);
+				Point pScreen = wiggle(p,p);
 				for(Point near:roads.getAdjacencyList(p)) {
 					int weight = roads.getEdgeWeight(p, near);
-					Point nScreen = wiggle(near);
+					Point nScreen = wiggle(near,p);
 					Stroke defaultStroke = g2.getStroke();
 					g2.setStroke(new BasicStroke(displayScale/(14-weight*6)+1));
 					g2.setColor(roadColor);
@@ -945,6 +956,19 @@ public class MapPanel  extends JPanel{
 			}
 		}
 		if(printLoadingInfo) logger.logln("Roads drawn "+(System.currentTimeMillis()-time)+" ms");
+	}
+	public double calcDistance(Point a,Point b) {
+		int dx=b.x-a.x;
+		int dy=b.y-a.y;
+		double distance;
+		if(dx*dy>=0) {
+			distance = Math.abs(dx+dy);
+		}else {
+			dx=Math.abs(dx);
+			dy=Math.abs(dy);
+			distance = Math.max(dx, dy);
+		}
+		return distance;
 	}
 
 
@@ -1004,16 +1028,7 @@ public class MapPanel  extends JPanel{
 				mouseover = gridPoint;
 				if(showDistance) {
 					Point center = MapPanel.this.getMiddleGridPoint();
-					int dx=mouseover.x-center.x;
-					int dy=mouseover.y-center.y;
-					double distance;
-					if(dx*dy>=0) {
-						distance = Math.abs(dx+dy);
-					}else {
-						dx=Math.abs(dx);
-						dy=Math.abs(dy);
-						distance = Math.max(dx, dy);
-					}
+					double distance = calcDistance(center,mouseover);
 					MapPanel.this.setDistance(distance);
 					preprocessThenRepaint();
 				}

@@ -16,6 +16,7 @@ import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import io.SaveRecord;
 import util.Util;
+import view.MapPanel;
 
 public class PrecipitationModel extends DataModel{
 	public static final int LOCAL_WEIGHT_1 = 10;
@@ -152,7 +153,7 @@ public class PrecipitationModel extends DataModel{
 	public Point getWiggleFactor(Point p) {
 		int x = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+3), p.x, p.y));
 		int y = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+4), p.x, p.y));
-		return new Point(x%199-99,y%199-99);
+		return new Point(x%(MapPanel.WIGGLERADIUS*2-1)-(MapPanel.WIGGLERADIUS-1),y%(MapPanel.WIGGLERADIUS*2-1)-(MapPanel.WIGGLERADIUS-1));
 	}
 
 	public Point getRiver(Point p) {

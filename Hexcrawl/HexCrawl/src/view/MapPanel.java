@@ -69,6 +69,7 @@ public class MapPanel  extends JPanel{
 	private HashMap<Point,Pair<Color,Color>> colorCache;
 	private boolean mouseoverHold;
 	private HashMap<Point,List<Icon>> iconCache;
+	private HashMap<Point,BasicSpline> splineCache;
 	private boolean showIcons;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
@@ -77,6 +78,7 @@ public class MapPanel  extends JPanel{
 		this.showIcons=false;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
 		iconCache = new HashMap<Point,List<Icon>>();
+		splineCache = new HashMap<Point,BasicSpline>();
 		this.addMouseListener(new MouseAdapter());
 		this.addMouseMotionListener(new MouseMotionAdapter());
 		this.addMouseWheelListener(new MouseWheelAdapter());
@@ -637,6 +639,34 @@ public class MapPanel  extends JPanel{
 			if(printLoadingInfo||initializing) counter.increment();
 		}
 		if(printLoadingInfo) logger.logln("--(100%) Volumes loaded "+(System.currentTimeMillis()-time)+" ms");
+		if(initializing) logger.logln("--(100%) Volumes Initialized "+(System.currentTimeMillis()-time)+" ms");
+		counter.resetCounter();
+		if(initializing) {
+			dialog.removeProgressUI();
+			dialog.createProgressUI("Initializing river splines: ");
+			logger.log("Initializing river splines "+(sum*loadingFactor)+" ~60000ms: ");
+		}else if(printLoadingInfo) {
+			logger.logln("--(100%) Volumes loaded "+(System.currentTimeMillis()-time)+" ms");
+			time = System.currentTimeMillis();
+			dialog.removeProgressUI();
+			dialog.createProgressUI("Loading river splines: ");
+			logger.log("Loading river splines "+(sum*loadingFactor)+" ~60000ms: ");
+		}
+		HashMap<Point,BasicSpline> newcache = new HashMap<Point,BasicSpline>();
+		for(int i=p1.x;i<p2.x;i+=1) {
+			for(int j=p2.y;j<p1.y;j+=1) {
+				if(!controller.getGrid().isWater(i,j)) {
+					Point p = new Point(i,j);
+					BasicSpline spline = splineCache.get(p);
+					if(spline==null) spline = getRiverSpline(p);
+					newcache.put(p, spline);
+					//todo initialize splines
+				}
+			}
+			if(printLoadingInfo||initializing) counter.increment();
+		}
+		splineCache = newcache;
+		if(printLoadingInfo) logger.logln("--(100%) Splines loaded "+(System.currentTimeMillis()-time)+" ms");
 		if(initializing) logger.logln("--(100%) Initialized "+(System.currentTimeMillis()-time)+" ms");
 		dialog.removeProgressUI();
 		if(initializing) {
@@ -691,7 +721,8 @@ public class MapPanel  extends JPanel{
 
 	private void drawCurvedRiver(Graphics2D g2, int displayScale, int i, int j) {
 		Point p0 = new Point(i,j);
-		BasicSpline spline = getRiverSpline(p0);
+		BasicSpline spline = splineCache.get(p0);
+//		BasicSpline spline = getRiverSpline(p0);
 		if(spline!=null) {
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);

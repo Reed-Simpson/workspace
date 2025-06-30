@@ -13,7 +13,7 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 			"One","Germi","Mesni","Glo","Sarpi","Mari","Pele","Aspra","Pyro","Armo","Ouki","Asmo","Panto","Dra","Eni","Sili","Kinpha","Ply","Ba","Dea","Tetri","Gre","Oko","Aphi","Bedi","Mykhri"};
 	private static final String[] PART2 = {"tis","pater","ton","el","nix","phages","rix","th","x","pnyx","rtor","piel","sias","rmur","ne","rier","rabia","ros","elel","khael","tas","die",
 			"phonou","ki","toro","sem","deus","kym","don","raph","nkon","mory","kes","os","dam","pptos","stor","leel","biel","ziel"};
-	private static final String[] TITLE = {"Whose ${form} is ${effect}","The ${monster trait} ${monster personality} ${subtype}","Who ${insanity}","With Whose Passage ${omen}"};
+	private static final String[] TITLE = {"Whose ${form} is ${effect}","The ${monster trait} and ${monster personality}","Who ${insanity}","With Whose Passage ${omen}"};
 
 	private static final String FACTION_ADJECTIVES = "Fiendish,"+FactionNameGenerator.CHURCH_ADJECTIVES;
 	private static final String FACTION_NOUNS = FactionNameGenerator.ESOTERIC_NOUNS+","+FactionNameGenerator.CHURCH_NOUNS;
@@ -53,7 +53,7 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 		String partial = getPartialName(threat);
 		String title = Util.formatTableResult(getElementFromArray(TITLE, threat),threat);
 		if(title.contains("${subtype}")) title = Util.replace(title, "${subtype}", threat.getSpecies().toString());
-		return partial+", "+title;
+		return Util.toCamelCase(partial+", "+title);
 	}
 	public static String getPartialName(Indexible threat) {
 		String part1 = getElementFromArray(PART1, threat);

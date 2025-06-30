@@ -47,7 +47,7 @@ public class MapPanel  extends JPanel{
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
 	private static final int LOG_THRESHOLD = 200;
-	private static final float RIVERRENDERGRANULARITY = 0.2f;
+	private static final float RIVERRENDERGRANULARITY = 0.4f;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
 	private Point center; //center represents the pixel offset from 0,0

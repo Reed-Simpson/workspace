@@ -32,6 +32,7 @@ import data.AStarGraph;
 import data.HexData;
 import data.biome.BiomeModel;
 import data.biome.BiomeType;
+import data.precipitation.PrecipitationModel;
 import io.AppData;
 import io.SaveRecord;
 import util.Counter;
@@ -571,6 +572,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private synchronized void calculateRivers() {
+		PrecipitationModel precipitation = controller.getPrecipitation();
 		Point p1 = getGridPoint(-40,this.getHeight()+80);
 		Point p2 = getGridPoint(this.getWidth()+40,-40);
 		p1.translate(-100, 100);
@@ -591,7 +593,7 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
-					controller.getPrecipitation().getFlow(new Point(i,j));
+					precipitation.getFlow(new Point(i,j));
 				}
 			}
 			if(printLoadingInfo||initializing) counter.increment();
@@ -612,9 +614,9 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
-				if(!controller.getGrid().isWater(i,j)&&p.equals(controller.getPrecipitation().getFlow(p))) {
-					controller.getPrecipitation().time = System.currentTimeMillis();
-					controller.getPrecipitation().generateLake(p);
+				if(!controller.getGrid().isWater(i,j)&&p.equals(precipitation.getFlow(p))) {
+					precipitation.time = System.currentTimeMillis();
+					precipitation.generateLake(p);
 				}
 			}
 			if(printLoadingInfo||initializing) counter.increment();
@@ -632,11 +634,12 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Loading river volume: ");
 			logger.log("Loading river volume "+(sum*loadingFactor)+": ");
 		}
+		precipitation.resetVolumeCache();
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
-					controller.getPrecipitation().updateFlowVolume(p);
+					precipitation.updateFlowVolume(p);
 				}
 			}
 			if(printLoadingInfo||initializing) counter.increment();

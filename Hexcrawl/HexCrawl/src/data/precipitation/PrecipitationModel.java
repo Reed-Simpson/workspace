@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -51,11 +49,20 @@ public class PrecipitationModel extends DataModel{
 	}
 	private void resetCache() {
 		this.evapCache = new HashMap<Point,Float>();
-		this.flowCache = new ConcurrentHashMap<Point,Point>();
+		resetFlowCache();
+		resetLakeCaches();
+	}
+	public void resetLakeCaches() {
 		this.riverCache = new ConcurrentHashMap<Point,Point>();
-		this.volumeCache = new ConcurrentHashMap<Point,Float>();
+		resetVolumeCache();
 		this.lakes = new ConcurrentHashMap<Point,Integer>();
 		this.outletCache = new ConcurrentHashMap<Point,Point>();
+	}
+	public void resetVolumeCache() {
+		this.volumeCache = new ConcurrentHashMap<Point,Float>();
+	}
+	public void resetFlowCache() {
+		this.flowCache = new ConcurrentHashMap<Point,Point>();
 	}
 
 	public ConcurrentHashMap<Point,Integer> getLakes() {

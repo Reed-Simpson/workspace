@@ -128,7 +128,7 @@ public class AStarGraph implements Set<Point> {
 	 */
 	public int shortestDistance(Point start, Point finish){
 		HashMap<Point,Point> previous = new HashMap<Point,Point>();
-		Integer distance = this.dijkstras(previous,start, finish);
+		Integer distance = this.dijkstras(previous,start).get(finish);
 		if(distance==null) return -1;
 		else return distance;
 	}
@@ -142,7 +142,7 @@ public class AStarGraph implements Set<Point> {
 	 */
 	public LinkedList<Point> shortestPath(Point start, Point finish){
 		HashMap<Point,Point> previous = new HashMap<Point,Point>();
-		this.dijkstras(previous,start, finish);
+		this.dijkstras(previous,start);
 		LinkedList<Point> result = new LinkedList<Point>();
 		if(start.equals(finish)){
 			result.add(start);
@@ -173,7 +173,7 @@ public class AStarGraph implements Set<Point> {
 	 * @return A wrapper object for an integer representing the distance of the path, 
 	 * and a hashmap containing the information needed to reconstruct the path
 	 */
-	public Integer dijkstras(HashMap<Point,Point> previous,Point start, Point finish){
+	public HashMap<Point,Integer> dijkstras(HashMap<Point,Point> previous,Point start){
 		//this hashmap is used to reconstruct a correct path post algorithm
 		if(previous==null) previous = new HashMap<Point,Point>();
 		//this hashmap is used to compare different paths to find a shortest one
@@ -195,8 +195,6 @@ public class AStarGraph implements Set<Point> {
 				Integer dist2 = distance.get(v.key);
 				if(dist2<dist1) min=v;
 			}
-			//break out of the loop early if the target vertex is the lowest distance
-			if((min.key==null&&finish==null)||min.key.equals(finish)) break;
 			list.remove(min);
 			Set<Entry<Vertex, Integer>> adj = min.getAdjacentVertices().entrySet();
 			for(Entry<Vertex, Integer> entry:adj){
@@ -212,12 +210,12 @@ public class AStarGraph implements Set<Point> {
 				}
 			}
 		}
-		return distance.get(finish);
+		return distance;
 	}
 	
 
-	public Integer dijkstras(Point start, Point finish){
-		return dijkstras(null, start, finish);
+	public HashMap<Point, Integer> dijkstras(Point start){
+		return dijkstras(null, start);
 	}
 
 	/**

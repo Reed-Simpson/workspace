@@ -2,6 +2,7 @@ package graph;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -30,6 +31,11 @@ import java.util.Set;
 public class AStarGraph implements Set<Point> {
 	protected HashMap<Point,Vertex> vertices = new LinkedHashMap<Point,Vertex>();
 	protected int numberEdges=0;
+	protected double distanceFactor;
+
+	public AStarGraph(double distance) {
+		this.distanceFactor=distance;
+	}
 
 	/**
 	 * Adds a new vertex to the graph with the given key if it does not already contain a 
@@ -123,7 +129,7 @@ public class AStarGraph implements Set<Point> {
 	 */
 	public int shortestDistance(Point start, Point finish){
 		HashMap<Point,Point> previous = new HashMap<Point,Point>();
-		Integer distance = this.dijkstras(previous,start, finish);
+		Integer distance = this.dijkstras(previous,start).get(finish);
 		if(distance==null) return -1;
 		else return distance;
 	}
@@ -137,7 +143,7 @@ public class AStarGraph implements Set<Point> {
 	 */
 	public LinkedList<Point> shortestPath(Point start, Point finish){
 		HashMap<Point,Point> previous = new HashMap<Point,Point>();
-		this.dijkstras(previous,start, finish);
+		this.dijkstras(previous,start);
 		LinkedList<Point> result = new LinkedList<Point>();
 		if(start.equals(finish)){
 			result.add(start);
@@ -168,7 +174,7 @@ public class AStarGraph implements Set<Point> {
 	 * @return A wrapper object for an integer representing the distance of the path, 
 	 * and a hashmap containing the information needed to reconstruct the path
 	 */
-	public Integer dijkstras(HashMap<Point,Point> previous,Point start, Point finish){
+	public HashMap<Point,Integer> dijkstras(HashMap<Point,Point> previous,Point start){
 		//this hashmap is used to reconstruct a correct path post algorithm
 		if(previous==null) previous = new HashMap<Point,Point>();
 		//this hashmap is used to compare different paths to find a shortest one
@@ -190,8 +196,6 @@ public class AStarGraph implements Set<Point> {
 				Integer dist2 = distance.get(v.key);
 				if(dist2<dist1) min=v;
 			}
-			//break out of the loop early if the target vertex is the lowest distance
-			if((min.key==null&&finish==null)||min.key.equals(finish)) break;
 			list.remove(min);
 			Set<Entry<Vertex, Integer>> adj = min.getAdjacentVertices().entrySet();
 			for(Entry<Vertex, Integer> entry:adj){
@@ -207,12 +211,12 @@ public class AStarGraph implements Set<Point> {
 				}
 			}
 		}
-		return distance.get(finish);
+		return distance;
 	}
 	
 
-	public Integer dijkstras(Point start, Point finish){
-		return dijkstras(null, start, finish);
+	public HashMap<Point, Integer> dijkstras(Point start){
+		return dijkstras(null, start);
 	}
 
 	/**
@@ -372,6 +376,25 @@ public class AStarGraph implements Set<Point> {
 		int dy = p2.y-p1.y;
 		return Math.sqrt(dx*dx+dy*dy);
 	}
+	public int shortestPath(Point start, Point finish,LinkedList<Point> list){
+		HashMap<Point,Point> previous = new HashMap<Point,Point>();
+		int result = aStar(previous, start, finish);
+		if(start.equals(finish)){
+			list.add(start);
+			//return list;
+		}else if(previous.get(finish)==null){
+			//return null;
+		}else {
+			Point current = finish;
+			while(previous.get(current)!=null){
+				list.push(current);//adds the previous key to the beginning of the list
+				current = previous.get(current);
+			}
+			list.push(current);
+			//return list;
+		}
+		return result;
+	}
 	
 
 	public Integer aStar(HashMap<Point,Point> previous,Point start, Point finish){
@@ -467,5 +490,17 @@ public class AStarGraph implements Set<Point> {
 		}
 
 	}
+	
+	public Set<Point> getAdjacencyList(Point key){
+		HashSet<Point> result = new HashSet<Point>();
+		Vertex vertex = vertices.get(key);
+		if(vertex!=null&&vertex.getAdjacentVertices()!=null&&vertex.getAdjacentVertices().keySet()!=null) {
+			for(Vertex v:vertex.getAdjacentVertices().keySet()) {
+				result.add(v.key);
+			}
+		}
+		return result;
+	}
+
 
 }

@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -200,18 +202,36 @@ public class MenuBar extends JMenuBar {
 			}
 		};
 		xField.addActionListener(posActionListener);
+		xField.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {}
+			public void focusGained(FocusEvent e) {
+				xField.select(0, xField.getText().length());
+			}
+		});
 		dataFieldsPanel.add(xField);
 		dataFieldsPanel.add(new JLabel("y:"));
 		yField = new JTextField();
 		yField.setPreferredSize(new Dimension(50,20));
 		yField.setMaximumSize(new Dimension(50,50));
 		yField.addActionListener(posActionListener);
+		yField.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {}
+			public void focusGained(FocusEvent e) {
+				yField.select(0, yField.getText().length());
+			}
+		});
 		dataFieldsPanel.add(yField);
 		dataFieldsPanel.add(new JLabel("scale:"));
 		sField = new JTextField();
 		sField.setPreferredSize(new Dimension(30,20));
 		sField.setMaximumSize(new Dimension(30,30));
 		sField.addActionListener(posActionListener);
+		sField.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {}
+			public void focusGained(FocusEvent e) {
+				sField.select(0, sField.getText().length());
+			}
+		});
 		dataFieldsPanel.add(sField);
 		sLabel = new JLabel("1 hex = 6 miles");
 		dataFieldsPanel.add(sLabel);

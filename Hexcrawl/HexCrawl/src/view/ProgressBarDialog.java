@@ -23,7 +23,7 @@ public class ProgressBarDialog extends JDialog {
         setUndecorated(true);
         add(label, BorderLayout.NORTH);
         add(progressBar, BorderLayout.CENTER);
-        progressBar.setPreferredSize(new Dimension(500, 100));
+        progressBar.setPreferredSize(new Dimension(500, 50));
         pack();
 		this.setLocationRelativeTo(motherFrame);
     }

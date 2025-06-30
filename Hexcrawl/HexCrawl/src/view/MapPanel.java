@@ -648,7 +648,6 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Initializing river splines: ");
 			logger.log("Initializing river splines "+(sum*loadingFactor)+" ~60000ms: ");
 		}else if(printLoadingInfo) {
-			logger.logln("--(100%) Volumes loaded "+(System.currentTimeMillis()-time)+" ms");
 			time = System.currentTimeMillis();
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Loading river splines: ");

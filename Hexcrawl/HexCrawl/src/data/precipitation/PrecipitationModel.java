@@ -268,7 +268,7 @@ public class PrecipitationModel extends DataModel{
 				p = next;
 			}
 			if(System.currentTimeMillis()>time+interval) {
-				System.out.println("updateFlowPath "+(System.currentTimeMillis()-time));
+				System.out.print("updateFlowPath|");
 				time=System.currentTimeMillis();
 			}
 		}

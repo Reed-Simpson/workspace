@@ -720,21 +720,18 @@ public class MapPanel  extends JPanel{
 	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0) {
 		Point p1 = controller.getPrecipitation().getRiver(p0);
 		double distance = calcDistance(p0, p1);
+		g2.setColor(color);
+		g2.setStroke(new BasicStroke(Math.max(width-1,0)));
 		Point anchor = getScreenPos(p0);
 		Point pointBefore = null;
 		float step = (float) (1f/3/scale)/RIVERRENDERGRANULARITY;
-		for(float f = 0; f<=1f/3+step/distance; f+=step/distance) {
+		for(float f = 0; f<=1f/3+step/distance-width/12/scale/distance; f+=step/distance) {
 			Point p = spline.getPoint(f);
 			Point pnt = new Point((int)(anchor.x+p.x*scale/WIGGLERADIUS), (int)(anchor.y+p.y*scale/WIGGLERADIUS));
-			g2.setColor(color);
 			g2.fillOval(pnt.x-(int)width/2, pnt.y-(int)width/2, (int)width, (int)width);
-
 			if(pointBefore != null && width < 30*step*scale) {
-				g2.setColor(color);
-				g2.setStroke(new BasicStroke(Math.max(width-1,0)));
 				g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
 			}
-
 			pointBefore = pnt;
 		}
 	}

@@ -721,7 +721,7 @@ public class MapPanel  extends JPanel{
 
 			if(pointBefore != null && width < 30*step*scale) {
 				g2.setColor(color);
-				g2.setStroke(new BasicStroke(width-1));
+				g2.setStroke(new BasicStroke(Math.max(width-1,0)));
 				g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
 			}
 

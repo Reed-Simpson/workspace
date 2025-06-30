@@ -3,6 +3,8 @@ package data.threat.subtype;
 import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
+import data.threat.CreatureType;
+import names.threat.ThreatNameGenerator;
 
 public enum MonstrosityType implements CreatureSubtype {
 	SPHINX(0,"SPHINX"),
@@ -91,6 +93,10 @@ public enum MonstrosityType implements CreatureSubtype {
 	
 	public String getName() {
 		return name;
+	}
+	@Override
+	public ThreatNameGenerator getNameGen() {
+		return CreatureType.MONSTROSITY.getNameGen();
 	}
 
 }

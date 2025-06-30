@@ -1,6 +1,7 @@
 package data.npc;
 
 import data.Indexible;
+import data.population.NPCSpecies;
 import data.population.Species;
 import util.Util;
 
@@ -31,7 +32,7 @@ public class NPC extends Indexible{
 	public NPC(float... floats) {
 		super(floats);
 	}
-	public NPC(Species s) {
+	public NPC(NPCSpecies s) {
 		super(0);
 		this.species = s;
 	}
@@ -178,7 +179,7 @@ public class NPC extends Indexible{
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		String name = (this.name!=null?this.name+", the ":"");
-		String species = this.getSpecies().name();
+		String species = this.getSpecies().toString();
 		if(this.getSubspecies()!=null) species = this.getSubspecies();
 		e1Text.append(name+Util.toCamelCase(species)+" "+this.getJob() + "\r\n");
 		e1Text.append("• Descriptors: "+Util.parseArray(this.getDescriptors()));

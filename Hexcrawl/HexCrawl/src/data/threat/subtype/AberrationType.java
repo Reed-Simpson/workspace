@@ -3,6 +3,8 @@ package data.threat.subtype;
 import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
+import data.threat.CreatureType;
+import names.threat.ThreatNameGenerator;
 
 public enum AberrationType implements CreatureSubtype{
 	ABOLETH(1,"ABOLETH"),
@@ -62,6 +64,10 @@ public enum AberrationType implements CreatureSubtype{
 	
 	public String getName() {
 		return name;
+	}
+	@Override
+	public ThreatNameGenerator getNameGen() {
+		return CreatureType.ABERRATION.getNameGen();
 	}
 
 }

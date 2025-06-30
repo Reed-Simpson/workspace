@@ -30,11 +30,11 @@ public class PopulationModel extends DataModel{
 	private static final int INDEX_STEP = 2;
 	private AltitudeModel grid;
 	private PrecipitationModel precipitation;
-	private HashMap<Point,LinkedHashMap<Species,Float>> cache;
+	private HashMap<Point,LinkedHashMap<NPCSpecies,Float>> cache;
 	private DecimalFormat populationStringFormat = new DecimalFormat ("##,##0");
 	private DecimalFormat populationPercentStringFormat = new DecimalFormat("#0.00%");
 
-	public float getPopulation(int x,int y, Species species) {
+	public float getPopulation(int x,int y, NPCSpecies species) {
 		Point p = new Point(x,y);
 		if(grid.isWater(p)||precipitation.isLake(p)||species==null) {
 			return 0f;
@@ -50,35 +50,35 @@ public class PopulationModel extends DataModel{
 		resetCache();
 	}
 	private void resetCache() {
-		this.cache = new HashMap<Point,LinkedHashMap<Species,Float>>();
+		this.cache = new HashMap<Point,LinkedHashMap<NPCSpecies,Float>>();
 	}
 
-	public LinkedHashMap<Species,Float> getDemographics(Point p) {
+	public LinkedHashMap<NPCSpecies,Float> getDemographics(Point p) {
 		if(grid.isWater(p)||precipitation.isLake(p)) {
-			return new LinkedHashMap<Species, Float>();
+			return new LinkedHashMap<NPCSpecies, Float>();
 		}else if(this.cache.get(p)!=null) {
 			return this.cache.get(p);
 		}else {
 			float popFactor = getHarshnessFactor(p.x, p.y);
-			LinkedHashMap<Species, Float> map = new LinkedHashMap<Species, Float>();
-			for(Species s:Species.getAbeirSpecies()) {
+			LinkedHashMap<NPCSpecies, Float> map = new LinkedHashMap<NPCSpecies, Float>();
+			for(NPCSpecies s:NPCSpecies.getAbeirSpecies()) {
 				if(getPopulation(p.x, p.y, s)>0) {
 					map.put(s, popTransform(getPopulation(p.x, p.y, s)));
 				}
 			}
-			LinkedHashMap<Species, Float> sortedMap = new LinkedHashMap<Species, Float>();
+			LinkedHashMap<NPCSpecies, Float> sortedMap = new LinkedHashMap<NPCSpecies, Float>();
 			if(map.size()>0) {
-				List<Map.Entry<Species, Float>> entries = new ArrayList<Map.Entry<Species, Float>>(map.entrySet());
-				Collections.sort(entries, new Comparator<Map.Entry<Species, Float>>() {
-					public int compare(Map.Entry<Species, Float> a, Map.Entry<Species, Float> b){
+				List<Map.Entry<NPCSpecies, Float>> entries = new ArrayList<Map.Entry<NPCSpecies, Float>>(map.entrySet());
+				Collections.sort(entries, new Comparator<Map.Entry<NPCSpecies, Float>>() {
+					public int compare(Map.Entry<NPCSpecies, Float> a, Map.Entry<NPCSpecies, Float> b){
 						return b.getValue().compareTo(a.getValue());
 					}
 				});
-				Species majority = entries.get(0).getKey();
-				for (Map.Entry<Species, Float> entry : entries) {
+				NPCSpecies majority = entries.get(0).getKey();
+				for (Map.Entry<NPCSpecies, Float> entry : entries) {
 					float adjValue = entry.getValue();
 					adjValue*=popFactor;
-					Species key = entry.getKey();
+					NPCSpecies key = entry.getKey();
 					if(!key.equals(majority)) {
 						adjValue*=Math.min(getIsolationFactor(p, majority, key),1);
 					}
@@ -90,17 +90,17 @@ public class PopulationModel extends DataModel{
 				for(float entry : sortedMap.values()) {
 					total+=entry;
 				}
-				sortedMap.put(Species.OTHER, total*0.01f*getIsolationFactor(p, majority, Species.OTHER));
+				sortedMap.put(NPCSpecies.OTHER, total*0.01f*getIsolationFactor(p, majority, NPCSpecies.OTHER));
 			}
 			this.cache.put(p, sortedMap);
 			return sortedMap;
 		}
 	}
 
-	public float getIsolationFactor(Point p, Species majority, Species minority) {
+	public float getIsolationFactor(Point p, NPCSpecies majority, NPCSpecies minority) {
 		return Math.max(1-(getUniversalIsolationFactor(p.x, p.y)+minority.getIsolationFactor()+majority.getIsolationFactor()),0);
 	}
-	public LinkedHashMap<Species,Float> getDemographics(int x, int y) {
+	public LinkedHashMap<NPCSpecies,Float> getDemographics(int x, int y) {
 		return getDemographics(new Point(x,y));
 	}
 
@@ -145,29 +145,29 @@ public class PopulationModel extends DataModel{
 		return Math.max(1-Math.abs(grid.getHeight(x,y))*(1-precipitation.getPrecipitation(x, y)),0);
 	}
 
-	public Species getMajoritySpecies(int x,int y) {
+	public NPCSpecies getMajoritySpecies(int x,int y) {
 		return getMajorityPopAndSpecies(x, y).getKey();
 	}
 
 	public float getMajorityPop(int x,int y) {
 		return getMajorityPopAndSpecies(x, y).getValue();
 	}
-	public Entry<Species, Float> getMajorityPopAndSpecies(int x,int y) {
-		LinkedHashMap<Species,Float> pop = getDemographics(x,y);
-		Iterator<Entry<Species, Float>> iterator = pop.entrySet().iterator();
+	public Entry<NPCSpecies, Float> getMajorityPopAndSpecies(int x,int y) {
+		LinkedHashMap<NPCSpecies,Float> pop = getDemographics(x,y);
+		Iterator<Entry<NPCSpecies, Float>> iterator = pop.entrySet().iterator();
 		if(iterator.hasNext()) return iterator.next();
-		else return new AbstractMap.SimpleEntry<Species, Float>(null, 0f);
+		else return new AbstractMap.SimpleEntry<NPCSpecies, Float>(null, 0f);
 	}
 
 	public Point getLocalFealty(Point p) {
-		Entry<Species,Float> e = getMajorityPopAndSpecies(p.x, p.y);
+		Entry<NPCSpecies,Float> e = getMajorityPopAndSpecies(p.x, p.y);
 		float pop = e.getValue();
-		Species s = e.getKey();
+		NPCSpecies s = e.getKey();
 		Point result = p;
 		for(Point p1:Util.getAdjacentPoints(p)) {
-			Entry<Species,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
+			Entry<NPCSpecies,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
 			float pop1 = e1.getValue();
-			Species s1 = e1.getKey();
+			NPCSpecies s1 = e1.getKey();
 			if(pop1>pop && s1!=null && s1.equals(s)) {
 				pop=pop1;
 				result = p1;
@@ -216,11 +216,11 @@ public class PopulationModel extends DataModel{
 
 	public Point getParentCity(Point p) {
 		float pop = getMajorityPop(p.x, p.y);
-		Species s = getMajoritySpecies(p.x, p.y);
+		NPCSpecies s = getMajoritySpecies(p.x, p.y);
 		Point result = p;
 		for(Point p1:Util.getNearbyPoints(p, INFLUENCE_RADIUS)) {
 			float pop1=getMajorityPop(p1.x, p1.y);
-			Species s1 = getMajoritySpecies(p1.x, p1.y);
+			NPCSpecies s1 = getMajoritySpecies(p1.x, p1.y);
 			if(pop1>pop && s1!=null && s1.equals(s)) {
 				pop=pop1;
 				result = p1;
@@ -231,7 +231,7 @@ public class PopulationModel extends DataModel{
 
 	public Color getColor(int x,int y) {
 		float pop = Math.min(Math.max(getUniversalPopulation(x, y),0),1);
-		Species species = getMajoritySpecies(x, y);
+		NPCSpecies species = getMajoritySpecies(x, y);
 		int gradiants = 10;
 		pop = (float) Math.ceil(pop*gradiants)/gradiants;
 		if(species==null) return BiomeType.VOID.getColor();
@@ -288,11 +288,11 @@ public class PopulationModel extends DataModel{
 		return getPopScale(isCity(p), isTown(p));
 	}
 
-	public WeightedTable<Species> getTransformedDemographics(Point p) {
-		LinkedHashMap<Species,Float> demo = getDemographics(p);
-		WeightedTable<Species> result = new WeightedTable<Species>();
+	public WeightedTable<NPCSpecies> getTransformedDemographics(Point p) {
+		LinkedHashMap<NPCSpecies,Float> demo = getDemographics(p);
+		WeightedTable<NPCSpecies> result = new WeightedTable<NPCSpecies>();
 		int popScale = getPopScale(p);
-		for(Entry<Species, Float> e:demo.entrySet()) {
+		for(Entry<NPCSpecies, Float> e:demo.entrySet()) {
 			int demoTransformInt = demoTransformInt(e.getValue(), popScale);
 			if(demoTransformInt>0) result.put(e.getKey(), demoTransformInt);
 		}

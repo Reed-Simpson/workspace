@@ -3,6 +3,8 @@ package data.threat.subtype;
 import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
+import data.threat.CreatureType;
+import names.threat.ThreatNameGenerator;
 
 public enum FiendType implements CreatureSubtype {
 	DEVIL(0,"DEVIL"),
@@ -57,6 +59,10 @@ public enum FiendType implements CreatureSubtype {
 	
 	public String getName() {
 		return name;
+	}
+	@Override
+	public ThreatNameGenerator getNameGen() {
+		return CreatureType.FIEND.getNameGen();
 	}
 
 }

@@ -159,7 +159,7 @@ public class ThreatModel extends DataModel{
 
 	private void populateFactionDetails(Threat threat, Faction faction) {
 		AdjectiveNounNameGenerator factionGen = FactionNameGenerator.getNameGenerator(faction.getType());
-		ThreatNameGenerator threatGen = threat.getType().getNameGenerator();
+		ThreatNameGenerator threatGen = threat.getType().getNameGen();
 		int index = faction.reduceTempId(6);
 		String adj = threatGen.getFactionAdjective(faction);
 		if("".equals(adj)) adj = factionGen.getAdj(faction);

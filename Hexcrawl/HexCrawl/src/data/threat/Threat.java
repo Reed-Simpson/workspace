@@ -2,11 +2,13 @@ package data.threat;
 
 import data.Indexible;
 import data.npc.NPC;
+import data.population.Species;
 import util.Util;
 
 public class Threat extends Indexible{
 	private CreatureType type;
 	private CreatureSubtype subtype;
+	private Species minionSpecies;
 	private String name;
 	private String motive;
 	private String flaw;
@@ -31,8 +33,12 @@ public class Threat extends Indexible{
 	public CreatureSubtype getSubtype() {
 		return subtype;
 	}
+	public Species getMinionSpecies() {
+		return minionSpecies;
+	}
 	public void setSubtype(CreatureSubtype subtype) {
 		this.subtype = subtype;
+		this.minionSpecies = subtype;
 	}
 	public String getName() {
 		return name;

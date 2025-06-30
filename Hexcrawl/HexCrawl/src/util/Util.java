@@ -16,6 +16,7 @@ import data.monster.MonsterModel;
 import data.npc.NPCModel;
 import data.population.SettlementModel;
 import data.population.Species;
+import data.population.NPCSpecies;
 import data.threat.CreatureSubtype;
 import names.FactionNameGenerator;
 import names.InnNameGenerator;
@@ -157,7 +158,7 @@ public class Util {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
 				else result = Util.replace(result,"${character index}",FactionNameGenerator.getFaction(obj).toString());
 			}
-			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",Species.GOLIATH.getCityNameGen().getName(obj));
+			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",NPCSpecies.GOLIATH.getCityNameGen().getName(obj));
 		}
 		return result;
 	}
@@ -194,7 +195,7 @@ public class Util {
 		if(result.contains("${hobby}")) result = Util.replace(result,"${hobby}",NPCModel.getHobby(obj));
 
 		if(result.contains("${last name}")) result = Util.replace(result,"${last name}",HumanNameGenerator.getLastName(obj));
-		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",Species.HUMAN.getCityNameGen().getName(obj));
+		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",NPCSpecies.HUMAN.getCityNameGen().getName(obj));
 
 		if(result.contains("${dungeon activity}")) result = Util.replace(result,"${dungeon activity}",DungeonModel.getActivity(obj));
 		if(result.contains("${dungeon room}")) result = Util.replace(result,"${dungeon room}",DungeonModel.getRoom(obj));
@@ -285,7 +286,7 @@ public class Util {
 		return Util.replace(string,"${subtype}",type.getName());
 	}
 	public static String formatSpecies(String string, Species species) {
-		return Util.replace(string,"${species}",species.name());
+		return Util.replace(string,"${species}",species.toString());
 	}
 	public static int[] getRemainder(int[] vals,int reduction) {
 		int[] remainder = new int[vals.length-reduction];

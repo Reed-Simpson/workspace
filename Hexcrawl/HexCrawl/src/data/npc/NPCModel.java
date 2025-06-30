@@ -9,7 +9,7 @@ import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.encounters.EncounterModel;
 import data.population.PopulationModel;
-import data.population.Species;
+import data.population.NPCSpecies;
 import io.SaveRecord;
 import names.threat.HumanoidNameGenerator;
 import util.Util;
@@ -281,18 +281,18 @@ public class NPCModel extends DataModel {
 
 	private void setSpecies(Point p, NPC result) {
 		if(result.getSpecies()==null) {
-			WeightedTable<Species> demo = population.getTransformedDemographics(p);
+			WeightedTable<NPCSpecies> demo = population.getTransformedDemographics(p);
 			if(demo.getSumWeight()>0) {
-				Species species = demo.getByWeight(result);
+				NPCSpecies species = demo.getByWeight(result);
 				result.setSpecies(species);
 			}else {
-				Species species = getRandomNPCSpecies(result);
+				NPCSpecies species = getRandomNPCSpecies(result);
 				result.setSpecies(species);
 			}
 		}
 	}
 	private void setSubspecies(Point p, NPC result) {
-		if(Species.GOBLINOID.equals(result.getSpecies())) {
+		if(NPCSpecies.GOBLINOID.equals(result.getSpecies())) {
 			result.setSubspecies(HumanoidNameGenerator.getGoblinoid(result));
 		}
 	}
@@ -346,8 +346,8 @@ public class NPCModel extends DataModel {
 		npc.setRelationship(getRelationship(npc));
 	}
 	private void setName(Point p, NPC npc) {
-		if(npc.getSpecies()!=null&&npc.getSpecies().getNPCNameGen()!=null) {
-			String name = npc.getSpecies().getNPCNameGen().getName(npc);
+		if(npc.getSpecies()!=null&&npc.getSpecies().getNameGen()!=null) {
+			String name = npc.getSpecies().getNameGen().getName(npc);
 			name = Util.formatTableResultPOS(name, npc, p, record.getZero());
 			npc.setName(name);
 		}
@@ -360,9 +360,9 @@ public class NPCModel extends DataModel {
 		String desc2 = EncounterModel.getChar(npc);
 		npc.setDescriptors(new String[]{desc1,desc2});
 	}
-	public Species getRandomNPCSpecies(Indexible obj) {
-		Species[] species = Species.getAbeirNPCSpecies();
-		return (Species) Util.getElementFromArray(species, obj);
+	public NPCSpecies getRandomNPCSpecies(Indexible obj) {
+		NPCSpecies[] species = NPCSpecies.getAbeirNPCSpecies();
+		return (NPCSpecies) Util.getElementFromArray(species, obj);
 	}
 	@Deprecated
 	@Override

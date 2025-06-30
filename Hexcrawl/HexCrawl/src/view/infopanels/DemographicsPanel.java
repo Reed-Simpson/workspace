@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import data.population.PopulationModel;
-import data.population.Species;
+import data.population.NPCSpecies;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")
@@ -72,9 +72,9 @@ public class DemographicsPanel extends JPanel {
 	private String getDemoString(Point pos) {
 		PopulationModel population = info.getPanel().getController().getPopulation();
 		int pop = population.getTransformedUniversalPopulation(pos);
-		LinkedHashMap<Species,Integer> demographics = population.getTransformedDemographics(pos);
+		LinkedHashMap<NPCSpecies,Integer> demographics = population.getTransformedDemographics(pos);
 		String demoString = "";
-		for(Species s:demographics.keySet()) {
+		for(NPCSpecies s:demographics.keySet()) {
 			if(demographics.get(s)!=null&&demographics.get(s)>0) {
 				demoString+=s.name()+" "+population.demoTransformString(demographics.get(s),pop)+", ";
 			}

@@ -68,8 +68,10 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
 		String result = npc.getName();
-		if(result==null) result = species.getNPCNameGen().getName(threat);
-		return result+", The "+Species.getString(species, npc)+" "+druid;
+		String speciesName = species.toString();
+		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
+		if(result==null) result = species.getNameGen().getName(threat);
+		return result+", The "+speciesName+" "+druid;
 	}
 
 	private String getTreantName(Threat threat) {

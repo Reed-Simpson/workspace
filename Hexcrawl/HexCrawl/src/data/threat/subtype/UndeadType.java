@@ -3,6 +3,8 @@ package data.threat.subtype;
 import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
+import data.threat.CreatureType;
+import names.threat.ThreatNameGenerator;
 
 public enum UndeadType implements CreatureSubtype {
 	LICH(0,"LICH"),
@@ -70,6 +72,10 @@ public enum UndeadType implements CreatureSubtype {
 	
 	public String getName() {
 		return name;
+	}
+	@Override
+	public ThreatNameGenerator getNameGen() {
+		return CreatureType.UNDEAD.getNameGen();
 	}
 
 }

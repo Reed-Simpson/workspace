@@ -3,6 +3,8 @@ package data.threat.subtype;
 import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
+import data.threat.CreatureType;
+import names.threat.ThreatNameGenerator;
 
 public enum ElementalType implements CreatureSubtype {
 	FIRE(1,"FIRE"),
@@ -92,6 +94,10 @@ public enum ElementalType implements CreatureSubtype {
 			if(type.getId()==id) result=type;
 		}
 		return result;
+	}
+	@Override
+	public ThreatNameGenerator getNameGen() {
+		return CreatureType.ELEMENTAL.getNameGen();
 	}
 
 }

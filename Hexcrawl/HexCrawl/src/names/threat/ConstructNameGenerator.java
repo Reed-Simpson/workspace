@@ -116,10 +116,10 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		String artificer = MagicModel.getArtificer(threat);
 		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
-		String speciesName = species.name();
+		String speciesName = species.toString();
 		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
 		String result = npc.getName();
-		if(result==null) result = species.getNPCNameGen().getName(threat);
+		if(result==null) result = species.getNameGen().getName(threat);
 		return Util.toCamelCase(result+", The "+speciesName+" "+artificer);
 	}
 	private String getGolemName(Threat threat) {

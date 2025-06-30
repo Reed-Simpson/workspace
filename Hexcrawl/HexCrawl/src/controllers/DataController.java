@@ -18,7 +18,7 @@ import data.magic.MagicModel;
 import data.npc.NPCModel;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
-import data.population.Species;
+import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import data.threat.ThreatModel;
 import io.SaveRecord;
@@ -123,7 +123,7 @@ public class DataController {
 		}
 		case TOWN: {
 			Point capital = population.getLocalFealty(p);
-			Species species = population.getMajoritySpecies(capital.x,capital.y);
+			NPCSpecies species = population.getMajoritySpecies(capital.x,capital.y);
 			if(species==null) {
 				System.err.println("null species "+record.normalizePOS(capital));
 				value = null;break;
@@ -299,7 +299,7 @@ public class DataController {
 		}
 		case DISTRICT: return SettlementModel.getDistrict(new Indexible(record.getRandom().nextInt())); 
 		case TOWN: {
-			Species species = population.getMajoritySpecies(p.x,p.y);
+			NPCSpecies species = population.getMajoritySpecies(p.x,p.y);
 			return names.getName(species.getCityNameGen(), record.getRandom());
 		}
 		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();

@@ -16,7 +16,7 @@ import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
-import data.population.Species;
+import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
@@ -171,7 +171,7 @@ public class HexPanelGeneralStatPanel extends JPanel{
 	private String getDefaultRegionNameText(Point pos,boolean isCity) {
 		DataController controller = info.getPanel().getController();
 		if(isCity) {
-			Species species = controller.getPopulation().getMajoritySpecies(pos.x, pos.y);
+			NPCSpecies species = controller.getPopulation().getMajoritySpecies(pos.x, pos.y);
 			LocationNameModel names = controller.getNames();
 			return names.getName(species.getCityNameGen(), pos);
 		}else {

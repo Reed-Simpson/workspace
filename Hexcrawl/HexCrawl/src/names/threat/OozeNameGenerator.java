@@ -72,9 +72,11 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 		String druid = MagicModel.getDruid(threat);
 		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
+		String speciesName = species.toString();
+		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
 		String result = npc.getName();
-		if(result==null) result = species.getNPCNameGen().getName(threat);
-		return result+", The "+Species.getString(species, npc)+" "+druid;
+		if(result==null) result = species.getNameGen().getName(threat);
+		return result+", The "+speciesName+" "+druid;
 	}
 	private String getDisease(Threat threat) {
 		String adj = Util.formatTableResult(getDiseaseAdj(threat),threat);

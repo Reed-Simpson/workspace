@@ -31,7 +31,7 @@ import data.biome.BiomeModel;
 import data.magic.MagicModel;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
-import data.population.Species;
+import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
@@ -548,7 +548,7 @@ public class InfoPanel extends JTabbedPane{
 		hexGeneralPanel.dopaint();
 		demographicsPanel.doPaint();
 
-		Species species = population.getMajoritySpecies(pos.x, pos.y);
+		NPCSpecies species = population.getMajoritySpecies(pos.x, pos.y);
 		float pop = population.getUniversalPopulation(pos);
 		int popScale = population.getPopScale(pos) ;
 		int popValue = population.demoTransformInt(pop, popScale);
@@ -730,7 +730,7 @@ public class InfoPanel extends JTabbedPane{
 
 	private String getDefaultRegionNameText(Point pos,boolean isCity) {
 		if(isCity) {
-			Species species = panel.getController().getPopulation().getMajoritySpecies(pos.x, pos.y);
+			NPCSpecies species = panel.getController().getPopulation().getMajoritySpecies(pos.x, pos.y);
 			LocationNameModel names = panel.getController().getNames();
 			return names.getName(species.getCityNameGen(), pos);
 		}else {

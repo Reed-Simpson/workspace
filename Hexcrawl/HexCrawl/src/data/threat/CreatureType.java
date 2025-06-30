@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.population.Species;
 import data.threat.subtype.AberrationType;
 import data.threat.subtype.BeastType;
 import data.threat.subtype.CelestialType;
@@ -34,7 +35,7 @@ import names.threat.PlantNameGenerator;
 import names.threat.ThreatNameGenerator;
 import names.threat.UndeadNameGenerator;
 
-public enum CreatureType {
+public enum CreatureType implements Species{
 	DRAGON(1,new DragonNameGenerator(),Color.getHSBColor(25f/360f, 1.0f, 1.0f)), 
 	ELEMENTAL(2,new ElementalNameGenerator(),Color.getHSBColor(50f/360f, 1.0f, 1.0f)),
 	HUMANOID(3,new HumanoidNameGenerator(),Color.getHSBColor(75f/360f, 1.0f, 1.0f)),
@@ -113,27 +114,20 @@ public enum CreatureType {
 		return result;
 	}
 
-
-	public ThreatNameGenerator getNameGenerator() {
+	@Override
+	public ThreatNameGenerator getNameGen() {
 		return names;
 	}
 	public int getId() {
 		return this.id;
 	}
-	@Deprecated
-	public static String getName(Threat threat,int... index) {
-		ThreatNameGenerator gen = threat.getType().getNameGenerator();
-		if(gen==null) return null;
-		return gen.getName(threat,index);
-	}
 	public static String getName(Threat threat) {
-		ThreatNameGenerator gen = threat.getType().getNameGenerator();
+		ThreatNameGenerator gen = threat.getType().getNameGen();
 		if(gen==null) return null;
 		return gen.getName(threat);
-		
 	}
 	public static String getDomain(Threat threat) {
-		ThreatNameGenerator gen = threat.getType().getNameGenerator();
+		ThreatNameGenerator gen = threat.getType().getNameGen();
 		return gen.getDomain(threat);
 		
 	}

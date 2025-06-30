@@ -3,6 +3,8 @@ package data.threat.subtype;
 import data.Indexible;
 import data.WeightedTable;
 import data.threat.CreatureSubtype;
+import data.threat.CreatureType;
+import names.threat.ThreatNameGenerator;
 
 public enum ConstructType implements CreatureSubtype {
 	MODRON(0,"MODRON"),
@@ -55,6 +57,10 @@ public enum ConstructType implements CreatureSubtype {
 	
 	public String getName() {
 		return name;
+	}
+	@Override
+	public ThreatNameGenerator getNameGen() {
+		return CreatureType.CONSTRUCT.getNameGen();
 	}
 
 }

@@ -1,7 +1,7 @@
 package names.npc;
 
 import data.Indexible;
-import data.population.Species;
+import data.population.NPCSpecies;
 import names.IndexibleNameGenerator;
 import util.Util;
 
@@ -16,14 +16,14 @@ public class DwarfNameGenerator extends IndexibleNameGenerator{
 	public String getName(int... val) {
 		if(val.length<5) throw new IllegalArgumentException("Expected 5 or more values");
 		int[] remainder = Util.getRemainder(val, 1);
-		if(val[0]%10==0) return Species.HUMAN.getNPCNameGen().getName(remainder);
+		if(val[0]%10==0) return NPCSpecies.HUMAN.getNameGen().getName(remainder);
 		return getElementFromArray(FIRST,val[1])+" "+getElementFromArray(LAST,val[2]);
 	}
 
 
 	@Override
 	public String getName(Indexible obj) {
-		if(obj.reduceTempId(10)==0) return Species.HUMAN.getNPCNameGen().getName(obj);
+		if(obj.reduceTempId(10)==0) return NPCSpecies.HUMAN.getNameGen().getName(obj);
 		return getElementFromArray(FIRST,obj)+" "+getElementFromArray(LAST,obj);
 	}
 

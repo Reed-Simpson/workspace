@@ -160,7 +160,7 @@ public class SettlementModel extends DataModel{
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+j), p.x, p.y);
 		}
 		Settlement result = new Settlement(vals);
-		populateSettlementDetails(result);
+		populateSettlementDetails(result,p);
 		populateDistricts(p, result);
 		return result;
 	}
@@ -170,12 +170,12 @@ public class SettlementModel extends DataModel{
 			vals[j] = random.nextInt();
 		}
 		Settlement result = new Settlement(vals);
-		populateSettlementDetails(result);
+		populateSettlementDetails(result,p);
 		populateDistricts(p,random, result);
 		return result;
 	}
-	private void populateSettlementDetails(Settlement result) {
-		result.setTheme(getTheme(result));
+	private void populateSettlementDetails(Settlement result, Point p) {
+		result.setTheme(Util.formatTableResultPOS(getTheme(result), result, p, record.getZero()));
 		result.setLeadership(getLeadership(result));
 		result.setEvent(getEvent(result));
 	}

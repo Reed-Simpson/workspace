@@ -185,6 +185,7 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getCity(capital);
 		}
+		case DISTRICT: return null;
 		case TOWN: {
 			Point capital = population.getLocalFealty(p);
 			return record.getRegionName(capital);

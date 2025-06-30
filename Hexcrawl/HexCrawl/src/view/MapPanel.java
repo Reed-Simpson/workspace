@@ -738,7 +738,7 @@ public class MapPanel  extends JPanel{
 		double distance = calcDistance(p0, p1);
 		Point anchor = getScreenPos(p0);
 		Point pointBefore = null;
-		float step = (float) (1f/3/scale/distance);
+		float step = (float) (1f/6/scale/distance);
 		for(float f = 0; f<=1f/3+step; f+=step) {
 			Point p = spline.getPoint(f);
 			Point pnt = new Point((int)(anchor.x+p.x*scale/WIGGLERADIUS), (int)(anchor.y+p.y*scale/WIGGLERADIUS));

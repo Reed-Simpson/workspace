@@ -45,6 +45,6 @@ public class ProgressBarDialog extends JDialog {
     public void removeProgressUI() {
         //setAlwaysOnTop(false);
         setVisible(false);
-		dispose();
+		//dispose();
     }
 }

@@ -151,9 +151,10 @@ public class PrecipitationModel extends DataModel{
 	}
 	
 	public Point getWiggleFactor(Point p) {
+		int range = MapPanel.WIGGLERADIUS*5/6;
 		int x = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+3), p.x, p.y));
 		int y = Util.getIndexFromSimplex(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+4), p.x, p.y));
-		return new Point(x%(MapPanel.WIGGLERADIUS*2-1)-(MapPanel.WIGGLERADIUS-1),y%(MapPanel.WIGGLERADIUS*2-1)-(MapPanel.WIGGLERADIUS-1));
+		return new Point(x%(range*2-1)-(range-1),y%(range*2-1)-(range-1));
 	}
 
 	public Point getRiver(Point p) {

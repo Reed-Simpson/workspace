@@ -2,7 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
-import data.threat.Threat;
+import data.npc.Creature;
 import data.threat.subtype.GiantType;
 import names.FactionNameGenerator;
 import util.Util;
@@ -41,8 +41,8 @@ public class GiantNameGenerator extends ThreatNameGenerator {
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		GiantType type = (GiantType) threat.getSubtype();
+	public String getName(Creature threat) {
+		GiantType type = (GiantType) threat.getSpecies();
 		// TODO Auto-generated method stub
 		return Util.toCamelCase(getNamePart(threat)+" The "+type);
 	}

@@ -2,8 +2,8 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.npc.Creature;
 import data.threat.CreatureSubtype;
-import data.threat.Threat;
 import data.threat.subtype.CelestialType;
 import names.FactionNameGenerator;
 import util.Util;
@@ -44,7 +44,7 @@ public class CelestialNameGenerator extends ThreatNameGenerator{
 	}
 
 	@Override
-	public String getName(Threat threat) {
+	public String getName(Creature threat) {
 		String partial = FiendNameGenerator.getPartialName(threat);
 		String title = Util.formatTableResult(getElementFromArray(TITLE, threat),threat);
 		return partial+", "+title;

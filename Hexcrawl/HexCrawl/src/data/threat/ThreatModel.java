@@ -14,6 +14,7 @@ import data.OpenSimplex2S;
 import data.npc.Faction;
 import data.npc.NPC;
 import data.npc.NPCModel;
+import data.population.Species;
 import io.SaveRecord;
 import names.AdjectiveNounNameGenerator;
 import names.FactionNameGenerator;
@@ -124,6 +125,9 @@ public class ThreatModel extends DataModel{
 		}else {
 			result.setDomain(CreatureType.getDomain(result));
 		}
+		Species minionSpecies = (Species) Util.getElementFromArray(result.getSubtype().getMinionSpeciesList(), result);
+		if(minionSpecies==null) minionSpecies = result.getNPC().getSpecies();
+		result.setMinionSpecies(minionSpecies);
 		return result;
 	}
 
@@ -192,7 +196,7 @@ public class ThreatModel extends DataModel{
 	
 	public NPC getMinion(DataController controller,Point p,int i,Threat threat) {
 		if(threat==null) threat = getThreat(p);
-		NPC npc = controller.getNpcs().getNPC(i+InfoPanel.NPCCOUNT, p);
+		NPC npc = controller.getNpcs().getMinion(i, p,threat);
 		return npc;
 	}
 	public NPC getMinion(DataController controller, Random random, Point p,Threat threat) {

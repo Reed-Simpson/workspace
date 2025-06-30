@@ -3,6 +3,7 @@ package names.threat;
 import data.Indexible;
 import data.WeightedTable;
 import data.magic.MagicModel;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.CreatureType;
@@ -54,8 +55,8 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 	}
 	
 	@Override
-	public String getName(Threat threat) {
-		BeastType subtype = (BeastType) threat.getSubtype();
+	public String getName(Creature threat) {
+		BeastType subtype = (BeastType) threat.getSpecies();
 		switch(subtype) {
 		case AWAKENED: return getBeastName(threat);
 		case LYCANTHROPE: return getLycanthropeName(threat);
@@ -66,13 +67,18 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 	public static String getBeastName(Indexible threat) {
 		return "The "+getBeastAdj(threat)+" "+getBeastNoun(threat);
 	}
-	private String getLycanthropeName(Threat threat) {
-		threat.setSubtype(HumanoidType.LYCANTHROPE);
+	private String getLycanthropeName(Creature threat) {
+		threat.setSpecies(HumanoidType.LYCANTHROPE);
 		return CreatureType.HUMANOID.getNameGen().getName(threat);
 	}
-	private String getDruidName(Threat threat) {
+	private String getDruidName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
 		String druid = MagicModel.getDruid(threat);
-		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
 		String speciesName = species.toString();
 		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();

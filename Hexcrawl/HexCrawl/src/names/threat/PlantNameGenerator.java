@@ -5,6 +5,7 @@ import data.WeightedTable;
 import data.location.LocationModel;
 import data.magic.MagicModel;
 import data.monster.MonsterModel;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.Threat;
@@ -42,8 +43,8 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		PlantType type = (PlantType) threat.getSubtype();
+	public String getName(Creature threat) {
+		PlantType type = (PlantType) threat.getSpecies();
 		switch(type) {
 		case AWAKENED:return getPlantName(threat);
 		case BODYTAKER:return getBodytakerName(threat);
@@ -54,18 +55,29 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 		}
 	}
 
-	private String getPlantName(Threat threat) {
+	private String getPlantName(Indexible threat) {
 		String personality = MonsterModel.getPersonality(threat);
 		String plant = LocationModel.getPoisonousPlant(threat);
 		return personality+" "+plant;
 	}
 
-	private String getBodytakerName(Threat threat) {
-		return threat.getNPC().getName();
+	private String getBodytakerName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
+		return npc.getName();
 	}
-	private String getDruidName(Threat threat) {
+	private String getDruidName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
 		String druid = MagicModel.getDruid(threat);
-		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
 		String result = npc.getName();
 		String speciesName = species.toString();
@@ -74,7 +86,7 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 		return result+", The "+speciesName+" "+druid;
 	}
 
-	private String getTreantName(Threat threat) {
+	private String getTreantName(Indexible threat) {
 		return "Treants of the "+WildernessNameGenerator.getRegionName(threat)+" Forest";
 	}
 

@@ -2,6 +2,7 @@ package data.threat.subtype;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -76,6 +77,22 @@ public enum UndeadType implements CreatureSubtype {
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.UNDEAD.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		switch(this) {
+		case DEATHKNIGHT:
+		case DEMILICH:
+		case GHAST:
+		case GHOST:
+		case LICH:
+		case MUMMYLORD:
+		case SKULLLORD:
+		case VAMPIRE:
+		case WRAITH: return new Species[] {null};
+		default:
+			return CreatureSubtype.super.getMinionSpeciesList();
+		}
 	}
 
 }

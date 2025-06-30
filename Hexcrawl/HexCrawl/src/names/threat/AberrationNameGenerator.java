@@ -2,7 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
-import data.threat.Threat;
+import data.npc.Creature;
 import names.FactionNameGenerator;
 
 public class AberrationNameGenerator extends ThreatNameGenerator{
@@ -36,11 +36,11 @@ public class AberrationNameGenerator extends ThreatNameGenerator{
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		String part1 = getElementFromArray(PART1, threat);
-		String part2 = getElementFromArray(PART2, threat);
-		String verb = getElementFromArray(VERB, threat);
-		String noun = getElementFromArray(NOUN, threat);
+	public String getName(Creature obj) {
+		String part1 = getElementFromArray(PART1, obj);
+		String part2 = getElementFromArray(PART2, obj);
+		String verb = getElementFromArray(VERB, obj);
+		String noun = getElementFromArray(NOUN, obj);
 		return part1+part2+", The "+verb+" "+noun;
 	}
 

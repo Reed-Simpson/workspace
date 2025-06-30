@@ -9,10 +9,12 @@ import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.encounters.EncounterModel;
 import data.population.PopulationModel;
+import data.threat.Threat;
 import data.population.NPCSpecies;
 import io.SaveRecord;
 import names.threat.HumanoidNameGenerator;
 import util.Util;
+import view.InfoPanel;
 
 public class NPCModel extends DataModel {
 	//STATIC CONSTANTS
@@ -282,7 +284,7 @@ public class NPCModel extends DataModel {
 	private void setSpecies(Point p, NPC result) {
 		if(result.getSpecies()==null) {
 			WeightedTable<NPCSpecies> demo = population.getTransformedDemographics(p);
-			if(demo.getSumWeight()>0) {
+			if(demo!=null&&demo.getSumWeight()>0) {
 				NPCSpecies species = demo.getByWeight(result);
 				result.setSpecies(species);
 			}else {
@@ -377,6 +379,18 @@ public class NPCModel extends DataModel {
 			ints[x] = random.nextInt();
 		}
 		NPC result = new NPC(ints);
+
+		populateNPCData(p, result);
+		return result;
+	}
+	public NPC getMinion(int i,Point p,Threat threat) {
+		i+=InfoPanel.NPCCOUNT; //minion offset
+		float[] floats = new float[TABLECOUNT];
+		for(int x=0;x<floats.length;x++) {
+			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
+		}
+		NPC result = new NPC(floats);
+		result.setSpecies(threat.getMinionSpecies());
 
 		populateNPCData(p, result);
 		return result;

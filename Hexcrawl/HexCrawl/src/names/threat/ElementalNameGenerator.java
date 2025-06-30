@@ -2,6 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.npc.Creature;
 import data.threat.Threat;
 import data.threat.subtype.ElementalType;
 import names.FactionNameGenerator;
@@ -91,12 +92,12 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		String[] prefixArray = getPrefixArray((ElementalType) threat.getSubtype());
+	public String getName(Creature threat) {
+		String[] prefixArray = getPrefixArray((ElementalType) threat.getSpecies());
 		String part1 = getElementFromArray(prefixArray, threat);
 		String part2 = getElementFromArray(SUFFIX, threat);
 		String title = getElementFromArray(TITLE, threat);
-		return part1+part2+", "+title+" of "+Util.toCamelCase(threat.getSubtype().getName());
+		return part1+part2+", "+title+" of "+Util.toCamelCase(threat.getSpecies().toString());
 	}
 	@Override
 	public String getFactionAdjective(Indexible threat) {

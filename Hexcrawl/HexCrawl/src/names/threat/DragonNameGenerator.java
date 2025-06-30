@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.npc.Creature;
 import data.threat.CreatureSubtype;
 import data.threat.Threat;
 import data.threat.subtype.DragonType;
@@ -153,19 +154,19 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		DragonType type = (DragonType) threat.getSubtype();
+	public String getName(Creature threat) {
+		DragonType type = (DragonType) threat.getSpecies();
 		return getName(threat, type);
 	}
 
-	public static String getName(Threat threat,DragonType type) {
+	public static String getName(Indexible threat,DragonType type) {
 		String part1 = getElementFromArray(PART1, threat);
 		String part2 = getElementFromArray(PART2, threat);
 		String part3 = getElementFromArray(PART3, threat);
 		String title = getTitle(threat,type);
 		return part1+part2+part3+", "+title;
 	}
-	private static String getTitle(Threat threat,DragonType type) {
+	private static String getTitle(Indexible threat,DragonType type) {
 		ArrayList<String> array = new ArrayList<String>();
 		for(String s:getTitleArray(type)) {
 			if(s.contains("${noun}")) {

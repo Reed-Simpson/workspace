@@ -2,6 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.CreatureType;
@@ -28,8 +29,8 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 	}
 	
 	@Override
-	public String getName(Threat threat) {
-		UndeadType subtype = (UndeadType) threat.getSubtype();
+	public String getName(Creature threat) {
+		UndeadType subtype = (UndeadType) threat.getSpecies();
 		switch(subtype) {
 		case LICH: return getGenericName(threat);
 		case VAMPIRE: return getGenericName(threat);
@@ -47,9 +48,14 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 		default: throw new IllegalArgumentException(subtype.name());
 		}
 	}
-	private String getGenericName(Threat threat) {
-		UndeadType subtype = (UndeadType) threat.getSubtype();
-		NPC npc = threat.getNPC();
+	private String getGenericName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
+		UndeadType subtype = (UndeadType) threat.getSpecies();
 		Species species = npc.getSpecies();
 		String speciesName = species.toString();
 		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
@@ -57,17 +63,17 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 		if(result==null) result = species.getNameGen().getName(threat);
 		return result+", The "+speciesName+" "+subtype;
 	}
-	private String getNightwalkerName(Threat threat) {
+	private String getNightwalkerName(Indexible threat) {
 		return "The "+getElementFromArray(NIGHTWALKER_ADJ,threat)+" "+getElementFromArray(NIGHTWALKER,threat);
 	}
-	private String getDeathtyrantName(Threat threat) {
+	private String getDeathtyrantName(Creature threat) {
 		return CreatureType.ABERRATION.getNameGen().getName(threat);
 	}
-	private String getDracolichName(Threat threat) {
-		threat.setSubtype(DragonType.DRACOLICH);
+	private String getDracolichName(Creature threat) {
+		threat.setSpecies(DragonType.DRACOLICH);
 		return CreatureType.DRAGON.getNameGen().getName(threat);
 	}
-	private String getGhostDragonName(Threat threat) {
+	private String getGhostDragonName(Creature threat) {
 		DragonType type = DragonType.getByWeight(threat);
 		return DragonNameGenerator.getName(threat, type);
 	}

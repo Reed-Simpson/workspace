@@ -2,6 +2,7 @@ package data.threat.subtype;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -78,6 +79,22 @@ public enum HumanoidType implements CreatureSubtype {
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.HUMANOID.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		switch(this) {
+		case DROW:
+		case DUREGAR:
+		case GNOLL:
+		case GOBLINOID:
+		case KOBOLD:
+		case LIZARDFOLK:
+		case ORC:
+		case TROGLODYTE:
+			return new Species[]{this};
+		default:
+			return new Species[]{null};
+		}
 	}
 
 

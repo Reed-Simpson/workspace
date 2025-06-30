@@ -9,6 +9,10 @@ public interface CreatureSubtype extends Species {
 	
 	public abstract int getId() ;
 	
+	public default Species[] getMinionSpeciesList() {
+		return new Species[]{this};
+	}
+	
 	@Override
 	public ThreatNameGenerator getNameGen();
 	

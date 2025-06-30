@@ -1,11 +1,11 @@
 package data.threat;
 
-import data.Indexible;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.population.Species;
 import util.Util;
 
-public class Threat extends Indexible{
+public class Threat extends Creature{
 	private CreatureType type;
 	private CreatureSubtype subtype;
 	private Species minionSpecies;
@@ -33,12 +33,14 @@ public class Threat extends Indexible{
 	public CreatureSubtype getSubtype() {
 		return subtype;
 	}
+	public void setSubtype(CreatureSubtype subtype) {
+		this.subtype = subtype;
+	}
 	public Species getMinionSpecies() {
 		return minionSpecies;
 	}
-	public void setSubtype(CreatureSubtype subtype) {
-		this.subtype = subtype;
-		this.minionSpecies = subtype;
+	public void setMinionSpecies(Species species) {
+		this.minionSpecies = species;
 	}
 	public String getName() {
 		return name;
@@ -93,6 +95,18 @@ public class Threat extends Indexible{
 	}
 	public void setDomain(String domain) {
 		this.domain = domain;
+	}
+	@Override
+	public Species getSpecies() {
+		return this.getSubtype();
+	}
+	@Override
+	public void setSpecies(Species s) {
+		if(s instanceof CreatureSubtype) {
+			this.setSubtype((CreatureSubtype) s);
+		}else {
+			throw new UnsupportedOperationException("Threat does not accept non-threat species types");
+		}
 	}
 	
 

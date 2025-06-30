@@ -3,6 +3,7 @@ package names.threat;
 import data.Indexible;
 import data.WeightedTable;
 import data.magic.MagicModel;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.population.Species;
 import data.threat.Threat;
@@ -51,8 +52,14 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 	
 	
 	@Override
-	public String getName(Threat threat) {
-		OozeType type = (OozeType) threat.getSubtype();
+	public String getName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
+		OozeType type = (OozeType) threat.getSpecies();
 		switch (type) {
 		case BLACKPUDDING:return "none";
 		case BLOBOFANNIHILATION:return "none";
@@ -61,16 +68,21 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 		case DRUID:return getDruidName(threat);
 		case GELATINOUSCUBE:return "none";
 		case GREYOOZE:return "none";
-		case OBLEX:return threat.getNPC().getName();
+		case OBLEX:return npc.getName();
 		case OCHREJELLY:return "none";
 		case OOZEMASTER:return getDisease(threat);
 		default: throw new IllegalArgumentException("Unrecognized subtype: "+type);
 		}
 	}
 
-	private String getDruidName(Threat threat) {
+	private String getDruidName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
 		String druid = MagicModel.getDruid(threat);
-		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
 		String speciesName = species.toString();
 		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
@@ -78,7 +90,7 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 		if(result==null) result = species.getNameGen().getName(threat);
 		return result+", The "+speciesName+" "+druid;
 	}
-	private String getDisease(Threat threat) {
+	private String getDisease(Indexible threat) {
 		String adj = Util.formatTableResult(getDiseaseAdj(threat),threat);
 		return "The "+adj+" "+getDiseaseNoun(threat);
 	}

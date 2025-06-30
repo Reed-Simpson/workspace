@@ -3,6 +3,7 @@ package names.threat;
 import data.Indexible;
 import data.WeightedTable;
 import data.magic.MagicModel;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.population.NPCSpecies;
 import data.population.Species;
@@ -35,8 +36,8 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 	
 	
 	@Override
-	public String getName(Threat threat) {
-		HumanoidType subtype = (HumanoidType) threat.getSubtype();
+	public String getName(Creature threat) {
+		HumanoidType subtype = (HumanoidType) threat.getSpecies();
 		switch(subtype) {
 		case CULTIST: return getHumanoidName(threat,"Cult Leader");
 		case WARLORD: return getHumanoidName(threat,"Warlord");
@@ -55,8 +56,8 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 		}
 	}
 
-	private String getHumanoidName(Threat threat,String profession) {
-		NPC npc = threat.getNPC();
+	private String getHumanoidName(Creature threat,String profession) {
+		NPC npc = getNPC(threat);
 		Species species = npc.getSpecies();
 		String result = npc.getName();
 		String speciesName = species.toString();
@@ -64,38 +65,47 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 		if(result==null) result = species.getNameGen().getName(threat);
 		return result+", The "+speciesName+" "+profession;
 	}
-	private String getGoblinoidName(Threat threat) {
+	private NPC getNPC(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
+		return npc;
+	}
+	private String getGoblinoidName(Creature threat) {
+		NPC npc = getNPC(threat);
 		String goblinoid = getGoblinoid(threat);
-		NPC npc = threat.getNPC();
 		npc.setSubspecies(goblinoid);
 		String result = NPCSpecies.GOBLINOID.getNameGen().getName(threat);
 		return result+", The "+goblinoid+" Warlord";
 	}
-	private String getKoboldName(Threat threat) {
+	private String getKoboldName(Creature threat) {
 		String result = NPCSpecies.KOBOLD.getNameGen().getName(threat);
 		return result+", The Kobold Denmaster";
 	}
-	private String getOrcName(Threat threat) {
+	private String getOrcName(Creature threat) {
 		String result = NPCSpecies.ORC.getNameGen().getName(threat);
 		return result+", The Orc Warlord";
 	}
-	private String getLizardfolkName(Threat threat) {
+	private String getLizardfolkName(Creature threat) {
 		String result = NPCSpecies.LIZARDFOLK.getNameGen().getName(threat);
 		return result+", The Lizardfolk Chieftan";
 	}
-	private String getDrowName(Threat threat) {
+	private String getDrowName(Creature threat) {
 		String result = NPCSpecies.ELF.getNameGen().getName(threat);
 		return result+", The Drow High Priestess";
 	}
-	private String getDuregarName(Threat threat) {
+	private String getDuregarName(Creature threat) {
 		String result = NPCSpecies.DWARF.getNameGen().getName(threat);
 		return result+", The Duregar General";
 	}
-	private String getGnollName(Threat threat) {
+	private String getGnollName(Creature threat) {
 		String result = NPCSpecies.GNOLL.getNameGen().getName(threat);
 		return result+", The Gnoll Alpha";
 	}
-	private String getTrogName(Threat threat) {
+	private String getTrogName(Creature threat) {
 		String result = NPCSpecies.TROG.getNameGen().getName(threat);
 		return result+", The Troglodyte Chieftan";
 	}

@@ -4,6 +4,7 @@ import data.Indexible;
 import data.WeightedTable;
 import data.encounters.EncounterModel;
 import data.magic.MagicModel;
+import data.npc.Creature;
 import data.npc.NPC;
 import data.npc.NPCModel;
 import data.population.Species;
@@ -101,8 +102,8 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		ConstructType type = (ConstructType) threat.getSubtype();
+	public String getName(Creature threat) {
+		ConstructType type = (ConstructType) threat.getSpecies();
 		switch(type) {
 		case ARTIFICER: return getArtificerName(threat);
 		case AWAKENED: return getGolemName(threat);
@@ -112,9 +113,14 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		default: throw new IllegalArgumentException("Unrecognized ConstructType: "+type);
 		}
 	}
-	private String getArtificerName(Threat threat) {
+	private String getArtificerName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
 		String artificer = MagicModel.getArtificer(threat);
-		NPC npc = threat.getNPC();
 		Species species = npc.getSpecies();
 		String speciesName = species.toString();
 		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
@@ -122,12 +128,12 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		if(result==null) result = species.getNameGen().getName(threat);
 		return Util.toCamelCase(result+", The "+speciesName+" "+artificer);
 	}
-	private String getGolemName(Threat threat) {
+	private String getGolemName(Indexible threat) {
 		String name = getPartialName(threat);
 		String title = getGolemTitle(threat);
 		return Util.toCamelCase(Util.formatTableResult(name+", "+title,threat));
 	}
-	private String getGolemTitle(Threat threat) {
+	private String getGolemTitle(Indexible threat) {
 		String titleDescriptor = EncounterModel.getObj(threat);
 		String titleNoun;
 		if(threat.reduceTempId(2)%2==0) titleNoun = getJobNoun(threat);
@@ -135,24 +141,24 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		String title = titleDescriptor+" "+titleNoun;
 		return "The "+title;
 	}
-	private String getPartialName(Threat threat) {
+	private String getPartialName(Indexible threat) {
 		String part1 = getNameAdj(threat);
 		String part2 = getNameNoun(threat);
 		String name = part1+part2;
 		return name;
 	}
-	private String getInevitableName(Threat threat) {
+	private String getInevitableName(Indexible threat) {
 		String name = getPartialName(threat);
 		String title = getInevitableTitle(threat);
 		return Util.toCamelCase(Util.formatTableResult(name+", "+title,threat));
 	}
-	private String getInevitableTitle(Threat threat) {
+	private String getInevitableTitle(Indexible threat) {
 		String titleDescriptor = EncounterModel.getObj(threat);
 		String titleNoun = getInevitableNoun(threat);
 		String title = titleDescriptor+" "+titleNoun;
 		return "The "+title;
 	}
-	private String getModronName(Threat threat) {
+	private String getModronName(Indexible threat) {
 		String type = getModronType(threat);
 		int count = modrons.get(type);
 		int number = threat.reduceTempId(count)+1;

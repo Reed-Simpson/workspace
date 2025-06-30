@@ -2,8 +2,8 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.npc.Creature;
 import data.threat.CreatureSubtype;
-import data.threat.Threat;
 import data.threat.subtype.FiendType;
 import names.FactionNameGenerator;
 import util.Util;
@@ -49,12 +49,12 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 		return title;
 	}
 	@Override
-	public String getName(Threat threat) {
+	public String getName(Creature threat) {
 		String partial = getPartialName(threat);
 		String title = Util.formatTableResult(getElementFromArray(TITLE, threat),threat);
 		return partial+", "+title;
 	}
-	public static String getPartialName(Threat threat) {
+	public static String getPartialName(Indexible threat) {
 		String part1 = getElementFromArray(PART1, threat);
 		String part2 = getElementFromArray(PART2, threat);
 		return part1+part2;

@@ -2,7 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
-import data.threat.Threat;
+import data.npc.Creature;
 import names.FactionNameGenerator;
 
 public class FeyNameGenerator extends ThreatNameGenerator {
@@ -26,7 +26,7 @@ public class FeyNameGenerator extends ThreatNameGenerator {
 	}
 
 	@Override
-	public String getName(Threat threat) {
+	public String getName(Creature threat) {
 		// TODO Auto-generated method stub
 		return null;
 	}

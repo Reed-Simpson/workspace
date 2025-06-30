@@ -1,11 +1,9 @@
 package data.npc;
 
-import data.Indexible;
-import data.population.NPCSpecies;
 import data.population.Species;
 import util.Util;
 
-public class NPC extends Indexible{
+public class NPC extends Creature{
 
 	private transient Species species;
 	private transient String job;
@@ -32,7 +30,7 @@ public class NPC extends Indexible{
 	public NPC(float... floats) {
 		super(floats);
 	}
-	public NPC(NPCSpecies s) {
+	public NPC(Species s) {
 		super(0);
 		this.species = s;
 	}

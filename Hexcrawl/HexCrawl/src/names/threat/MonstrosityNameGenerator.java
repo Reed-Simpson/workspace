@@ -3,6 +3,8 @@ package names.threat;
 import data.Indexible;
 import data.WeightedTable;
 import data.item.EquipmentModel;
+import data.npc.Creature;
+import data.npc.NPC;
 import data.threat.Threat;
 import data.threat.subtype.MonstrosityType;
 import util.Util;
@@ -58,15 +60,21 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 	}
 
 	@Override
-	public String getName(Threat threat) {
-		MonstrosityType type = (MonstrosityType) threat.getSubtype();
+	public String getName(Creature threat) {
+		NPC npc;
+		if(threat instanceof Threat) {
+			npc = ((Threat)threat).getNPC();
+		}else {
+			npc = (NPC)threat;
+		}
+		MonstrosityType type = (MonstrosityType) threat.getSpecies();
 		switch (type) {
 		case BASILISK: return BeastNameGenerator.getBeastName(threat);
 		case BULETTE:return BeastNameGenerator.getBeastName(threat);
 		case CHIMERA:return BeastNameGenerator.getBeastName(threat);
 		case COCKATRICE:return BeastNameGenerator.getBeastName(threat);
 		case DISPLACERBEAST:return BeastNameGenerator.getBeastName(threat);
-		case DOPPELGANGER: return threat.getNPC().getName();
+		case DOPPELGANGER: return npc.getName();
 		case GRIFFON:return BeastNameGenerator.getBeastName(threat);
 		case HARPY:return BeastNameGenerator.getBeastName(threat);
 		case HYDRA:return BeastNameGenerator.getBeastName(threat);
@@ -87,7 +95,7 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 		default: throw new IllegalArgumentException("Unrecognized subtype: "+type);
 		}
 	}
-	private String getMimicName(Threat threat) {
+	private String getMimicName(Indexible threat) {
 		return Util.formatTableResult("${object element}", threat)+" "+EquipmentModel.getMisc(threat);
 	}
 	@Override

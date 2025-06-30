@@ -430,6 +430,12 @@ public class MapPanel  extends JPanel{
 						color2 = cached.key2;
 					}
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
+					if(cached==null) {
+						Point offset = new Point(-35,35);
+						g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
+						g2.setColor(Color.RED);
+						g2.drawString("\u23F3", getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
+					}
 				}
 			}
 			if(printLoadingInfo) counter.increment();

@@ -2,6 +2,8 @@ package data;
 
 import java.math.BigInteger;
 
+import util.Util;
+
 public class Indexible {
 	private BigInteger id;
 	private transient BigInteger tempId;
@@ -11,7 +13,7 @@ public class Indexible {
 	public static BigInteger getIndexFromSimplex(float... floats) {
 		String s = "";
 		for(int i=0;i<floats.length;i++) {
-			int val = Float.floatToRawIntBits(floats[i]);
+			int val = Util.getIndexFromSimplex(floats[i]);
 			s+=Math.abs(val);
 		}
 		return new BigInteger(s);

@@ -1,14 +1,14 @@
 package names;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import data.Indexible;
 import data.WeightedTable;
 import util.Util;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
-	private static HashMap<FactionType,AdjectiveNounNameGenerator> factionNameGenerators;
-	private static HashMap<FactionType, AdjectiveNounNameGenerator> faithNameGenerators;
+	private static LinkedHashMap<FactionType,AdjectiveNounNameGenerator> factionNameGenerators;
+	private static LinkedHashMap<FactionType, AdjectiveNounNameGenerator> faithNameGenerators;
 	//	private static final String FACTIONS = "art movement,beggar's guild,black market,brotherhood,city guard,conspiracy,craft guild,crime family,crime ring,dark cult,explorer's club,free company,"+
 	//			"gourmand club,heist crew,heretical sect,high council,hired killers,local militia,national church,noble house,outlander clan,outlaw gang,political party,religious order,"+
 	//			"religious sect,resistance,royal army,royal house,scholar's circle,secret society,spy network,street artists,street gang,street musicians,theater troupe,trade company";
@@ -355,7 +355,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		populateFaiths();
 	}
 	private static void populateFaiths() {
-		faithNameGenerators = new HashMap<FactionType, AdjectiveNounNameGenerator>();
+		faithNameGenerators = new LinkedHashMap<FactionType, AdjectiveNounNameGenerator>();
 		faithNameGenerators.put(FactionType.DARK_CULT,new DarkCultNameGen());
 		faithNameGenerators.put(FactionType.HERETICAL_SECT,new HereticalSectNameGen());
 		faithNameGenerators.put(FactionType.NATIONAL_CHURCH,new NationalChurchNameGen());
@@ -369,7 +369,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		}
 	}
 	private static void populateFaction() {
-		factionNameGenerators = new HashMap<FactionType, AdjectiveNounNameGenerator>();
+		factionNameGenerators = new LinkedHashMap<FactionType, AdjectiveNounNameGenerator>();
 		factionNameGenerators.put(FactionType.ART_MOVEMENT,new ArtMovementNameGen());
 		factionNameGenerators.put(FactionType.BEGGAR_GUILD,new BeggarGuildNameGen());
 		factionNameGenerators.put(FactionType.BLACK_MARKET,new BlackMarketNameGen());

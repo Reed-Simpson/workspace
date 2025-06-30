@@ -582,10 +582,10 @@ public class MapPanel  extends JPanel{
 		counter.setLog(logger);
 		if(initializing) {
 			dialog.createProgressUI("Initializing rivers: ");
-			logger.log("Initializing rivers "+(sum*loadingFactor)+" ~300ms: ");
+			logger.log("Initializing rivers "+(sum*loadingFactor)+": ");
 		}else if(printLoadingInfo) {
 			dialog.createProgressUI("Loading rivers: ");
-			logger.log("Loading rivers "+(sum*loadingFactor)+" ~300ms: ");
+			logger.log("Loading rivers "+(sum*loadingFactor)+": ");
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
@@ -598,7 +598,7 @@ public class MapPanel  extends JPanel{
 		if(initializing) {
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Initializing lakes: ");
-			logger.log("Initializing lakes "+(sum*loadingFactor)+" ~100 seconds: ");
+			logger.log("Initializing lakes "+(sum*loadingFactor)+": ");
 			counter.resetCounter();
 		}else if(printLoadingInfo) {
 			logger.logln("--(100%) Rivers loaded "+(System.currentTimeMillis()-time)+" ms");
@@ -606,7 +606,7 @@ public class MapPanel  extends JPanel{
 			dialog.removeProgressUI();
 			counter.resetCounter();
 			dialog.createProgressUI("Loading lakes: ");
-			logger.log("Loading lakes "+(sum*loadingFactor)+" ~10000ms: ");
+			logger.log("Loading lakes "+(sum*loadingFactor)+": ");
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
@@ -623,13 +623,13 @@ public class MapPanel  extends JPanel{
 		if(initializing) {
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Initializing river volume: ");
-			logger.log("Initializing river volume "+(sum*loadingFactor)+" ~60000ms: ");
+			logger.log("Initializing river volume "+(sum*loadingFactor)+": ");
 		}else if(printLoadingInfo) {
 			logger.logln("--(100%) Lakes loaded "+(System.currentTimeMillis()-time)+" ms");
 			time = System.currentTimeMillis();
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Loading river volume: ");
-			logger.log("Loading river volume "+(sum*loadingFactor)+" ~60000ms: ");
+			logger.log("Loading river volume "+(sum*loadingFactor)+": ");
 		}
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
@@ -646,12 +646,12 @@ public class MapPanel  extends JPanel{
 		if(initializing) {
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Initializing river splines: ");
-			logger.log("Initializing river splines "+(sum*loadingFactor)+" ~60000ms: ");
+			logger.log("Initializing river splines "+(sum*loadingFactor)+": ");
 		}else if(printLoadingInfo) {
 			time = System.currentTimeMillis();
 			dialog.removeProgressUI();
 			dialog.createProgressUI("Loading river splines: ");
-			logger.log("Loading river splines "+(sum*loadingFactor)+" ~60000ms: ");
+			logger.log("Loading river splines "+(sum*loadingFactor)+": ");
 		}
 		HashMap<Point,BasicSpline> newcache = new HashMap<Point,BasicSpline>();
 		for(int i=p1.x;i<p2.x;i+=1) {
@@ -766,8 +766,8 @@ public class MapPanel  extends JPanel{
 		Counter counter = new Counter(100, dialog.getProgressBar());
 		counter.setLog(logger);
 		if(printLoadingInfo) {
-			dialog.createProgressUI("Loading region: ");
-			logger.log("Loading region: ");
+			dialog.createProgressUI("Drawing region: ");
+			logger.log("Drawing region: ");
 		}
 		Point p = this.getSelectedGridPoint();
 		Set<Point> region = null;
@@ -879,7 +879,7 @@ public class MapPanel  extends JPanel{
 		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
 		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
-		logger.log("Loading towns: ");
+		logger.log("Drawing towns: ");
 		int sum = (p2.x-p1.x);
 		//int loadingFactor = (p1.y-p2.y);
 		Counter counter = new Counter(sum, 5, logger);
@@ -900,7 +900,7 @@ public class MapPanel  extends JPanel{
 				counter.increment();
 			}
 		}
-		if(printLoadingInfo) logger.logln("Towns loaded "+(System.currentTimeMillis()-time)+" ms");
+		if(printLoadingInfo) logger.logln("Towns drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 	private synchronized void loadRoads() {
 		Point p1 = getGridPoint(-40,this.getHeight()+80);

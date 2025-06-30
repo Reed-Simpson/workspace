@@ -223,12 +223,21 @@ public class PrecipitationModel extends DataModel{
 			}
 			altitude = Float.MAX_VALUE;
 		}
+		int lakesize = lake.size();
+		int count = 0;
+		if(lakesize>500)	System.out.print("Lake size:"+lakesize+"[");
 		for(Point l:lake) {
 			HashSet<Point> cache = new HashSet<Point>();
 			updateFlowPath(l,outlet,lake,cache);
 			outletCache.put(l, outlet);
 			lakes.put(l,lake.size());
+			count++;
+			if(lakesize>500 && System.currentTimeMillis()>time+interval) {
+				System.out.print((100*count/lakesize)+"%");
+				time=System.currentTimeMillis();
+			}
 		}
+		if(lakesize>500)	System.out.println("]");
 		if(!isFlowingInto(drain, outlet)) {
 			flowCache.put(outlet, drain);
 		}else {
@@ -266,10 +275,6 @@ public class PrecipitationModel extends DataModel{
 				riverCache.put(p, next);
 				if(!cache.add(p)) break;
 				p = next;
-			}
-			if(System.currentTimeMillis()>time+interval) {
-				System.out.print("updateFlowPath|");
-				time=System.currentTimeMillis();
 			}
 		}
 	}

@@ -45,7 +45,7 @@ public class MapPanel  extends JPanel{
 	public static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
-	private static final int LOG_THRESHOLD = 500;
+	private static final int LOG_THRESHOLD = 200;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
 	private Point center; //center represents the pixel offset from 0,0
@@ -308,7 +308,7 @@ public class MapPanel  extends JPanel{
 		worker.execute();
 	}
 
-	private void calculateHexColors() {
+	private synchronized void calculateHexColors() {
 		Point p1 = getGridPoint(-20,this.getHeight()+60);
 		Point p2 = getGridPoint(this.getWidth()+20,-20);
 		int sum = (p2.x-p1.x);
@@ -567,7 +567,7 @@ public class MapPanel  extends JPanel{
 		g2.setStroke(defaultStroke);
 	}
 
-	private void calculateRivers() {
+	private synchronized void calculateRivers() {
 		Point p1 = getGridPoint(-40,this.getHeight()+80);
 		Point p2 = getGridPoint(this.getWidth()+40,-40);
 		p1.translate(-100, 100);
@@ -693,7 +693,8 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				if(!controller.getGrid().isWater(i,j)) {
-					drawCurvedRiver(g2, displayScale, i, j);
+					Point p0 = new Point(i,j);
+					drawCurvedRiver(g2, displayScale, p0);
 				}
 			}
 			if(printLoadingInfo) counter.increment();
@@ -703,26 +704,8 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo) logger.logln("Rivers drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
-	@SuppressWarnings("unused")
-	private void drawStraightRiver(Graphics2D g2, int displayScale, int i, int j) {
-		Point p = new Point(i,j);
-		Point pr = controller.getPrecipitation().getRiver(p);
-		float volume = controller.getPrecipitation().getFlowVolume(p);
-		float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
-		if(width>displayScale) width = displayScale;
-		if(width>2) {
-			Point p1 = wiggle(p,p);
-			Point p2 = wiggle(pr,p);
-			g2.setStroke(new BasicStroke(width));
-			g2.setColor(BiomeType.RIVER.getColor());
-			g2.drawLine(p1.x, p1.y, p2.x, p2.y);
-		}
-	}
-
-	private void drawCurvedRiver(Graphics2D g2, int displayScale, int i, int j) {
-		Point p0 = new Point(i,j);
+	private void drawCurvedRiver(Graphics2D g2, int displayScale, Point p0) {
 		BasicSpline spline = splineCache.get(p0);
-//		BasicSpline spline = getRiverSpline(p0);
 		if(spline!=null) {
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
@@ -928,7 +911,7 @@ public class MapPanel  extends JPanel{
 		}
 		if(printLoadingInfo) logger.logln("Towns loaded "+(System.currentTimeMillis()-time)+" ms");
 	}
-	private void loadRoads() {
+	private synchronized void loadRoads() {
 		Point p1 = getGridPoint(-40,this.getHeight()+80);
 		Point p2 = getGridPoint(this.getWidth()+40,-40);
 		int step = getStep();

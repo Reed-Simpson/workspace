@@ -37,6 +37,7 @@ public class PrecipitationModel extends DataModel{
 	private ConcurrentHashMap<Point,Point> flowCache;
 	private ConcurrentHashMap<Point,Point> riverCache;
 	private ConcurrentHashMap<Point,Float> volumeCache;
+	private ConcurrentHashMap<Point,Float> tempVolumeCache = null;
 	private ConcurrentHashMap<Point,Integer> lakes;
 	private ConcurrentHashMap<Point,Point> outletCache;
 	public long time;
@@ -177,12 +178,12 @@ public class PrecipitationModel extends DataModel{
 		if(grid.isWater(p)) return;
 		float precipitation = 0;
 		Float prevVal;
-		if((prevVal=volumeCache.putIfAbsent(p, getPrecipitation(p)))==null) {
+		if((prevVal=tempVolumeCache.putIfAbsent(p, getPrecipitation(p)))==null) {
 			precipitation=getPrecipitation(p);
 			prevVal = 0f;
 		}
 		if(volume+precipitation>0.000001f){
-			volumeCache.replace(p, volume+volumeCache.get(p));
+			tempVolumeCache.replace(p, volume+tempVolumeCache.get(p));
 			Point p1 = getFlow(p);
 			if(depth<MAXDEPTH) {
 				Point prevP = riverCache.put(p, p1);
@@ -336,7 +337,7 @@ public class PrecipitationModel extends DataModel{
 		return p1.equals(p2);
 	}
 
-	public float getFlowVolume(Point p) {
+	public Float getFlowVolume(Point p) {
 		return (volumeCache.get(p)==null ? 0 : volumeCache.get(p));
 	}
 
@@ -362,6 +363,16 @@ public class PrecipitationModel extends DataModel{
 	@Override
 	public Float getDefaultValue(Point p, int i) {
 		return getPrecipitation(p);
+	}
+	public void newVolumeCache() {
+		tempVolumeCache = new ConcurrentHashMap<Point,Float>();
+		
+	}
+	public void setNewVolumeCache() {
+		if(tempVolumeCache!=null) {
+			volumeCache = tempVolumeCache;
+			tempVolumeCache = null;
+		}
 	}
 
 

@@ -329,17 +329,17 @@ public class MapPanel  extends JPanel{
 				Point p = new Point(i,j);
 				if(!controller.getGrid().isWater(p)) {
 					Pair<Color,Color> cached = colorCache.get(p);
-					if(cached!=null) {
-						newCache.put(p, new Pair<Color,Color>(cached.key1,cached.key2));
-					}else {
+					if(cached==null) {
 						Color color1 = getColor1(i,j,displayData);
 						Color color2 = getColor2(i,j,displayData);
 						if(color1==null) {
 							color1 = color2;
 							color2 = null;
 						}
+						cached = new Pair<Color, Color>(color1,color2);
 						newCache.put(p, new Pair<Color,Color>(color1,color2));
 					}
+					newCache.put(p, cached);
 				}
 
 				List<Icon> icons = iconCache.get(p);

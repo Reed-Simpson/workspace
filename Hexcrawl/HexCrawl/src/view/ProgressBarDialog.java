@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -22,13 +23,13 @@ public class ProgressBarDialog extends JDialog {
         setUndecorated(true);
         add(label, BorderLayout.NORTH);
         add(progressBar, BorderLayout.CENTER);
-        setSize(1000, 800);
+        progressBar.setPreferredSize(new Dimension(500, 100));
+        pack();
+		this.setLocationRelativeTo(motherFrame);
     }
 
     public void createProgressUI() {
-        pack();
         setAlwaysOnTop(true);
-		this.setLocationRelativeTo(motherFrame);
         setVisible(true);
     }
     

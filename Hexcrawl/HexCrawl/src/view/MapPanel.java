@@ -1019,8 +1019,8 @@ public class MapPanel  extends JPanel{
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			isDragging = false;
-			//recenter();
-			//repaint();
+			recenter();
+			preprocessThenRepaint();
 		}
 	}
 	public class MouseMotionAdapter implements MouseMotionListener {
@@ -1032,7 +1032,7 @@ public class MapPanel  extends JPanel{
 				center = new Point(x1,y1);
 				dragOffsetX = e.getX();
 				dragOffsetY = e.getY();
-				preprocessThenRepaint();
+				frame.repaint();
 			}
 		}
 		@Override
@@ -1044,7 +1044,7 @@ public class MapPanel  extends JPanel{
 					Point center = MapPanel.this.getMiddleGridPoint();
 					double distance = calcDistance(center,mouseover);
 					MapPanel.this.setDistance(distance);
-					preprocessThenRepaint();
+					frame.repaint();
 				}
 			}
 		}
@@ -1153,7 +1153,7 @@ public class MapPanel  extends JPanel{
 		this.showDistance = selected;
 		mouseoverHold = false;
 		mouseover = getMiddleGridPoint();
-		preprocessThenRepaint();
+		frame.repaint();
 	}
 	public boolean isShowDistance() {
 		return this.showDistance;

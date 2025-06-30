@@ -123,6 +123,7 @@ public class InfoPanel extends JTabbedPane{
 		this.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
 		this.setPreferredSize(new Dimension(INFOPANELWIDTH,800));
 		this.setMaximumSize(new Dimension(INFOPANELWIDTH,99999));
+		this.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		createHexTab(panel);
 		
@@ -152,6 +153,7 @@ public class InfoPanel extends JTabbedPane{
 		hexPanel.add(demographicsPanel);
 
 		detailsTabs = new JTabbedPane();
+		detailsTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		JPanel npcPanel = new JPanel();
 		npcPanel.setLayout(new BoxLayout(npcPanel, BoxLayout.Y_AXIS));
@@ -251,7 +253,7 @@ public class InfoPanel extends JTabbedPane{
 
 		hexPanel.add(detailsTabs);
 
-		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), new JScrollPane(hexPanel));
+		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), hexPanel);
 	}
 
 	public MyTextPane createDungeonEncounter() {

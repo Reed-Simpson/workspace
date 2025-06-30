@@ -122,7 +122,7 @@ public class Graph<K> implements Set<K> {
 	 */
 	public int shortestDistance(K start, K finish){
 		HashMap<K,K> previous = new HashMap<K,K>();
-		Integer distance = this.dijkstras(previous,start, finish);
+		Integer distance = this.dijkstras(previous,start, finish,true);
 		if(distance==null) return -1;
 		else return distance;
 	}
@@ -136,7 +136,7 @@ public class Graph<K> implements Set<K> {
 	 */
 	public LinkedList<K> shortestPath(K start, K finish){
 		HashMap<K,K> previous = new HashMap<K,K>();
-		this.dijkstras(previous,start, finish);
+		this.dijkstras(previous,start, finish,true);
 		LinkedList<K> result = new LinkedList<K>();
 		if(start.equals(finish)){
 			result.add(start);
@@ -167,7 +167,7 @@ public class Graph<K> implements Set<K> {
 	 * @return A wrapper object for an integer representing the distance of the path, 
 	 * and a hashmap containing the information needed to reconstruct the path
 	 */
-	public Integer dijkstras(HashMap<K,K> previous,K start, K finish){
+	public Integer dijkstras(HashMap<K,K> previous,K start, K finish,boolean earlyterm){
 		//this hashmap is used to reconstruct a correct path post algorithm
 		if(previous==null) previous = new HashMap<K,K>();
 		//this hashmap is used to compare different paths to find a shortest one
@@ -190,7 +190,7 @@ public class Graph<K> implements Set<K> {
 				if(dist2<dist1) min=v;
 			}
 			//break out of the loop early if the target vertex is the lowest distance
-			if((min.key==null&&finish==null)||min.key.equals(finish)) break;
+			if(((min.key==null&&finish==null)||min.key.equals(finish))&&earlyterm) break;
 			list.remove(min);
 			Set<Entry<Vertex<K>, Integer>> adj = min.getAdjacentVertices().entrySet();
 			for(Entry<Vertex<K>, Integer> entry:adj){
@@ -211,7 +211,7 @@ public class Graph<K> implements Set<K> {
 	
 
 	public Integer dijkstras(K start, K finish){
-		return dijkstras(null, start, finish);
+		return dijkstras(null, start, finish,true);
 	}
 
 	/**

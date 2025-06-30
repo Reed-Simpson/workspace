@@ -52,6 +52,7 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 	public String getName(Creature threat) {
 		String partial = getPartialName(threat);
 		String title = Util.formatTableResult(getElementFromArray(TITLE, threat),threat);
+		if(title.contains("${subtype}")) title = Util.replace(title, "${subtype}", threat.getSpecies().toString());
 		return partial+", "+title;
 	}
 	public static String getPartialName(Indexible threat) {

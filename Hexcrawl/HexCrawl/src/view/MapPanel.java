@@ -202,6 +202,7 @@ public class MapPanel  extends JPanel{
 			previous.add(getMiddleGridPoint());
 			previousIndex=previous.size()-1;
 		}
+		record.setPos(MapPanel.this.getMiddleGridPoint());
 	}
 	public double getScale() {
 		return this.scale;
@@ -999,7 +1000,6 @@ public class MapPanel  extends JPanel{
 				preprocessThenRepaint();
 			}else if(!printLoadingInfo) {
 				recenter(p,true);
-				record.setPos(MapPanel.this.getMiddleGridPoint());
 				preprocessThenRepaint();
 			}
 		}

@@ -225,19 +225,26 @@ public class PrecipitationModel extends DataModel{
 		}
 		int lakesize = lake.size();
 		int count = 0;
-		if(lakesize>500)	System.out.print("Lake size:"+lakesize+"[");
+		boolean printedLake = false;
+		HashMap<Point, Point> previous = new HashMap<Point, Point>();
+		lake.dijkstras(previous, outlet);
+		HashSet<Point> cache = new HashSet<Point>();
 		for(Point l:lake) {
-			HashSet<Point> cache = new HashSet<Point>();
-			updateFlowPath(l,outlet,lake,cache);
+			updateFlowPath(l,previous,cache);
+//			updateFlowPath(l,outlet,lake,cache);
 			outletCache.put(l, outlet);
 			lakes.put(l,lake.size());
 			count++;
-			if(lakesize>500 && System.currentTimeMillis()>time+interval) {
+			if(System.currentTimeMillis()>time+interval) {
+				if(!printedLake) {
+					System.out.print("Lake size:"+lakesize+"[");
+					printedLake=true;
+				}else System.out.print("|");
 				System.out.print((100*count/lakesize)+"%");
 				time=System.currentTimeMillis();
 			}
 		}
-		if(lakesize>500)	System.out.println("]");
+		if(printedLake)	System.out.println("]");
 		if(!isFlowingInto(drain, outlet)) {
 			flowCache.put(outlet, drain);
 		}else {
@@ -257,27 +264,36 @@ public class PrecipitationModel extends DataModel{
 		lake.addEdge(p2, p1, getEdgeWeight(p2,p1));
 	}
 	private int getEdgeWeight(Point p1,Point p2) {
-		float alt = grid.getHeight(p2)-grid.getHeight(p1);
+		float alt = grid.getHeight(p1)-grid.getHeight(p2);
 		if(alt>0) return 40+(int)(alt*20);
 		else return 20+(int)(alt*10);
 	}
-
-	private void updateFlowPath(Point l, Point outlet,AStarGraph lake,HashSet<Point> cache) {
-		if(!cache.contains(l)) {
-			LinkedList<Point> path = new LinkedList<Point>();
-			lake.shortestPath(l, outlet,path);
-			Iterator<Point> iterator = path.iterator();
-			Point p = iterator.next();
-			Point next;
-			while(iterator.hasNext()) {
-				next = iterator.next();
-				flowCache.put(p, next);
-				riverCache.put(p, next);
-				if(!cache.add(p)) break;
-				p = next;
-			}
+	private void updateFlowPath(Point l, HashMap<Point, Point> previous,HashSet<Point> cache) {
+		Point next;
+		while((next=previous.get(l))!=null) {
+			flowCache.put(l, next);
+			riverCache.put(l, next);
+			if(!cache.add(l)) break;
+			l=next;
 		}
 	}
+
+//	private void updateFlowPath(Point l, Point outlet,AStarGraph lake,HashSet<Point> cache) {
+//		if(!cache.contains(l)) {
+//			LinkedList<Point> path = new LinkedList<Point>();
+//			lake.shortestPath(l, outlet,path);
+//			Iterator<Point> iterator = path.iterator();
+//			Point p = iterator.next();
+//			Point next;
+//			while(iterator.hasNext()) {
+//				next = iterator.next();
+//				flowCache.put(p, next);
+//				riverCache.put(p, next);
+//				if(!cache.add(p)) break;
+//				p = next;
+//			}
+//		}
+//	}
 
 	public Point findLakeBorders(Set<Point> lakeBorder,AStarGraph lake,Point newLake) {
 		Point result = null;

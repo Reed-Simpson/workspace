@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
@@ -46,6 +47,7 @@ public class MapPanel  extends JPanel{
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
 	private static final int LOG_THRESHOLD = 200;
+	private static final float RIVERRENDERGRANULARITY = 0.2f;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
 	private Point center; //center represents the pixel offset from 0,0
@@ -677,11 +679,7 @@ public class MapPanel  extends JPanel{
 		}
 	}
 	private void drawRivers(Graphics2D g2, int step, int displayScale, Color borderColor) {
-		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
-		p1.translate(-100, 100);
-		p2.translate(100, -100);
-		int sum = (p2.x-p1.x);
+		int sum = splineCache.size();
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -690,13 +688,8 @@ public class MapPanel  extends JPanel{
 			logger.log("Drawing rivers: ");
 		}
 		Stroke defaultStroke = g2.getStroke();
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
-				if(!controller.getGrid().isWater(i,j)) {
-					Point p0 = new Point(i,j);
-					drawCurvedRiver(g2, displayScale, p0);
-				}
-			}
+		for(Entry<Point,BasicSpline> e:splineCache.entrySet()) {
+			drawCurvedRiver(g2, displayScale, e.getKey(),e.getValue());
 			if(printLoadingInfo) counter.increment();
 		}
 		g2.setStroke(defaultStroke);
@@ -704,8 +697,7 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo) logger.logln("Rivers drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
-	private void drawCurvedRiver(Graphics2D g2, int displayScale, Point p0) {
-		BasicSpline spline = splineCache.get(p0);
+	private void drawCurvedRiver(Graphics2D g2, int displayScale, Point p0,BasicSpline spline) {
 		if(spline!=null) {
 			float volume = controller.getPrecipitation().getFlowVolume(p0);
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
@@ -721,14 +713,14 @@ public class MapPanel  extends JPanel{
 		double distance = calcDistance(p0, p1);
 		Point anchor = getScreenPos(p0);
 		Point pointBefore = null;
-		float step = (float) (1f/6/scale/distance);
-		for(float f = 0; f<=1f/3+step; f+=step) {
+		float step = (float) (1f/3/scale)/RIVERRENDERGRANULARITY;
+		for(float f = 0; f<=1f/3+step/distance; f+=step/distance) {
 			Point p = spline.getPoint(f);
 			Point pnt = new Point((int)(anchor.x+p.x*scale/WIGGLERADIUS), (int)(anchor.y+p.y*scale/WIGGLERADIUS));
 			g2.setColor(color);
 			g2.fillOval(pnt.x-(int)width/2, pnt.y-(int)width/2, (int)width, (int)width);
 
-			if(pointBefore != null && width < 5) {
+			if(pointBefore != null && width < 30*step*scale) {
 				g2.setColor(color);
 				g2.setStroke(new BasicStroke(width-1));
 				g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);

@@ -2,7 +2,6 @@ package data.altitude;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.Collection;
 import java.util.HashSet;
 
 import data.DataModel;

@@ -482,14 +482,14 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo.get()) {
 			dialog.createProgressUI("Drawing symbols: ");
 		}
-		float height = AltitudeModel.altitudeTransformation(controller.getGrid().getHeight(getMiddleGridPoint()));
+		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				List<Icon> icons = iconCache.get(new Point(i,j));
 				if(icons!=null) {
 					if(HexData.ALTITUDE.equals(displayData)||HexData.EXPLORATION.equals(displayData)) {
 						g2.setColor(Color.black);
-						float height_x = AltitudeModel.altitudeTransformation(controller.getGrid().getHeight(new Point(i,j)));
+						float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(new Point(i,j)));
 						int dheight = (int)(height_x-height);
 						if(dheight<0) g2.setColor(Color.red);
 						g2.drawString(String.valueOf(dheight), (int) (getScreenPos(i,j).x-scale/2) ,getScreenPos(i,j).y );

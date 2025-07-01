@@ -272,9 +272,7 @@ public class PrecipitationModel extends DataModel{
 		lake.addEdge(p2, p1, getEdgeWeight(p2,p1));
 	}
 	private int getEdgeWeight(Point p1,Point p2) {
-		float alt = grid.getHeight(p1)-grid.getHeight(p2);
-		if(alt>0) return 40+(int)(alt*20);
-		else return 20+(int)(alt*10);
+		return (int) (grid.getHeight(p1)*1000);
 	}
 	private void updateFlowPath(Point l, HashMap<Point, Point> previous,HashSet<Point> cache) {
 		Point next;
@@ -373,6 +371,13 @@ public class PrecipitationModel extends DataModel{
 			volumeCache = tempVolumeCache;
 			tempVolumeCache = null;
 		}
+	}
+	public float getLakeAltitude(Point p) {
+		if(grid.isWater(p)) return BiomeModel.WATER_HEIGHT;
+		Point outlet = null;
+		if(isLake(p)) outlet = getOutlet(p);
+		if(outlet!=null) return grid.getHeight(outlet);
+		else return grid.getHeight(p);
 	}
 
 

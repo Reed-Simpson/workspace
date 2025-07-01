@@ -25,15 +25,15 @@ import names.npc.OrcNameGenerator;
 import util.Util;
 
 public enum NPCSpecies implements Species{
-	DRAGONBORN(	6,0.5f,0f/360f,	new DragonbornCityNameGenerator(),	new DragonbornNameGenerator(),	1.0f),
-	DWARF(		5,0.5f,30f/360f,new DwarfCityNameGenerator(),		new DwarfNameGenerator(),		1.0f),
 	HUMAN(		1,0.0f,60f/360f,new HumanCityNameGenerator(),		new HumanNameGenerator(),		1.0f),
 	HALFLING(	2,0.0f,90f/360f,new HalflingCityNameGenerator(),	new HalflingNameGenerator(),	1.0f),
-	ELF(		4,0.5f,120f/360f,new ElfCityNameGenerator(),		new ElfNameGenerator(),			1.0f),
-	GENASI(		9,0.0f,180f/360f,new GenasiCityNameGenerator(),		new GenasiNameGenerator(),		1.0f),
 	GNOME(		3,0.2f,270f/360f,new GnomeCityNameGenerator(),		new GnomeNameGenerator(),		0.8f),
-	ORC(		8,0.8f,330f/360f,new OrcCityNameGenerator(),		new OrcNameGenerator(),			1.0f),
+	ELF(		4,0.5f,120f/360f,new ElfCityNameGenerator(),		new ElfNameGenerator(),			1.0f),
+	DWARF(		5,0.5f,30f/360f,new DwarfCityNameGenerator(),		new DwarfNameGenerator(),		1.0f),
+	DRAGONBORN(	6,0.5f,0f/360f,	new DragonbornCityNameGenerator(),	new DragonbornNameGenerator(),	1.0f),
 	GOLIATH(	7,0.8f,300f/360f,new GoliathCityNameGenerator(),	new GoliathNameGenerator(),		0.8f),
+	ORC(		8,0.8f,330f/360f,new OrcCityNameGenerator(),		new OrcNameGenerator(),			1.0f),
+	GENASI(		9,0.0f,180f/360f,new GenasiCityNameGenerator(),		new GenasiNameGenerator(),		1.0f),
 	GOBLINOID(	11,1.0f,240f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			1.0f),
 	KOBOLD(		12,1.0f,180f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			0.5f),
 	LIZARDFOLK(	13,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			0.5f),

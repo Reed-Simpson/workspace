@@ -87,7 +87,7 @@ public class MapPanel  extends JPanel{
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
 		this.showCities=true;
-		this.showIcons=false;
+		this.showIcons=true;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
 		iconCache = new HashMap<Point,List<Icon>>();
 		splineCache = new ConcurrentHashMap<Point,BasicSpline>();
@@ -217,10 +217,6 @@ public class MapPanel  extends JPanel{
 		return this.scale;
 	}
 	public void setScale(double d) {
-		//		if(this.scale<WIDEVIEW&&d>=WIDEVIEW) {
-		//			colorCache = new HashMap<Point,Pair<Color,Color>>();
-		//			iconCache = new HashMap<Point,List<Icon>>();
-		//		}
 		this.scale=d;
 		record.setScale(scale);
 	}
@@ -338,54 +334,10 @@ public class MapPanel  extends JPanel{
 	}
 
 	private List<Icon> getIcons(Point p) {
-		List<Icon> result = new ArrayList<Icon>();
 		BiomeType biome = controller.getBiomes().getBiome(p);
-		Character c = biome.getCh();
-		Point offset;
-		if(BiomeType.CITY.getCh().equals(c)) {
-			offset = new Point(-80,60);
-			result.add( new Icon(c, offset, Color.black,2));
-		}else if(BiomeType.WATER.getCh().equals(c)) {
-			offset = new Point(-80,10);
-			result.add( new Icon(c, offset, Color.black,0.7));
-			offset = new Point(-30,60);
-			result.add( new Icon(c, offset, Color.black,0.7));
-			offset = new Point(10,-10);
-			result.add( new Icon(c, offset, Color.black,0.7));
-		}else if(BiomeType.ROCKYHILLS.getCh().equals(c)) {
-			offset = new Point(-20,20);
-			result.add( new Icon(c, offset, Color.black,1));
-			offset = new Point(40,-20);
-			result.add( new Icon(c, offset, Color.black,1));
-		}else if(BiomeType.CLIFFS.getCh().equals(c)) {
-			offset = new Point(-60,0);
-			result.add( new Icon(c, offset, Color.black,0.7));
-			offset = new Point(-20,40);
-			result.add( new Icon(c, offset, Color.black,0.7));
-			offset = new Point(20,0);
-			result.add( new Icon(c, offset, Color.black,0.7));
-		}else if(BiomeType.MOUNTAINS.getCh().equals(c)) {
-			offset = new Point(-30,30);
-			result.add( new Icon(c, offset, Color.black,1.5));
-			offset = new Point(10,10);
-			result.add( new Icon(BiomeType.ROCKYHILLS.getCh(), offset, Color.black,1.5));
-		}else if(BiomeType.DESERT.getCh().equals(c)) {
-			offset = new Point(-60,40);
-			result.add( new Icon(c, offset, Color.black,1));
-			offset = new Point(-20,60);
-			result.add( new Icon(c, offset, Color.black,1));
-			offset = new Point(20,20);
-			result.add( new Icon(c, offset, Color.black,1));
-		}else {
-			offset = new Point(-60,20);
-			result.add( new Icon(c, offset, Color.black,0.7));
-			offset = new Point(-20,40);
-			result.add( new Icon(c, offset, Color.black,0.7));
-			offset = new Point(20,0);
-			result.add( new Icon(c, offset, Color.black,0.7));
-		}
-		return result;
+		return Icon.getIcons(biome);
 	}
+
 
 	private void drawHexes(Graphics2D g2, int step, int displayScale, Color borderColor) {
 		Point p1 = getGridPoint(-20,this.getHeight()+60);
@@ -415,7 +367,9 @@ public class MapPanel  extends JPanel{
 						Point offset = new Point(-35,35);
 						g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
 						g2.setColor(Color.RED);
+						g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
 						g2.drawString("\u23F3", getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
+						g2.setComposite(AlphaComposite.SrcOver);
 					}
 				}
 			}
@@ -491,18 +445,29 @@ public class MapPanel  extends JPanel{
 		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
-				List<Icon> icons = iconCache.get(new Point(i,j));
-				if(icons!=null) {
-					if(HexData.ALTITUDE.equals(displayData)||HexData.EXPLORATION.equals(displayData)) {
+				Point p = new Point(i,j);
+				Pair<Color, Color> base = colorCache.get(p);
+				List<Icon> icons = iconCache.get(p);
+				if(icons!=null && ((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh())))) {
+					if(HexData.ALTITUDE.equals(displayData)) {
 						g2.setColor(Color.black);
-						float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(new Point(i,j)));
+						float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p));
 						int dheight = (int)(height_x-height);
 						g2.setFont(g2.getFont().deriveFont((float) (displayScale/2)));
 						if(dheight<0) g2.setColor(Color.red);
 						g2.drawString(String.valueOf(dheight), (int) (getScreenPos(i,j).x-scale/2) ,getScreenPos(i,j).y );
-					}else if((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh()))) {
+					}else {
 						for(Icon icon:icons) {
 							Character ch = icon.getCh();
+							if(base!=null) {
+								g2.setComposite(AlphaComposite.SrcOver);
+								Point offset = icon.offset;
+								double cScale = icon.getScale();
+								g2.setColor(base.key1);
+								g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
+								if(ch!=null) g2.drawString(ch.toString(), getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
+							}
+							g2.setComposite(AlphaComposite.SrcOver.derive(icon.getOpacity()));
 							Point offset = icon.offset;
 							Color c = icon.getC();
 							double cScale = icon.getScale();
@@ -516,6 +481,7 @@ public class MapPanel  extends JPanel{
 			}
 			counter.increment();
 		}
+		g2.setComposite(AlphaComposite.SrcOver);
 		logger.logln("Symbols drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
@@ -709,7 +675,7 @@ public class MapPanel  extends JPanel{
 		if(spline!=null && volume!=null) {
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 			if(width>displayScale) width = displayScale;
-			if(showRivers||width>1.5) {
+			if(showRivers||width>2) {
 				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0);
 			}
 		}

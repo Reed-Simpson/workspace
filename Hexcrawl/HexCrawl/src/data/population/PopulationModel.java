@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import controllers.DataController;
 import data.DataModel;
 import data.OpenSimplex2S;
 import data.WeightedTable;
@@ -33,6 +34,7 @@ public class PopulationModel extends DataModel{
 	private HashMap<Point,LinkedHashMap<NPCSpecies,Float>> cache;
 	private DecimalFormat populationStringFormat = new DecimalFormat ("##,##0");
 	private DecimalFormat populationPercentStringFormat = new DecimalFormat("#0.00%");
+	private DataController controller;
 
 	public float getPopulation(int x,int y, NPCSpecies species) {
 		Point p = new Point(x,y);
@@ -43,10 +45,11 @@ public class PopulationModel extends DataModel{
 		}
 	}
 
-	public PopulationModel(SaveRecord record, AltitudeModel grid, PrecipitationModel precipitation) {
+	public PopulationModel(SaveRecord record, DataController controller) {
 		super(record);
-		this.grid = grid;
-		this.precipitation = precipitation;
+		this.controller = controller;
+		this.grid = controller.getGrid();
+		this.precipitation = controller.getPrecipitation();
 		resetCache();
 	}
 	private void resetCache() {
@@ -142,7 +145,8 @@ public class PopulationModel extends DataModel{
 		return OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET), Util.getNScale()*x, Util.getNScale()*y)/2;
 	}
 	private float getHarshnessFactor(int x,int y) {
-		return Math.max(1-Math.abs(grid.getHeight(x,y))*(1-precipitation.getPrecipitation(x, y)),0);
+		Point p = new Point(x,y);
+		return Math.max(1-Math.abs(grid.getHeight(x,y))*(1-precipitation.getPrecipitation(x, y)),0)*Util.getLogisticalCurve(controller.getEconomy().getAdjustedLocalFactor(p));
 	}
 
 	public NPCSpecies getMajoritySpecies(int x,int y) {

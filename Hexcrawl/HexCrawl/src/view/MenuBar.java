@@ -252,7 +252,7 @@ public class MenuBar extends JMenuBar {
 		dataFieldsPanel.add(dataMenu);
 		dataFieldsPanel.add(Box.createHorizontalStrut(10));
 
-		dataFieldsPanel.add(new JLabel("watersheds:"));
+//		dataFieldsPanel.add(new JLabel("watersheds:"));
 		wBox = new JCheckBox();
 		wBox.setSelected(panel.isShowRivers());
 		wBox.addItemListener(new ItemListener(){
@@ -260,7 +260,7 @@ public class MenuBar extends JMenuBar {
 				panel.setShowRivers(wBox.isSelected());
 			}
 		});
-		dataFieldsPanel.add(wBox);
+//		dataFieldsPanel.add(wBox);
 
 		//		dataFieldsPanel.add(new JLabel("show towns:"));
 		cBox = new JCheckBox();
@@ -272,7 +272,7 @@ public class MenuBar extends JMenuBar {
 		});
 		//		dataFieldsPanel.add(cBox);
 
-		dataFieldsPanel.add(new JLabel("show icons:"));
+//		dataFieldsPanel.add(new JLabel("show icons:"));
 		iBox = new JCheckBox();
 		iBox.setSelected(panel.isShowIcons());
 		iBox.addItemListener(new ItemListener(){
@@ -280,7 +280,7 @@ public class MenuBar extends JMenuBar {
 				panel.setShowIcons(iBox.isSelected());
 			}
 		});
-		dataFieldsPanel.add(iBox);
+//		dataFieldsPanel.add(iBox);
 
 		dataFieldsPanel.add(new JLabel("mouseover:"));
 		dBox = new JCheckBox();

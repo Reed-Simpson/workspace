@@ -348,4 +348,10 @@ public class Util {
 		String padding = String.format("%" + ((width-s.length())/2) + "s", "");
 		return padding+s+padding;
 	}
+	
+	//converts a float between 0 and 1 to a curve that tends toward 0 below 0.5 and 1 above 0.5
+	public static float getLogisticalCurve(float f) {
+		float value = (f-1f/2)/4;
+		return (float) Math.pow(value, 1.0/3.0)+1/2;
+	}
 }

@@ -46,7 +46,7 @@ public class DataController {
 		this.record = record;
 		this.grid=new AltitudeModel(record,this);
 		this.precipitation = new PrecipitationModel(record,grid);
-		this.population = new PopulationModel(record, grid, precipitation);
+		this.population = new PopulationModel(record, this);
 		this.magic = new MagicModel(record);
 		this.biomes = new BiomeModel(record, grid, precipitation,population);
 		this.economy = new EconomicModel(record,population,biomes,precipitation,grid);

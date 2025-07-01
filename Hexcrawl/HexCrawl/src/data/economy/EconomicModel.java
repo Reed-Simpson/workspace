@@ -145,7 +145,7 @@ public class EconomicModel extends DataModel{
 		if(roadsCache.contains(p)) return;
 		ArrayList<Point> nearbyTowns = new ArrayList<Point>();
 		travel.add(p);
-		for(Point p1:Util.getNearbyPoints(p, ROAD_DISTANCE+1)) {
+		for(Point p1:Util.getNearbyPoints(p, ROAD_DISTANCE*2+1)) {
 			travel.add(p1);
 		}
 		populateEdges(p);
@@ -153,6 +153,19 @@ public class EconomicModel extends DataModel{
 			for(Point p1:Util.getRing(p, radius)) {
 				populateEdges(p1);
 				if(population.isTown(p1)) nearbyTowns.add(p1);
+			}
+		}
+		boolean distant = false;
+		if(nearbyTowns.isEmpty()) {
+			distant = true;
+			for(int radius=ROAD_DISTANCE+1;radius<=ROAD_DISTANCE*2;radius++) {
+				for(Point p1:Util.getRing(p, radius)) {
+					populateEdges(p1);
+					if(population.isTown(p1)) {
+						nearbyTowns.add(p1);
+						break;
+					}
+				}
 			}
 		}
 		if(!roads.contains(p)) roads.add(p);
@@ -164,8 +177,11 @@ public class EconomicModel extends DataModel{
 			int distance = travel.shortestPath(p, town,path);
 			if(isCity&&population.isCity(town)) {
 				if(distance<maxdistance) weight = 2;
-				else maxdistance = 72;
+				else {
+					maxdistance*=2;
+				}
 			}
+			if(distant) maxdistance*=2;
 			Iterator<Point> iterator = path.iterator();
 			if(distance<=maxdistance) {
 				if(path.size()==0) {

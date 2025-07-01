@@ -24,22 +24,22 @@ public enum BiomeType {
 	GLACIERS(Color.getHSBColor(220f/360f, 0.1f, 1f), null,"glacier",4), 
 	SALTPAN(Color.getHSBColor(60f/360f, 0.2f, 1f), '\u2056',"salt pan",3), 
 	TAIGA(Color.getHSBColor(100f/360f, 0.7f, 0.5f), '\u26b2',"taiga",6),
-	MOUNTAINS(Color.DARK_GRAY, 'A',"mountains",6),
+	MOUNTAINS(Color.DARK_GRAY, '\u26F0',"mountains",6),
 	BADLANDS(Color.ORANGE, '\u23dc',"badlands",4),
-	VOLCANIC(Color.RED, 'A',"volcanic peaks",6),
+	VOLCANIC(Color.RED, '\u26F0',"volcanic peaks",6),
 	WETLAND(Color.getHSBColor(285f/360f, 0.95f, 0.5f), '\u22ce',"wetland",6) ,
 	LAKE(Color.getHSBColor(220f/360f, 0.7f, 1f), '\u2652',"lake",2) ,
 	FLOODPLAIN(Color.getHSBColor(165f/360f, 0.7f, 1f), '\u22ce',"floodplain",3) ,
 	RIVER(Color.getHSBColor(220f/360f, 0.7f, 1f), '\u2652',"river",2), 
 	CITY(Color.getHSBColor(75f/360f, 0.0f, 0.9f), '\u2605',"city",0) , 
 	TOWN(Color.GRAY, '\u2B24',"town",0),
-	DELTA(Color.getHSBColor(200f/360f, 0.7f, 1f), '\u2652',"delta",6) ;
+	DELTA(Color.getHSBColor(200f/360f, 0.7f, 1f), '\u2056',"delta",6) ;
 
 	private Color color;
 	private Character ch;
 	private String trait;
 	private String name;
-	private int travel;
+	private int travel;  //hours to cross 1 hex
 	
 	private BiomeType(Color color,Character ch,String name,int travel) {
 		this.color=color;

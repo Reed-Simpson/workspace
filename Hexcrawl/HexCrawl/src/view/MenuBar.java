@@ -325,19 +325,21 @@ public class MenuBar extends JMenuBar {
 		ArrayList<File> recentFiles = appData.getRecent();
 		for(int i=0;i<recentFiles.size();i++) {
 			File file = recentFiles.get(recentFiles.size()-1-i);
-			JMenuItem recent = new JMenuItem(file.toString());
-			recent.addActionListener(new ActionListener(){
-				File thisFile = file;
-				public void actionPerformed(ActionEvent e) {
-					if(frame.unsavedDataConfirmation()) {
-						SaveRecord newRecord = SaveRecord.load(thisFile,panel.getFrame().getAppData());
-						repopulateRecentFiles(panel);
-						frame.load(newRecord);
+			if(file.exists()) {
+				JMenuItem recent = new JMenuItem(file.toString());
+				recent.addActionListener(new ActionListener(){
+					File thisFile = file;
+					public void actionPerformed(ActionEvent e) {
+						if(frame.unsavedDataConfirmation()) {
+							SaveRecord newRecord = SaveRecord.load(thisFile,panel.getFrame().getAppData());
+							repopulateRecentFiles(panel);
+							frame.load(newRecord);
+						}
 					}
-				}
-			});
-			recentFileMenus.add(recent);
-			fileMenu.add(recent);
+				});
+				recentFileMenus.add(recent);
+				fileMenu.add(recent);
+			}
 		}
 	}
 

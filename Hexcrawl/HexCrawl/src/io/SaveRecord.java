@@ -554,7 +554,6 @@ public class SaveRecord implements Serializable {
 		else return this.campaignCharacters.get(i);
 	}
 	public String putCampaignCharacter(int i,String s) {
-		System.out.println("putCampaignCharacter "+i+" "+s);
 		Reference ref = new Reference(s);
 		while(this.campaignCharacters.size()<i+1) this.campaignCharacters.add(null);
 		Reference set = this.campaignCharacters.set(i, ref);
@@ -565,7 +564,6 @@ public class SaveRecord implements Serializable {
 		else return set.toString();
 	}
 	public Reference removeCampaignCharacter(int index) {
-		System.out.println("removeCampaignCharacter "+index);
 		return this.campaignCharacters.remove(index);
 	}
 	
@@ -577,7 +575,6 @@ public class SaveRecord implements Serializable {
 		else return this.campaignThreads.get(i);
 	}
 	public String putCampaignThread(int i,String s) {
-		System.out.println("putCampaignThread "+i+" "+s);
 		while(this.campaignThreads.size()<i+1) this.campaignThreads.add(null);
 		String set = this.campaignThreads.set(i, s);
 		if(set!=null&&!set.equals(s)) {
@@ -586,7 +583,6 @@ public class SaveRecord implements Serializable {
 		return set;
 	}
 	public String removeCampaignThread(int index) {
-		System.out.println("removeCampaignThread "+index);
 		return this.campaignThreads.remove(index);
 	}
 

@@ -1090,7 +1090,6 @@ public class MapPanel  extends JPanel{
 					@Override
 					public void actionPerformed(ActionEvent e1) {
 						record.removeExplored(gridPoint);
-						System.out.println(record.isExplored(gridPoint));
 						frame.repaint();
 					}
 				});
@@ -1101,7 +1100,6 @@ public class MapPanel  extends JPanel{
 					@Override
 					public void actionPerformed(ActionEvent e1) {
 						record.addExplored(gridPoint);
-						System.out.println(record.isExplored(gridPoint));
 						frame.repaint();
 					}
 				});

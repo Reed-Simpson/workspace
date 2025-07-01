@@ -213,7 +213,6 @@ public class MyTextPane extends JTextPane {
 		public void focusLost(FocusEvent e) {
 			if(getIndex()>-1) {
 				String text = MyTextPane.this.getRawText();
-				System.out.println(getType()+" "+getPoint()+" "+getIndex());
 				controller.updateData(getType(), text, getPoint(), getIndex());
 			}
 		}

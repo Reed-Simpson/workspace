@@ -197,8 +197,6 @@ public class PrecipitationModel extends DataModel{
 						updateFlowVolume(outlet, getFlowVolume(p),depth+1);
 					}
 				}
-			}else {
-				//System.out.println("Max river length reached: "+Util.posString(p, record.getZero()));
 			}
 		}
 	}

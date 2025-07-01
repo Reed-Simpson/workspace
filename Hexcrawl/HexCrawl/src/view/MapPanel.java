@@ -20,6 +20,7 @@ import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -33,6 +34,7 @@ import javax.swing.SwingWorker;
 import controllers.DataController;
 import data.AStarGraph;
 import data.HexData;
+import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.biome.BiomeType;
 import data.precipitation.PrecipitationModel;
@@ -480,12 +482,18 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo.get()) {
 			dialog.createProgressUI("Drawing symbols: ");
 		}
-
+		float height = AltitudeModel.altitudeTransformation(controller.getGrid().getHeight(getMiddleGridPoint()));
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				List<Icon> icons = iconCache.get(new Point(i,j));
 				if(icons!=null) {
-					if((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh()))) {
+					if(HexData.ALTITUDE.equals(displayData)||HexData.EXPLORATION.equals(displayData)) {
+						g2.setColor(Color.black);
+						float height_x = AltitudeModel.altitudeTransformation(controller.getGrid().getHeight(new Point(i,j)));
+						int dheight = (int)(height_x-height);
+						if(dheight<0) g2.setColor(Color.red);
+						g2.drawString(String.valueOf(dheight), (int) (getScreenPos(i,j).x-scale/2) ,getScreenPos(i,j).y );
+					}else if((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh()))) {
 						for(Icon icon:icons) {
 							Character ch = icon.getCh();
 							Point offset = icon.offset;
@@ -652,7 +660,7 @@ public class MapPanel  extends JPanel{
 					newcache.put(p, spline);
 				}
 			}
-			 counter.increment();
+			counter.increment();
 		}
 		splineCache = newcache;
 		if(initializing) logger.logln("--(100%) Initialized "+(System.currentTimeMillis()-time)+" ms");
@@ -776,24 +784,26 @@ public class MapPanel  extends JPanel{
 			counter.resetCounter(region.size());
 			for(Point p1:region) {
 				this.drawHex(g2, getScreenPos(p1),Color.WHITE,null,null,displayScale,Color.WHITE);
-				 counter.increment();
+				counter.increment();
 			}
 		}
-		 logger.logln("Region drawn "+(System.currentTimeMillis()-time)+" ms");
+		logger.logln("Region drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
 	private void drawVoid(Graphics2D g2, int displayScale) {
 		Point p1 = getGridPoint(-40,this.getHeight()+80);
 		Point p2 = getGridPoint(this.getWidth()+40,-40);
+		HashSet<Point> visible = controller.getGrid().getLineOfSight(getMiddleGridPoint());
+		record.addAllExplored(visible);
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
 				if(!record.isExplored(p)) {
 					this.drawHex(g2, getScreenPos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
 				}else if(!p.equals(getMiddleGridPoint())) {
-                    g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+					g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
 					this.drawHex(g2, getScreenPos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
-                    g2.setComposite(AlphaComposite.SrcOver);
+					g2.setComposite(AlphaComposite.SrcOver);
 				}
 			}
 		}

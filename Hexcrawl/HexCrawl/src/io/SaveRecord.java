@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -624,10 +625,19 @@ public class SaveRecord implements Serializable {
 	}
 
 	public boolean addExplored(Point p) {
-		return this.explored.add(p);
+		boolean result = this.explored.add(p);
+		if(result) this.hasUnsavedData =true;
+		return result;
+	}
+	public boolean addAllExplored(Collection<? extends Point> ps) {
+		boolean result = this.explored.addAll(ps);
+		if(result) this.hasUnsavedData =true;
+		return result;
 	}
 	public boolean removeExplored(Point p) {
-		return this.explored.remove(p);
+		boolean result = this.explored.remove(p);
+		if(result) this.hasUnsavedData =true;
+		return result;
 	}
 	public boolean isExplored(Point p) {
 		return this.explored.contains(p);

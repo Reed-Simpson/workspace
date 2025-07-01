@@ -800,7 +800,7 @@ public class MapPanel  extends JPanel{
 				Point p = new Point(i,j);
 				if(!record.isExplored(p)) {
 					this.drawHex(g2, getScreenPos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
-				}else if(!p.equals(getMiddleGridPoint())) {
+				}else if(!visible.contains(p)) {
 					g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
 					this.drawHex(g2, getScreenPos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
 					g2.setComposite(AlphaComposite.SrcOver);

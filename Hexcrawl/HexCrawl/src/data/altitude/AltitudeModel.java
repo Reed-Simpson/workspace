@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.HashSet;
 
+import controllers.DataController;
 import data.DataModel;
 import data.OpenSimplex2S;
 import data.biome.BiomeModel;
@@ -23,9 +24,11 @@ public class AltitudeModel extends DataModel{
 	private static float WEIGHT_VARIABILITY_3 = 0.90f;
 	private static float WEIGHT_VARIABILITY_4 = 0.90f;
 	private static int ALTITUDE_SCALE = 15000; // max altitude in feet
+	private DataController controller;
 
-	public AltitudeModel(SaveRecord record) {
+	public AltitudeModel(SaveRecord record,DataController controller) {
 		super(record);
+		this.controller = controller;
 	}
 
 	public float getHeight(int x,int y) {
@@ -153,13 +156,13 @@ public class AltitudeModel extends DataModel{
 		}else {
 			range = xrange;
 		}
-		float height = altitudeTransformation(getHeight(p))+6;
+		float height = altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p))+6;
 		double maxtheta = 0;
 		for(int i=1;i<=range;i++) {
 			double x = p.x + dx*((double)i)/((double)range);
 			double y = p.y + dy*((double)i)/((double)range);
 			Point p_i = new Point((int) Math.round(x),(int) Math.round(y));
-			float newobstacle = altitudeTransformation(getHeight(p_i))- i*i*2f/3f;
+			float newobstacle = altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p_i))- i*i*2f/3f;
 			double theta;
 			if(height == newobstacle) theta = Math.PI/2;
 			else theta = Math.atan(i/(height-newobstacle));

@@ -44,7 +44,7 @@ public class DataController {
 
 	public DataController(SaveRecord record) {
 		this.record = record;
-		this.grid=new AltitudeModel(record);
+		this.grid=new AltitudeModel(record,this);
 		this.precipitation = new PrecipitationModel(record,grid);
 		this.population = new PopulationModel(record, grid, precipitation);
 		this.magic = new MagicModel(record);

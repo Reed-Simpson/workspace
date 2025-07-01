@@ -189,6 +189,7 @@ public class MapPanel  extends JPanel{
 		recenter(getMiddleGridPoint(),true);
 	}
 	public void recenter(Point p,boolean updatePrevious) {
+		record.addExplored(p);
 		if(updatePrevious&&previousIndex>-1) {
 			for(int i=previous.size()-1;i>previousIndex;i--) {
 				previous.remove(i);
@@ -261,6 +262,7 @@ public class MapPanel  extends JPanel{
 		}
 		drawSymbols(g2, step, displayScale, borderColor);
 		drawRegion(g2, displayScale);
+		if(HexData.EXPLORATION.equals(displayData)) drawVoid(g2, displayScale);
 		drawCenterHex(g2, displayScale);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
@@ -779,6 +781,19 @@ public class MapPanel  extends JPanel{
 		 logger.logln("Region drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
+	private void drawVoid(Graphics2D g2, int displayScale) {
+		Point p1 = getGridPoint(-40,this.getHeight()+80);
+		Point p2 = getGridPoint(this.getWidth()+40,-40);
+		for(int i=p1.x;i<p2.x;i+=1) {
+			for(int j=p2.y;j<p1.y;j+=1) {
+				Point p = new Point(i,j);
+				if(!record.isExplored(p)) {
+					this.drawHex(g2, getScreenPos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
+				}
+			}
+		}
+	}
+
 	private Color getColor1(int i,int j,HexData data) {
 		float height = controller.getGrid().getHeight(i, j);
 		Point p = new Point(i,j);
@@ -786,7 +801,7 @@ public class MapPanel  extends JPanel{
 			return BiomeType.WATER.getColor();
 		}else if (height<BiomeModel.WATER_HEIGHT) {
 			return BiomeType.SHALLOWS.getColor();
-		}else if (!HexData.BIOME.equals(data)&&controller.getPrecipitation().isLake(p)) {
+		}else if (!HexData.BIOME.equals(data)&&!HexData.EXPLORATION.equals(data)&&controller.getPrecipitation().isLake(p)) {
 			return BiomeType.LAKE.getColor();
 		}else if(showCities) {
 			BiomeType settlementType = controller.getPopulation().getSettlementType(p);
@@ -800,14 +815,14 @@ public class MapPanel  extends JPanel{
 		Point p = new Point(i,j);
 		if(HexData.MAGIC.equals(data)) {
 			return controller.getMagic().getColor(i, j);
-		}else if(controller.getPrecipitation().isLake(p)&&!HexData.BIOME.equals(data)) {
+		}else if(controller.getPrecipitation().isLake(p)&&!HexData.BIOME.equals(data)&&!HexData.EXPLORATION.equals(data)) {
 			return null;
 		}else if (controller.getGrid().isWater(i, j)) {
 			return null;
 		}else if(HexData.PRECIPITATION.equals(data)) {
 			return controller.getPrecipitation().getColor(controller.getPrecipitation().getPrecipitation(i, j));
-		}else if(HexData.BIOME.equals(data)) {
-			return controller.getBiomes().getColor(controller.getBiomes().getBiome(i, j));
+		}else if(HexData.BIOME.equals(data) || HexData.EXPLORATION.equals(data)) {
+			return controller.getBiomes().getBiome(i, j).getColor();
 		}else if(HexData.POPULATION.equals(data)) {
 			return controller.getPopulation().getColor(i, j);
 		}else if(HexData.ECONOMY.equals(data)) {

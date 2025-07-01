@@ -10,6 +10,7 @@ public enum HexData {
 	TEMPERATURE("temperature"),
 	MAGIC("magic"),
 	THREAT("threat"),
+	EXPLORATION("exploration"),
 
 	ENCOUNTER("encounter"),
 	NPC("npc"),
@@ -26,7 +27,7 @@ public enum HexData {
 	MINION("minion");
 	
 	public static HexData[] getMapViews() {
-		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT};
+		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT,EXPLORATION};
 	}
 	public static HexData[] getRegionTypes() {
 		return new HexData[] {NONE,BIOME,POPULATION,THREAT};

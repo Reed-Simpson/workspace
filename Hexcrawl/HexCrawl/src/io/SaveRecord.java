@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Random;
 
@@ -52,6 +53,7 @@ public class SaveRecord implements Serializable {
 	private ArrayList<Reference> campaignCharacters;
 	private ArrayList<String> campaignThreads;
 	private HashMap<Point,ArrayList<String>> minions;
+	private HashSet<Point> explored;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -80,6 +82,7 @@ public class SaveRecord implements Serializable {
 
 		this.campaignCharacters = new ArrayList<Reference>();
 		this.campaignThreads = new ArrayList<String>();
+		this.explored = new HashSet<Point>();
 		
 		this.hasUnsavedData = true;
 	}
@@ -220,6 +223,7 @@ public class SaveRecord implements Serializable {
 			
 			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
 			if(loadedRecord.campaignThreads==null) loadedRecord.campaignThreads = new ArrayList<String>();
+			if(loadedRecord.explored==null) loadedRecord.explored = new HashSet<Point>();
 		}
 		return loadedRecord;
 	}
@@ -617,5 +621,18 @@ public class SaveRecord implements Serializable {
 	public void setChaosFactor(int chaosFactor) {
 		if(this.chaosFactor!=chaosFactor) this.hasUnsavedData=true;
 		this.chaosFactor = chaosFactor;
+	}
+
+	public boolean addExplored(Point p) {
+		return this.explored.add(p);
+	}
+	public boolean removeExplored(Point p) {
+		return this.explored.remove(p);
+	}
+	public boolean isExplored(Point p) {
+		return this.explored.contains(p);
+	}
+	public HashSet<Point> getExplored(){
+		return this.explored;
 	}
 }

@@ -33,6 +33,7 @@ public class SaveRecord implements Serializable {
 	private File saveLocation;
 	private Point pos;
 	private Point zero;
+	private Point hero;
 	private double scale;
 	private boolean initialized;
 	private int chaosFactor;
@@ -111,7 +112,7 @@ public class SaveRecord implements Serializable {
 			this.setPos(grid.findLand(this.getPos()));
 		}
 		this.setZero(pos);
-		System.out.println("record initialized to: "+this.normalizePOS(this.getPos()));
+		this.hero = this.zero;
 		initialized=true;
 		this.hasUnsavedData = true;
 	}
@@ -225,6 +226,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
 			if(loadedRecord.campaignThreads==null) loadedRecord.campaignThreads = new ArrayList<String>();
 			if(loadedRecord.explored==null) loadedRecord.explored = new HashSet<Point>();
+			if(loadedRecord.hero==null) loadedRecord.hero = loadedRecord.zero;
 		}
 		return loadedRecord;
 	}
@@ -644,5 +646,13 @@ public class SaveRecord implements Serializable {
 	}
 	public HashSet<Point> getExplored(){
 		return this.explored;
+	}
+
+	public Point getHero() {
+		return hero;
+	}
+
+	public void setHero(Point hero) {
+		this.hero = hero;
 	}
 }

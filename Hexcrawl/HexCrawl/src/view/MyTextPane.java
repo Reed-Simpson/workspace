@@ -327,7 +327,6 @@ public class MyTextPane extends JTextPane {
 				}
 			});
 			menu.add(gen);
-			System.out.println(e.getButton());
 			if(index>-1) {
 				JMenuItem revert = new JMenuItem("Revert to Default");
 				revert.addActionListener(new ActionListener() {

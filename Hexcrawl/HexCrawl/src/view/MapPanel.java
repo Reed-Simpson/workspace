@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
@@ -28,7 +30,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
 
 import controllers.DataController;
@@ -140,6 +144,8 @@ public class MapPanel  extends JPanel{
 	private void postinitialize(SaveRecord record) {
 		recenter(record.getPos(),true);
 		mouseover = getMiddleGridPoint();
+		HashSet<Point> visible = controller.getGrid().getLineOfSight(record.getHero());
+		record.addAllExplored(visible);
 		record.setHasUnsavedData(false);
 		this.preprocessThenRepaint();
 	}
@@ -491,6 +497,7 @@ public class MapPanel  extends JPanel{
 						g2.setColor(Color.black);
 						float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(new Point(i,j)));
 						int dheight = (int)(height_x-height);
+						g2.setFont(g2.getFont().deriveFont((float) (displayScale/2)));
 						if(dheight<0) g2.setColor(Color.red);
 						g2.drawString(String.valueOf(dheight), (int) (getScreenPos(i,j).x-scale/2) ,getScreenPos(i,j).y );
 					}else if((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh()))) {
@@ -793,8 +800,7 @@ public class MapPanel  extends JPanel{
 	private void drawVoid(Graphics2D g2, int displayScale) {
 		Point p1 = getGridPoint(-40,this.getHeight()+80);
 		Point p2 = getGridPoint(this.getWidth()+40,-40);
-		HashSet<Point> visible = controller.getGrid().getLineOfSight(getMiddleGridPoint());
-		record.addAllExplored(visible);
+		HashSet<Point> visible = controller.getGrid().getLineOfSight(record.getHero());
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
@@ -805,8 +811,29 @@ public class MapPanel  extends JPanel{
 					this.drawHex(g2, getScreenPos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
 					g2.setComposite(AlphaComposite.SrcOver);
 				}
+				if(p.equals(record.getHero())) {
+					drawPawn(g2,p,Color.red,displayScale);
+				}
 			}
 		}
+	}
+
+	private void drawPawn(Graphics2D g2, Point p, Color color, int displayScale) {
+		Point p_ = getScreenPos(p);
+		int diameter = displayScale*2/3;
+		int[] xs1 = new int[] {p_.x,						p_.x+displayScale/2+1,				p_.x-displayScale/2-1};
+		int[] ys1 = new int[] {(int)(p_.y-displayScale/sqrt3-1),	(int)(p_.y+displayScale*3/4/sqrt3+1),	(int)(p_.y+displayScale*3/4/sqrt3+1)};
+		Polygon t1 = new Polygon(xs1,ys1,3);
+		g2.setColor(LINE_COLOR);
+		g2.fill(t1);
+		g2.fillOval(p_.x-diameter/2-1, (int)(p_.y-displayScale/sqrt3)-diameter/2-1, diameter+2, diameter+2);
+
+		int[] xs = new int[] {p_.x,						p_.x+displayScale/2,				p_.x-displayScale/2};
+		int[] ys = new int[] {(int)(p_.y-displayScale/sqrt3),	(int)(p_.y+displayScale*3/4/sqrt3),	(int)(p_.y+displayScale*3/4/sqrt3)};
+		Polygon t = new Polygon(xs,ys,3);
+		g2.setColor(color);
+		g2.fill(t);
+		g2.fillOval(p_.x-diameter/2, (int)(p_.y-displayScale/sqrt3)-diameter/2, diameter, diameter);
 	}
 
 	private Color getColor1(int i,int j,HexData data) {
@@ -1026,18 +1053,61 @@ public class MapPanel  extends JPanel{
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			Point p = MapPanel.this.getGridPoint(e.getX(), e.getY());
-			if(showDistance) {
-				if(mouseoverHold&&p.equals(mouseover)) {
-					mouseoverHold=false;
-				}else {
-					mouseoverHold=true;
-					mouseover = p;
+			if(MouseEvent.BUTTON1==e.getButton()) {
+				if(showDistance) {
+					if(mouseoverHold&&p.equals(mouseover)) {
+						mouseoverHold=false;
+					}else {
+						mouseoverHold=true;
+						mouseover = p;
+					}
+					preprocessThenRepaint();
+				}else{
+					recenter(p,true);
+					preprocessThenRepaint();
 				}
-				preprocessThenRepaint();
-			}else{
-				recenter(p,true);
-				preprocessThenRepaint();
+			}else if(MouseEvent.BUTTON3==e.getButton()) {
+				openMenu(e);
 			}
+		}
+		private void openMenu(MouseEvent e) {
+			Point gridPoint = getGridPoint(e.getPoint());
+			JPopupMenu menu = new JPopupMenu();
+			JMenuItem hero = new JMenuItem("Move Hero Marker");
+			hero.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e1) {
+					record.setHero(gridPoint);
+					HashSet<Point> visible = controller.getGrid().getLineOfSight(gridPoint);
+					record.addAllExplored(visible);
+					frame.repaint();
+				}
+			});
+			menu.add(hero);
+			if(record.isExplored(gridPoint)) {
+				JMenuItem explore = new JMenuItem("Unexplore");
+				explore.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e1) {
+						record.removeExplored(gridPoint);
+						System.out.println(record.isExplored(gridPoint));
+						frame.repaint();
+					}
+				});
+				menu.add(explore);
+			}else {
+				JMenuItem explore = new JMenuItem("Explore");
+				explore.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e1) {
+						record.addExplored(gridPoint);
+						System.out.println(record.isExplored(gridPoint));
+						frame.repaint();
+					}
+				});
+				menu.add(explore);
+			}
+			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 		@Override
 		public void mouseEntered(MouseEvent e) {}
@@ -1045,13 +1115,15 @@ public class MapPanel  extends JPanel{
 		public void mouseExited(MouseEvent e) {}
 		@Override
 		public void mousePressed(MouseEvent e) {
-			isDragging = true;
-			dragOffsetX = e.getX();
-			dragOffsetY = e.getY();
+			if(MouseEvent.BUTTON1==e.getButton()) {
+				isDragging = true;
+				dragOffsetX = e.getX();
+				dragOffsetY = e.getY();
+			}
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if(isDragging) {
+			if(isDragging && MouseEvent.BUTTON1==e.getButton()) {
 				isDragging = false;
 				recenter();
 				preprocessThenRepaint();

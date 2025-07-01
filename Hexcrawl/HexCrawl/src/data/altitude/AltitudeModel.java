@@ -156,7 +156,7 @@ public class AltitudeModel extends DataModel{
 		}else {
 			range = xrange;
 		}
-		float height = altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p))+6;
+		float height = altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p))+6;//assume head height is 6 feet
 		double maxtheta = 0;
 		for(int i=1;i<=range;i++) {
 			double x = p.x + dx*((double)i)/((double)range);

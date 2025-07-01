@@ -54,7 +54,7 @@ public class DataController {
 		this.npcs = new NPCModel(record, population);
 		this.threats = new ThreatModel(record,npcs);
 		this.settlements = new SettlementModel(record,this);
-		this.pois = new LocationModel(record);
+		this.pois = new LocationModel(record,this);
 		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);
 	}
@@ -155,7 +155,7 @@ public class DataController {
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			return "Inn: none";
 		}else {
-			return names.getInnText(pos);
+			return pois.getInnText(pos);
 		}
 	}
 	public String getData(HexData type,Point p, int i) {
@@ -287,8 +287,8 @@ public class DataController {
 		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom(),ref).toString();
 		case NPC: return npcs.getNPC(p,record.getRandom()).toString();
 		case LOCATION: {
-			if(i==0) return names.getInnText(record.getRandom());
-			else return pois.getPOI(record.getRandom(), p,population.isCity(p));
+			if(i==0) return pois.getInnText(record.getRandom(),p);
+			else return pois.getPOI(record.getRandom(), p,population.isCity(p),i);
 		}
 		case DUNGEON: return dungeons.getDungeon(record.getRandom(), p).toString();
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
@@ -329,7 +329,7 @@ public class DataController {
 			System.err.println("null link text: {"+type+":"+record.normalizePOS(pos)+","+index+"}");
 			return null;
 		}
-		int firstLine = fullText.indexOf("\r\n");
+		int firstLine = fullText.indexOf("\n");
 		if(firstLine>-1&&firstLine<100) {
 			return fullText.substring(0, firstLine);
 		}else if(fullText.length()>=50) {

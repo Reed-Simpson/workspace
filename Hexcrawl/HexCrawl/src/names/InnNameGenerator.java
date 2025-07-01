@@ -42,22 +42,6 @@ public class InnNameGenerator extends IndexibleNameGenerator{
 			"has been named best pub in town several years in a row by the nobles in the region,features great food at incredible prices but discriminates against certain customers";
 	private static WeightedTable<String> quirks;
 
-	@Deprecated
-	public static String getPrefix(int val) {
-		if(prefixes==null) {
-			prefixes = new WeightedTable<String>();
-			populate(prefixes, PREFIXES, ",");
-		}
-		return prefixes.getByWeight(val);
-	}
-	@Deprecated
-	public static String getSuffix(int val) {
-		if(suffixes==null) {
-			suffixes = new WeightedTable<String>();
-			populate(suffixes, SUFFIXES, ",");
-		}
-		return suffixes.getByWeight(val);
-	}
 	public static String getPrefix(Indexible obj) {
 		if(prefixes==null) {
 			prefixes = new WeightedTable<String>();

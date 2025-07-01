@@ -1,15 +1,22 @@
 package data.location;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Random;
 
+import controllers.DataController;
 import data.DataModel;
+import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
+import data.Reference;
 import data.WeightedTable;
+import data.dungeon.Dungeon;
 import data.population.SettlementModel;
 import io.SaveRecord;
+import names.InnNameGenerator;
 import util.Util;
+import view.InfoPanel;
 
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
@@ -51,6 +58,7 @@ public class LocationModel extends DataModel{
 			"Liminal,Lively,Lonely,Long,Loud,Meaningful,Messy,Mobile,Modern,Mundane,Mysterious,Natural,New,Occupied,Odd,Official,Old,Open,Peaceful,Personal,Plain,Magically Connected,Protected,Protective,Purposeful,Quiet,Reassuring,"+
 			"Remote,Resourceful,Ruined,Rustic,Safe,Multifunctional,Simple,Small,Spacious,Storage,Strange,Stylish,Suspicious,Tall,Threatening,Tranquil,Unexpected,Unpleasant,Unusual,Useful,Warm,Warning,Watery,Welcoming";
 	private static WeightedTable<String> descriptors;
+	private static final String[] VISIBILITY = {"Landmark","Standard","Hidden"};
 	
 	private static void populateAllTables() {
 		biomes = new WeightedTable<String>();
@@ -71,52 +79,6 @@ public class LocationModel extends DataModel{
 		populate(poisons,POISON,",");
 		descriptors = new WeightedTable<String>();
 		populate(descriptors,DESCRIPTORS,",");
-	}
-	@Deprecated
-	public static String getBiome(int i) {
-		if(biomes==null) populateAllTables();
-		return biomes.getByWeight(i);
-	}
-	@Deprecated
-	public static String getLandmark(int i) {
-		if(landmarks==null) populateAllTables();
-		return landmarks.getByWeight(i);
-	}
-	@Deprecated
-	public static String getStructure(int i) {
-		if(structures==null) populateAllTables();
-		return structures.getByWeight(i);
-	}
-	@Deprecated
-	public static String getStructureOrLandmark(int i) {
-		if(structures==null) populateAllTables();
-		if(i%2==0) return getStructure(i/2);
-		else return getLandmark(i/2);
-	}
-	@Deprecated
-	public static String getActivity(int i) {
-		if(wildactivities==null) populateAllTables();
-		return Util.formatTableResult(wildactivities.getByWeight(i),new Indexible(i/wildactivities.size()));
-	}
-	@Deprecated
-	public static String getDiscovery(int i) {
-		if(discoveries==null) populateAllTables();
-		return Util.formatTableResult(discoveries.getByWeight(i),new Indexible(i/discoveries.size()));
-	}
-	@Deprecated
-	public static String getHazard(int i) {
-		if(hazards==null) populateAllTables();
-		return hazards.getByWeight(i);
-	}
-	@Deprecated
-	public static String getEdiblePlant(int i) {
-		if(edibles==null) populateAllTables();
-		return edibles.getByWeight(i);
-	}
-	@Deprecated
-	public static String getPoisonousPlant(int i) {
-		if(poisons==null) populateAllTables();
-		return poisons.getByWeight(i);
 	}
 	public static String getDescriptor(Indexible e) {
 		if(descriptors==null) populateAllTables();
@@ -163,31 +125,45 @@ public class LocationModel extends DataModel{
 		if(poisons==null) populateAllTables();
 		return poisons.getByWeight(obj);
 	}
+	private DataController controller;
+	private InnNameGenerator innNames;
 	
 	
 	
-	public LocationModel(SaveRecord record) {
+	public LocationModel(SaveRecord record,DataController controller) {
 		super(record);
+		this.controller = controller;
+		this.innNames = new InnNameGenerator();
 	}
 	private int getLocationDetailIndex(int i,Point p) {
 		float val = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i), p.x, p.y);
 		return Util.getIndexFromSimplex(val);
 	}
 
-	public String getStructure(int i,Point p) {
-		return getStructure(getLocationDetailIndex(i*TABLECOUNT, p));
+	private ArrayList<String> getDungeons(Point p, int i) {
+		ArrayList<String> result = new ArrayList<String>();
+		for(int n=0;n<InfoPanel.DUNGEONCOUNT;n++) {
+			Dungeon d = controller.getDungeon().getDefaultValue(p, n);
+			if(d.getLocation().getIndex()==i) {
+				String s = d.getEntrance()+" leading to "+new Reference(HexData.DUNGEON, record.normalizePOS(p), n);
+				result.add(s);
+			}
+		}
+		return result;
 	}
 	public String getPOI(int i,Point p,boolean isCity) {
-		Indexible obj = new Indexible(getLocationDetailIndex(i*TABLECOUNT, p));
-		String poi = getPOI(isCity, obj);
+		Indexible obj = new Indexible(getLocationDetailIndex(3+i*TABLECOUNT, p));
+		ArrayList<String> dungeons = getDungeons(p,i);
+		String poi = getPOI(isCity, obj,i,dungeons);
 		return Util.formatTableResultPOS(poi, obj, p,record.getZero());
 	}
-	public String getPOI(Random random,Point p,boolean isCity) {
+	public String getPOI(Random random,Point p,boolean isCity,int i) {
 		Indexible obj = new Indexible(random.nextInt());
-		String poi = getPOI(isCity, obj);
+		ArrayList<String> dungeons = getDungeons(p,i);
+		String poi = getPOI(isCity, obj,i,dungeons);
 		return Util.formatTableResultPOS(poi, obj, p,record.getZero());
 	}
-	private String getPOI(boolean isCity, Indexible obj) {
+	private String getPOI(boolean isCity, Indexible obj,int i,ArrayList<String> dungeons) {
 		String location;
 		if(isCity) location = SettlementModel.getBuilding(obj);
 		else location = getStructure(obj);
@@ -197,21 +173,59 @@ public class LocationModel extends DataModel{
 		if(isCity) {
 			proprietor = "\r\nProprietor: ${npc index}";
 		}
-		return descriptor1+" and "+descriptor2+" "+location+proprietor;
+		String visibility = "\r\nVisibility: "+getVisibility(i);
+		String dungeon = "";
+		if(dungeons.size()>0) {
+			dungeon = "\r\nDungeon Entrances: ";
+			for(String s:dungeons) {
+				dungeon+="\r\n    "+s;
+			}
+		}
+		return descriptor1+" and "+descriptor2+" "+location+proprietor+visibility+dungeon;
 	}
-	@Deprecated
-	public String getEdible(int i,Point p) {
-		if(edibles==null) populateAllTables();
-		return edibles.getByWeight(getLocationDetailIndex(i*TABLECOUNT+5, p));
-	}
-	@Deprecated
-	public String getPoison(int i,Point p) {
-		if(poisons==null) populateAllTables();
-		return poisons.getByWeight(getLocationDetailIndex(i*TABLECOUNT+6, p));
+	private String getVisibility(int i) {
+		if(i<2) return VISIBILITY[0];
+		else if(i<6) return VISIBILITY[1];
+		else return VISIBILITY[2];
 	}
 	@Override
 	public String getDefaultValue(Point p, int i) {
 		return getPOI(i, p, false);
+	}
+	
+
+	public String getInnText(Point p) {
+		Indexible obj = new Indexible(getLocationDetailIndex(0, p),getLocationDetailIndex(1, p),getLocationDetailIndex(2, p),getLocationDetailIndex(3, p));
+		return Util.formatTableResultPOS(getInnText(obj,p),obj,p,record.getZero());
+	}
+	public String getInnText(Random random,Point p) {
+		Indexible obj = new Indexible(random.nextInt(),random.nextInt(),random.nextInt(),random.nextInt());
+		return getInnText(obj,p);
+	}
+	private String getInnText(Indexible obj,Point p) {
+		String innname = "Inn: "+getInnName(obj);
+		String innquirk = "\r\nQuirk: "+getInnQuirk(obj);
+		String inndescriptors = "\r\nDescriptors: "+getInnDescriptor(obj)+" and "+getInnDescriptor(obj);
+		String proprietor = "\r\nProprietor: ${npc index}";
+		String dungeon = "";
+		ArrayList<String> dungeons = getDungeons(p,0);
+		if(dungeons.size()>0) {
+			dungeon = "\r\nDungeon Entrances: ";
+			for(String s:dungeons) {
+				dungeon+="\r\n    "+s;
+			}
+		}
+		return innname+innquirk+inndescriptors+proprietor+dungeon;
+	}
+	
+	public String getInnName(Indexible obj) {
+		return innNames.getName(obj);
+	}
+	public String getInnQuirk(Indexible obj) {
+		return innNames.getQuirk(obj);
+	}
+	public String getInnDescriptor(Indexible obj) {
+		return LocationModel.getDescriptor(obj);
 	}
 
 }

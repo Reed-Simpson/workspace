@@ -1,10 +1,12 @@
 package data.dungeon;
 
 import data.Indexible;
+import data.Reference;
 import util.Util;
 
 public class Dungeon extends Indexible{
 	private String entrance;
+	private Reference location;
 	private String form;
 	private String layout;
 	private String ruination;
@@ -25,6 +27,12 @@ public class Dungeon extends Indexible{
 	}
 	public void setEntrance(String entrance) {
 		this.entrance = entrance;
+	}
+	public Reference getLocation() {
+		return location;
+	}
+	public void setLocation(Reference location) {
+		this.location = location;
 	}
 	public String getForm() {
 		return form;
@@ -61,7 +69,7 @@ public class Dungeon extends Indexible{
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ Dungeon #"+(i)+" ~~~~~\r\n");
 		e1Text.append("Layout & Form: "+this.getLayout()+" "+this.getForm() + "\r\n");
-		e1Text.append("Entrance: "+this.getEntrance() +"\r\n");
+		e1Text.append("Entrance: "+this.getEntrance() + " near " + this.location.toString() +"\r\n");
 		//e1Text.append("Layout: "+this.getLayout() + "\r\n");
 		e1Text.append("Ruination: "+this.getRuination() + "\r\n");
 		e1Text.append("Reward: "+this.getReward() + "\r\n");

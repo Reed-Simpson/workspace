@@ -6,6 +6,7 @@ import java.util.Random;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
+import data.Reference;
 import data.WeightedTable;
 import data.monster.MonsterModel;
 import io.SaveRecord;
@@ -168,7 +169,8 @@ public class DungeonModel extends DataModel {
 		return result;
 	}
 	private void populateDungeonDetail(Point p, Dungeon result) {
-		result.setEntrance(getEntrance(result)+" near "+Util.formatTableResultPOS("${location index}", result, p,record.getZero()));
+		result.setEntrance(getEntrance(result));
+		result.setLocation(new Reference(Util.formatTableResultPOS("${location index}", result, p,record.getZero())));
 		result.setForm(getForm(result));
 		result.setLayout(getLayout(result));
 		result.setRuination(getRuination(result));

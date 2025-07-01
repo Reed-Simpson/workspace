@@ -177,7 +177,7 @@ public class NPC extends Creature{
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		String name = (this.name!=null?this.name+", the ":"");
-		String species = this.getSpecies().toString();
+		String species = this.getSpecies().getSpeciesName();
 		if(this.getSubspecies()!=null) species = this.getSubspecies();
 		e1Text.append(name+Util.toCamelCase(species)+" "+this.getJob() + "\r\n");
 		e1Text.append("• Descriptors: "+Util.parseArray(this.getDescriptors()));

@@ -39,11 +39,11 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 	public String getName(Creature threat) {
 		HumanoidType subtype = (HumanoidType) threat.getSpecies();
 		switch(subtype) {
-		case CULTIST: return getHumanoidName(threat,"Cult Leader");
-		case WARLORD: return getHumanoidName(threat,"Warlord");
-		case SPELLCASTER: return getHumanoidName(threat,MagicModel.getSpellcaster(threat));
-		case BANDIT: return getHumanoidName(threat,"Bandit Lord");
-		case LYCANTHROPE: return getHumanoidName(threat,getLycanthrope(threat));
+		case CULTIST: return getHumanoidName(threat);
+		case WARLORD: return getHumanoidName(threat);
+		case SPELLCASTER: return getHumanoidName(threat);
+		case BANDIT: return getHumanoidName(threat);
+		case LYCANTHROPE: return getHumanoidName(threat);
 		case GOBLINOID: return getGoblinoidName(threat);
 		case KOBOLD: return getKoboldName(threat);
 		case ORC: return getOrcName(threat);
@@ -55,16 +55,6 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 		default: throw new IllegalArgumentException(subtype.name());
 		}
 	}
-
-	private String getHumanoidName(Creature threat,String profession) {
-		NPC npc = getNPC(threat);
-		Species species = npc.getSpecies();
-		String result = npc.getName();
-		String speciesName = species.toString();
-		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
-		if(result==null) result = species.getNameGen().getName(threat);
-		return result+", The "+speciesName+" "+profession;
-	}
 	private NPC getNPC(Creature threat) {
 		NPC npc;
 		if(threat instanceof Threat) {
@@ -74,40 +64,72 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 		}
 		return npc;
 	}
+
+	private String getHumanoidName(Creature threat) {
+		NPC npc = getNPC(threat);
+		Species species = npc.getSpecies();
+		String result = npc.getName();
+		if(result==null) result = species.getNameGen().getName(threat);
+		return result;
+	}
 	private String getGoblinoidName(Creature threat) {
 		NPC npc = getNPC(threat);
 		String goblinoid = getGoblinoid(threat);
 		npc.setSubspecies(goblinoid);
 		String result = NPCSpecies.GOBLINOID.getNameGen().getName(threat);
-		return result+", The "+goblinoid+" Warlord";
+		return result;
 	}
 	private String getKoboldName(Creature threat) {
 		String result = NPCSpecies.KOBOLD.getNameGen().getName(threat);
-		return result+", The Kobold Denmaster";
+		return result;
 	}
 	private String getOrcName(Creature threat) {
 		String result = NPCSpecies.ORC.getNameGen().getName(threat);
-		return result+", The Orc Warlord";
+		return result;
 	}
 	private String getLizardfolkName(Creature threat) {
 		String result = NPCSpecies.LIZARDFOLK.getNameGen().getName(threat);
-		return result+", The Lizardfolk Chieftan";
+		return result;
 	}
 	private String getDrowName(Creature threat) {
 		String result = NPCSpecies.ELF.getNameGen().getName(threat);
-		return result+", The Drow High Priestess";
+		return result;
 	}
 	private String getDuregarName(Creature threat) {
 		String result = NPCSpecies.DWARF.getNameGen().getName(threat);
-		return result+", The Duregar General";
+		return result;
 	}
 	private String getGnollName(Creature threat) {
 		String result = NPCSpecies.GNOLL.getNameGen().getName(threat);
-		return result+", The Gnoll Alpha";
+		return result;
 	}
 	private String getTrogName(Creature threat) {
 		String result = NPCSpecies.TROG.getNameGen().getName(threat);
-		return result+", The Troglodyte Chieftan";
+		return result;
+	}
+	@Override
+	public String getTitle(Creature obj) {
+		NPC npc = getNPC(obj);
+		HumanoidType subtype = (HumanoidType) obj.getSpecies();
+		Species species = npc.getSpecies();
+		String speciesName = species.toString();
+		if(npc.getSubspecies()!=null) speciesName = npc.getSubspecies();
+		switch(subtype) {
+		case CULTIST: return ", The "+speciesName+" Cult Leader";
+		case WARLORD: return ", The "+speciesName+" Warlord";
+		case SPELLCASTER: return ", The "+speciesName+" "+MagicModel.getSpellcaster(obj);
+		case BANDIT: return ", The "+speciesName+" Bandit Lord";
+		case LYCANTHROPE: return ", The "+speciesName+" "+getLycanthrope(obj);
+		case GOBLINOID: return ", The "+speciesName+" Warlord";
+		case KOBOLD: return ", The Kobold Denmaster";
+		case ORC: return ", The Orc Warlord";
+		case LIZARDFOLK: return ", The Lizardfolk Chieftan";
+		case DROW: return ", The Drow High Priestess";
+		case DUREGAR: return ", The Duregar General";
+		case GNOLL: return ", The Gnoll Alpha";
+		case TROGLODYTE: return ", The Troglodyte Chieftan";
+		default: throw new IllegalArgumentException(subtype.name());
+		}
 	}
 	@Override
 	public String getFactionAdjective(Indexible threat) {

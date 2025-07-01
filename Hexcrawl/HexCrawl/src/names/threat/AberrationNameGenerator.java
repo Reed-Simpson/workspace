@@ -43,17 +43,21 @@ public class AberrationNameGenerator extends ThreatNameGenerator{
 		String noun = getElementFromArray(NOUN, obj);
 		return part1+part2+", The "+verb+" "+noun;
 	}
-
 	@Override
-	public String getFactionAdjective(Indexible threat) {
-		if(faction_adjectives==null) populateAllTables();
-		return faction_adjectives.getByWeight(threat);
+	public String getTitle(Creature obj) {
+		return "";
 	}
 
 	@Override
-	public String getFactionNoun(Indexible threat) {
+	public String getFactionAdjective(Indexible obj) {
+		if(faction_adjectives==null) populateAllTables();
+		return faction_adjectives.getByWeight(obj);
+	}
+
+	@Override
+	public String getFactionNoun(Indexible obj) {
 		if(faction_nouns==null) populateAllTables();
-		return faction_nouns.getByWeight(threat);
+		return faction_nouns.getByWeight(obj);
 	}
 
 }

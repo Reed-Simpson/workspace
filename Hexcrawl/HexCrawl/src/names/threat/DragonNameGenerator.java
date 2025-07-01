@@ -163,8 +163,7 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 		String part1 = getElementFromArray(PART1, threat);
 		String part2 = getElementFromArray(PART2, threat);
 		String part3 = getElementFromArray(PART3, threat);
-		String title = getTitle(threat,type);
-		return part1+part2+part3+", "+title;
+		return part1+part2+part3;
 	}
 	private static String getTitle(Indexible threat,DragonType type) {
 		ArrayList<String> array = new ArrayList<String>();
@@ -182,6 +181,12 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 			}
 		}
 		return getElementFromArray(array.toArray(new String[0]),threat);
+	}
+	@Override
+	public String getTitle(Creature obj) {
+		DragonType type = (DragonType) obj.getSpecies();
+		String title = getTitle(obj,type);
+		return ", "+title;
 	}
 	@Override
 	public String getFactionAdjective(Indexible threat) {

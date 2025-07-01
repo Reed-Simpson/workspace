@@ -124,7 +124,7 @@ public enum CreatureType implements Species{
 	public static String getName(Threat threat) {
 		ThreatNameGenerator gen = threat.getType().getNameGen();
 		if(gen==null) return null;
-		return gen.getName(threat);
+		return gen.getNameAndTitle(threat);
 	}
 	public static String getDomain(Threat threat) {
 		ThreatNameGenerator gen = threat.getType().getNameGen();

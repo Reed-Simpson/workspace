@@ -89,6 +89,10 @@ public class PlantNameGenerator extends ThreatNameGenerator {
 	private String getTreantName(Indexible threat) {
 		return "Treants of the "+WildernessNameGenerator.getRegionName(threat)+" Forest";
 	}
+	@Override
+	public String getTitle(Creature obj) {
+		return "";
+	}
 
 	@Override
 	public String getFactionAdjective(Indexible threat) {

@@ -31,6 +31,10 @@ public class FeyNameGenerator extends ThreatNameGenerator {
 		return null;
 	}
 	@Override
+	public String getTitle(Creature obj) {
+		return "";
+	}
+	@Override
 	public String getFactionAdjective(Indexible threat) {
 		if(faction_adjectives==null) populateAllTables();
 		return faction_adjectives.getByWeight(threat);

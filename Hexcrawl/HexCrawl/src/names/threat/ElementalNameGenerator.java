@@ -96,8 +96,12 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 		String[] prefixArray = getPrefixArray((ElementalType) threat.getSpecies());
 		String part1 = getElementFromArray(prefixArray, threat);
 		String part2 = getElementFromArray(SUFFIX, threat);
-		String title = getElementFromArray(TITLE, threat);
-		return part1+part2+", "+title+" of "+Util.toCamelCase(threat.getSpecies().toString());
+		return part1+part2;
+	}
+	@Override
+	public String getTitle(Creature obj) {
+		String title = getElementFromArray(TITLE, obj);
+		return ", "+title+" of "+Util.toCamelCase(obj.getSpecies().toString());
 	}
 	@Override
 	public String getFactionAdjective(Indexible threat) {

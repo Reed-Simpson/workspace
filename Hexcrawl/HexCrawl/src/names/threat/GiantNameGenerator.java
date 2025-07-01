@@ -47,6 +47,10 @@ public class GiantNameGenerator extends ThreatNameGenerator {
 		return Util.toCamelCase(getNamePart(threat)+" The "+type);
 	}
 	@Override
+	public String getTitle(Creature obj) {
+		return "";
+	}
+	@Override
 	public String getFactionAdjective(Indexible threat) {
 		if(faction_adjectives==null) populateAllTables();
 		return faction_adjectives.getByWeight(threat);

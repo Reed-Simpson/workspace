@@ -99,6 +99,10 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 		return Util.formatTableResult("${object element}", threat)+" "+EquipmentModel.getMisc(threat);
 	}
 	@Override
+	public String getTitle(Creature obj) {
+		return "";
+	}
+	@Override
 	public String getFactionAdjective(Indexible threat) {
 		if(faction_adjectives==null) populateAllTables();
 		return faction_adjectives.getByWeight(threat);

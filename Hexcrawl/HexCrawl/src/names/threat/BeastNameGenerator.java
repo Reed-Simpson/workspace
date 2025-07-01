@@ -55,12 +55,12 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 	}
 	
 	@Override
-	public String getName(Creature threat) {
-		BeastType subtype = (BeastType) threat.getSpecies();
+	public String getName(Creature obj) {
+		BeastType subtype = (BeastType) obj.getSpecies();
 		switch(subtype) {
-		case AWAKENED: return getBeastName(threat);
-		case LYCANTHROPE: return getLycanthropeName(threat);
-		case DRUID: return getDruidName(threat);
+		case AWAKENED: return getBeastName(obj);
+		case LYCANTHROPE: return getLycanthropeName(obj);
+		case DRUID: return getDruidName(obj);
 		default: throw new IllegalArgumentException(subtype.name());
 		}
 	}
@@ -85,6 +85,10 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 		String result = npc.getName();
 		if(result==null) result = species.getNameGen().getName(threat);
 		return result+", The "+speciesName+" "+druid;
+	}
+	@Override
+	public String getTitle(Creature obj) {
+		return "";
 	}
 
 	@Override

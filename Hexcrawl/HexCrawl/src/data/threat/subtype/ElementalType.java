@@ -86,6 +86,10 @@ public enum ElementalType implements CreatureSubtype {
 	public String getName() {
 		return name;
 	}
+	@Override
+	public String getSpeciesName() {
+		return getName()+" Elemental";
+	}
 	public static ElementalType getFromID(int id) {
 		id = id%ElementalType.values().length;
 		if(id<0) id+=ElementalType.values().length;

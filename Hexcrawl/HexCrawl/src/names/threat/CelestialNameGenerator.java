@@ -49,6 +49,10 @@ public class CelestialNameGenerator extends ThreatNameGenerator{
 		String title = Util.formatTableResult(getElementFromArray(TITLE, threat),threat);
 		return partial+", "+title;
 	}
+	@Override
+	public String getTitle(Creature obj) {
+		return "";
+	}
 
 	@Override
 	public String getFactionAdjective(Indexible threat) {

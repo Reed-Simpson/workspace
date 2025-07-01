@@ -88,6 +88,11 @@ public enum DragonType implements CreatureSubtype {
 		return name;
 	}
 	@Override
+	public String getSpeciesName() {
+		if(DRACOLICH.equals(this)) return getName();
+		else return getName()+" Dragon";
+	}
+	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.DRAGON.getNameGen();
 	}

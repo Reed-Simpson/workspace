@@ -162,7 +162,7 @@ public class AltitudeModel extends DataModel{
 			double x = p.x + dx*((double)i)/((double)range);
 			double y = p.y + dy*((double)i)/((double)range);
 			Point p_i = new Point((int) Math.round(x),(int) Math.round(y));
-			float newobstacle = altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p_i))- i*i*2f/3f;
+			float newobstacle = altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p_i))- (i*6)*(i*6)*1f/3f; //.33 feet per mile sq (earth is 0.67)
 			double theta;
 			if(height == newobstacle) theta = Math.PI/2;
 			else theta = Math.atan(i/(height-newobstacle));

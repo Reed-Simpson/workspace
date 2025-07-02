@@ -1,7 +1,11 @@
 package data.threat.subtype;
 
+import java.util.ArrayList;
+
 import data.Indexible;
 import data.WeightedTable;
+import data.population.NPCSpecies;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -102,6 +106,35 @@ public enum ElementalType implements CreatureSubtype {
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.ELEMENTAL.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		ArrayList<Species> list = new ArrayList<Species>();
+		list.add(this);
+		list.add(NPCSpecies.GENASI);
+		if(this.containedIn(new Species[] {AIR,ICE,LIGHTNING,VOID,SOUND,SAND})) {
+			list.add(NPCSpecies.AARAKOCRA);
+			list.add(AIR);
+		}
+		if(this.containedIn(new Species[] {WATER,OOZE,ICE,SALT,ENTROPY,STEAM})) {
+			list.add(NPCSpecies.FISHPEOPLE);
+			list.add(WATER);
+		}
+		if(this.containedIn(new Species[] {EARTH,MAGMA,OOZE,SPACE,NECROTIC,SAND})) {
+			list.add(NPCSpecies.DWARF);
+			list.add(EARTH);
+		}
+		if(this.containedIn(new Species[] {FIRE,MAGMA,LIGHTNING,CHAOS,RADIANT,STEAM})) {
+			list.add(NPCSpecies.TIEFLING);
+			list.add(FIRE);
+		}
+		if(this.containedIn(new Species[] {MIND,EMOTION,BLOOD,RAGE})) {
+			list.add(MIND);
+			list.add(EMOTION);
+			list.add(BLOOD);
+			list.add(RAGE);
+		}
+		return list.toArray(new Species[] {});
 	}
 
 }

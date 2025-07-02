@@ -200,9 +200,18 @@ public class NPC extends Creature{
 		//Liabilities
 		e1Text.append("• Liabilities: "+this.getLiability()+" and is currently "+this.getMisfortune()+". ");
 		e1Text.append("Secretly is "+this.getSecret()+". ");
-		return e1Text.toString();
+		return formatText(e1Text.toString());
 	}
 
+	private String formatText(String string) {
+		if(string.contains("${placeholder domain}")) {
+			string = Util.replace(name,"${placeholder domain}",this.getDomain());
+		}
+		if(string.contains("${job placeholder}")) {
+			string = Util.replace(name,"${job placeholder}",this.getJob());
+		}
+		return string;
+	}
 	public String getName() {
 		return name;
 	}

@@ -140,7 +140,7 @@ public class ThreatModel extends DataModel{
 	}
 	
 	public String getThreatName(Threat threat) {
-		return Util.toCamelCase(CreatureType.getName(threat));
+		return CreatureType.getName(threat);
 	}
 
 	@Override

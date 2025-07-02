@@ -82,7 +82,7 @@ public class Threat extends Creature{
 			if(name.contains("${job placeholder}")) {
 				name = Util.replace(name,"${job placeholder}",this.getDomain());
 			}
-			e1Text.append(name+"\r\n");
+			e1Text.append(Util.toCamelCase(name)+"\r\n");
 		}
 		e1Text.append(Util.toCamelCase(this.getType().name()+" - "+this.getSubtype().getName())+"\r\n");
 		e1Text.append("Motive: "+this.getMotive()+"\r\n");

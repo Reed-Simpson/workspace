@@ -67,7 +67,7 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 		case DRAGONBLOODOOZE:return "none";
 		case DRUID:return getDruidName(threat);
 		case GELATINOUSCUBE:return "none";
-		case GREYOOZE:return "none";
+		case PSYCHICGREYOOZE:return "none";
 		case OBLEX:return npc.getName();
 		case OCHREJELLY:return "none";
 		case OOZEMASTER:return getDisease(threat);
@@ -108,6 +108,10 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 	public String getFactionNoun(Indexible threat) {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(threat);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		return super.getDomain(threat);
 	}
 
 }

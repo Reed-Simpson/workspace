@@ -2,6 +2,7 @@ package data.threat.subtype;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -61,6 +62,10 @@ public enum FeyType implements CreatureSubtype {
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.FEY.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		return new Species[]{this};
 	}
 
 }

@@ -66,10 +66,14 @@ public enum PlantType implements CreatureSubtype {
 	@Override
 	public Species[] getMinionSpeciesList() {
 		switch(this) {
+		case BODYTAKER:
+		case MYCONID:
+			return new Species[] {this};
 		case DRUID:
-			return new Species[]{null};
+		case AWAKENED:
+		case TREANT:
 		default:
-			return new Species[]{this};
+			return new Species[]{DRUID,AWAKENED,TREANT};
 		}
 	}
 

@@ -1,7 +1,10 @@
 package data.threat.subtype;
 
+import java.util.ArrayList;
+
 import data.Indexible;
 import data.WeightedTable;
+import data.population.NPCSpecies;
 import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
@@ -19,23 +22,22 @@ public enum UndeadType implements CreatureSubtype {
 	DRACOLICH(8,"DRACOLICH"),
 	GHOSTDRAGON(9,"GHOST DRAGON"),
 	GHOST(10,"GHOST"),
-	GHAST(11,"GHAST"),
-	WRAITH(12,"WRAITH");
+	WIGHT(11,"GHAST"),
+	WRAITH(12,"WRAITH"),
+	DEATHLOCK(13,"DEATHLOCK");
 
 	private static WeightedTable<UndeadType> weights;
-	
+
 	private static void populateWeights() {
 		weights = new WeightedTable<UndeadType>();
 		weights.put(LICH, 100);
 		weights.put(VAMPIRE, 100);
 		weights.put(MUMMYLORD, 100);
 		weights.put(DEATHTYRANT, 100);
-		weights.put(GHAST, 100);
+		weights.put(WIGHT, 100);
 		weights.put(WRAITH, 100);
-		weights.put(SKULLLORD, 50);
-		weights.put(DEATHKNIGHT, 50);
+		weights.put(DEATHKNIGHT, 100);
 		weights.put(DRACOLICH, 10);
-		weights.put(GHOST, 10);
 		weights.put(NIGHTWALKER, 1);
 		weights.put(DEMILICH, 1);
 		weights.put(GHOSTDRAGON, 1);
@@ -58,19 +60,19 @@ public enum UndeadType implements CreatureSubtype {
 		}
 		return result;
 	}
-	
+
 	private int id;
 	private String name;
 	private UndeadType(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -80,19 +82,39 @@ public enum UndeadType implements CreatureSubtype {
 	}
 	@Override
 	public Species[] getMinionSpeciesList() {
+		ArrayList<Species> list = new ArrayList<Species>();
+		list.add(null);
 		switch(this) {
-		case DEATHKNIGHT:
-		case DEMILICH:
-		case GHAST:
-		case GHOST:
-		case LICH:
-		case MUMMYLORD:
-		case SKULLLORD:
-		case VAMPIRE:
-		case WRAITH: return new Species[] {null};
-		default:
-			return CreatureSubtype.super.getMinionSpeciesList();
+		case DEATHTYRANT: return AberrationType.BEHOLDER.getMinionSpeciesList();
+		case MUMMYLORD: list.add(MUMMYLORD);break;
+		case GHOSTDRAGON:
+		case DRACOLICH:
+			list.add(this);
+			list.add(NPCSpecies.KOBOLD);
+			list.add(NPCSpecies.DRAGONBORN);
+			list.add(NPCSpecies.LIZARDFOLK);
+			break;
+		case NIGHTWALKER: list.add(NIGHTWALKER);
+		case DEMILICH: list.add(DEMILICH);
+		case LICH: list.add(LICH);
+		case DEATHKNIGHT: list.add(DEATHKNIGHT);
+		case VAMPIRE: {
+			list.add(VAMPIRE);
+			list.add(null);
+			list.add(CreatureType.HUMANOID);
 		}
+		case WRAITH:  
+		case WIGHT: 
+		default:{
+		}
+		list.add(HumanoidType.SPELLCASTER);
+		list.add(HumanoidType.CULTIST);
+		list.add(WRAITH);
+		list.add(WIGHT);
+		list.add(GHOST);
+		list.add(DEATHLOCK);
+		}
+		return list.toArray(new Species[] {});
 	}
 
 }

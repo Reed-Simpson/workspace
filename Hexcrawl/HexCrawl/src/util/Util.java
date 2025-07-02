@@ -249,6 +249,7 @@ public class Util {
 		if(result.contains("${cleric}")) result = Util.replace(result,"${cleric}",MagicModel.getCleric(obj));
 		if(result.contains("${druid}")) result = Util.replace(result,"${druid}",MagicModel.getDruid(obj));
 		if(result.contains("${bard}")) result = Util.replace(result,"${bard}",MagicModel.getBard(obj));
+		if(result.contains("${artificer}")) result = Util.replace(result,"${artificer}",MagicModel.getArtificer(obj));
 		if(result.contains("${weirdness}")) result = Util.replace(result,"${weirdness}",MagicModel.getWeirdness(obj));
 
 		if(result.contains("${biome}")) result = Util.replace(result,"${biome}",LocationModel.getBiome(obj));

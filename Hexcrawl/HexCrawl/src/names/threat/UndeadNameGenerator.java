@@ -43,8 +43,9 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 		case DRACOLICH: return getDracolichName(threat);
 		case GHOSTDRAGON: return getGhostDragonName(threat);
 		case GHOST: return getGenericName(threat);
-		case GHAST: return getGenericName(threat);
+		case WIGHT: return getGenericName(threat);
 		case WRAITH: return getGenericName(threat);
+		case DEATHLOCK: return getGenericName(threat);
 		default: throw new IllegalArgumentException(subtype.name());
 		}
 	}
@@ -91,6 +92,10 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 	public String getFactionNoun(Indexible threat) {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(threat);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		return super.getDomain(threat);
 	}
 
 }

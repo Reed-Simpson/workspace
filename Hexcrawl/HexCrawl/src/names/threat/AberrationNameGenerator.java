@@ -3,6 +3,7 @@ package names.threat;
 import data.Indexible;
 import data.WeightedTable;
 import data.npc.Creature;
+import data.threat.Threat;
 import names.FactionNameGenerator;
 
 public class AberrationNameGenerator extends ThreatNameGenerator{
@@ -58,6 +59,10 @@ public class AberrationNameGenerator extends ThreatNameGenerator{
 	public String getFactionNoun(Indexible obj) {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(obj);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		return super.getDomain(threat);
 	}
 
 }

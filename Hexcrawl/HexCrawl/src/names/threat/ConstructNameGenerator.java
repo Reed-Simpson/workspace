@@ -180,5 +180,9 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(threat);
 	}
+	@Override
+	public String getDomain(Threat threat) {
+		return super.getDomain(threat);
+	}
 
 }

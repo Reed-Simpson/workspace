@@ -1,7 +1,11 @@
 package data.threat.subtype;
 
+import java.util.ArrayList;
+
 import data.Indexible;
 import data.WeightedTable;
+import data.population.NPCSpecies;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -15,11 +19,14 @@ public enum AberrationType implements CreatureSubtype{
 	ELDERBRAINDRAGON(6,"ELDER BRAIN DRAGON"),
 	FEYR(7,"FEYR"),
 	GRIMLOCK(8,"GRIMLOCK"),
-	STARSPAWN(9,"STAR SPAWN");
-	
+	STARSPAWN(9,"STAR SPAWN"),
+	BEHOLDERKIN(10,"Beholderkin"),
+	CHUUL(11,"Chuul"),
+	NOTHIC(12,"Nothic");
+
 
 	private static WeightedTable<AberrationType> weights;
-	
+
 	private static void populateWeights() {
 		weights = new WeightedTable<AberrationType>();
 		weights.put(ABOLETH, 100);
@@ -27,7 +34,6 @@ public enum AberrationType implements CreatureSubtype{
 		weights.put(SLAAD, 100);
 		weights.put(ELDERBRAIN, 100);
 		weights.put(ELDERBRAINDRAGON, 10);
-		weights.put(FEYR, 10);
 		weights.put(GRIMLOCK, 10);
 		weights.put(STARSPAWN, 10);
 	}
@@ -49,25 +55,54 @@ public enum AberrationType implements CreatureSubtype{
 		}
 		return result;
 	}
-	
+
 	private int id;
 	private String name;
 	private AberrationType(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.ABERRATION.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		ArrayList<Species> list = new ArrayList<Species>();
+		switch(this) {
+		case ELDERBRAIN:
+		case ELDERBRAINDRAGON:
+			list.add(MINDFLAYER);
+			list.add(HumanoidType.DUREGAR);
+			break;
+		case GRIMLOCK:
+			list.add(GRIMLOCK);
+			break;
+		case SLAAD:
+			list.add(SLAAD);
+		case STARSPAWN:
+		case ABOLETH:
+		case BEHOLDER:
+		default:
+			list.add(STARSPAWN);
+			list.add(BEHOLDERKIN);
+			list.add(HumanoidType.DUREGAR);
+			list.add(HumanoidType.CULTIST);
+			list.add(HumanoidType.SPELLCASTER);
+			list.add(CHUUL);
+			list.add(NPCSpecies.FISHPEOPLE);
+			list.add(NOTHIC);
+		}
+		return list.toArray(new Species[] {});
 	}
 
 }

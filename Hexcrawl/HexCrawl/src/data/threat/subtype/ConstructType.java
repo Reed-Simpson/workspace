@@ -2,6 +2,7 @@ package data.threat.subtype;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -61,6 +62,18 @@ public enum ConstructType implements CreatureSubtype {
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.CONSTRUCT.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		switch(this) {
+		case INEVITABLE:
+		case MODRON: return new Species[]{MODRON,INEVITABLE};
+		case RELIC:
+		case ARTIFICER:
+		case AWAKENED:
+		default:
+			return new Species[]{null,this,CreatureType.HUMANOID,ARTIFICER,AWAKENED,RELIC};
+		}
 	}
 
 }

@@ -83,6 +83,10 @@ public enum HumanoidType implements CreatureSubtype {
 	@Override
 	public Species[] getMinionSpeciesList() {
 		switch(this) {
+		case SPELLCASTER:
+			return new Species[]{SPELLCASTER,BANDIT,CULTIST,WARLORD};
+		case LYCANTHROPE:
+			return new Species[] {LYCANTHROPE,BANDIT,CreatureType.HUMANOID,null};
 		case DROW:
 		case DUREGAR:
 		case GNOLL:
@@ -91,9 +95,11 @@ public enum HumanoidType implements CreatureSubtype {
 		case LIZARDFOLK:
 		case ORC:
 		case TROGLODYTE:
-			return new Species[]{this};
+		case BANDIT:
+		case CULTIST:
+		case WARLORD:
 		default:
-			return new Species[]{null};
+			return new Species[]{this};
 		}
 	}
 

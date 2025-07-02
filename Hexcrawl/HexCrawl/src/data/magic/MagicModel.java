@@ -57,13 +57,13 @@ public class MagicModel extends DataModel{
 	private static WeightedTable<String> omens;
 	private static final String SPELLCASTERS = "${wizard},${warlock},${sorcerer},${cleric},${druid},${bard}";
 	private static WeightedTable<String> spellcasters;
-	private static final String WIZARDS = "Abjurer,Swordmage,Chronomancer,Conjurer,Diviner,Enchanter,Evoker,Gravimancer,Illusionist,Necromancer,Archivist,Transmuter,Warmage";
+	private static final String WIZARDS = "Abjurer,Swordmage,Chronomancer,Conjurer,Diviner,Enchanter,Evoker,Gravimancer,Illusionist,Necromancer,Scrivener,Transmuter,Warmage";
 	private static WeightedTable<String> wizards;
 	private static final String WARLOCKS = "Fey-touched,Divine messenger,Deep one,Diabolist,Wish-master,Occultist,Hexblade,Immortal servant";
 	private static WeightedTable<String> warlocks;
 	private static final String SORCERERS = "Aberrant sorcerer,Clockwork sorcerer,Draconic sorcerer,Divine sorcerer,Lunar sorcerer,Shadow sorcerer,Storm sorcerer,Wild magic sorcerer";
 	private static WeightedTable<String> sorcerers;
-	private static final String CLERICS = "Cleric of ${domain}";
+	private static final String CLERICS = "Cleric of ${placeholder domain}";
 	private static WeightedTable<String> clerics;
 	private static final String DRUIDS = "Druid of Dreams,Druid of the Land,Druid of the Moon,Druid of the Shepard,Druid of Spores,Druid of the Stars,Druid of Wildfire";
 	private static WeightedTable<String> druids;

@@ -3,6 +3,7 @@ package names.threat;
 import data.Indexible;
 import data.WeightedTable;
 import data.npc.Creature;
+import data.threat.Threat;
 import names.FactionNameGenerator;
 
 public class FeyNameGenerator extends ThreatNameGenerator {
@@ -44,6 +45,10 @@ public class FeyNameGenerator extends ThreatNameGenerator {
 	public String getFactionNoun(Indexible threat) {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(threat);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		return super.getDomain(threat);
 	}
 
 

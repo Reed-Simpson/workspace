@@ -8,6 +8,7 @@ import data.npc.NPC;
 import data.population.NPCSpecies;
 import data.population.Species;
 import data.threat.Threat;
+import data.threat.subtype.BeastType;
 import data.threat.subtype.HumanoidType;
 import util.Util;
 
@@ -119,7 +120,7 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 		case WARLORD: return ", The "+speciesName+" Warlord";
 		case SPELLCASTER: return ", The "+speciesName+" "+MagicModel.getSpellcaster(obj);
 		case BANDIT: return ", The "+speciesName+" Bandit Lord";
-		case LYCANTHROPE: return ", The "+speciesName+" "+getLycanthrope(obj);
+		case LYCANTHROPE: return ", The "+speciesName+" Were-${placeholder domain}";
 		case GOBLINOID: return ", The "+speciesName+" Warlord";
 		case KOBOLD: return ", The Kobold Denmaster";
 		case ORC: return ", The Orc Warlord";
@@ -141,6 +142,14 @@ public class HumanoidNameGenerator extends ThreatNameGenerator{
 	public String getFactionNoun(Indexible threat) {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(threat);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		if(threat.getSubtype().containedIn(new Species[] {HumanoidType.LYCANTHROPE,BeastType.LYCANTHROPE})) {
+			return HumanoidNameGenerator.getLycanthrope(threat);
+		}else {
+			return super.getDomain(threat);
+		}
 	}
 
 }

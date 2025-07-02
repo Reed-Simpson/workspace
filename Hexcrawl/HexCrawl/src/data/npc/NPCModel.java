@@ -8,8 +8,16 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.encounters.EncounterModel;
+import data.magic.MagicModel;
 import data.population.PopulationModel;
+import data.population.Species;
+import data.threat.CreatureType;
 import data.threat.Threat;
+import data.threat.subtype.BeastType;
+import data.threat.subtype.HumanoidType;
+import data.threat.subtype.OozeType;
+import data.threat.subtype.PlantType;
+import data.threat.subtype.UndeadType;
 import data.population.NPCSpecies;
 import io.SaveRecord;
 import names.threat.HumanoidNameGenerator;
@@ -22,15 +30,15 @@ public class NPCModel extends DataModel {
 	private static final int TABLECOUNT = 10;
 	private static final String CIVILIZED = "Acolyte,Actor,Apothacary,Baker,Barber,Blacksmith,Brewer,Bureaucrat,Butcher,Carpenter,Clockmaker,Courier,"+
 			"Courtier,Diplomat,Fishmonger,Guard,Haberdasher,Innkeeper,Item-seller,Jeweler,Knight,Locksmith,Mason,Miller,"+
-			"Musician,Noble,Painter,Priest,Scholar,Scribe,Sculptor,Shipwright,Soldier,Tailor,Taxidermist,Wigmaker";
+			"Musician,Noble,Painter,Priest,Scholar,Scribe,Sculptor,Shipwright,Soldier,Tailor,Taxidermist,Wigmaker,Artificer,Bard,Cleric,Monk,Paladin,${wizard}";
 	private static WeightedTable<String> civilized;
 	private static final String UNDERWORLD = "Alchemist,Animal-breeder,Assassin,Acrobat,Beggar,Burglar,Chimneysweep,Con Man,Cultist,Cutpurse,Deserter,Ditchdigger,"+
 			"Fence,Forger,Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Laborer,Lamplighter,Mercenary,"+
-			"Poet,Poisoner,Privateer,Rat-Catcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,Vagabond,Wizard";
+			"Poet,Poisoner,Privateer,Rat-Catcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,Vagabond,Gutter Mage,Rogue,Sorcerer,Warlock";
 	private static WeightedTable<String> underworld;
 	private static final String WILDERNESS = "Apiarist,Bandit,Caravan Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisher,Forager,Fugative,Hedge Wizard,"+
 			"Hermit,Hunter,Messenger,Minstrel,Monk,Monster Hunter,Outlander,Tinker,Pilgrim,Poacher,Raider,Ranger,"+
-			"Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tinker,Tomb Raider,Trader,Trapper,Witch,Woodcutter";
+			"Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tinker,Tomb Raider,Trader,Trapper,Witch,Woodcutter,Barbarian,Druid,Ranger";
 	private static WeightedTable<String> wilderness;
 	private static final String ASSETS = "Has authority,Avoids detection,Calls in favors,Is charming,Cooks the books,Erases the evidence,Excellent liar,Extremely Rich,Leader of ${faction index},Member of ${faction index},Feared,Has a fortified base,"+
 			"Gorgeous,Hears rumors,Huge family,Huge library,Impersonator,Interrogator,Knows a guy,Knows a way in,Launders money,Learned,Local celebrity,Posesses local knowledge,"+
@@ -299,7 +307,9 @@ public class NPCModel extends DataModel {
 		}
 	}
 	private void setJob(Point p, NPC npc) {
-		npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));
+		if(npc.getJob()==null) {
+			npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));
+		}
 	}
 	private void setAsset(Point p, NPC npc) {
 		npc.setAsset(Util.formatTableResultPOS(getAsset(npc),npc,p,record.getZero()));
@@ -390,10 +400,80 @@ public class NPCModel extends DataModel {
 			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
 		}
 		NPC result = new NPC(floats);
-		result.setSpecies(threat.getMinionSpecies());
+		setMinionSpecies(getMinionSpecies(threat,result),result,threat);
 
 		populateNPCData(p, result);
 		return result;
+	}
+
+
+	private Species getMinionSpecies(Threat threat,Indexible obj) {
+		int index = obj.reduceTempId(3);
+		if(index==0) {
+			return threat.getMinionSpecies();
+		}
+		else if(index == 1) return null;
+		else {
+			Species minionSpecies = (Species) Util.getElementFromArray(threat.getSubtype().getMinionSpeciesList(), obj);
+			if(minionSpecies==null) return threat.getNPC().getSpecies();
+			else return minionSpecies;
+		}
+	}
+	private void setMinionSpecies(Species preliminary,NPC npc,Threat threat) {
+		Species minionSpecies = preliminary;
+		if(CreatureType.HUMANOID.equals(minionSpecies)) minionSpecies = null;
+		else if(HumanoidType.CULTIST.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Cultist");
+		}else if(HumanoidType.WARLORD.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Thug");
+		}else if(HumanoidType.SPELLCASTER.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob(MagicModel.getSpellcaster(npc));
+		}else if(HumanoidType.BANDIT.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Bandit");
+		}else if(HumanoidType.LYCANTHROPE.equals(minionSpecies)||BeastType.LYCANTHROPE.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setSubspecies(HumanoidNameGenerator.getLycanthrope(npc));
+		}else if(UndeadType.LICH.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Lich");
+		}else if(UndeadType.VAMPIRE.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setSubspecies("Vampire");
+		}else if(UndeadType.MUMMYLORD.equals(minionSpecies)) {
+			minionSpecies = threat.getNPC().getSpecies();
+			npc.setJob("Mummy");
+		}else if(UndeadType.SKULLLORD.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Skull Lord");
+		}else if(UndeadType.DEATHKNIGHT.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Death Knight");
+		}else if(UndeadType.DEMILICH.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Demilich");
+		}else if(UndeadType.GHOST.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setSubspecies("Ghost");
+		}else if(UndeadType.WIGHT.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Wight");
+		}else if(UndeadType.WRAITH.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Wraith");
+		}else if(UndeadType.DEATHLOCK.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setJob("Deathlock");
+		}else if(BeastType.DRUID.equals(minionSpecies)||OozeType.DRUID.equals(minionSpecies)||PlantType.DRUID.equals(minionSpecies)) {
+			minionSpecies = null;
+			npc.setDomain(threat.getDomain());
+			npc.setJob("Druid");
+		}
+
+		npc.setSpecies(minionSpecies);
 	}
 
 }

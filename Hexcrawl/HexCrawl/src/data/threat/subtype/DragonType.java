@@ -2,6 +2,8 @@ package data.threat.subtype;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.population.NPCSpecies;
+import data.population.Species;
 import data.threat.CreatureSubtype;
 import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
@@ -95,6 +97,32 @@ public enum DragonType implements CreatureSubtype {
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.DRAGON.getNameGen();
+	}
+	@Override
+	public Species[] getMinionSpeciesList() {
+		switch(this) {
+		case SHADOW:
+		case DRACOLICH:return UndeadType.DRACOLICH.getMinionSpeciesList();
+		case AMETHYST:
+		case BLACK:
+		case BLUE:
+		case BRASS:
+		case BRONZE:
+		case COPPER:
+		case CRYSTAL:
+		case DEEP:
+		case EMERALD:
+		case GOLD:
+		case GREEN:
+		case MOONSTONE:
+		case RED:
+		case SAPPHIRE:
+		case SILVER:
+		case TOPAZ:
+		case WHITE:
+		default:
+			return new Species[]{this,CreatureType.HUMANOID,NPCSpecies.KOBOLD,NPCSpecies.DRAGONBORN,NPCSpecies.LIZARDFOLK};
+		}
 	}
 
 }

@@ -105,7 +105,11 @@ public class BeastNameGenerator extends ThreatNameGenerator{
 	@Override
 	public String getDomain(Threat threat) {
 		if(faction_domains==null) populateAllTables();
-		return faction_domains.getByWeight(threat);
+		if(threat.getSubtype().containedIn(new Species[] {HumanoidType.LYCANTHROPE,BeastType.LYCANTHROPE})) {
+			return HumanoidNameGenerator.getLycanthrope(threat);
+		}else {
+			return faction_domains.getByWeight(threat);
+		}
 	}
 
 }

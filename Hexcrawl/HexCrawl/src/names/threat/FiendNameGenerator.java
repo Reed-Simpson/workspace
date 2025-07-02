@@ -4,6 +4,7 @@ import data.Indexible;
 import data.WeightedTable;
 import data.npc.Creature;
 import data.threat.CreatureSubtype;
+import data.threat.Threat;
 import data.threat.subtype.FiendType;
 import names.FactionNameGenerator;
 import util.Util;
@@ -74,6 +75,10 @@ public class FiendNameGenerator extends ThreatNameGenerator{
 	public String getFactionNoun(Indexible threat) {
 		if(faction_nouns==null) populateAllTables();
 		return faction_nouns.getByWeight(threat);
+	}
+	@Override
+	public String getDomain(Threat threat) {
+		return super.getDomain(threat);
 	}
 
 }

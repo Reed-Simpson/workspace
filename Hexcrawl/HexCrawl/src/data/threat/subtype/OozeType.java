@@ -1,5 +1,7 @@
 package data.threat.subtype;
 
+import java.util.ArrayList;
+
 import data.Indexible;
 import data.WeightedTable;
 import data.population.Species;
@@ -15,30 +17,22 @@ public enum OozeType implements CreatureSubtype {
 	DISEASE(4,"PLAGUE"),
 	OCHREJELLY(5,"OCHRE JELLY"),
 	BLACKPUDDING(6,"BLACK PUDDING"),
-	GREYOOZE(7,"GREY OOZE"),
+	PSYCHICGREYOOZE(7,"PSYCHIC GREY OOZE"),
 	GELATINOUSCUBE(8,"GELATINOUS CUBE"),
-	DRUID(9,"DRUID");
+	DRUID(9,"DRUID"),
+	AWAKENED(10,"AWAKENED");
 	
 
 	private static WeightedTable<OozeType> weights;
 	
 	private static void populateWeights() {
 		weights = new WeightedTable<OozeType>();
-		weights.put(DISEASE, 200);
 		weights.put(OBLEX, 100);
 		weights.put(OOZEMASTER, 100);
-		weights.put(DRAGONBLOODOOZE, 100);
 		weights.put(DRUID, 100);
-		weights.put(OCHREJELLY, 10);
-		weights.put(BLACKPUDDING, 10);
-		weights.put(GREYOOZE, 10);
-		weights.put(GELATINOUSCUBE, 10);
+		weights.put(PSYCHICGREYOOZE, 10);
+		weights.put(AWAKENED, 10);
 		weights.put(BLOBOFANNIHILATION, 1);
-	}
-	@Deprecated
-	public static OozeType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
 	}
 	public static OozeType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
@@ -75,13 +69,22 @@ public enum OozeType implements CreatureSubtype {
 	}
 	@Override
 	public Species[] getMinionSpeciesList() {
+		ArrayList<Species> list = new ArrayList<Species>();
 		switch(this) {
-		case DRUID:
+		case BLOBOFANNIHILATION:
+		case OOZEMASTER:
 		case OBLEX:
-			return new Species[]{null};
+			list.add(OBLEX);
+		case DRUID:
+		case AWAKENED:
+		case PSYCHICGREYOOZE:
 		default:
-			return new Species[]{this};
+			list.add(CreatureType.HUMANOID);
+			list.add(AWAKENED);
+			list.add(DRUID);
+			list.add(PSYCHICGREYOOZE);
 		}
+		return list.toArray(new Species[] {});
 	}
 
 }

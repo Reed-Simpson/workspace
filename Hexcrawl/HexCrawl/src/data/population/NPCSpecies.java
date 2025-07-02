@@ -44,13 +44,15 @@ public enum NPCSpecies implements Species{
 	OTHER(		10,0.0f,60f/360f,HUMAN.getCityNameGen(),			HUMAN.getNameGen(),			1.0f),
 	GOBLIN(		11,1.0f,240f/360f,GOBLINOID.getCityNameGen(),		GOBLINOID.getNameGen(),		0.0f),
 	HOBGOBLIN(	11,1.0f,240f/360f,GOBLINOID.getCityNameGen(),		GOBLINOID.getNameGen(),		0.0f),
-	BUGBEAR(	11,1.0f,240f/360f,GOBLINOID.getCityNameGen(),		GOBLINOID.getNameGen(),		0.0f);
+	BUGBEAR(	11,1.0f,240f/360f,GOBLINOID.getCityNameGen(),		GOBLINOID.getNameGen(),		0.0f),
+	FISHPEOPLE(	11,1.0f,240f/360f,ELF.getCityNameGen(),				ELF.getNameGen(),			0.0f),
+	AARAKOCRA(	11,1.0f,240f/360f,GENASI.getCityNameGen(),			GENASI.getNameGen(),		0.0f);
 
 	public static final String[] GOBLINOIDS = {"Goblin","Hobgoblin","Bugbear"};
 	public static final Species[] DRAGON_MINIONS = {DRAGONBORN,KOBOLD,HumanoidType.SPELLCASTER};
 	public static final Species[] ELEMENTAL_MINIONS = {GENASI,HumanoidType.SPELLCASTER};
 	public static final Species[] HUMANOID_MINIONS = {};
-	public static final Species[] UNDEAD_MINIONS = {UndeadType.GHAST,UndeadType.WRAITH,UndeadType.VAMPIRE,HumanoidType.SPELLCASTER};
+	public static final Species[] UNDEAD_MINIONS = {UndeadType.WIGHT,UndeadType.WRAITH,UndeadType.VAMPIRE,HumanoidType.SPELLCASTER};
 	public static final Species[] ABERRATION_MINIONS = {HumanoidType.SPELLCASTER};
 	public static final Species[] FIEND_MINIONS = {TIEFLING,HumanoidType.SPELLCASTER};
 	public static final Species[] CELESTIAL_MINIONS = {AASIMAR,HumanoidType.SPELLCASTER};

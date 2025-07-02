@@ -64,9 +64,9 @@ public enum BeastType implements CreatureSubtype{
 		switch(this) {
 		case DRUID:
 		case LYCANTHROPE:
-			return new Species[]{null};
+		case AWAKENED:
 		default:
-			return new Species[]{this};
+			return new Species[]{DRUID,LYCANTHROPE,AWAKENED};
 		}
 	}
 

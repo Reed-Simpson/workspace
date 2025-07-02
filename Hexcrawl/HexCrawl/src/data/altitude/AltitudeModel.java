@@ -19,10 +19,12 @@ public class AltitudeModel extends DataModel{
 	private static double WEIGHT_2 = 6;
 	private static double WEIGHT_3 = 1;
 	private static double WEIGHT_4 = 0.1;
+	private static double WEIGHT_5 = 2;
 	private static float WEIGHT_VARIABILITY_1 = 0.90f;
 	private static float WEIGHT_VARIABILITY_2 = 0.90f;
 	private static float WEIGHT_VARIABILITY_3 = 0.90f;
 	private static float WEIGHT_VARIABILITY_4 = 0.90f;
+	private static float WEIGHT_VARIABILITY_5 = 0.90f;
 	private static int ALTITUDE_SCALE = 15000; // max altitude in feet
 	private DataController controller;
 
@@ -56,8 +58,18 @@ public class AltitudeModel extends DataModel{
 		float weight4 = (float) (WEIGHT_4+WEIGHT_4*weightVariability4);
 		float microHeight = weight4*OpenSimplex2S.noise2(record.getSeed(12), Util.getMScale()*x, Util.getMScale()*y);
 
+		float weightVariability5 = OpenSimplex2S.noise2(record.getSeed(13), Util.getMScale()*x, Util.getMScale()*y)*WEIGHT_VARIABILITY_5;
+		float weight5 = (float) (WEIGHT_5+WEIGHT_5*weightVariability5);
+		float islands = weight5*getIslandsFactor(x, y);
+
 		float weightSum = weight0+weight1+weight2+weight3+weight4;
-		return (megaHeight+macroHeight+midiHeight+localHeight+microHeight)/weightSum;
+		return (megaHeight+macroHeight+midiHeight+localHeight+microHeight+islands)/weightSum;
+	}
+
+	private float getIslandsFactor(int x, int y) {
+		float result = Util.adjustSimplex(OpenSimplex2S.noise2(record.getSeed(14), Util.getMScale()*x, Util.getMScale()*y),0,1);
+		result = (float) Math.pow(result, 5);
+		return result;
 	}
 	public float getHeight(Point p) {
 		return getHeight(p.x,p.y);

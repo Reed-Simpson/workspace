@@ -85,7 +85,7 @@ public class EconomicModel extends DataModel{
 	}
 
 	public float getAdjustedLocalFactor(Point p) {
-		return (getLocalFactor(p)+1)/2;
+		return Util.adjustSimplex(getLocalFactor(p),0,1);
 	}
 	public float getSteppedLocalFactor(Point p) {
 		int steps = 10;

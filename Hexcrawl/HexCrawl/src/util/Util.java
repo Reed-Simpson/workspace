@@ -354,4 +354,7 @@ public class Util {
 		float value = (f-1f/2)/4;
 		return (float) Math.pow(value, 1.0/3.0)+1/2;
 	}
+	public static float adjustSimplex(float f,float min,float max) {
+		return (f+1)/2*(max-min)+min;
+	}
 }

@@ -350,6 +350,7 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo.get()) {
 			dialog.createProgressUI("Drawing hexes: ");
 		}
+		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
@@ -371,6 +372,7 @@ public class MapPanel  extends JPanel{
 						g2.drawString("\u23F3", getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
 						g2.setComposite(AlphaComposite.SrcOver);
 					}
+					drawSymbol(g2, height, p,false);
 				}
 			}
 			counter.increment();
@@ -446,43 +448,49 @@ public class MapPanel  extends JPanel{
 		for(int i=p1.x;i<p2.x;i+=step) {
 			for(int j=p2.y;j<p1.y;j+=step) {
 				Point p = new Point(i,j);
-				Pair<Color, Color> base = colorCache.get(p);
-				List<Icon> icons = iconCache.get(p);
-				if(icons!=null && ((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh())))) {
-					if(HexData.ALTITUDE.equals(displayData)) {
-						g2.setColor(Color.black);
-						float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p));
-						int dheight = (int)(height_x-height);
-						g2.setFont(g2.getFont().deriveFont((float) (displayScale/2)));
-						if(dheight<0) g2.setColor(Color.red);
-						g2.drawString(String.valueOf(dheight), (int) (getScreenPos(i,j).x-scale/2) ,getScreenPos(i,j).y );
-					}else {
-						for(Icon icon:icons) {
-							Character ch = icon.getCh();
-							if(base!=null) {
-								g2.setComposite(AlphaComposite.SrcOver);
-								Point offset = icon.offset;
-								double cScale = icon.getScale();
-								g2.setColor(base.key1);
-								g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
-								if(ch!=null) g2.drawString(ch.toString(), getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
-							}
-							g2.setComposite(AlphaComposite.SrcOver.derive(icon.getOpacity()));
-							Point offset = icon.offset;
-							Color c = icon.getC();
-							double cScale = icon.getScale();
-							g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
-							if(c==null) c=borderColor;
-							g2.setColor(c);
-							if(ch!=null) g2.drawString(ch.toString(), getScreenPos(i,j).x+(int)((offset.x*scale)/100), getScreenPos(i,j).y+(int)((offset.y*scale)/100));
-						}
-					}
-				}
+				drawSymbol(g2, height, p,true);
 			}
 			counter.increment();
 		}
 		g2.setComposite(AlphaComposite.SrcOver);
 		logger.logln("Symbols drawn "+(System.currentTimeMillis()-time)+" ms");
+	}
+
+	private void drawSymbol(Graphics2D g2, float height, Point p,boolean top) {
+		Pair<Color, Color> base = colorCache.get(p);
+		List<Icon> icons = iconCache.get(p);
+		if(icons!=null && ((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh())))) {
+			if(HexData.ALTITUDE.equals(displayData)) {
+				g2.setColor(Color.black);
+				float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p));
+				int dheight = (int)(height_x-height);
+				g2.setFont(g2.getFont().deriveFont((float) (scale/2)));
+				if(dheight<0) g2.setColor(Color.red);
+				g2.drawString(String.valueOf(dheight), (int) (getScreenPos(p).x-scale/2) ,getScreenPos(p).y );
+			}else {
+				for(Icon icon:icons) {
+					Character ch = icon.getCh();
+					if(ch!=null && icon.top == top) {
+						if(base!=null) {
+							Point offset = icon.offset;
+							double cScale = icon.getScale();
+							g2.setColor(base.key1);
+							g2.setFont(g2.getFont().deriveFont((float) (scale*cScale)));
+							g2.drawString(ch.toString(), getScreenPos(p).x+(int)((offset.x*scale)/100), getScreenPos(p).y+(int)((offset.y*scale)/100));
+						}
+						g2.setComposite(AlphaComposite.SrcOver.derive(icon.getOpacity()));
+						Point offset = icon.offset;
+						Color c = icon.getC();
+						double cScale = icon.getScale();
+						g2.setFont(g2.getFont().deriveFont((float) (scale*cScale)));
+						if(c==null) c=LINE_COLOR;
+						g2.setColor(c);
+						g2.drawString(ch.toString(), getScreenPos(p).x+(int)((offset.x*scale)/100), getScreenPos(p).y+(int)((offset.y*scale)/100));
+						g2.setComposite(AlphaComposite.SrcOver);
+					}
+				}
+			}
+		}
 	}
 
 	private void drawDistanceMarker(Graphics2D g2, int step, int displayScale, Color c) {

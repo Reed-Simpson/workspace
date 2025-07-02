@@ -29,12 +29,24 @@ import java.util.Set;
  * the graph is undefined if K is mutable and is modified after being added to the graph.  
  */
 public class AStarGraph implements Set<Point> {
+	public static final int EUCLIDEAN_DISTANCE = 0;
+	public static final int HEX_DISTANCE = 1;
+	public static final int TAXICAB_DISTANCE = 2;
+	public static final int CHESSBOARD_DISTANCE = 3;
+
 	protected HashMap<Point,Vertex> vertices = new LinkedHashMap<Point,Vertex>();
 	protected int numberEdges=0;
 	protected double distanceFactor;
+	private EdgeWeightComparator comparator;
+	private int distanceMetric;
 
 	public AStarGraph(double distance) {
 		this.distanceFactor=distance;
+		this.distanceMetric = EUCLIDEAN_DISTANCE;
+	}
+
+	public AStarGraph() {
+		new AStarGraph(1.0);
 	}
 
 	/**
@@ -51,15 +63,6 @@ public class AStarGraph implements Set<Point> {
 			vertices.put(key, new Vertex(key));
 			return true;
 		}
-	}
-	/**
-	 * Adds a new vertex to the graph.  Deprecated, use add(key) instead.  
-	 * @param key - The key to be added to the graph.
-	 * @return true if the key was successfully added to the graph, false otherwise. 
-	 */
-	@Deprecated
-	public boolean addVertex(Point key){
-		return this.add(key);
 	}
 
 	/**
@@ -114,9 +117,15 @@ public class AStarGraph implements Set<Point> {
 	 * @param v2 - The vertex that the edge connects to.  
 	 * @return The weight of the edge, or -1 if the edge does not exist.  
 	 */
-	private int getEdgeWeight(Vertex v1,Vertex key2){
+	private int getEdgeWeight(Vertex v1,Vertex v2){
 		if(v1==null) return -1;
-		else return v1.getEdgeWeight(key2);
+		else {
+			int result = v1.getEdgeWeight(v2);
+			if(result==-1&&this.comparator!=null) {
+				result = this.comparator.compare(v1.key, v2.key);
+			}
+			return result;
+		}
 	}
 
 	/**
@@ -213,7 +222,7 @@ public class AStarGraph implements Set<Point> {
 		}
 		return distance;
 	}
-	
+
 
 	public HashMap<Point, Integer> dijkstras(Point start){
 		return dijkstras(null, start);
@@ -371,10 +380,36 @@ public class AStarGraph implements Set<Point> {
 		return this.vertices.keySet().toArray(a);
 	}
 	
+	public void setDistanceMetric(int metric) {
+		this.distanceMetric = metric;
+	}
+
 	public double dist(Point p1,Point p2) {
-		int dx = p2.x-p1.x;
-		int dy = p2.y-p1.y;
-		return Math.sqrt(dx*dx+dy*dy);
+		if(distanceMetric== TAXICAB_DISTANCE) {
+			int dx = p2.x-p1.x;
+			int dy = p2.y-p1.y;
+			return Math.abs(dx+dy)*this.distanceFactor;
+		}else if(distanceMetric== HEX_DISTANCE) {
+			int dx = p2.x-p1.x;
+			int dy = p2.y-p1.y;
+			double distance;
+			if(dx*dy>=0) {
+				distance = Math.abs(dx+dy);
+			}else {
+				dx=Math.abs(dx);
+				dy=Math.abs(dy);
+				distance = Math.max(dx, dy);
+			}
+			return distance*this.distanceFactor;
+		}else if(distanceMetric== CHESSBOARD_DISTANCE) {
+			int dx = Math.abs(p2.x-p1.x);
+			int dy = Math.abs(p2.y-p1.y);
+			return Math.max(dx, dy)*this.distanceFactor;
+		} else {
+			int dx = p2.x-p1.x;
+			int dy = p2.y-p1.y;
+			return Math.sqrt(dx*dx+dy*dy)*this.distanceFactor;
+		}
 	}
 	public int shortestPath(Point start, Point finish,LinkedList<Point> list){
 		HashMap<Point,Point> previous = new HashMap<Point,Point>();
@@ -395,7 +430,7 @@ public class AStarGraph implements Set<Point> {
 		}
 		return result;
 	}
-	
+
 
 	public Integer aStar(HashMap<Point,Point> previous,Point start, Point finish){
 		//this hashmap is used to reconstruct a correct path post algorithm
@@ -439,7 +474,32 @@ public class AStarGraph implements Set<Point> {
 		return distance.get(finish);
 	}
 
-	private static class Vertex{
+	public Set<Point> getAdjacencyList(Point key){
+		HashSet<Point> result = new HashSet<Point>();
+		Vertex vertex = vertices.get(key);
+		if(vertex!=null&&vertex.getAdjacentVertices()!=null&&vertex.getAdjacentVertices().keySet()!=null) {
+			for(Vertex v:vertex.getAdjacentVertices().keySet()) {
+				result.add(v.key);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * an interface for setting a way to get the edge weight between verticies without manually adding each edge
+	 * If an edgeWeightComparator is set, manually added edges will be checked first, then the EdgeWeightComparator will be checked
+	 * only if an edge is not found
+	 */
+	public static interface EdgeWeightComparator{
+		public int compare(Point p1,Point p2);
+		public Iterable<Point> getAdjacentVertices(Point p);
+	}
+
+	public void addEdgeWeightcomparator(EdgeWeightComparator comparator) {
+		this.comparator = comparator;
+	}
+
+	private class Vertex{
 		public final Point key;
 		private Integer hashCode;
 		private HashMap<Vertex,Integer> adjacent;
@@ -451,6 +511,15 @@ public class AStarGraph implements Set<Point> {
 		}
 
 		public HashMap<Vertex, Integer> getAdjacentVertices(){
+			if(comparator!=null) {
+				for(Point e:comparator.getAdjacentVertices(key)) {
+					Vertex v = vertices.get(e);
+					int weight = comparator.compare(key, e);
+					if(!adjacent.containsKey(v) && weight>=0) {
+						adjacent.put(v, weight);
+					}
+				}
+			}
 			return adjacent;
 		}
 
@@ -472,14 +541,14 @@ public class AStarGraph implements Set<Point> {
 		public boolean removeEdge(Object key){
 			return this.adjacent.remove(key)!=null;
 		}
-		
+
 		public int hashCode(){
 			if(this.hashCode==null){
 				this.hashCode=key.hashCode();
 			}
 			return this.hashCode;
 		}
-		
+
 		public boolean equals(Object o){
 			if(o instanceof AStarGraph.Vertex){
 				Vertex v = (Vertex) o;
@@ -489,17 +558,6 @@ public class AStarGraph implements Set<Point> {
 			}
 		}
 
-	}
-	
-	public Set<Point> getAdjacencyList(Point key){
-		HashSet<Point> result = new HashSet<Point>();
-		Vertex vertex = vertices.get(key);
-		if(vertex!=null&&vertex.getAdjacentVertices()!=null&&vertex.getAdjacentVertices().keySet()!=null) {
-			for(Vertex v:vertex.getAdjacentVertices().keySet()) {
-				result.add(v.key);
-			}
-		}
-		return result;
 	}
 
 

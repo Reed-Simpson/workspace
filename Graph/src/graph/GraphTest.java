@@ -4,10 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.junit.Test;
+
+import graph.AStarGraph.EdgeWeightComparator;
 
 public class GraphTest {
 
@@ -87,5 +92,34 @@ public class GraphTest {
 		g.addEdge("C", "F");
 		g.addEdge("A", "C");
 		return true;
+	}
+	@Test
+	public void testEdgeComparator(){
+		AStarGraph graph = new AStarGraph();
+		graph.add(new Point(0,0));
+		graph.add(new Point(1,0));
+		graph.add(new Point(0,1));
+		graph.add(new Point(1,1));
+		graph.addEdgeWeightcomparator(new EdgeWeightComparator() {
+			@Override
+			public int compare(Point p1, Point p2) {
+				return 5;
+			}
+			@Override
+			public Iterable<Point> getAdjacentVertices(Point p) {
+				HashSet<Point> a = new HashSet<Point>();
+				a.add(new Point(0,0));
+				a.add(new Point(1,0));
+				a.add(new Point(0,1));
+				a.add(new Point(1,1));
+				return a;
+			}
+		});
+		
+		LinkedList<Point> result = graph.shortestPath(new Point(0,0), new Point(1,1));
+		System.out.println(result.toString());
+		assertEquals("[java.awt.Point[x=0,y=0], java.awt.Point[x=1,y=1]]",result.toString());
+		assertEquals(5,graph.pathWeight(result));
+		assertEquals(5,graph.shortestDistance(new Point(0,0), new Point(1,1)));
 	}
 }

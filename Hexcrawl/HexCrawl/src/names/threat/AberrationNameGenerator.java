@@ -24,17 +24,6 @@ public class AberrationNameGenerator extends ThreatNameGenerator{
 		populate(faction_nouns,FACTION_NOUNS,",");
 	}
 	
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		if(val.length<5) throw new IllegalArgumentException("Expected 5 or more values");
-		//AberrationType subtype = AberrationType.getFromID(val[0]);
-		String part1 = getElementFromArray(PART1, val[2]);
-		String part2 = getElementFromArray(PART2, val[3]);
-		String verb = getElementFromArray(VERB, val[4]);
-		String noun = getElementFromArray(NOUN, val[5]);
-		return part1+part2+", The "+verb+" "+noun;
-	}
 
 	@Override
 	public String getName(Creature obj) {

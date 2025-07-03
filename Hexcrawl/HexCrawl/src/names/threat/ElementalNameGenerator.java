@@ -49,15 +49,6 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 		faction_nouns = new WeightedTable<String>();
 		populate(faction_nouns,FACTION_NOUNS,",");
 	}
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		if(val.length<3) throw new IllegalArgumentException("Expected 3 or more values");
-		ElementalType type = ElementalType.getFromID(val[0]);
-		String part1 = getElementFromArray(getPrefixArray(type), val[2]);
-		String part2 = getElementFromArray(SUFFIX, val[3]);
-		return part1+part2;
-	}
 
 
 	

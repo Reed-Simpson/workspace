@@ -67,10 +67,6 @@ public class InnNameGenerator extends IndexibleNameGenerator{
 		}
 		return Util.formatTableResult(quirks.getByWeight(obj),obj);
 	}
-	@Override
-	public String getName(int... val) {
-		return getName(new Indexible(val));
-	}
 	
 
 }

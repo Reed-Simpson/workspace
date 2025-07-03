@@ -15,12 +15,6 @@ public class GenasiNameGenerator extends IndexibleNameGenerator{
 			"Thermo","Glare","Fuego","Course","Splash","Stream","Pebble","Sediment","Geo","Celeste","Cruise"};
 	
 
-	@Override
-	public String getName(int... val) {
-		if(val.length<1) throw new IllegalArgumentException("Expected 1 or more values");
-		return getElementFromArray(FIRST,val[0]);
-	}
-
 
 	@Override
 	public String getName(Indexible obj) {

@@ -94,22 +94,16 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		return mission;
 	}
 
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getName(Creature threat) {
 		ConstructType type = (ConstructType) threat.getSpecies();
 		switch(type) {
-		case ARTIFICER: return getArtificerName(threat);
-		case AWAKENED: return getGolemName(threat);
+		case ARTIFICER_GENERAL: return getArtificerName(threat);
+		case AWAKENED_CONSTRUCT: return getGolemName(threat);
 		case INEVITABLE: return getInevitableName(threat);
 		case MODRON: return getModronName(threat);
-		case RELIC: return getGolemName(threat);
+		case ANCIENT_RELIC: return getGolemName(threat);
 		default: throw new IllegalArgumentException("Unrecognized ConstructType: "+type);
 		}
 	}

@@ -42,13 +42,6 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 		}
 		return diseaseadjs.getByWeight(obj);
 	}
-
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	
 	@Override
@@ -61,16 +54,16 @@ public class OozeNameGenerator extends ThreatNameGenerator {
 		}
 		OozeType type = (OozeType) threat.getSpecies();
 		switch (type) {
-		case BLACKPUDDING:return "none";
-		case BLOBOFANNIHILATION:return "none";
+		case BLACK_PUDDING:return "none";
+		case BLOB_OF_ANNIHILATION:return "none";
 		case DISEASE:return getDisease(threat);
-		case DRAGONBLOODOOZE:return "none";
+		case DRAGON_BLOOD_OOZE:return "none";
 		case DRUID:return getDruidName(threat);
-		case GELATINOUSCUBE:return "none";
-		case PSYCHICGREYOOZE:return "none";
+		case GELATINOUS_CUBE:return "none";
+		case PSYCHIC_GREY_OOZE:return "none";
 		case OBLEX:return npc.getName();
-		case OCHREJELLY:return "none";
-		case OOZEMASTER:return getDisease(threat);
+		case OCHRE_JELLY:return "none";
+		case OOZE_MASTER:return getDisease(threat);
 		default: throw new IllegalArgumentException("Unrecognized subtype: "+type);
 		}
 	}

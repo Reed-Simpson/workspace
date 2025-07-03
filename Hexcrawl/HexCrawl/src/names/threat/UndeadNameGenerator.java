@@ -34,14 +34,14 @@ public class UndeadNameGenerator extends ThreatNameGenerator{
 		switch(subtype) {
 		case LICH: return getGenericName(threat);
 		case VAMPIRE: return getGenericName(threat);
-		case MUMMYLORD: return getGenericName(threat);
+		case MUMMY_LORD: return getGenericName(threat);
 		case NIGHTWALKER: return getNightwalkerName(threat);
-		case SKULLLORD: return getGenericName(threat);
-		case DEATHKNIGHT: return getGenericName(threat);
-		case DEATHTYRANT: return getDeathtyrantName(threat);
+		case SKULL_LORD: return getGenericName(threat);
+		case DEATH_KNIGHT: return getGenericName(threat);
+		case DEATH_TYRANT: return getDeathtyrantName(threat);
 		case DEMILICH: return getGenericName(threat);
 		case DRACOLICH: return getDracolichName(threat);
-		case GHOSTDRAGON: return getGhostDragonName(threat);
+		case GHOST_DRAGON: return getGhostDragonName(threat);
 		case GHOST: return getGenericName(threat);
 		case WIGHT: return getGenericName(threat);
 		case WRAITH: return getGenericName(threat);

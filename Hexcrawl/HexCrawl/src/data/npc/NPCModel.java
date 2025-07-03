@@ -443,13 +443,13 @@ public class NPCModel extends DataModel {
 		}else if(UndeadType.VAMPIRE.equals(minionSpecies)) {
 			minionSpecies = null;
 			npc.setSubspecies("Vampire");
-		}else if(UndeadType.MUMMYLORD.equals(minionSpecies)) {
+		}else if(UndeadType.MUMMY_LORD.equals(minionSpecies)) {
 			minionSpecies = threat.getNPC().getSpecies();
 			npc.setJob("Mummy");
-		}else if(UndeadType.SKULLLORD.equals(minionSpecies)) {
+		}else if(UndeadType.SKULL_LORD.equals(minionSpecies)) {
 			minionSpecies = null;
 			npc.setJob("Skull Lord");
-		}else if(UndeadType.DEATHKNIGHT.equals(minionSpecies)) {
+		}else if(UndeadType.DEATH_KNIGHT.equals(minionSpecies)) {
 			minionSpecies = null;
 			npc.setJob("Death Knight");
 		}else if(UndeadType.DEMILICH.equals(minionSpecies)) {

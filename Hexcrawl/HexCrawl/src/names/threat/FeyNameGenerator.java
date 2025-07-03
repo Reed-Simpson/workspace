@@ -19,12 +19,6 @@ public class FeyNameGenerator extends ThreatNameGenerator {
 		faction_nouns = new WeightedTable<String>();
 		populate(faction_nouns,FACTION_NOUNS,",");
 	}
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getName(Creature threat) {

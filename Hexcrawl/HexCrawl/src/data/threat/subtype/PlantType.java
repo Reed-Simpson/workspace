@@ -8,11 +8,11 @@ import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
 
 public enum PlantType implements CreatureSubtype {
-	AWAKENED(0,"AWAKENED"),
-	TREANT(1,"TREANT"),
-	DRUID(2,"DRUID"),
-	MYCONID(3,"MYCONID"),
-	BODYTAKER(4,"BODYTAKER");
+	AWAKENED(),
+	TREANT(),
+	DRUID(),
+	MYCONID(),
+	BODYTAKER();
 	
 
 	private static WeightedTable<PlantType> weights;
@@ -25,39 +25,9 @@ public enum PlantType implements CreatureSubtype {
 		weights.put(MYCONID, 100);
 		weights.put(BODYTAKER, 100);
 	}
-	@Deprecated
-	public static PlantType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
-	}
 	public static PlantType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(obj);
-	}
-	public static PlantType getFromID(int id) {
-		id = id%PlantType.values().length;
-		if(id<0) id+=PlantType.values().length;
-		PlantType result = null;
-		for(PlantType type:PlantType.values()) {
-			if(type.getId()==id) result=type;
-		}
-		return result;
-	}
-	
-	private int id;
-	private String name;
-	private PlantType(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-	
-	@Override
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
 	}
 	@Override
 	public ThreatNameGenerator getNameGen() {

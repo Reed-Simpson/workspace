@@ -69,36 +69,7 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 		faction_nouns = new WeightedTable<String>();
 		populate(faction_nouns,FACTION_NOUNS,",");
 	}
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		if(val.length<5) throw new IllegalArgumentException("Expected 5 or more values");
-		DragonType type = DragonType.getFromID(val[0]);
-		String part1 = getElementFromArray(PART1, val[2]);
-		String part2 = getElementFromArray(PART2, val[3]);
-		String part3 = getElementFromArray(PART3, val[4]);
-		String title = getTitle(type, val[5]);
-		return part1+part2+part3+", "+title;
-	}
 
-	@Deprecated
-	private String getTitle(DragonType type,int index) {
-		ArrayList<String> array = new ArrayList<String>();
-		for(String s:getTitleArray(type)) {
-			if(s.contains("${noun}")) {
-				for(String s1:NOUNS) {
-					array.add(Util.replace(s, "${noun}", s1));
-				}
-			}else if(s.contains("${adjective}")) {
-				for(String s1:ADJECTIVES) {
-					array.add(Util.replace(s, "${adjective}", s1));
-				}
-			}else {
-				array.add(s);
-			}
-		}
-		return getElementFromArray(array.toArray(new String[0]),index);
-	}
 
 	private static String[] getTitleArray(DragonType type) {
 		switch (type) {

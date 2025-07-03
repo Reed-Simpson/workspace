@@ -33,14 +33,6 @@ public class GiantNameGenerator extends ThreatNameGenerator {
 		if(nameparts==null) populateAll();
 		return nameparts.getByWeight(obj);
 	}	
-
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public String getName(Creature threat) {
 		GiantType type = (GiantType) threat.getSpecies();

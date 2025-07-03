@@ -9,25 +9,25 @@ import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
 
 public enum DragonType implements CreatureSubtype {
-	BLACK(0,"BLACK"),
-	BLUE(1,"BLUE"),
-	GREEN(2,"GREEN"),
-	RED(3,"RED"),
-	WHITE(4,"WHITE"),
-	BRASS(5,"BRASS"),
-	BRONZE(6,"BRONZE"),
-	COPPER(7,"COPPER"),
-	GOLD(8,"GOLD"),
-	SILVER(9,"SILVER"),
-	AMETHYST(10,"AMETHYST"),
-	CRYSTAL(11,"CRYSTAL"),
-	EMERALD(12,"EMERALD"),
-	SAPPHIRE(13,"SAPPHIRE"),
-	TOPAZ(14,"TOPAZ"),
-	DEEP(15,"DEEP"),
-	MOONSTONE(16,"MOONSTONE"),
-	SHADOW(17,"SHADOW"),
-	DRACOLICH(18,"DRACOLICH");
+	BLACK(),
+	BLUE(),
+	GREEN(),
+	RED(),
+	WHITE(),
+	BRASS(),
+	BRONZE(),
+	COPPER(),
+	GOLD(),
+	SILVER(),
+	AMETHYST(),
+	CRYSTAL(),
+	EMERALD(),
+	SAPPHIRE(),
+	TOPAZ(),
+	DEEP(),
+	MOONSTONE(),
+	SHADOW(),
+	DRACOLICH();
 	
 
 	private static WeightedTable<DragonType> weights;
@@ -55,40 +55,12 @@ public enum DragonType implements CreatureSubtype {
 		weights.put(DRACOLICH, 1);
 	}
 
-	@Deprecated
-	public static DragonType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
-	}
 	public static DragonType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(obj);
 	}
-	public static DragonType getFromID(int id) {
-		id = id%DragonType.values().length;
-		if(id<0) id+=DragonType.values().length;
-		DragonType result = null;
-		for(DragonType type:DragonType.values()) {
-			if(type.getId()==id) result=type;
-		}
-		return result;
-	}
 	
-	private int id;
-	private String name;
-	private DragonType(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
 	
-	@Override
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
 	@Override
 	public String getSpeciesName() {
 		if(DRACOLICH.equals(this)) return getName();

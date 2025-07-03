@@ -11,20 +11,20 @@ import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
 
 public enum UndeadType implements CreatureSubtype {
-	LICH(0,"LICH"),
-	VAMPIRE(1,"VAMPIRE"),
-	MUMMYLORD(2,"MUMMY LORD"),
-	NIGHTWALKER(3,"NIGHTWALKER"),
-	SKULLLORD(4,"SKULL LORD"),
-	DEATHKNIGHT(5,"DEATH KNIGHT"),
-	DEATHTYRANT(6,"DEATH TYRANT"),
-	DEMILICH(7,"DEMILICH"),
-	DRACOLICH(8,"DRACOLICH"),
-	GHOSTDRAGON(9,"GHOST DRAGON"),
-	GHOST(10,"GHOST"),
-	WIGHT(11,"GHAST"),
-	WRAITH(12,"WRAITH"),
-	DEATHLOCK(13,"DEATHLOCK");
+	LICH(),
+	VAMPIRE(),
+	MUMMY_LORD(),
+	NIGHTWALKER(),
+	SKULL_LORD(),
+	DEATH_KNIGHT(),
+	DEATH_TYRANT(),
+	DEMILICH(),
+	DRACOLICH(),
+	GHOST_DRAGON(),
+	GHOST(),
+	WIGHT(),
+	WRAITH(),
+	DEATHLOCK();
 
 	private static WeightedTable<UndeadType> weights;
 
@@ -32,49 +32,19 @@ public enum UndeadType implements CreatureSubtype {
 		weights = new WeightedTable<UndeadType>();
 		weights.put(LICH, 100);
 		weights.put(VAMPIRE, 100);
-		weights.put(MUMMYLORD, 100);
-		weights.put(DEATHTYRANT, 100);
+		weights.put(MUMMY_LORD, 100);
+		weights.put(DEATH_TYRANT, 100);
 		weights.put(WIGHT, 100);
 		weights.put(WRAITH, 100);
-		weights.put(DEATHKNIGHT, 100);
+		weights.put(DEATH_KNIGHT, 100);
 		weights.put(DRACOLICH, 10);
 		weights.put(NIGHTWALKER, 1);
 		weights.put(DEMILICH, 1);
-		weights.put(GHOSTDRAGON, 1);
-	}
-	@Deprecated
-	public static UndeadType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
+		weights.put(GHOST_DRAGON, 1);
 	}
 	public static UndeadType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(obj);
-	}
-	public static UndeadType getFromID(int id) {
-		id = id%UndeadType.values().length;
-		if(id<0) id+=UndeadType.values().length;
-		UndeadType result = null;
-		for(UndeadType type:UndeadType.values()) {
-			if(type.getId()==id) result=type;
-		}
-		return result;
-	}
-
-	private int id;
-	private String name;
-	private UndeadType(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	@Override
-	public int getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
 	}
 	@Override
 	public ThreatNameGenerator getNameGen() {
@@ -85,9 +55,9 @@ public enum UndeadType implements CreatureSubtype {
 		ArrayList<Species> list = new ArrayList<Species>();
 		list.add(null);
 		switch(this) {
-		case DEATHTYRANT: return AberrationType.BEHOLDER.getMinionSpeciesList();
-		case MUMMYLORD: list.add(MUMMYLORD);break;
-		case GHOSTDRAGON:
+		case DEATH_TYRANT: return AberrationType.BEHOLDER.getMinionSpeciesList();
+		case MUMMY_LORD: list.add(MUMMY_LORD);break;
+		case GHOST_DRAGON:
 		case DRACOLICH:
 			list.add(this);
 			list.add(NPCSpecies.KOBOLD);
@@ -97,7 +67,7 @@ public enum UndeadType implements CreatureSubtype {
 		case NIGHTWALKER: list.add(NIGHTWALKER);
 		case DEMILICH: list.add(DEMILICH);
 		case LICH: list.add(LICH);
-		case DEATHKNIGHT: list.add(DEATHKNIGHT);
+		case DEATH_KNIGHT: list.add(DEATH_KNIGHT);
 		case VAMPIRE: {
 			list.add(VAMPIRE);
 			list.add(null);

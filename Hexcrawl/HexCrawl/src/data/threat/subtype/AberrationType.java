@@ -11,18 +11,18 @@ import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
 
 public enum AberrationType implements CreatureSubtype{
-	ABOLETH(1,"ABOLETH"),
-	BEHOLDER(2,"BEHOLDER"),
-	SLAAD(3,"SLAAD"),
-	MINDFLAYER(4,"MIND FLAYER"),
-	ELDERBRAIN(5,"ELDER BRAIN"),
-	ELDERBRAINDRAGON(6,"ELDER BRAIN DRAGON"),
-	FEYR(7,"FEYR"),
-	GRIMLOCK(8,"GRIMLOCK"),
-	STARSPAWN(9,"STAR SPAWN"),
-	BEHOLDERKIN(10,"Beholderkin"),
-	CHUUL(11,"Chuul"),
-	NOTHIC(12,"Nothic");
+	ABOLETH(),
+	BEHOLDER(),
+	SLAAD(),
+	MIND_FLAYER(),
+	ELDER_BRAIN(),
+	ELDER_BRAIN_DRAGON(),
+	FEYR(),
+	GRIMLOCK(),
+	STAR_SPAWN(),
+	BEHOLDERKIN(),
+	CHUUL(),
+	NOTHIC();
 
 
 	private static WeightedTable<AberrationType> weights;
@@ -32,44 +32,14 @@ public enum AberrationType implements CreatureSubtype{
 		weights.put(ABOLETH, 100);
 		weights.put(BEHOLDER, 100);
 		weights.put(SLAAD, 100);
-		weights.put(ELDERBRAIN, 100);
-		weights.put(ELDERBRAINDRAGON, 10);
+		weights.put(ELDER_BRAIN, 100);
+		weights.put(ELDER_BRAIN_DRAGON, 10);
 		weights.put(GRIMLOCK, 10);
-		weights.put(STARSPAWN, 10);
-	}
-	@Deprecated
-	public static AberrationType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
+		weights.put(STAR_SPAWN, 10);
 	}
 	public static AberrationType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(obj);
-	}
-	public static AberrationType getFromID(int id) {
-		id = id%AberrationType.values().length;
-		if(id<0) id+=AberrationType.values().length;
-		AberrationType result = null;
-		for(AberrationType type:AberrationType.values()) {
-			if(type.getId()==id) result=type;
-		}
-		return result;
-	}
-
-	private int id;
-	private String name;
-	private AberrationType(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	@Override
-	public int getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
 	}
 	@Override
 	public ThreatNameGenerator getNameGen() {
@@ -79,9 +49,9 @@ public enum AberrationType implements CreatureSubtype{
 	public Species[] getMinionSpeciesList() {
 		ArrayList<Species> list = new ArrayList<Species>();
 		switch(this) {
-		case ELDERBRAIN:
-		case ELDERBRAINDRAGON:
-			list.add(MINDFLAYER);
+		case ELDER_BRAIN:
+		case ELDER_BRAIN_DRAGON:
+			list.add(MIND_FLAYER);
 			list.add(HumanoidType.DUREGAR);
 			break;
 		case GRIMLOCK:
@@ -89,11 +59,11 @@ public enum AberrationType implements CreatureSubtype{
 			break;
 		case SLAAD:
 			list.add(SLAAD);
-		case STARSPAWN:
+		case STAR_SPAWN:
 		case ABOLETH:
 		case BEHOLDER:
 		default:
-			list.add(STARSPAWN);
+			list.add(STAR_SPAWN);
 			list.add(BEHOLDERKIN);
 			list.add(HumanoidType.DUREGAR);
 			list.add(HumanoidType.CULTIST);

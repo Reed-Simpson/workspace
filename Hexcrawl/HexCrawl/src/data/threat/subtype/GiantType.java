@@ -11,17 +11,17 @@ import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
 
 public enum GiantType implements CreatureSubtype {
-	FIRE(0,"FIRE"),
-	STORM(1,"STORM"),
-	FROST(2,"FROST"),
-	CLOUD(3,"CLOUD"),
-	HILL(4,"HILL"),
-	STONE(5,"STONE"),
-	TITAN(6,"TITAN"),
-	ETTIN(7,"ETTIN"),
-	OGRE(8,"OGRE"),
-	CYCLOPS(9,"CYCLOPS"),
-	FOMORIAN(10,"FOMORIAN");
+	FIRE(),
+	STORM(),
+	FROST(),
+	CLOUD(),
+	HILL(),
+	STONE(),
+	TITAN(),
+	ETTIN(),
+	OGRE(),
+	CYCLOPS(),
+	FOMORIAN();
 	
 
 	private static WeightedTable<GiantType> weights;
@@ -39,39 +39,9 @@ public enum GiantType implements CreatureSubtype {
 		weights.put(FOMORIAN, 50);
 		weights.put(TITAN, 1);
 	}
-	@Deprecated
-	public static GiantType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
-	}
 	public static GiantType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(obj);
-	}
-	public static GiantType getFromID(int id) {
-		id = id%GiantType.values().length;
-		if(id<0) id+=GiantType.values().length;
-		GiantType result = null;
-		for(GiantType type:GiantType.values()) {
-			if(type.getId()==id) result=type;
-		}
-		return result;
-	}
-	
-	private int id;
-	private String name;
-	private GiantType(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-	
-	@Override
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
 	}
 
 	@Override

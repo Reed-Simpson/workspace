@@ -22,9 +22,4 @@ public abstract class IndexibleNameGenerator {
 		return array[obj.reduceTempId(array.length)];
 	}
 	
-
-	@Deprecated
-	public String getName(int... val) {
-		return getName(new Indexible(val));
-	};
 }

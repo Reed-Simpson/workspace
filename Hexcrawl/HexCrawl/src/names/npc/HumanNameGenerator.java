@@ -18,12 +18,6 @@ public class HumanNameGenerator extends IndexibleNameGenerator{
 		return Util.formatTableResult(getElementFromArray(LAST,obj),obj);
 	}
 
-	@Override
-	public String getName(int... val) {
-		if(val.length<4) throw new IllegalArgumentException("Expected 4 or more values");
-		int[] remainder = Util.getRemainder(val, 1);
-		return getElementFromArray(FIRST,val[0])+" "+getLastName(remainder);
-	}
 
 	@Override
 	public String getName(Indexible obj) {

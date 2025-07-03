@@ -8,12 +8,6 @@ public class ElfNameGenerator extends IndexibleNameGenerator{
 	private static final String[] LAST = {"Arvannis","Brawnanvil","Daardendrian","Drachedandion","Endryss","Meliamne","Mishann","Silverfrond","Snowmantle","Summerbreeze","Thunderfoot","Zashir"};
 	
 
-	@Override
-	public String getName(int... val) {
-		if(val.length<2) throw new IllegalArgumentException("Expected 2 or more values");
-		return getElementFromArray(FIRST,val[0])+" "+getElementFromArray(LAST,val[1]);
-	}
-
 
 	@Override
 	public String getName(Indexible obj) {

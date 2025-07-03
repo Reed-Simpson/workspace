@@ -52,12 +52,6 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 		return snakenames.getByWeight(obj);
 	}
 
-	@Deprecated
-	@Override
-	public String getName(int... val) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getName(Creature threat) {
@@ -73,7 +67,7 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 		case BULETTE:return BeastNameGenerator.getBeastName(threat);
 		case CHIMERA:return BeastNameGenerator.getBeastName(threat);
 		case COCKATRICE:return BeastNameGenerator.getBeastName(threat);
-		case DISPLACERBEAST:return BeastNameGenerator.getBeastName(threat);
+		case DISPLACER_BEAST:return BeastNameGenerator.getBeastName(threat);
 		case DOPPELGANGER: return npc.getName();
 		case GRIFFON:return BeastNameGenerator.getBeastName(threat);
 		case HARPY:return BeastNameGenerator.getBeastName(threat);
@@ -85,10 +79,10 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 		case MINOTAUR:return getGreekName(threat);
 		case NAGA:return getSnakeName(threat);
 		case OWLBEAR:return BeastNameGenerator.getBeastName(threat);
-		case PHASESPIDER:return BeastNameGenerator.getBeastName(threat);
-		case PURPLEWORM:return BeastNameGenerator.getBeastName(threat);
+		case PHASE_SPIDER:return BeastNameGenerator.getBeastName(threat);
+		case PURPLE_WORM:return BeastNameGenerator.getBeastName(threat);
 		case REMORHAZ:return BeastNameGenerator.getBeastName(threat);
-		case RUSTMONSTER:return BeastNameGenerator.getBeastName(threat);
+		case RUST_MONSTER:return BeastNameGenerator.getBeastName(threat);
 		case SPHINX:return getEgyptianName(threat);
 		case TERRASQUE:return "The Terrasque";
 		case YUANTI:return getSnakeName(threat);

@@ -11,12 +11,12 @@ import data.threat.CreatureType;
 import names.threat.ThreatNameGenerator;
 
 public enum FiendType implements CreatureSubtype {
-	DEVIL(0,"DEVIL"),
-	DEMON(1,"DEMON"),
-	YUGOLOTH(2,"YUGOLOTH"),
-	OBYRITH(3,"OBYRITH"),
-	LOUMARA(4,"LOUMARA"),
-	RAKSHASA(5,"RAKSHASA");
+	DEVIL(),
+	DEMON(),
+	YUGOLOTH(),
+	OBYRITH(),
+	LOUMARA(),
+	RAKSHASA();
 	
 
 	private static WeightedTable<FiendType> weights;
@@ -30,40 +30,11 @@ public enum FiendType implements CreatureSubtype {
 		weights.put(LOUMARA, 20);
 		weights.put(OBYRITH, 1);
 	}
-	@Deprecated
-	public static FiendType getByWeight(int index) {
-		if(weights==null) populateWeights();
-		return weights.getByWeight(index);
-	}
 	public static FiendType getByWeight(Indexible obj) {
 		if(weights==null) populateWeights();
 		return weights.getByWeight(obj);
 	}
-	public static FiendType getFromID(int id) {
-		id = id%FiendType.values().length;
-		if(id<0) id+=FiendType.values().length;
-		FiendType result = null;
-		for(FiendType type:FiendType.values()) {
-			if(type.getId()==id) result=type;
-		}
-		return result;
-	}
 	
-	private int id;
-	private String name;
-	private FiendType(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-	
-	@Override
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
 	@Override
 	public ThreatNameGenerator getNameGen() {
 		return CreatureType.FIEND.getNameGen();

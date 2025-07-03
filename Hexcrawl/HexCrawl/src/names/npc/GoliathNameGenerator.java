@@ -17,11 +17,6 @@ public class GoliathNameGenerator extends IndexibleNameGenerator{
 			"vigor","chief","stalker","weaver","smasher","maker","guard","watcher","feller","carver","leaper","hand","walker","herder"};
 	
 
-	@Override
-	public String getName(int... val) {
-		Indexible obj = new Indexible(val);
-		return getName(obj);
-	}
 	
 	public String getTitle(Indexible obj) {
 		return getElementFromArray(TITLE_PREFIX,obj)+getElementFromArray(TITLE_SUFFIX,obj);

@@ -318,6 +318,9 @@ public class MapPanel  extends JPanel{
 						if(color1==null) {
 							color1 = color2;
 							color2 = null;
+						}else if(color1==BiomeType.TOWN.getColor()) {
+							color1 = color2;
+							color2 = BiomeType.TOWN.getColor();
 						}
 						cached = new Pair<Color, Color>(color1,color2);
 						newCache.put(p, new Pair<Color,Color>(color1,color2));
@@ -829,6 +832,7 @@ public class MapPanel  extends JPanel{
 
 	private Color getColor1(int i,int j,HexData data) {
 		float height = controller.getGrid().getHeight(i, j);
+		BiomeType settlementType;
 		Point p = new Point(i,j);
 		if (height<BiomeModel.SHALLOWS_HEIGHT) {
 			return BiomeType.WATER.getColor();
@@ -836,11 +840,8 @@ public class MapPanel  extends JPanel{
 			return BiomeType.SHALLOWS.getColor();
 		}else if (!HexData.BIOME.equals(data)&&!HexData.EXPLORATION.equals(data)&&controller.getPrecipitation().isLake(p)) {
 			return BiomeType.LAKE.getColor();
-		}else if(showCities) {
-			BiomeType settlementType = controller.getPopulation().getSettlementType(p);
-			if(settlementType!=null) {
-				return settlementType.getColor();
-			}
+		}else if(showCities && (settlementType = controller.getPopulation().getSettlementType(p))!=null) {
+			return settlementType.getColor();
 		}
 		return null;
 	}
@@ -878,7 +879,7 @@ public class MapPanel  extends JPanel{
 			g2.fillPolygon(p);
 			g2.drawPolygon(p);
 		}
-		if(borderColor!=null) {
+		if(borderColor!=null && background!=null) {
 			g2.setColor(borderColor);
 			g2.drawPolygon(p);
 		}
@@ -888,6 +889,10 @@ public class MapPanel  extends JPanel{
 			Polygon p2 = new Polygon(xs2,ys2,6);
 			g2.setColor(center);
 			g2.fillPolygon(p2);
+			if(borderColor!=null && background==null) {
+				g2.setColor(borderColor);
+				g2.drawPolygon(p2);
+			}
 		}
 		if(crosshatch!=null) {
 			Stroke defaultStroke = g2.getStroke();
@@ -920,6 +925,9 @@ public class MapPanel  extends JPanel{
 					if(color1==null) {
 						color1 = color2;
 						color2 = null;
+					}else if(color1==BiomeType.TOWN.getColor()) {
+						color1 = null;
+						color2 = BiomeType.TOWN.getColor();
 					}
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
 				}

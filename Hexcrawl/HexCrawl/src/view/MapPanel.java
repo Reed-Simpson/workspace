@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
@@ -83,11 +86,13 @@ public class MapPanel  extends JPanel{
 	private HashMap<Point,List<Icon>> iconCache;
 	private ConcurrentHashMap<Point,BasicSpline> splineCache;
 	private boolean showIcons;
+	private boolean printMode;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
 		this.showCities=true;
 		this.showIcons=true;
+		this.printMode = false;
 		colorCache = new HashMap<Point,Pair<Color,Color>>();
 		iconCache = new HashMap<Point,List<Icon>>();
 		splineCache = new ConcurrentHashMap<Point,BasicSpline>();
@@ -192,7 +197,7 @@ public class MapPanel  extends JPanel{
 		return mouseover;
 	}
 	public Point getMiddleOfScreen() {
-		return new Point(this.getWidth()/2, (int) (this.getHeight()/2+scale/2));
+		return new Point(this.getWidth()/2, (int) (this.getHeight()/2));
 	}
 	public void recenter() {
 		recenter(getMiddleGridPoint(),true);
@@ -268,7 +273,7 @@ public class MapPanel  extends JPanel{
 		drawSymbols(g2, step, displayScale, borderColor);
 		drawRegion(g2, displayScale);
 		if(HexData.EXPLORATION.equals(displayData)) drawVoid(g2, displayScale);
-		drawCenterHex(g2, displayScale);
+		if(!this.printMode) drawCenterHex(g2, displayScale);
 		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
 
@@ -290,9 +295,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private synchronized void calculateHexColors() {
-		Point p1 = getGridPoint(-20,this.getHeight()+60);
-		Point p2 = getGridPoint(this.getWidth()+20,-20);
-		int sum = (p2.x-p1.x);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		int step = getStep();
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
@@ -303,8 +307,8 @@ public class MapPanel  extends JPanel{
 		}
 		HashMap<Point,Pair<Color,Color>> newCache = new HashMap<Point,Pair<Color,Color>>();
 		HashMap<Point,List<Icon>> newIconCache = new HashMap<Point,List<Icon>>();
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
 				if(!controller.getGrid().isWater(p)) {
 					Pair<Color,Color> cached = colorCache.get(p);
@@ -333,6 +337,13 @@ public class MapPanel  extends JPanel{
 		logger.logln("Colors loaded "+(System.currentTimeMillis()-time)+" ms");
 	}
 
+	private Rectangle getRenderArea() {
+		Point p1 = getGridPoint(-20-(int)scale,this.getHeight()+60+(int)scale);
+		Point p2 = getGridPoint(this.getWidth()+20+(int)scale,-20-(int)scale);
+		Rectangle r = new Rectangle(p1.x,p2.y,p2.x,p1.y);
+		return r;
+	}
+
 	private List<Icon> getIcons(Point p) {
 		BiomeType biome = controller.getBiomes().getBiome(p);
 		return Icon.getIcons(biome);
@@ -340,9 +351,8 @@ public class MapPanel  extends JPanel{
 
 
 	private void drawHexes(Graphics2D g2, int step, int displayScale, Color borderColor) {
-		Point p1 = getGridPoint(-20,this.getHeight()+60);
-		Point p2 = getGridPoint(this.getWidth()+20,-20);
-		int sum = (p2.x-p1.x);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -351,8 +361,8 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Drawing hexes: ");
 		}
 		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
 				BiomeType type = controller.getGrid().getAltitudeBiome(p);
 				if(!BiomeType.WATER.equals(type)&&!BiomeType.SHALLOWS.equals(type)) {
@@ -381,9 +391,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawOceans(Graphics2D g2, int step, int displayScale, Color borderColor) {
-		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
-		int sum = (p2.x-p1.x);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -391,8 +400,8 @@ public class MapPanel  extends JPanel{
 		if(printLoadingInfo.get()) {
 			dialog.createProgressUI("Drawing oceans: ");
 		}
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				if(controller.getGrid().isWater(i,j)) {
 					Color color1 = getColor1(i,j,displayData);
 					Color color2 = getColor2(i,j,displayData);
@@ -434,9 +443,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawSymbols(Graphics2D g2, int step, int displayScale, Color borderColor) {
-		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
-		int sum = (p2.x-p1.x);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -445,8 +453,8 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Drawing symbols: ");
 		}
 		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
 				drawSymbol(g2, height, p,true);
 			}
@@ -518,36 +526,45 @@ public class MapPanel  extends JPanel{
 
 	private void drawLegend(Graphics2D g2, int step, int displayScale) {
 		Stroke defaultStroke = g2.getStroke();
-		int corneroffset = 50;
-		int inset = 20;
-		int lineDist = (int) (1000/scale);//(int) ((width-2*inset)*6.0/(scale*2));
-		int width = 1000/3+2*inset;
-		int height = 50;
-		g2.setColor(Color.WHITE);
-		g2.fillRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
-		g2.setStroke(new BasicStroke(3));
-		g2.setColor(Color.RED);
-		g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/3);
-		g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+inset, this.getHeight()-corneroffset-height/2);
-		g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
-		g2.setFont(g2.getFont().deriveFont(12f));
-		String str = lineDist+" miles";
-		int stringwidth = g2.getFontMetrics().stringWidth(str);
-		g2.drawString(str, corneroffset+width-inset/2-stringwidth, this.getHeight()-corneroffset-height*2/3);
-		g2.setColor(Color.BLACK);
-		g2.drawRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
+		if(this.printMode) {
+			Point c = getMiddleOfScreen();
+			g2.setStroke(new BasicStroke(3));
+			g2.setColor(Color.BLACK);
+			g2.drawRect(c.x-550, c.y-425, 1100, 850);
+
+		} else {
+			int corneroffset = 50;
+			int inset = 20;
+			int lineDist = (int) (1000/scale);//(int) ((width-2*inset)*6.0/(scale*2));
+			int width = 1000/3+2*inset;
+			int height = 50;
+			g2.setColor(Color.WHITE);
+			g2.fillRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
+			g2.setStroke(new BasicStroke(3));
+			g2.setColor(Color.RED);
+			g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/3);
+			g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+inset, this.getHeight()-corneroffset-height/2);
+			g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
+			g2.setFont(g2.getFont().deriveFont(12f));
+			String str = lineDist+" miles";
+			int stringwidth = g2.getFontMetrics().stringWidth(str);
+			g2.drawString(str, corneroffset+width-inset/2-stringwidth, this.getHeight()-corneroffset-height*2/3);
+			g2.setColor(Color.BLACK);
+			g2.drawRect(corneroffset, this.getHeight()-corneroffset-height, width, height);
+		}
 		g2.setStroke(defaultStroke);
 	}
 
 	private synchronized void calculateRivers() {
 		PrecipitationModel precipitation = controller.getPrecipitation();
-		Point p1 = getGridPoint(-40,this.getHeight()+80);
-		Point p2 = getGridPoint(this.getWidth()+40,-40);
-		p1.translate(-100, 100);
-		p2.translate(100, -100);
+		Rectangle r = getRenderArea();
+		r.x = r.x-100;
+		r.y = r.y-100;
+		r.width = r.width + 200;
+		r.height = r.height + 200;
 		time = System.currentTimeMillis();
-		int sum = (p2.x-p1.x);
-		int loadingFactor = (p1.y-p2.y);
+		int sum = (r.width-r.x);
+		int loadingFactor = (r.height-r.y);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -560,8 +577,8 @@ public class MapPanel  extends JPanel{
 			}
 			logger.log("Loading rivers "+(sum*loadingFactor)+": ");
 		}
-		for(int i=p1.x;i<p2.x;i+=1) {
-			for(int j=p2.y;j<p1.y;j+=1) {
+		for(int i=r.x;i<r.width;i+=1) {
+			for(int j=r.y;j<r.height;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					precipitation.getFlow(new Point(i,j));
 				}
@@ -582,8 +599,8 @@ public class MapPanel  extends JPanel{
 			counter.resetCounter();
 			logger.log("Loading lakes "+(sum*loadingFactor)+": ");
 		}
-		for(int i=p1.x;i<p2.x;i+=1) {
-			for(int j=p2.y;j<p1.y;j+=1) {
+		for(int i=r.x;i<r.width;i+=1) {
+			for(int j=r.y;j<r.height;j+=1) {
 				Point p = new Point(i,j);
 				if(!controller.getGrid().isWater(i,j)&&p.equals(precipitation.getFlow(p))) {
 					precipitation.time = System.currentTimeMillis();
@@ -607,8 +624,8 @@ public class MapPanel  extends JPanel{
 			logger.log("Loading river volume "+(sum*loadingFactor)+": ");
 		}
 		precipitation.newVolumeCache();
-		for(int i=p1.x;i<p2.x;i+=1) {
-			for(int j=p2.y;j<p1.y;j+=1) {
+		for(int i=r.x;i<r.width;i+=1) {
+			for(int j=r.y;j<r.height;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
 					precipitation.updateFlowVolume(p);
@@ -632,8 +649,8 @@ public class MapPanel  extends JPanel{
 			logger.log("Loading river splines "+(sum*loadingFactor)+": ");
 		}
 		ConcurrentHashMap<Point,BasicSpline> newcache = new ConcurrentHashMap<Point,BasicSpline>();
-		for(int i=p1.x;i<p2.x;i+=1) {
-			for(int j=p2.y;j<p1.y;j+=1) {
+		for(int i=r.x;i<r.width;i+=1) {
+			for(int j=r.y;j<r.height;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
 					BasicSpline spline = splineCache.get(p);
@@ -683,7 +700,7 @@ public class MapPanel  extends JPanel{
 		if(spline!=null && volume!=null) {
 			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
 			if(width>displayScale) width = displayScale;
-			if(showRivers||width>2) {
+			if(showRivers||width>(1+scale/20)) {
 				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0);
 			}
 		}
@@ -888,15 +905,14 @@ public class MapPanel  extends JPanel{
 		this.drawHex(g2, p.x, p.y,borderColor,background,center,scale,crosshatch);
 	}
 	public void highlightTowns(Graphics2D g2, int step, int displayScale, Color borderColor) {
-		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		logger.log("Drawing towns: ");
-		int sum = (p2.x-p1.x);
 		//int loadingFactor = (p1.y-p2.y);
 		Counter counter = new Counter(sum, 5, logger);
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
 				if(controller.getPopulation().isTown(p)) {
 					Color color1 = getColor1(i,j,displayData);
@@ -913,11 +929,10 @@ public class MapPanel  extends JPanel{
 		logger.logln("Towns drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 	private synchronized void loadRoads() {
-		Point p1 = getGridPoint(-40,this.getHeight()+80);
-		Point p2 = getGridPoint(this.getWidth()+40,-40);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		int step = getStep();
 
-		int sum = (p2.x-p1.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -925,8 +940,8 @@ public class MapPanel  extends JPanel{
 			dialog.createProgressUI("Loading roads: ");
 		}
 		logger.log("Loading roads: ");
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
 				if(controller.getPopulation().isTown(p)) {
 					controller.getEconomy().findTradeRoads(p);
@@ -939,10 +954,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawRoads(Graphics2D g2, int step, int displayScale, Color roadColor) {
-		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
-
-		int sum = (p2.x-p1.x);
+		Rectangle r = getRenderArea();
+		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -951,8 +964,8 @@ public class MapPanel  extends JPanel{
 		}
 		logger.log("Drawing roads: ");
 		AStarGraph roads = controller.getEconomy().getRoads();
-		for(int i=p1.x;i<p2.x;i+=step) {
-			for(int j=p2.y;j<p1.y;j+=step) {
+		for(int i=r.x;i<r.width;i+=step) {
+			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
 				Point p_ = getScreenPos(p);
 				Point pWiggle = wiggle(p,p);
@@ -1163,11 +1176,14 @@ public class MapPanel  extends JPanel{
 
 	public void saveAs() {
 		File prevFile = record.getSaveLocation();
-		File directory= AppData.getDirectory();
-		String filename = record.getSeed()+"_"+MapFrame.VERSION+".ser";
+		File directory;
+		String filename;
 		if(prevFile!=null) {
 			directory = prevFile.getAbsoluteFile().getParentFile();
 			filename = prevFile.getName();
+		}else {
+			directory = AppData.getDirectory();
+			filename = record.getSeed()+"_"+MapFrame.VERSION+".ser";
 		}
 		JFileChooser fileChooser = new JFileChooser(directory);
 		fileChooser.setSelectedFile(new File(filename));
@@ -1274,6 +1290,20 @@ public class MapPanel  extends JPanel{
 
 	public boolean isShowCities() {
 		return this.showCities;
+	}
+
+	public void print(BufferedImage image) {
+		this.printMode = true;
+		this.repaint();
+		int result = JOptionPane.showConfirmDialog(this.frame,
+				"Print this area?",
+				"Confirm",
+				JOptionPane.YES_NO_OPTION);
+		if(result==JOptionPane.YES_OPTION) {
+			this.paint(image.getGraphics());
+		}
+		this.printMode = false;
+		this.repaint();
 	}
 
 }

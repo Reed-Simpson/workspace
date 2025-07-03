@@ -77,56 +77,6 @@ public class MonsterModel {
 		weaknesses = new WeightedTable<String>();
 		populate(weaknesses,WEAKNESSES,",");
 	}
-	@Deprecated
-	public static String getAnimal(int i) {
-		if(animals==null) populateAllTables();
-		return Util.formatTableResult(animals.getByWeight(i),new Indexible(i/animals.size()));
-	}
-	@Deprecated
-	public static String getAerial(int i) {
-		if(aerial==null) populateAllTables();
-		return aerial.getByWeight(i);
-	}
-	@Deprecated
-	public static String getTerrestrial(int i) {
-		if(terrestrial==null) populateAllTables();
-		return terrestrial.getByWeight(i);
-	}
-	@Deprecated
-	public static String getAquatic(int i) {
-		if(aquatic==null) populateAllTables();
-		return aquatic.getByWeight(i);
-	}
-	@Deprecated
-	public static String getFeature(int i) {
-		if(features==null) populateAllTables();
-		return features.getByWeight(i);
-	}
-	@Deprecated
-	public static String getTrait(int i) {
-		if(traits==null) populateAllTables();
-		return Util.formatTableResult(traits.getByWeight(i),new Indexible(i/traits.size()));
-	}
-	@Deprecated
-	public static String getAbility(int i) {
-		if(abilities==null) populateAllTables();
-		return Util.formatTableResult(abilities.getByWeight(i),new Indexible(i/abilities.size()));
-	}
-	@Deprecated
-	public static String getTactic(int i) {
-		if(tactics==null) populateAllTables();
-		return tactics.getByWeight(i);
-	}
-	@Deprecated
-	public static String getPersonality(int i) {
-		if(personalities==null) populateAllTables();
-		return personalities.getByWeight(i);
-	}
-	@Deprecated
-	public static String getWeakness(int i) {
-		if(weaknesses==null) populateAllTables();
-		return Util.formatTableResult(weaknesses.getByWeight(i),new Indexible(i/weaknesses.size()));
-	}
 
 	public static String getAnimal(Indexible obj) {
 		if(animals==null) populateAllTables();

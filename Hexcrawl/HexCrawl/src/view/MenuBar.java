@@ -32,6 +32,7 @@ import javax.swing.KeyStroke;
 
 import data.HexData;
 import io.AppData;
+import io.PrintHandler;
 import io.SaveRecord;
 import util.DiceRoller;
 import util.MythicFateRoller;
@@ -60,10 +61,12 @@ public class MenuBar extends JMenuBar {
 	private MapFrame frame;
 	private MythicFateRoller mythicroller;
 	private JCheckBox iBox;
+	private PrintHandler printer;
 
 	public MenuBar(MapPanel panel,MapFrame frame,InfoPanel info) {
 		this.frame = frame;
 		this.panel=panel;
+		this.printer = new PrintHandler();
 
 		this.fileMenu = constructFileMenu(panel);
 		this.add(fileMenu);
@@ -129,6 +132,15 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		menuSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		JMenuItem print = new JMenuItem("Print");
+		fileMenu.add(print);
+		print.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				printer.print(panel);
+			}
+		});
+		print.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,InputEvent.CTRL_DOWN_MASK ));
 		fileMenu.addSeparator();
 		fileMenu.add(new JLabel("recent"));
 		return fileMenu;

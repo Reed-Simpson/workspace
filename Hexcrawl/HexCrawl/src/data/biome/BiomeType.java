@@ -72,4 +72,43 @@ public enum BiomeType {
 		return travel;
 	}
 	
+	public BiomeType getHabitat() {
+		switch(this) {
+		case VOID: return VOID;
+		case ROCKYHILLS:
+		case STEPPE:
+		case BADLANDS:return ROCKYHILLS;
+		case CLIFFS:
+		case DELTA:
+		case FJORDS:
+		case BEACH: return BEACH;
+		case TOWN:
+		case CITY: return CITY;
+		case SALTPAN:
+		case DESERT: return DESERT;
+		case GRASSLAND:
+		case HIGHLAND:
+		case SAVANNA:
+		case FLOODPLAIN: return GRASSLAND;
+		case HIGHLANDFOREST:
+		case TAIGA:
+		case WOODYHILLS:
+		case FOREST: return FOREST;
+		case SNOW:
+		case GLACIERS: return SNOW;
+		case JUNGLE: return JUNGLE;
+		case RIVER:
+		case SHALLOWS:
+		case WATER:
+		case LAKE: return LAKE;
+		case VOLCANIC:
+		case MOUNTAINS: return MOUNTAINS;
+		case WETLAND:
+		case SALTMARSH: return WETLAND;
+		default:
+			throw new IllegalArgumentException("Unrecognized BiomeType:"+this.toString());
+		
+		}
+	}
+	
 }

@@ -268,9 +268,13 @@ public class MapPanel  extends JPanel{
 		drawHighlights(g2, step, displayScale);
 		if(HexData.ECONOMY.equals(displayData)&&!wideview) {
 			drawRoads(g2,step,displayScale,Color.RED);
-			highlightTowns(g2,step,displayScale,Color.RED);
 		}
 		drawSymbols(g2, step, displayScale, borderColor);
+		if(HexData.ECONOMY.equals(displayData)&&!wideview) {
+			highlightTowns(g2,step,displayScale,Color.RED);
+		}else {
+			highlightTowns(g2,step,displayScale,null);
+		}
 		drawRegion(g2, displayScale);
 		if(HexData.EXPLORATION.equals(displayData)) drawVoid(g2, displayScale);
 		if(!this.printMode) drawCenterHex(g2, displayScale);
@@ -879,7 +883,7 @@ public class MapPanel  extends JPanel{
 			g2.fillPolygon(p);
 			g2.drawPolygon(p);
 		}
-		if(borderColor!=null && background!=null) {
+		if(borderColor!=null && (background!=null||center==null)) {
 			g2.setColor(borderColor);
 			g2.drawPolygon(p);
 		}
@@ -916,20 +920,16 @@ public class MapPanel  extends JPanel{
 		logger.log("Drawing towns: ");
 		//int loadingFactor = (p1.y-p2.y);
 		Counter counter = new Counter(sum, 5, logger);
+		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
 		for(int i=r.x;i<r.width;i+=step) {
 			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
-				if(controller.getPopulation().isTown(p)) {
-					Color color1 = getColor1(i,j,displayData);
-					Color color2 = getColor2(i,j,displayData);
-					if(color1==null) {
-						color1 = color2;
-						color2 = null;
-					}else if(color1==BiomeType.TOWN.getColor()) {
-						color1 = null;
-						color2 = BiomeType.TOWN.getColor();
-					}
-					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
+				BiomeType t = controller.getPopulation().getSettlementType(p);
+				if(BiomeType.CITY.equals(t)) {
+					this.drawHex(g2, getScreenPos(i,j),borderColor,null,null,displayScale,null);
+					drawSymbol(g2, height, p,true);
+				}else if(BiomeType.TOWN.equals(t)) {
+					this.drawHex(g2, getScreenPos(i,j),borderColor,null,BiomeType.TOWN.getColor(),displayScale,null);
 				}
 			}
 			counter.increment();

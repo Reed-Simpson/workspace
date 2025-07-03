@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import data.AStarGraph;
+import data.AStarGraph.EdgeWeightComparator;
 import data.DataModel;
 import data.OpenSimplex2S;
 import data.altitude.AltitudeModel;
@@ -204,6 +205,20 @@ public class PrecipitationModel extends DataModel{
 	public Point generateLake(Point p) {
 		getFlow(p);
 		AStarGraph lake = new AStarGraph(10);
+		lake.addEdgeWeightcomparator(new EdgeWeightComparator() {
+			@Override
+			public Iterable<Point> getAdjacentVertices(Point p) {
+				HashSet<Point> result = new HashSet<Point>();
+				for(Point p1:Util.getAdjacentPoints(p)) {
+					if(lake.contains(p1)) result.add(p1);
+				}
+				return result;
+			}
+			@Override
+			public int getEdgeComparatorWeight(Point p1, Point p2) {
+				return getEdgeWeight(p1, p2);
+			}
+		});
 		HashSet<Point> lakeBorder = new HashSet<Point>();
 		Point outlet = p;
 		Point drain = p;
@@ -269,7 +284,7 @@ public class PrecipitationModel extends DataModel{
 		lake.addEdge(p1, p2, getEdgeWeight(p1,p2));
 		lake.addEdge(p2, p1, getEdgeWeight(p2,p1));
 	}
-	private int getEdgeWeight(Point p1,Point p2) {
+	public int getEdgeWeight(Point p1,Point p2) {
 		return (int) (grid.getHeight(p1)*1000);
 	}
 	private void updateFlowPath(Point l, HashMap<Point, Point> previous,HashSet<Point> cache) {

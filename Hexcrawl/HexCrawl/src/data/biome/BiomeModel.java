@@ -10,6 +10,7 @@ import data.AStarGraph;
 import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
+import data.AStarGraph.EdgeWeightComparator;
 import data.altitude.AltitudeModel;
 import data.population.PopulationModel;
 import data.precipitation.PrecipitationModel;
@@ -316,6 +317,20 @@ public class BiomeModel extends DataModel {
 		HashSet<Point> group = new HashSet<Point>();
 		if(precipitation.isLake(p)) {
 			AStarGraph lake = new AStarGraph(3);
+			lake.addEdgeWeightcomparator(new EdgeWeightComparator() {
+				@Override
+				public Iterable<Point> getAdjacentVertices(Point p) {
+					HashSet<Point> result = new HashSet<Point>();
+					for(Point p1:Util.getAdjacentPoints(p)) {
+						if(lake.contains(p1)) result.add(p1);
+					}
+					return result;
+				}
+				@Override
+				public int getEdgeComparatorWeight(Point p1, Point p2) {
+					return precipitation.getEdgeWeight(p1, p2);
+				}
+			});
 			precipitation.findLakeBorders(new HashSet<Point>(), lake, p);
 			group.addAll(lake);
 		}else {

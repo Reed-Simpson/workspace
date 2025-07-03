@@ -122,7 +122,7 @@ public class AStarGraph implements Set<Point> {
 		else {
 			int result = v1.getEdgeWeight(v2);
 			if(result==-1&&this.comparator!=null) {
-				result = this.comparator.compare(v1.key, v2.key);
+				result = this.comparator.getEdgeComparatorWeight(v1.key, v2.key);
 			}
 			return result;
 		}
@@ -491,7 +491,7 @@ public class AStarGraph implements Set<Point> {
 	 * only if an edge is not found
 	 */
 	public static interface EdgeWeightComparator{
-		public int compare(Point p1,Point p2);
+		public int getEdgeComparatorWeight(Point p1,Point p2);
 		public Iterable<Point> getAdjacentVertices(Point p);
 	}
 
@@ -514,7 +514,7 @@ public class AStarGraph implements Set<Point> {
 			if(comparator!=null) {
 				for(Point e:comparator.getAdjacentVertices(key)) {
 					Vertex v = vertices.get(e);
-					int weight = comparator.compare(key, e);
+					int weight = comparator.getEdgeComparatorWeight(key, e);
 					if(!adjacent.containsKey(v) && weight>=0) {
 						adjacent.put(v, weight);
 					}

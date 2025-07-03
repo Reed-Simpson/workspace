@@ -353,7 +353,10 @@ public class Util {
 	//converts a float between 0 and 1 to a curve that tends toward 0 below 0.5 and 1 above 0.5
 	public static float getLogisticalCurve(float f) {
 		float value = (f-1f/2)/4;
-		return (float) Math.pow(value, 1.0/3.0)+1/2;
+		double pow;
+		if(value<0) pow = -1*Math.pow(-1*value, 1.0/3.0);
+		else pow = Math.pow(value, 1.0/3.0);
+		return (float) pow+1f/2;
 	}
 	public static float adjustSimplex(float f,float min,float max) {
 		return (f+1)/2*(max-min)+min;

@@ -26,12 +26,15 @@ import io.SaveRecord;
 import util.Util;
 
 public class PopulationModel extends DataModel{
+	private static final float CITY_POP_THRESH = 0.16f;
+	private static final float TOWN_POP_THRESH = 0.04f;
 	public static final int SEED_OFFSET = 2*Util.getOffsetX();
 	private static final int INFLUENCE_RADIUS = 8;
 	private static final int INDEX_STEP = 2;
 	private AltitudeModel grid;
 	private PrecipitationModel precipitation;
 	private HashMap<Point,LinkedHashMap<NPCSpecies,Float>> cache;
+	private HashMap<Point,Point> fealtyCache;
 	private DecimalFormat populationStringFormat = new DecimalFormat ("##,##0");
 	private DecimalFormat populationPercentStringFormat = new DecimalFormat("#0.00%");
 	private DataController controller;
@@ -54,6 +57,7 @@ public class PopulationModel extends DataModel{
 	}
 	private void resetCache() {
 		this.cache = new HashMap<Point,LinkedHashMap<NPCSpecies,Float>>();
+		this.fealtyCache = new HashMap<Point,Point>();
 	}
 
 	public LinkedHashMap<NPCSpecies,Float> getDemographics(Point p) {
@@ -164,37 +168,45 @@ public class PopulationModel extends DataModel{
 	}
 
 	public Point getLocalFealty(Point p) {
-		Entry<NPCSpecies,Float> e = getMajorityPopAndSpecies(p.x, p.y);
-		float pop = e.getValue();
-		NPCSpecies s = e.getKey();
-		Point result = p;
-		for(Point p1:Util.getAdjacentPoints(p)) {
-			Entry<NPCSpecies,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
-			float pop1 = e1.getValue();
-			NPCSpecies s1 = e1.getKey();
-			if(pop1>pop && s1!=null && s1.equals(s)) {
-				pop=pop1;
-				result = p1;
+		Point result;
+		if((result=fealtyCache.get(p))==null) {
+			Entry<NPCSpecies,Float> e = getMajorityPopAndSpecies(p.x, p.y);
+			float pop = e.getValue();
+			NPCSpecies s = e.getKey();
+			result = p;
+			for(Point p1:Util.getAdjacentPoints(p)) {
+				Entry<NPCSpecies,Float> e1 = getMajorityPopAndSpecies(p1.x, p1.y);
+				float pop1 = e1.getValue();
+				NPCSpecies s1 = e1.getKey();
+				if(pop1>pop && s1!=null && s1.equals(s)) {
+					pop=pop1;
+					result = p1;
+				}
 			}
+			fealtyCache.put(p, result);
 		}
 		return result;
 	}
 
 	public boolean isCity(Point p) {
-		if(p==null||getUniversalPopulation(p.x,p.y)<0.16f) return false;
+		if(p==null||getUniversalPopulation(p.x,p.y)<CITY_POP_THRESH) return false;
 		else {
 			return p.equals(getLocalFealty(p))&&p.equals(getParentCity(p));
 		}
 	}
+	private float getTownPopThresh(Point p) {
+		return TOWN_POP_THRESH;
+//		return Math.max(1-getHarshnessFactor(p.x, p.y),0)*2+0.01f;
+	}
 	public boolean isTown(Point p) {
-		if(p==null||getUniversalPopulation(p.x,p.y)<0.08f) return false;
+		if(p==null||getUniversalPopulation(p.x,p.y)<getTownPopThresh(p)) return false;
 		else {
 			return p.equals(getLocalFealty(p));
 		}
 	}
 	public BiomeType getSettlementType(Point p) {
 		float pop = getUniversalPopulation(p.x,p.y);
-		if(pop>=0.08f) {
+		if(pop>=getTownPopThresh(p)) {
 			boolean isTown = p.equals(getLocalFealty(p));
 			if(pop>0.16f&&isTown&&p.equals(getParentCity(p))) {
 				return BiomeType.CITY;

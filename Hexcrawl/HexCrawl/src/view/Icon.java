@@ -55,11 +55,11 @@ public class Icon {
 			result.add( new Icon(c, offset, Color.black,2,1f,true));
 		}else if(BiomeType.WATER.getCh().equals(c)) {
 			offset = new Point(-80,10);
-			result.add( new Icon(c, offset, Color.lightGray,0.7,0.5f,true));
+			result.add( new Icon(c, offset, Color.darkGray,0.7,0.5f,true));
 			offset = new Point(-30,60);
-			result.add( new Icon(c, offset, Color.lightGray,0.7,0.5f,true));
+			result.add( new Icon(c, offset, Color.darkGray,0.7,0.5f,true));
 			offset = new Point(10,-10);
-			result.add( new Icon(c, offset, Color.lightGray,0.7,0.5f,true));
+			result.add( new Icon(c, offset, Color.darkGray,0.7,0.5f,true));
 		}else if(BiomeType.ROCKYHILLS.getCh().equals(c)) {
 			offset = new Point(-20,20);
 			result.add( new Icon(c, offset, Color.darkGray,1,0.8f,false));

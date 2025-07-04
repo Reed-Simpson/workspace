@@ -25,6 +25,7 @@ import data.precipitation.PrecipitationModel;
 import data.threat.ThreatModel;
 import io.SaveRecord;
 import names.LocationNameModel;
+import util.Pair;
 import util.Util;
 
 public class DataController {
@@ -152,8 +153,8 @@ public class DataController {
 		case CHARACTER: value = "";break;
 		case BEAST: {
 			Point region = monsters.getTerritoryRef(p,i);
-			BiomeType biome = this.getBiomes().getBiome(p).getHabitat();
-			value = monsters.getWanderingMonster(region, i,biome).getSpeciesName();break;
+			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat();
+			value = monsters.getWanderingMonster(region, i,biomes).getSpeciesName();break;
 		}
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
@@ -330,8 +331,8 @@ public class DataController {
 		case THREAD: return "";
 		case CHARACTER: return "";
 		case BEAST:{
-			BiomeType biome = this.getBiomes().getBiome(p).getHabitat();
-			return monsters.getWanderingMonster(record.getRandom(),biome).getSpeciesName(); 
+			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat();
+			return monsters.getWanderingMonster(record.getRandom(),i,biomes).getSpeciesName(); 
 		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}

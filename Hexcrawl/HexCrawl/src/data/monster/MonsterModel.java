@@ -11,6 +11,7 @@ import data.biome.BiomeType;
 import data.monster.subtype.BeastType;
 import data.population.Species;
 import io.SaveRecord;
+import util.Pair;
 import util.Util;
 
 public class MonsterModel {
@@ -135,14 +136,30 @@ public class MonsterModel {
 		return trait+", "+(personality+" "+animal+"(s) with "+ability+" "+feature).toLowerCase()+". Uses "+(tactic+" tactics and has a weakness to "+weakness+".").toLowerCase();
 	}
 	
-	public Species getWanderingMonster(Point territoryRef,int i,BiomeType biome) {
-		WeightedTable<Species> species = BeastType.getSpecies(biome.getHabitat());
-		Indexible obj = getIndexible(territoryRef, biome.getID());
+	public Species getWanderingMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
+		BiomeType habitat;
+		int index;
+		if(i<4) {
+			habitat = habitats.key1;
+			index = habitat.getID(0);
+		}else {
+			habitat = habitats.key2;
+			if(habitats.key1==habitats.key2) index = habitat.getID(1);
+			else index = habitat.getID(0);
+		}
+		WeightedTable<Species> species = BeastType.getSpecies(habitat);
+		Indexible obj = getIndexible(territoryRef, index);
 		return species.getByWeight(obj);
 	}
 	
-	public Species getWanderingMonster(Random rand,BiomeType biome) {
-		WeightedTable<Species> species = BeastType.getSpecies(biome.getHabitat());
+	public Species getWanderingMonster(Random rand,int i,Pair<BiomeType,BiomeType> habitats) {
+		WeightedTable<Species> species;
+		if(i<4) {
+			species = BeastType.getSpecies(habitats.key1);
+		}
+		else {
+			species = BeastType.getSpecies(habitats.key2);
+		}
 		Indexible obj = getIndexible(rand);
 		return species.getByWeight(obj);
 	}

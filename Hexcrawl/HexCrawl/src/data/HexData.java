@@ -25,7 +25,7 @@ public enum HexData {
 	CHARACTER("character"),
 	THREAD("thread"), 
 	MINION("minion"), 
-	BEAST("beast");
+	MONSTER("beast");
 	
 	public static HexData[] getMapViews() {
 		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT,EXPLORATION};

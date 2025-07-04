@@ -13,7 +13,6 @@ import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;

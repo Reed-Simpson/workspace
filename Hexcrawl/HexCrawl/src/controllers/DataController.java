@@ -15,13 +15,14 @@ import data.economy.EconomicModel;
 import data.encounters.EncounterModel;
 import data.location.LocationModel;
 import data.magic.MagicModel;
+import data.monster.Monster;
 import data.monster.MonsterModel;
 import data.npc.NPCModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
-import data.population.Species;
 import data.precipitation.PrecipitationModel;
+import data.threat.Threat;
 import data.threat.ThreatModel;
 import io.SaveRecord;
 import names.LocationNameModel;
@@ -151,13 +152,13 @@ public class DataController {
 		case NONE: value = "";break;
 		case THREAD: value = "";break;
 		case CHARACTER: value = "";break;
-		case BEAST: {
+		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
 			BiomeType townBiome = null;
 			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
 			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
-			Species species = monsters.getWanderingMonster(region, i,biomes);
-			if(species!=null) value = species.getSpeciesName();
+			Monster monster = monsters.getWanderingMonster(region, i,biomes);
+			if(monster!=null) value = monster.toString();
 			else value = "None";
 			break;
 		}
@@ -212,7 +213,7 @@ public class DataController {
 		case NONE: return record.getNote(p);
 		case THREAD: return record.getCampaignThread(i);
 		case CHARACTER: return record.getCampaignCharacter(i).toString();
-		case BEAST: {
+		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.getBeast(region, i/4);
 		}
@@ -253,7 +254,7 @@ public class DataController {
 		case NONE: return record.removeNote(p);
 		case THREAD: return record.removeCampaignThread(i);
 		case CHARACTER: return record.removeCampaignCharacter(i).toString();
-		case BEAST: {
+		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.removeBeast(region,i/4);
 		}
@@ -294,7 +295,7 @@ public class DataController {
 		case NONE: return record.putNote(p, s);
 		case THREAD: return record.putCampaignThread(i,s);
 		case CHARACTER: return record.putCampaignCharacter(i,s);
-		case BEAST: {
+		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.putBeast(region, i/4, s);
 		}
@@ -335,11 +336,13 @@ public class DataController {
 		case NONE: return "";
 		case THREAD: return "";
 		case CHARACTER: return "";
-		case BEAST:{
+		case MONSTER:{
 			BiomeType townBiome = null;
 			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
 			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
-			return monsters.getWanderingMonster(record.getRandom(),i,biomes).getSpeciesName(); 
+			Threat threat = this.getThreats().getThreat(p);
+			Monster monster = monsters.getWanderingMonster(record.getRandom(),i,biomes,threat);
+			return monster.toString(); 
 		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}

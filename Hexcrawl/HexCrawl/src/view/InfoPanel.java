@@ -411,7 +411,7 @@ public class InfoPanel extends JTabbedPane{
 		beastsTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<MONSTERCOUNT*2;i++) {
 			beastsPanel.add(new JLabel("~~~~~ Wandering Monster #"+(i+1)+" ~~~~~"));
-			MyTextPane beast = new MyTextPane(this, i, HexData.BEAST);
+			MyTextPane beast = new MyTextPane(this, i, HexData.MONSTER);
 			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			beastsPanel.add(beast);
 			beastsTexts.add(beast);

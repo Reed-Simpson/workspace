@@ -52,7 +52,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
 	public static final int MONSTERCOUNT = 4;
-	
+
 	private int FAITH_TAB_INDEX;
 	private int FACTION_TAB_INDEX;
 	private int CITY_TAB_INDEX;
@@ -72,16 +72,16 @@ public class InfoPanel extends JTabbedPane{
 	private MyTextPane threatText;
 	private JScrollPane threatScrollPane;
 	//ENCOUNTER
-//	private JScrollPane npcScrollPane;
+	//	private JScrollPane npcScrollPane;
 	private JPanel hexPanel;
 	private JPanel regionPanel;
 	private JLabel locationName2;
 	private MyTextPane city1;
-//	private JScrollPane cityScrollPane;
-//	private JScrollPane poiScrollPane;
-//	private JScrollPane dungeonScrollPane;
+	//	private JScrollPane cityScrollPane;
+	//	private JScrollPane poiScrollPane;
+	//	private JScrollPane dungeonScrollPane;
 	private MyTextPane hexNote1;
-//	private JScrollPane hexNoteScrollPane;
+	//	private JScrollPane hexNoteScrollPane;
 	public boolean expandHexNotePane;
 	public boolean hideHexNotePane;
 	private JTabbedPane detailsTabs;
@@ -94,9 +94,9 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<MyTextPane> dungeonTexts;
 	private ArrayList<MyTextPane> poiTexts;
 	private ArrayList<MyTextPane> dEntranceTexts;
-//	private JScrollPane dEntranceScrollPane;
+	//	private JScrollPane dEntranceScrollPane;
 	private ArrayList<MyTextPane> factionTexts;
-//	private JScrollPane factionScrollPane;
+	//	private JScrollPane factionScrollPane;
 	int selectedNPC;
 	int selectedDungeon;
 	int selectedPOI;
@@ -107,13 +107,13 @@ public class InfoPanel extends JTabbedPane{
 
 	private HexPanelGeneralStatPanel hexGeneralPanel;
 	private DemographicsPanel demographicsPanel;
-//	private JScrollPane encounterScrollPane;
+	//	private JScrollPane encounterScrollPane;
 	private MyTextPane charactersEmpty;
 	private ArrayList<MyTextPane> charactersList;
 	private ArrayList<MyTextPane> threadsList;
 	private JPanel charactersPanel;
 	private ArrayList<MyTextPane> faithsTexts;
-//	private JScrollPane faithsScrollPane;
+	//	private JScrollPane faithsScrollPane;
 	private int selectedFaith;
 	private JPanel encounterPanel;
 	private JPanel dungeonPanel;
@@ -130,11 +130,11 @@ public class InfoPanel extends JTabbedPane{
 		this.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		createHexTab(panel);
-		
+
 		createRegionTab(panel);
-		
+
 		createCampaignTab();
-		
+
 
 		resetSelection();
 		changeSelected = true;
@@ -148,11 +148,11 @@ public class InfoPanel extends JTabbedPane{
 		this.hexPanel = new JPanel();
 		hexPanel.setPreferredSize(new Dimension(INFOPANELWIDTH,INFOPANELWIDTH));
 		hexPanel.setLayout(new BoxLayout(hexPanel, BoxLayout.Y_AXIS));
-		
+
 
 		hexGeneralPanel = new HexPanelGeneralStatPanel(this);
 		hexPanel.add(hexGeneralPanel);
-		
+
 		demographicsPanel = new DemographicsPanel(this);
 		hexPanel.add(demographicsPanel);
 
@@ -228,7 +228,7 @@ public class InfoPanel extends JTabbedPane{
 		hexNotePanel.add(hexNote1,BorderLayout.CENTER);
 		JScrollPane hexNoteScrollPane = new JScrollPane(hexNotePanel);
 		detailsTabs.addTab("Notes", hexNoteScrollPane);
-		
+
 
 		encounterPanel = new JPanel();
 		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
@@ -365,7 +365,7 @@ public class InfoPanel extends JTabbedPane{
 		factionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Factions", factionScrollPane);
 		this.FACTION_TAB_INDEX = regionTabs.getTabCount()-1;
-		
+
 		//Faiths tab
 		JPanel faithsPanel = new JPanel();
 		faithsPanel.setLayout(new BoxLayout(faithsPanel, BoxLayout.Y_AXIS));
@@ -420,7 +420,7 @@ public class InfoPanel extends JTabbedPane{
 		beastsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Monsters", beastsScrollPane);
 		this.BEASTS_TAB_INDEX = regionTabs.getTabCount()-1;
-		
+
 		regionPanel.add(regionTabs);
 
 		this.addTab(Util.pad("Region", TAB_TITLE_LENGTH), new JScrollPane(regionPanel));
@@ -485,9 +485,9 @@ public class InfoPanel extends JTabbedPane{
 		campaignPanel.add(charactersScrollPane);
 		campaignPanel.setMaximumSize(new Dimension(INFOPANELWIDTH,99999));
 
-		
+
 		JPanel threadsPanel = new JPanel(new BorderLayout());
-//		threadsPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-20,999));
+		//		threadsPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-20,999));
 		JPanel threadsHeader = new JPanel();
 		threadsHeader.setLayout(new BoxLayout(threadsHeader, BoxLayout.X_AXIS));
 		threadsHeader.add(Box.createHorizontalStrut(40));
@@ -543,7 +543,7 @@ public class InfoPanel extends JTabbedPane{
 		threadsPanel.add(addThreadButton,BorderLayout.SOUTH);
 		threadsPanel.add(threadsScrollPane,BorderLayout.CENTER);
 		campaignPanel.add(threadsPanel);
-		
+
 		this.addTab(Util.pad("Campaign", TAB_TITLE_LENGTH), (campaignPanel));
 	}
 
@@ -567,7 +567,7 @@ public class InfoPanel extends JTabbedPane{
 		BiomeModel biomes = panel.getController().getBiomes();
 		PopulationModel population = panel.getController().getPopulation();
 		Point zero = panel.getRecord().getZero();
-		
+
 		hexGeneralPanel.dopaint();
 		demographicsPanel.doPaint();
 
@@ -625,7 +625,7 @@ public class InfoPanel extends JTabbedPane{
 		city1.doPaint();
 
 		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
-		
+
 
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			zeroPopComponents();
@@ -656,10 +656,10 @@ public class InfoPanel extends JTabbedPane{
 					pane.doPaint();
 				}
 				if(selectedNPC>-1) {
-//					MyTextPane pane = npcTexts.get(selectedNPC);
-//					pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//					npcScrollPane.scrollRectToVisible(pane.getBounds());
-//					SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
+					//					MyTextPane pane = npcTexts.get(selectedNPC);
+					//					pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+					//					npcScrollPane.scrollRectToVisible(pane.getBounds());
+					//					SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
 					this.npcTexts.get(selectedNPC).setCaretPosition(0);
 				}
 			}else {
@@ -698,7 +698,7 @@ public class InfoPanel extends JTabbedPane{
 				pane.doPaint();
 			}
 			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
-			
+
 			if(population.isCity(capital)) {
 				for(int i = 0;i<this.factionTexts.size();i++) {
 					MyTextPane pane = this.factionTexts.get(i);
@@ -764,11 +764,13 @@ public class InfoPanel extends JTabbedPane{
 	private String getDefaultRegionNameText(Point pos,boolean isCity) {
 		if(isCity) {
 			NPCSpecies species = panel.getController().getPopulation().getMajoritySpecies(pos.x, pos.y);
-			if(species==null) {
+			try {
+				LocationNameModel names = panel.getController().getNames();
+				return names.getName(species.getCityNameGen(), pos);
+			}catch (NullPointerException e) {
 				System.err.println("population not found:"+panel.getRecord().normalizePOS(pos));
+				return "None";
 			}
-			LocationNameModel names = panel.getController().getNames();
-			return names.getName(species.getCityNameGen(), pos);
 		}else {
 			BiomeModel biomes = panel.getController().getBiomes();
 			Point region = biomes.getAbsoluteRegion(pos);
@@ -860,8 +862,8 @@ public class InfoPanel extends JTabbedPane{
 		if(maintab==0) {
 			detailsTabs.setSelectedIndex(subtab);
 			if(ENCOUNTER_TAB_INDEX==subtab) {
-//				selectedEncounter=index;
-//				this.repaint();
+				//				selectedEncounter=index;
+				//				this.repaint();
 			}else if(NPC_TAB_INDEX==subtab) {
 				selectedNPC=index;
 				this.repaint();
@@ -872,8 +874,8 @@ public class InfoPanel extends JTabbedPane{
 				selectedDungeon=index;
 				this.repaint();
 			}else if(DUNGEON_ENCOUNTER_TAB_INDEX==subtab) {
-//				selectedDEncounter=index;
-//				this.repaint();
+				//				selectedDEncounter=index;
+				//				this.repaint();
 			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}else {
 			regionTabs.setSelectedIndex(subtab);
@@ -901,7 +903,7 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	@Override
-    public void repaint() {
+	public void repaint() {
 		super.repaint();
 	}
 

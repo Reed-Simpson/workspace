@@ -137,17 +137,18 @@ public class MonsterModel {
 	}
 	
 	public Species getWanderingMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
-		BiomeType habitat;
+		WeightedTable<Species> species;
 		int index;
 		if(i<4) {
-			habitat = habitats.key1;
-			index = habitat.getID(0);
-		}else {
-			habitat = habitats.key2;
-			if(habitats.key1==habitats.key2) index = habitat.getID(1);
-			else index = habitat.getID(0);
+			species = BeastType.getSpecies(habitats.key1);
+			index = habitats.key1.getID(0);
+		}else if(habitats.key2!=null) {
+			species = BeastType.getSpecies(habitats.key2);
+			if(habitats.key1==habitats.key2) index = habitats.key2.getID(1);
+			else index = habitats.key2.getID(0);
+		} else {
+			return null;
 		}
-		WeightedTable<Species> species = BeastType.getSpecies(habitat);
 		Indexible obj = getIndexible(territoryRef, index);
 		return species.getByWeight(obj);
 	}

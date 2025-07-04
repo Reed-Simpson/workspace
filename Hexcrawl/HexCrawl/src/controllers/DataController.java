@@ -20,6 +20,7 @@ import data.npc.NPCModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
+import data.population.Species;
 import data.precipitation.PrecipitationModel;
 import data.threat.ThreatModel;
 import io.SaveRecord;
@@ -155,7 +156,10 @@ public class DataController {
 			BiomeType townBiome = null;
 			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
 			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
-			value = monsters.getWanderingMonster(region, i,biomes).getSpeciesName();break;
+			Species species = monsters.getWanderingMonster(region, i,biomes);
+			if(species!=null) value = species.getSpeciesName();
+			else value = "None";
+			break;
 		}
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}

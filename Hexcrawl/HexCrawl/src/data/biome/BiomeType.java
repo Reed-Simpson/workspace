@@ -91,7 +91,7 @@ public enum BiomeType {
 		case BEACH: return  new Pair<BiomeType,BiomeType>(BEACH,WATER);
 		case TOWN: return  new Pair<BiomeType,BiomeType>(CITY,CITY);
 		case CITY: return  new Pair<BiomeType,BiomeType>(CITY,CITY);
-		case SALTPAN: return  new Pair<BiomeType,BiomeType>(DESERT,DESERT);
+		case SALTPAN: return  new Pair<BiomeType,BiomeType>(DESERT,null);
 		case DESERT: return  new Pair<BiomeType,BiomeType>(DESERT,DESERT);
 		case GRASSLAND:return  new Pair<BiomeType,BiomeType>(GRASSLAND,GRASSLAND);
 		case HIGHLAND:return  new Pair<BiomeType,BiomeType>(GRASSLAND,ROCKYHILLS);
@@ -101,15 +101,15 @@ public enum BiomeType {
 		case TAIGA:return  new Pair<BiomeType,BiomeType>(FOREST,SNOW);
 		case WOODYHILLS:return  new Pair<BiomeType,BiomeType>(FOREST,ROCKYHILLS);
 		case FOREST: return  new Pair<BiomeType,BiomeType>(FOREST,FOREST);
-		case SNOW: return  new Pair<BiomeType,BiomeType>(SNOW,SNOW);
-		case GLACIERS: return  new Pair<BiomeType,BiomeType>(SNOW,SNOW);
-		case JUNGLE: return  new Pair<BiomeType,BiomeType>(JUNGLE,JUNGLE);
+		case SNOW: return  new Pair<BiomeType,BiomeType>(SNOW,MOUNTAINS);
+		case GLACIERS: return  new Pair<BiomeType,BiomeType>(SNOW,MOUNTAINS);
+		case JUNGLE: return  new Pair<BiomeType,BiomeType>(JUNGLE,FOREST);
 		case RIVER: return  new Pair<BiomeType,BiomeType>(LAKE,LAKE);
 		case LAKE: return  new Pair<BiomeType,BiomeType>(LAKE,LAKE);
 		case SHALLOWS: return  new Pair<BiomeType,BiomeType>(WATER,WATER);
 		case WATER: return  new Pair<BiomeType,BiomeType>(WATER,WATER);
 		case VOLCANIC: return  new Pair<BiomeType,BiomeType>(MOUNTAINS,MOUNTAINS);
-		case MOUNTAINS: return  new Pair<BiomeType,BiomeType>(MOUNTAINS,MOUNTAINS);
+		case MOUNTAINS: return  new Pair<BiomeType,BiomeType>(MOUNTAINS,SNOW);
 		case WETLAND: return  new Pair<BiomeType,BiomeType>(WETLAND,LAKE);
 		case SALTMARSH: return  new Pair<BiomeType,BiomeType>(WETLAND,WATER);
 		default:

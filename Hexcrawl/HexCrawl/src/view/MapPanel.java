@@ -553,6 +553,10 @@ public class MapPanel  extends JPanel{
 			g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+inset, this.getHeight()-corneroffset-height/2);
 			g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
 			g2.setFont(g2.getFont().deriveFont(12f));
+			if(scale>2) {
+				g2.drawLine(corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height/3, corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height/2);
+				g2.drawString("6 miles", corneroffset+inset-22+(int)(scale*2), this.getHeight()-corneroffset-height*2/3);
+			}
 			String str = lineDist+" miles";
 			int stringwidth = g2.getFontMetrics().stringWidth(str);
 			g2.drawString(str, corneroffset+width-inset/2-stringwidth, this.getHeight()-corneroffset-height*2/3);
@@ -660,9 +664,11 @@ public class MapPanel  extends JPanel{
 			for(int j=r.y;j<r.height;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
-					BasicSpline spline = splineCache.get(p);
-					if(spline==null) spline = getRiverSpline(p);
-					newcache.put(p, spline);
+					if(getRiverWidth(controller.getPrecipitation().getFlowVolume(p))>riverRenderThreshold()) {
+						BasicSpline spline = splineCache.get(p);
+						if(spline==null) spline = getRiverSpline(p);
+						newcache.put(p, spline);
+					}
 				}
 			}
 			counter.increment();
@@ -705,12 +711,21 @@ public class MapPanel  extends JPanel{
 	private void drawCurvedRiver(Graphics2D g2, int displayScale, Point p0,BasicSpline spline) {
 		Float volume = controller.getPrecipitation().getFlowVolume(p0);
 		if(spline!=null && volume!=null) {
-			float width = (float) (Math.sqrt(volume)/15.0f*displayScale);
-			if(width>displayScale) width = displayScale;
-			if(showRivers||width>(1+scale/20)) {
+			float width = getRiverWidth(volume);
+			if(showRivers||width>riverRenderThreshold()) {
 				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0);
 			}
 		}
+	}
+
+	private float getRiverWidth(Float volume) {
+		float width = (float) (Math.sqrt(volume)/15.0f*scale);
+		if(width>scale) width = (float) scale;
+		return width;
+	}
+
+	private double riverRenderThreshold() {
+		return 1+scale/20;
 	}
 
 	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0) {

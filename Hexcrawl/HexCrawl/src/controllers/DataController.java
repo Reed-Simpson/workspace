@@ -386,7 +386,7 @@ public class DataController {
 		String result = this.getText(type, actualPos, index);
 		
 		Matcher matcher;
-		matcher = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\})").matcher(result);
+		matcher = Reference.LINKDETECT.matcher(result);
 		while(matcher.find()) {
 			result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
 		}

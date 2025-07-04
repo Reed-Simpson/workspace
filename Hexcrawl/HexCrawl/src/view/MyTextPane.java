@@ -236,7 +236,7 @@ public class MyTextPane extends JTextPane {
 			if(textLink==null) {
 				textPane.setToolTipText(null);
 			} else {
-				Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
+				Matcher matcher = Reference.PATTERN.matcher(textLink);
 				if(matcher.matches()) {
 					HexData type = HexData.get(matcher.group(1));
 					String tooltipText = controller.getToolTipText(

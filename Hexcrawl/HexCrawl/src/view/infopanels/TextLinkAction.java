@@ -1,10 +1,10 @@
 package view.infopanels;
 import java.awt.event.ActionEvent;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 
+import data.Reference;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")
@@ -18,7 +18,7 @@ import view.InfoPanel;
 		}
 
 		public void execute(){
-			Matcher matcher = Pattern.compile("\\{(\\D+):(-?\\d+),(-?\\d+),(\\d+)\\}\\$").matcher(textLink);
+			Matcher matcher = Reference.PATTERN.matcher(textLink);
 			if(matcher.matches()) {
 				info.selectTabAndIndex(
 						matcher.group(1),

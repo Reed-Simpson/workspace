@@ -10,6 +10,7 @@ public class Reference implements Serializable{
 	public static String PARTIAL = "\\{(\\w+):(-?\\d+),(-?\\d+),(\\d+)";
 	public static String FULL = PARTIAL+"\\}\\$";
 	public static Pattern PATTERN = Pattern.compile(FULL);
+	public static Pattern LINKDETECT = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\}\\$)");
 	
 	HexData type;
 	Point point;

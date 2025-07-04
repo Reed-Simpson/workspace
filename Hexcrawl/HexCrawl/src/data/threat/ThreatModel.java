@@ -174,7 +174,7 @@ public class ThreatModel extends DataModel{
 		else if(index==2) noun = FactionNameGenerator.getNoun(faction);
 		else if(index==3) noun = factionGen.getNoun(faction);
 		String name = Util.formatTableResult("The "+adj+" "+noun,faction);
-		if(name.contains("${subtype}")) name = Util.replace(name, "${subtype}", threat.getSubtype().getName());
+		if(name.contains("${subtype}")) name = Util.replace(name, "${subtype}", threat.getSubtype().getSpeciesName());
 		faction.setName(name);
 		String domain = threat.getDomain();
 		if(domain!=null) faction.setDomain(domain);

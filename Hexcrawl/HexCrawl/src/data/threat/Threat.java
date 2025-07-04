@@ -84,7 +84,7 @@ public class Threat extends Creature{
 			}
 			e1Text.append(Util.toCamelCase(name)+"\r\n");
 		}
-		e1Text.append(Util.toCamelCase(this.getType().name()+" - "+this.getSubtype().getName())+"\r\n");
+		e1Text.append(Util.toCamelCase(this.getType().name()+" - "+this.getSubtype().getSpeciesName())+"\r\n");
 		e1Text.append("Motive: "+this.getMotive()+"\r\n");
 		e1Text.append("Flaw: "+this.getFlaw()+"\r\n");
 		e1Text.append("Plan: "+this.getPlan());

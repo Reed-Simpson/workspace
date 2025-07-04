@@ -15,6 +15,7 @@ import data.economy.EconomicModel;
 import data.encounters.EncounterModel;
 import data.location.LocationModel;
 import data.magic.MagicModel;
+import data.monster.MonsterModel;
 import data.npc.NPCModel;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
@@ -41,6 +42,7 @@ public class DataController {
 	private DungeonModel dungeons;
 	private EncounterModel encounters;
 	private SaveRecord record;
+	private MonsterModel monsters;
 
 	public DataController(SaveRecord record) {
 		this.record = record;
@@ -57,6 +59,7 @@ public class DataController {
 		this.pois = new LocationModel(record,this);
 		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);
+		this.monsters = new MonsterModel(this);
 	}
 	
 	public DataModel getModel(HexData type) {
@@ -146,6 +149,10 @@ public class DataController {
 		case NONE: value = "";break;
 		case THREAD: value = "";break;
 		case CHARACTER: value = "";break;
+		case BEAST: {
+			Point region = biomes.getAbsoluteRegion(p);
+			value = monsters.getWanderingMonster(region, i).getSpeciesName();break;
+		}
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
 		if(value==null) return null;
@@ -197,6 +204,10 @@ public class DataController {
 		case NONE: return record.getNote(p);
 		case THREAD: return record.getCampaignThread(i);
 		case CHARACTER: return record.getCampaignCharacter(i).toString();
+		case BEAST: {
+			Point region = biomes.getAbsoluteRegion(p);
+			return record.getBeast(region, i);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -234,6 +245,10 @@ public class DataController {
 		case NONE: return record.removeNote(p);
 		case THREAD: return record.removeCampaignThread(i);
 		case CHARACTER: return record.removeCampaignCharacter(i).toString();
+		case BEAST: {
+			Point region = biomes.getAbsoluteRegion(p);
+			return record.removeBeast(region,i);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -271,6 +286,10 @@ public class DataController {
 		case NONE: return record.putNote(p, s);
 		case THREAD: return record.putCampaignThread(i,s);
 		case CHARACTER: return record.putCampaignCharacter(i,s);
+		case BEAST: {
+			Point region = biomes.getAbsoluteRegion(p);
+			return record.putBeast(region, i, s);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -308,6 +327,9 @@ public class DataController {
 		case NONE: return "";
 		case THREAD: return "";
 		case CHARACTER: return "";
+		case BEAST:{
+			return monsters.getWanderingMonster(p,record.getRandom()).getSpeciesName(); 
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -410,6 +432,10 @@ public class DataController {
 
 	public SaveRecord getRecord() {
 		return record;
+	}
+
+	public MonsterModel getMonsters() {
+		return monsters;
 	}
 
 }

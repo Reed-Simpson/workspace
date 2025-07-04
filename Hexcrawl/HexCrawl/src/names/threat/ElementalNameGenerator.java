@@ -108,7 +108,7 @@ public class ElementalNameGenerator extends ThreatNameGenerator{
 
 	@Override
 	public String getDomain(Threat threat) {
-		return threat.getSubtype().getName();
+		return threat.getSubtype().getSpeciesName();
 	}
 
 }

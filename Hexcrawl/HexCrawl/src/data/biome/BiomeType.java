@@ -98,9 +98,9 @@ public enum BiomeType {
 		case GLACIERS: return SNOW;
 		case JUNGLE: return JUNGLE;
 		case RIVER:
-		case SHALLOWS:
-		case WATER:
 		case LAKE: return LAKE;
+		case SHALLOWS:
+		case WATER: return WATER;
 		case VOLCANIC:
 		case MOUNTAINS: return MOUNTAINS;
 		case WETLAND:

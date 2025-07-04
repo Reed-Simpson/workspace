@@ -56,6 +56,7 @@ public class SaveRecord implements Serializable {
 	private ArrayList<String> campaignThreads;
 	private HashMap<Point,ArrayList<String>> minions;
 	private HashSet<Point> explored;
+	private HashMap<Point,ArrayList<String>> beasts;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -81,6 +82,7 @@ public class SaveRecord implements Serializable {
 		this.faiths = new HashMap<Point,ArrayList<String>>();
 		this.highlights = new HashMap<Point,Color>();
 		this.minions = new HashMap<Point,ArrayList<String>>();
+		this.beasts = new HashMap<Point,ArrayList<String>>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
 		this.campaignThreads = new ArrayList<String>();
@@ -222,6 +224,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.faiths==null) loadedRecord.faiths = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.highlights==null) loadedRecord.highlights = new HashMap<Point,Color>();
 			if(loadedRecord.minions==null) loadedRecord.minions = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.beasts==null) loadedRecord.beasts = new HashMap<Point,ArrayList<String>>();
 			
 			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
 			if(loadedRecord.campaignThreads==null) loadedRecord.campaignThreads = new ArrayList<String>();
@@ -650,5 +653,30 @@ public class SaveRecord implements Serializable {
 
 	public void setHero(Point hero) {
 		this.hero = hero;
+	}
+
+	public String putBeast(Point p,int i,String s) {
+		if(!this.beasts.containsKey(p)) this.beasts.put(p, new ArrayList<String>());
+		ArrayList<String> beast = this.beasts.get(p);
+		while(beast.size()<i+1) beast.add(null);
+		String set = beast.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getBeast(Point p,int i) {
+		ArrayList<String> beast = this.beasts.get(p);
+		if(beast==null||beast.size()<=i) return null;
+		return beast.get(i);
+	}
+	public String removeBeast(Point p,int i) {
+		ArrayList<String> beast = this.beasts.get(p);
+		if(beast==null||beast.size()<=i) return null;
+		String set = beast.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 }

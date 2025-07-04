@@ -121,8 +121,11 @@ public class Util {
 	public static String replace(String string,String match,String replacement) {
 		if(string==null||match==null) return string;
 		int i = string.indexOf(match);
-		if(i>-1) return string.substring(0,i)+replacement+string.substring(i+match.length());
-		else return string;
+		while(i>-1) {
+			string = string.substring(0,i)+replacement+string.substring(i+match.length());
+			i = string.indexOf(match);
+		}
+		return string;
 	}
 
 	public static String getTownIndex(Indexible obj,Point p,Point zero) {
@@ -284,7 +287,7 @@ public class Util {
 	}
 
 	public static String formatSubtype(String string,CreatureSubtype type) {
-		return Util.replace(string,"${subtype}",type.getName());
+		return Util.replace(string,"${subtype}",type.getSpeciesName());
 	}
 	public static String formatSpecies(String string, Species species) {
 		return Util.replace(string,"${species}",species.toString());

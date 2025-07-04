@@ -75,7 +75,7 @@ public enum ElementalType implements CreatureSubtype {
 	
 	@Override
 	public String getSpeciesName() {
-		return getName()+" Elemental";
+		return CreatureSubtype.super.getSpeciesName()+" Elemental";
 	}
 	@Override
 	public ThreatNameGenerator getNameGen() {

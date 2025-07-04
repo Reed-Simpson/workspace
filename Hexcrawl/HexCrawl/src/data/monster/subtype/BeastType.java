@@ -19,7 +19,7 @@ public enum BeastType implements Species {
 	
 	private static HashMap<BiomeType,WeightedTable<Species>> habitats;
 	
-	public WeightedTable<Species> getSpecies(BiomeType type){
+	public static WeightedTable<Species> getSpecies(BiomeType type){
 		if(habitats==null) populateHabitats();
 		WeightedTable<Species> result = habitats.get(type);
 		if(result==null) throw new IllegalStateException("Unrecognized Habitat Type:"+type.toString());
@@ -318,6 +318,15 @@ public enum BeastType implements Species {
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
 			list.put(QUIPPER);
+			list.put(CONSTRICTOR_SNAKE);
+			list.put(SWARM_OF_QUIPPERS);
+			list.put(GIANT_CONSTRICTOR_SNAKE);
+			list.put(PLESIOSAURUS);
+			habitats.put(BiomeType.LAKE, list);
+		}
+		{
+			WeightedTable<Species> list = new WeightedTable<Species>();
+			list.put(QUIPPER);
 			list.put(DOLPHIN);
 			list.put(CONSTRICTOR_SNAKE);
 			list.put(GIANT_SEA_HORSE);
@@ -326,10 +335,9 @@ public enum BeastType implements Species {
 			list.put(SWARM_OF_QUIPPERS);
 			list.put(GIANT_CONSTRICTOR_SNAKE);
 			list.put(HUNTER_SHARK);
-			list.put(PLESIOSAURUS);
 			list.put(KILLER_WHALE);
 			list.put(GIANT_SHARK);
-			habitats.put(BiomeType.LAKE, list);
+			habitats.put(BiomeType.WATER, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();

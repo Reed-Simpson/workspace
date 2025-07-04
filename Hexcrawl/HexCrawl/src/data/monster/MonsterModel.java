@@ -1,10 +1,15 @@
 package data.monster;
 
 import java.awt.Point;
+import java.util.Random;
 
+import controllers.DataController;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
+import data.biome.BiomeType;
+import data.monster.subtype.BeastType;
+import data.population.Species;
 import io.SaveRecord;
 import util.Util;
 
@@ -129,17 +134,42 @@ public class MonsterModel {
 		String weakness = getWeakness(obj);
 		return trait+", "+(personality+" "+animal+"(s) with "+ability+" "+feature).toLowerCase()+". Uses "+(tactic+" tactics and has a weakness to "+weakness+".").toLowerCase();
 	}
-
-	private SaveRecord record;
 	
-	public MonsterModel(SaveRecord record) {
-		this.record = record;
+	public Species getWanderingMonster(Point p,int i) {
+		BiomeType biome = controller.getBiomes().getBiome(p);
+		//CreatureType type = controller.getThreats().getThreatCreatureType(p);
+		WeightedTable<Species> species = BeastType.getSpecies(biome.getHabitat());
+		Indexible obj = getIndexible(p, i);
+		return species.getByWeight(obj);
 	}
 	
+	public Species getWanderingMonster(Point p,Random rand) {
+		BiomeType biome = controller.getBiomes().getBiome(p);
+		//CreatureType type = controller.getThreats().getThreatCreatureType(p);
+		WeightedTable<Species> species = BeastType.getSpecies(biome.getHabitat());
+		Indexible obj = getIndexible(rand);
+		return species.getByWeight(obj);
+	}
+
+	private SaveRecord record;
+	private DataController controller;
+	
+	public MonsterModel(DataController controller) {
+		this.record = controller.getRecord();
+		this.controller = controller;
+	}
+
 	public Indexible getIndexible(Point p,int index) {
 		float[] floats = new float[TABLECOUNT];
 		for(int n=0;n<floats.length;n++) {
 			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n+index*TABLECOUNT), p.x, p.y);
+		}
+		return new Indexible(floats);
+	}
+	public Indexible getIndexible(Random rand) {
+		float[] floats = new float[TABLECOUNT];
+		for(int n=0;n<floats.length;n++) {
+			floats[n] = rand.nextFloat();
 		}
 		return new Indexible(floats);
 	}

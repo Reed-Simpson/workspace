@@ -29,9 +29,9 @@ import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.magic.MagicModel;
+import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
-import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
@@ -61,6 +61,7 @@ public class InfoPanel extends JTabbedPane{
 	private int NPC_TAB_INDEX;
 	private int ENCOUNTER_TAB_INDEX;
 	private int MINIONS_TAB_INDEX;
+	private int BEASTS_TAB_INDEX;
 	private MapPanel panel;
 
 	private JLabel biome;
@@ -117,6 +118,8 @@ public class InfoPanel extends JTabbedPane{
 	private JPanel dungeonPanel;
 	private ArrayList<MyTextPane> minionsTexts;
 	private int selectedMinion;
+	private ArrayList<MyTextPane> beastsTexts;
+	private int selectedBeast;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -399,6 +402,23 @@ public class InfoPanel extends JTabbedPane{
 		minionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Minions", minionsScrollPane);
 		this.MINIONS_TAB_INDEX = regionTabs.getTabCount()-1;
+
+
+		//Wandering Monsters tab
+		JPanel beastsPanel = new JPanel();
+		beastsPanel.setLayout(new BoxLayout(beastsPanel, BoxLayout.Y_AXIS));
+		beastsTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<NPCCOUNT;i++) {
+			beastsPanel.add(new JLabel("~~~~~ Wandering Monster #"+(i+1)+" ~~~~~"));
+			MyTextPane beast = new MyTextPane(this, i, HexData.BEAST);
+			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			beastsPanel.add(beast);
+			beastsTexts.add(beast);
+		}
+		JScrollPane beastsScrollPane = new JScrollPane(beastsPanel);
+		beastsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("Monsters", beastsScrollPane);
+		this.BEASTS_TAB_INDEX = regionTabs.getTabCount()-1;
 		
 		regionPanel.add(regionTabs);
 
@@ -677,26 +697,6 @@ public class InfoPanel extends JTabbedPane{
 				pane.doPaint();
 			}
 			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
-
-			for(int i = 0;i<this.faithsTexts.size();i++) {
-				MyTextPane pane = this.faithsTexts.get(i);
-				if(i==selectedFaith) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
-				pane.doPaint();
-			}
-
-			for(int i = 0;i<this.minionsTexts.size();i++) {
-				MyTextPane pane = this.minionsTexts.get(i);
-				if(i==selectedMinion) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
-				pane.doPaint();
-			}
 			
 			if(population.isCity(capital)) {
 				for(int i = 0;i<this.factionTexts.size();i++) {
@@ -720,6 +720,36 @@ public class InfoPanel extends JTabbedPane{
 			this.charactersList.get(i).doPaint();
 		}
 
+		for(int i = 0;i<this.faithsTexts.size();i++) {
+			MyTextPane pane = this.faithsTexts.get(i);
+			if(i==selectedFaith) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+		}
+
+		for(int i = 0;i<this.minionsTexts.size();i++) {
+			MyTextPane pane = this.minionsTexts.get(i);
+			if(i==selectedMinion) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+		}
+
+		for(int i = 0;i<this.beastsTexts.size();i++) {
+			MyTextPane pane = this.beastsTexts.get(i);
+			if(i==selectedBeast) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+		}
+
 		hexNote1.doPaint();
 		changeSelected = true;
 	}
@@ -733,6 +763,9 @@ public class InfoPanel extends JTabbedPane{
 	private String getDefaultRegionNameText(Point pos,boolean isCity) {
 		if(isCity) {
 			NPCSpecies species = panel.getController().getPopulation().getMajoritySpecies(pos.x, pos.y);
+			if(species==null) {
+				System.err.println("population not found:"+panel.getRecord().normalizePOS(pos));
+			}
 			LocationNameModel names = panel.getController().getNames();
 			return names.getName(species.getCityNameGen(), pos);
 		}else {
@@ -814,6 +847,7 @@ public class InfoPanel extends JTabbedPane{
 		case "district": selectTab(1,CITY_TAB_INDEX,index);break;
 		case "faith": selectTab(1,FAITH_TAB_INDEX,index);break;
 		case "minion": selectTab(1,MINIONS_TAB_INDEX,index);break;
+		case "beast": selectTab(1,BEASTS_TAB_INDEX,index);break;
 		case "character": selectTab(2,0,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
 		}
@@ -851,6 +885,9 @@ public class InfoPanel extends JTabbedPane{
 				this.repaint();
 			}else if(MINIONS_TAB_INDEX==subtab) {
 				//selectedMinion=index;
+				this.repaint();
+			}else if(BEASTS_TAB_INDEX==subtab) {
+				//selectedBeast=index;
 				this.repaint();
 			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}

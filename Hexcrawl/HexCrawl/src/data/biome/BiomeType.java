@@ -74,39 +74,44 @@ public enum BiomeType {
 		return travel;
 	}
 	
-	public Pair<BiomeType,BiomeType> getHabitat() {
+	public Pair<BiomeType,BiomeType> getHabitat(BiomeType townBiome) {
+		if(townBiome!=null) {
+			if(this.equals(CITY)) return new Pair<BiomeType,BiomeType>(CITY,townBiome.getHabitat(null).key1);
+			else return new Pair<BiomeType,BiomeType>(townBiome.getHabitat(null).key1,CITY);
+		}
+		
 		switch(this) {
 		case VOID: return new Pair<BiomeType,BiomeType>(VOID,VOID);
-		case ROCKYHILLS:
-		case STEPPE:
-		case BADLANDS:return  new Pair<BiomeType,BiomeType>(ROCKYHILLS,ROCKYHILLS);
-		case CLIFFS:
-		case DELTA:
-		case FJORDS:
-		case BEACH: return  new Pair<BiomeType,BiomeType>(BEACH,BEACH);
-		case TOWN:
+		case ROCKYHILLS:return  new Pair<BiomeType,BiomeType>(ROCKYHILLS,MOUNTAINS);
+		case STEPPE:return  new Pair<BiomeType,BiomeType>(ROCKYHILLS,DESERT);
+		case BADLANDS:return  new Pair<BiomeType,BiomeType>(ROCKYHILLS,GRASSLAND);
+		case CLIFFS:return  new Pair<BiomeType,BiomeType>(BEACH,MOUNTAINS);
+		case DELTA:return  new Pair<BiomeType,BiomeType>(BEACH,LAKE);
+		case FJORDS:return  new Pair<BiomeType,BiomeType>(BEACH,ROCKYHILLS);
+		case BEACH: return  new Pair<BiomeType,BiomeType>(BEACH,WATER);
+		case TOWN: return  new Pair<BiomeType,BiomeType>(CITY,CITY);
 		case CITY: return  new Pair<BiomeType,BiomeType>(CITY,CITY);
-		case SALTPAN:
+		case SALTPAN: return  new Pair<BiomeType,BiomeType>(DESERT,DESERT);
 		case DESERT: return  new Pair<BiomeType,BiomeType>(DESERT,DESERT);
-		case GRASSLAND:
-		case HIGHLAND:
-		case SAVANNA:
-		case FLOODPLAIN: return  new Pair<BiomeType,BiomeType>(GRASSLAND,GRASSLAND);
-		case HIGHLANDFOREST:
-		case TAIGA:
-		case WOODYHILLS:
+		case GRASSLAND:return  new Pair<BiomeType,BiomeType>(GRASSLAND,GRASSLAND);
+		case HIGHLAND:return  new Pair<BiomeType,BiomeType>(GRASSLAND,ROCKYHILLS);
+		case SAVANNA:return  new Pair<BiomeType,BiomeType>(GRASSLAND,DESERT);
+		case FLOODPLAIN: return  new Pair<BiomeType,BiomeType>(GRASSLAND,WETLAND);
+		case HIGHLANDFOREST:return  new Pair<BiomeType,BiomeType>(FOREST,ROCKYHILLS);
+		case TAIGA:return  new Pair<BiomeType,BiomeType>(FOREST,SNOW);
+		case WOODYHILLS:return  new Pair<BiomeType,BiomeType>(FOREST,ROCKYHILLS);
 		case FOREST: return  new Pair<BiomeType,BiomeType>(FOREST,FOREST);
-		case SNOW:
+		case SNOW: return  new Pair<BiomeType,BiomeType>(SNOW,SNOW);
 		case GLACIERS: return  new Pair<BiomeType,BiomeType>(SNOW,SNOW);
 		case JUNGLE: return  new Pair<BiomeType,BiomeType>(JUNGLE,JUNGLE);
-		case RIVER:
+		case RIVER: return  new Pair<BiomeType,BiomeType>(LAKE,LAKE);
 		case LAKE: return  new Pair<BiomeType,BiomeType>(LAKE,LAKE);
-		case SHALLOWS:
+		case SHALLOWS: return  new Pair<BiomeType,BiomeType>(WATER,WATER);
 		case WATER: return  new Pair<BiomeType,BiomeType>(WATER,WATER);
-		case VOLCANIC:
+		case VOLCANIC: return  new Pair<BiomeType,BiomeType>(MOUNTAINS,MOUNTAINS);
 		case MOUNTAINS: return  new Pair<BiomeType,BiomeType>(MOUNTAINS,MOUNTAINS);
-		case WETLAND:
-		case SALTMARSH: return  new Pair<BiomeType,BiomeType>(WETLAND,WETLAND);
+		case WETLAND: return  new Pair<BiomeType,BiomeType>(WETLAND,LAKE);
+		case SALTMARSH: return  new Pair<BiomeType,BiomeType>(WETLAND,WATER);
 		default:
 			throw new IllegalArgumentException("Unrecognized BiomeType:"+this.toString());
 		}

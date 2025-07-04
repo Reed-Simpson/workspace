@@ -2,7 +2,6 @@ package controllers;
 
 import java.awt.Point;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import data.DataModel;
 import data.HexData;
@@ -18,9 +17,9 @@ import data.location.LocationModel;
 import data.magic.MagicModel;
 import data.monster.MonsterModel;
 import data.npc.NPCModel;
+import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
-import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import data.threat.ThreatModel;
 import io.SaveRecord;
@@ -153,7 +152,9 @@ public class DataController {
 		case CHARACTER: value = "";break;
 		case BEAST: {
 			Point region = monsters.getTerritoryRef(p,i);
-			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat();
+			BiomeType townBiome = null;
+			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
+			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
 			value = monsters.getWanderingMonster(region, i,biomes).getSpeciesName();break;
 		}
 		default: value = getModel(type).getDefaultValue(p, i).toString();
@@ -331,7 +332,9 @@ public class DataController {
 		case THREAD: return "";
 		case CHARACTER: return "";
 		case BEAST:{
-			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat();
+			BiomeType townBiome = null;
+			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
+			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
 			return monsters.getWanderingMonster(record.getRandom(),i,biomes).getSpeciesName(); 
 		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());

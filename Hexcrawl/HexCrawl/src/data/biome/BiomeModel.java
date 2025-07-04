@@ -74,6 +74,10 @@ public class BiomeModel extends DataModel {
 		Pair<BiomeType, Float> pair = getBiomePair(x, y);
 		return pair.key1;
 	}
+	public BiomeType getBaseBiome(Point p) {
+		Pair<BiomeType, Float> pair = getBaseBiomePair(p);
+		return pair.key1;
+	}
 	
 	public String getRegionName(Point p) {
 		int[] vals = new int[NAMEINDEXES];
@@ -92,14 +96,17 @@ public class BiomeModel extends DataModel {
 	}
 
 	private Pair<BiomeType, Float> getBiomePair(int x, int y) {
-		float height = grid.getHeight(x, y);
-		float humidity = precipitation.getPrecipitation(x, y);
 		Point p = new Point(x,y);
 		if(population.isCity(p)) return new Pair<BiomeType, Float>(BiomeType.CITY, 0f);
+		return getBaseBiomePair(p);
+	}
+	private Pair<BiomeType, Float> getBaseBiomePair(Point p) {
+		float height = grid.getHeight(p);
+		float humidity = precipitation.getPrecipitation(p);
 		ArrayList<BiomeType> biomes;
 		if(precipitation.isLake(p)) biomes = getLakeBiomes(p, height, humidity);
-		else biomes = getBiomes(x, y, height, humidity);
-		Pair<Integer, Float> pair = getBiomeIndexPair(x, y, biomes.size());
+		else biomes = getBiomes(p.x, p.y, height, humidity);
+		Pair<Integer, Float> pair = getBiomeIndexPair(p.x, p.y, biomes.size());
 		return new Pair<BiomeType, Float>(biomes.get(pair.key1),pair.key2);
 	}
 

@@ -135,28 +135,29 @@ public class MonsterModel {
 		return trait+", "+(personality+" "+animal+"(s) with "+ability+" "+feature).toLowerCase()+". Uses "+(tactic+" tactics and has a weakness to "+weakness+".").toLowerCase();
 	}
 	
-	public Species getWanderingMonster(Point p,int i) {
-		BiomeType biome = controller.getBiomes().getBiome(p);
-		//CreatureType type = controller.getThreats().getThreatCreatureType(p);
+	public Species getWanderingMonster(Point territoryRef,int i,BiomeType biome) {
 		WeightedTable<Species> species = BeastType.getSpecies(biome.getHabitat());
-		Indexible obj = getIndexible(p, i);
+		Indexible obj = getIndexible(territoryRef, biome.getID());
 		return species.getByWeight(obj);
 	}
 	
-	public Species getWanderingMonster(Point p,Random rand) {
-		BiomeType biome = controller.getBiomes().getBiome(p);
-		//CreatureType type = controller.getThreats().getThreatCreatureType(p);
+	public Species getWanderingMonster(Random rand,BiomeType biome) {
 		WeightedTable<Species> species = BeastType.getSpecies(biome.getHabitat());
 		Indexible obj = getIndexible(rand);
 		return species.getByWeight(obj);
 	}
+	
+	public Point getTerritoryRef(Point p,int i) {
+		int x = p.x/50;
+		int y = p.y/50;
+		x = x + (x+i/2)%2;
+		y = y + (y+i)%2;
+		return new Point(x*2,y*2);
+	}
 
 	private SaveRecord record;
-	private DataController controller;
-	
 	public MonsterModel(DataController controller) {
 		this.record = controller.getRecord();
-		this.controller = controller;
 	}
 
 	public Indexible getIndexible(Point p,int index) {

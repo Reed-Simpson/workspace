@@ -51,6 +51,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
+	public static final int MONSTERCOUNT = 4;
 	
 	private int FAITH_TAB_INDEX;
 	private int FACTION_TAB_INDEX;
@@ -408,7 +409,7 @@ public class InfoPanel extends JTabbedPane{
 		JPanel beastsPanel = new JPanel();
 		beastsPanel.setLayout(new BoxLayout(beastsPanel, BoxLayout.Y_AXIS));
 		beastsTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<NPCCOUNT;i++) {
+		for(int i=0;i<MONSTERCOUNT;i++) {
 			beastsPanel.add(new JLabel("~~~~~ Wandering Monster #"+(i+1)+" ~~~~~"));
 			MyTextPane beast = new MyTextPane(this, i, HexData.BEAST);
 			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));

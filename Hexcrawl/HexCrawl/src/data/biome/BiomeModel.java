@@ -114,11 +114,9 @@ public class BiomeModel extends DataModel {
 			if(precipitation.getLakeFlow(p)>21) biomes.add(BiomeType.LAKE);
 			if(precipitation.getLakeFlow(p)<28) biomes.add(BiomeType.WETLAND);
 		}
-		else if(depth<0.005) biomes.add(BiomeType.FLOODPLAIN);
-		else {
-			if(precipitation.getLakeFlow(p)*depth<0.02) biomes.add(BiomeType.WETLAND);
-			else biomes.add(BiomeType.LAKE);
-		}
+		else if(depth*humidity<0.003) biomes.add(BiomeType.FLOODPLAIN);
+		else if(depth*precipitation.getLakeFlow(p)<0.02) biomes.add(BiomeType.WETLAND);
+		else biomes.add(BiomeType.LAKE);
 		return biomes;
 	}
 

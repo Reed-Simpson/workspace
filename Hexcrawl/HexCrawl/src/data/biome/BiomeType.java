@@ -107,8 +107,14 @@ public enum BiomeType {
 		case SALTMARSH: return WETLAND;
 		default:
 			throw new IllegalArgumentException("Unrecognized BiomeType:"+this.toString());
-		
 		}
+	}
+	
+	public int getID() {
+		for(int i=0;i<values().length;i++) {
+			if(values()[i]==this) return i;
+		}
+		throw new IllegalStateException();
 	}
 	
 }

@@ -382,6 +382,9 @@ public class MapPanel  extends JPanel{
 					}
 					this.drawHex(g2, getScreenPos(i,j),borderColor,color1,color2,displayScale,null);
 					if(cached==null) {
+						if(controller.getPopulation().isCity(p)) {
+							this.drawHex(g2, getScreenPos(i,j),borderColor,BiomeType.CITY.getColor(),null,displayScale,null);
+						}
 						Point offset = new Point(-35,35);
 						g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
 						g2.setColor(Color.RED);
@@ -554,7 +557,7 @@ public class MapPanel  extends JPanel{
 			g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
 			g2.setFont(g2.getFont().deriveFont(12f));
 			if(scale>2) {
-				g2.drawLine(corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height/3, corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height/2);
+				g2.drawLine(corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height/3, corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height*5/12);
 				g2.drawString("6 miles", corneroffset+inset-22+(int)(scale*2), this.getHeight()-corneroffset-height*2/3);
 			}
 			String str = lineDist+" miles";

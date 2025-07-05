@@ -1,6 +1,9 @@
 package data.threat;
 
 import java.awt.Color;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 import data.Indexible;
 import data.WeightedTable;
@@ -49,6 +52,7 @@ import names.threat.OozeNameGenerator;
 import names.threat.PlantNameGenerator;
 import names.threat.ThreatNameGenerator;
 import names.threat.UndeadNameGenerator;
+import view.Icon;
 
 public enum CreatureType implements Species{
 	DRAGON(1,new DragonNameGenerator(),Color.getHSBColor(25f/360f, 1.0f, 1.0f)), 
@@ -174,6 +178,58 @@ public enum CreatureType implements Species{
 		CreatureType result = null;
 		for(CreatureType type:CreatureType.values()) {
 			if(type.getId()==id) result=type;
+		}
+		return result;
+	}
+
+	public List<Icon> getIcons() {
+		List<Icon> result = new ArrayList<Icon>();
+		switch(this) {
+		case ABERRATION:
+			result.add(new Icon('A',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case BEAST:
+			result.add(new Icon('B',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case CELESTIAL:
+			result.add(new Icon('C',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case CONSTRUCT:
+			result.add(new Icon('C',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case DRAGON:
+			result.add(new Icon('D',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case ELEMENTAL:
+			result.add(new Icon('E',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case FEY:
+			result.add(new Icon('F',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case FIEND:
+			result.add(new Icon('F',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case GIANT:
+			result.add(new Icon('G',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case HUMANOID:
+			result.add(new Icon('H',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case MONSTROSITY:
+			result.add(new Icon('M',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case OOZE:
+			result.add(new Icon('O',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case PLANT:
+			result.add(new Icon('P',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		case UNDEAD:
+			result.add(new Icon('U',new Point(-65,70),Color.black, 1.8, 1.0f, true));
+			break;
+		default:
+			break;
+		
 		}
 		return result;
 	}

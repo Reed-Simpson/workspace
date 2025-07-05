@@ -46,6 +46,7 @@ import data.biome.BiomeModel;
 import data.biome.BiomeType;
 import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
+import data.threat.CreatureType;
 import io.AppData;
 import io.SaveRecord;
 import util.Counter;
@@ -358,6 +359,9 @@ public class MapPanel  extends JPanel{
 		if(HexData.POPULATION.equals(displayData)) {
 			NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
 			if(species!=null) result = species.getIcons();
+		}if(HexData.THREAT.equals(displayData)) {
+			CreatureType type = controller.getThreats().getThreatCreatureType(p);
+			if(type!=null) result = type.getIcons();
 		}else {
 			BiomeType biome = controller.getBiomes().getBiome(p);
 			result = biome.getIcons();

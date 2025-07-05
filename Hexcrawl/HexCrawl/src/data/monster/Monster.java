@@ -72,6 +72,7 @@ public class Monster {
 	}
 	
 	public String toString() {
+		if(this.species==null) return null;
 		String part1 = species.getSpeciesName();
 		if(personality!=null && trait != null) {
 			part1 = trait+", "+personality+" "+part1;

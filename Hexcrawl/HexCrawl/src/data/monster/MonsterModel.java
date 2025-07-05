@@ -190,6 +190,7 @@ public class MonsterModel {
 		}
 		Indexible obj = getIndexible(territoryRef, index);
 		Monster result = new Monster(species.getByWeight(obj));
+		if(result.getSpecies()==null) return null;
 		if(i<8) {
 			populateMonsterTrait(obj, result);
 		}else {

@@ -33,6 +33,7 @@ public class WeightedTable<T> extends LinkedHashMap<T,Integer> {
 	}
 
 	public T getByWeight(Indexible obj) {
+		if(getSumWeight()==0) return null;
 		int index = obj.reduceTempId(getSumWeight());
 		for(java.util.Map.Entry<T, Integer> e:this.entrySet()) {
 			if(index<e.getValue()) return e.getKey();

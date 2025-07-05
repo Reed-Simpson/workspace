@@ -2,13 +2,14 @@ package data.monster.subtype;
 
 import java.util.HashMap;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.biome.BiomeType;
 import data.population.Species;
 import data.threat.CreatureType;
 import names.IndexibleNameGenerator;
 
-public enum BeastType implements Species {
+public enum BeastMonsterType implements Species {
 	ALLOSAURUS,AMOEBA,ANGLERFISH,ANKYLOSAURUS,ANT,APE,ARMADILLO,AUROCHS,AXE_BEAK,
 	BABOON,BADGER,BAT,BEAVER,BEETLE,BIRD_OF_PARADISE,BLACK_BEAR,HAWK,BOAR,BRONTOSAURUS,BROWN_BEAR,BUTTERFLY,
 	CAMEL,CAT,CENTIPEDE,CHAMELEON,CHICKEN,CLAM,COCKROACH,CONDOR,CONSTRICTOR_SNAKE,CRAB,CRANE,CRANIUM_RAT,CROCODILE,CROW,
@@ -29,6 +30,11 @@ public enum BeastType implements Species {
 		WeightedTable<Species> result = habitats.get(type);
 		if(result==null) result = new WeightedTable<Species>();
 		return result;
+	}
+	public static Species getSpeciesByWeight(BiomeType type,Indexible obj) {
+		WeightedTable<Species> species = getSpecies(type);
+		if(species == null) return null;
+		else return species.getByWeight(obj);
 	}
 
 	private static void populateHabitats() {

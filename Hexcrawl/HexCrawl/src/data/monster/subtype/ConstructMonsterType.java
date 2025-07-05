@@ -2,17 +2,15 @@ package data.monster.subtype;
 
 import java.util.HashMap;
 
+import data.Indexible;
 import data.WeightedTable;
 import data.biome.BiomeType;
 import data.population.Species;
-import data.threat.CreatureType;
 import names.IndexibleNameGenerator;
 
-public enum HumanoidType implements Species{
-	AARAKOCRA,BUGBEAR,BULLYWUG,DEEP_SCION,DERRO_SAVANT,DERRO,DROW,DUERGAR,FLIND,GIFF,GITHYANKI,GITHZERAI,GNOLL,GOBLIN,GRIMLOCK,
-	GRUNG,HOBGOBLIN,JACKALWERE,KENKU,KOBOLD,KUOTOA,LIZARDFOLK,MEAZEL,MERFOLK,NAGPA,NILBOG,
-	ORC,OROG,QUAGGOTH,SAHUAGIN,SEA_SPAWN,SOUL_MONGER,SVIRFNEBLIN,THRIKREEN,TORTLE,TROGLODYTE,
-	WEREBEAR,WEREBOAR,WERERAT,WERETIGER,WEREWOLF,XVART,YUANTI_ABOMINATION,YUANTI_PUREBLOOD;
+public enum ConstructMonsterType implements Species{
+	STONE_CURSED,RETRIEVER,BRONZE_SCOUT,IRON_COBRA,STONE_DEFENDER,OAKEN_BOLTER,SCARECROW,CADAVER_COLLECTOR,DUERGAR_HAMMERER,DUERGAR_SCREAMER,SHIELD_GUARDIAN,STEEL_PREDATOR
+	;
 
 	private static HashMap<BiomeType,WeightedTable<Species>> habitats;
 
@@ -22,94 +20,98 @@ public enum HumanoidType implements Species{
 		if(result==null) result = new WeightedTable<Species>();
 		return result;
 	}
+	public static Species getSpeciesByWeight(BiomeType type,Indexible obj) {
+		WeightedTable<Species> species = getSpecies(type);
+		if(species == null) return null;
+		else return species.getByWeight(obj);
+	}
 
 	private static void populateHabitats() {
 		habitats = new HashMap<BiomeType,WeightedTable<Species>>();
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,GNOLL,ORC,OROG,WEREBEAR,FLIND};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.SNOW, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,MERFOLK,TORTLE,SAHUAGIN,SEA_SPAWN,DEEP_SCION,NAGPA};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.BEACH, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,GNOLL,HOBGOBLIN,JACKALWERE,MEAZEL,THRIKREEN,YUANTI_PUREBLOOD,YUANTI_ABOMINATION,WERETIGER,GITHYANKI,NAGPA};
+			Species[] array = new Species[] {STONE_CURSED,RETRIEVER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.DESERT, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,GOBLIN,GRUNG,KENKU,GNOLL,HOBGOBLIN,LIZARDFOLK,ORC,BUGBEAR,GOBLIN,MEAZEL,NILBOG,YUANTI_PUREBLOOD,LIZARDFOLK,OROG,WERERAT,
-					YUANTI_ABOMINATION,WEREWOLF,WEREBOAR,WERETIGER,WEREBEAR,FLIND,NAGPA};
+			Species[] array = new Species[] {BRONZE_SCOUT,IRON_COBRA,STONE_DEFENDER,OAKEN_BOLTER,RETRIEVER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.FOREST, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {GOBLIN,GNOLL,HOBGOBLIN,JACKALWERE,ORC,BUGBEAR,GOBLIN,MEAZEL,THRIKREEN,OROG,WEREBOAR,WERETIGER,FLIND,};
+			Species[] array = new Species[] {BRONZE_SCOUT,SCARECROW,IRON_COBRA,STONE_DEFENDER,OAKEN_BOLTER,CADAVER_COLLECTOR};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.GRASSLAND, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,XVART,GOBLIN,GNOLL,HOBGOBLIN,ORC,MEAZEL,NILBOG,OROG,WEREWOLF,WEREBOAR,WEREBEAR,FLIND,};
+			Species[] array = new Species[] {BRONZE_SCOUT,IRON_COBRA,STONE_DEFENDER,OAKEN_BOLTER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.ROCKYHILLS, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {GOBLIN,GRUNG,LIZARDFOLK,YUANTI_PUREBLOOD,YUANTI_ABOMINATION,WEREBOAR,WERETIGER,};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.JUNGLE, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,AARAKOCRA,DERRO,ORC,DUERGAR,MEAZEL,OROG,GITHYANKI,GITHZERAI};
+			Species[] array = new Species[] {BRONZE_SCOUT,STONE_CURSED,DUERGAR_HAMMERER,DUERGAR_SCREAMER,IRON_COBRA,STONE_DEFENDER,OAKEN_BOLTER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.MOUNTAINS, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,BULLYWUG,LIZARDFOLK,ORC,MEAZEL,YUANTI_PUREBLOOD,YUANTI_ABOMINATION,NAGPA,};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.WETLAND, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,XVART,DERRO,DROW,GOBLIN,GRIMLOCK,KUOTOA,TROGLODYTE,HOBGOBLIN,ORC,SVIRFNEBLIN,BUGBEAR,DUERGAR,MEAZEL,NILBOG,OROG,QUAGGOTH,
-					YUANTI_ABOMINATION,DERRO_SAVANT,SOUL_MONGER,NAGPA};
+			Species[] array = new Species[] {DUERGAR_HAMMERER,DUERGAR_SCREAMER,RETRIEVER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.VOID, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {MERFOLK,SAHUAGIN};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.LAKE, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {MERFOLK,SAHUAGIN,SEA_SPAWN,DEEP_SCION};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.WATER, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,KENKU,MEAZEL,YUANTI_PUREBLOOD,WERERAT,GIFF,GITHYANKI,GITHZERAI,SOUL_MONGER,NAGPA};
+			Species[] array = new Species[] {STONE_CURSED,SHIELD_GUARDIAN,STEEL_PREDATOR};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.CITY, list);
-			}
 		}
-	
+	}
 	@Override
 	public IndexibleNameGenerator getNameGen() {
-		return CreatureType.HUMANOID.getNameGen();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	
 }

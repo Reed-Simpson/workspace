@@ -4,6 +4,21 @@ import java.awt.Color;
 
 import data.Indexible;
 import data.WeightedTable;
+import data.biome.BiomeType;
+import data.monster.subtype.AberrationMonsterType;
+import data.monster.subtype.BeastMonsterType;
+import data.monster.subtype.CelestialMonsterType;
+import data.monster.subtype.ConstructMonsterType;
+import data.monster.subtype.DragonMonsterType;
+import data.monster.subtype.ElementalMonsterType;
+import data.monster.subtype.FeyMonsterType;
+import data.monster.subtype.FiendMonsterType;
+import data.monster.subtype.GiantMonsterType;
+import data.monster.subtype.HumanoidMonsterType;
+import data.monster.subtype.MonstrosityMonsterType;
+import data.monster.subtype.OozeMonsterType;
+import data.monster.subtype.PlantMonsterType;
+import data.monster.subtype.UndeadMonsterType;
 import data.population.Species;
 import data.threat.subtype.AberrationType;
 import data.threat.subtype.BeastType;
@@ -112,6 +127,28 @@ public enum CreatureType implements Species{
 		case GIANT: result=GiantType.getByWeight(obj); break;
 		}
 		return result;
+	}
+	
+	public static WeightedTable<Species> getMonsterByWeight(CreatureType type, BiomeType biome, Indexible obj) {
+		WeightedTable<Species> result = null;
+		switch(type) {
+		case DRAGON: result=DragonMonsterType.getSpecies(biome); break;
+		case ELEMENTAL: result=ElementalMonsterType.getSpecies(biome); break;
+		case HUMANOID: result=HumanoidMonsterType.getSpecies(biome); break;
+		case UNDEAD: result=UndeadMonsterType.getSpecies(biome); break;
+		case ABERRATION: result=AberrationMonsterType.getSpecies(biome); break;
+		case FIEND: result=FiendMonsterType.getSpecies(biome); break;
+		case CELESTIAL: result=CelestialMonsterType.getSpecies(biome); break;
+		case BEAST: result=BeastMonsterType.getSpecies(biome); break;
+		case MONSTROSITY: result=MonstrosityMonsterType.getSpecies(biome); break;
+		case OOZE: result=OozeMonsterType.getSpecies(biome); break;
+		case PLANT: result=PlantMonsterType.getSpecies(biome); break;
+		case CONSTRUCT: result=ConstructMonsterType.getSpecies(biome); break;
+		case FEY: result=FeyMonsterType.getSpecies(biome); break;
+		case GIANT: result=GiantMonsterType.getSpecies(biome); break;
+		}
+		return result;
+		
 	}
 
 	@Override

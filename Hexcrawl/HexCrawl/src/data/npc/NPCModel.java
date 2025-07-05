@@ -407,7 +407,7 @@ public class NPCModel extends DataModel {
 	}
 
 
-	private Species getMinionSpecies(Threat threat,Indexible obj) {
+	public Species getMinionSpecies(Threat threat,Indexible obj) {
 		int index = obj.reduceTempId(3);
 		if(index==0) {
 			return threat.getMinionSpecies();

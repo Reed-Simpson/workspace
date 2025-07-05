@@ -29,6 +29,7 @@ import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.magic.MagicModel;
+import data.monster.MonsterModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
@@ -51,7 +52,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
-	public static final int MONSTERCOUNT = 4;
+	public static final int MONSTERCOUNT = 16;
 
 	private int FAITH_TAB_INDEX;
 	private int FACTION_TAB_INDEX;
@@ -409,8 +410,9 @@ public class InfoPanel extends JTabbedPane{
 		JPanel beastsPanel = new JPanel();
 		beastsPanel.setLayout(new BoxLayout(beastsPanel, BoxLayout.Y_AXIS));
 		beastsTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<MONSTERCOUNT*2;i++) {
-			beastsPanel.add(new JLabel("~~~~~ Wandering Monster #"+(i+1)+" ~~~~~"));
+		for(int i=0;i<MONSTERCOUNT;i++) {
+			if(i<MonsterModel.BEASTCOUNT*2)beastsPanel.add(new JLabel("~~~~~ Regional Monster #"+(i+1)+" ~~~~~"));
+			else beastsPanel.add(new JLabel("~~~~~ Threat Monster #"+(i+1-MonsterModel.BEASTCOUNT*2)+" ~~~~~"));
 			MyTextPane beast = new MyTextPane(this, i, HexData.MONSTER);
 			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			beastsPanel.add(beast);

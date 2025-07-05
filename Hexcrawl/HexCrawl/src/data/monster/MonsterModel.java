@@ -8,14 +8,16 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.biome.BiomeType;
-import data.monster.subtype.BeastType;
+import data.monster.subtype.BeastMonsterType;
 import data.population.Species;
+import data.threat.CreatureType;
 import data.threat.Threat;
 import io.SaveRecord;
 import util.Pair;
 import util.Util;
 
 public class MonsterModel {
+	public static final int BEASTCOUNT = 4;
 	private static final int SEED_OFFSET = 13*Util.getOffsetX();
 	private static final int TABLECOUNT = 3;
 	private static final String ANIMALS = "${aerial},${terrestrial},${aquatic}";
@@ -162,24 +164,37 @@ public class MonsterModel {
 	public Monster getWanderingMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
 		WeightedTable<Species> species;
 		int index;
-		if(i<4) {
-			species = BeastType.getSpecies(habitats.key1);
+		if(i<BEASTCOUNT) {
+			species = BeastMonsterType.getSpecies(habitats.key1);
 			index = habitats.key1.getID(0);
-		}else if(i<8) {
+		}else if(i<BEASTCOUNT*2) {
 			if(habitats.key2!=null) {
-				species = BeastType.getSpecies(habitats.key2);
+				species = BeastMonsterType.getSpecies(habitats.key2);
 				if(habitats.key1==habitats.key2) index = habitats.key2.getID(1);
 				else index = habitats.key2.getID(0);
 			} else {
 				return null;
 			}
+		}else if(i<BEASTCOUNT*3) {
+			Threat threat = controller.getThreats().getThreat(territoryRef);
+			species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key1, threat);
+			index = i-8;
 		}else {
-			//Threat threat = controller.getThreats().getThreat(territoryRef);
-			throw new UnsupportedOperationException("Branch not finished");
+			if(habitats.key2!=null) {
+				Threat threat = controller.getThreats().getThreat(territoryRef);
+				species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key2, threat);
+				index = i-8;
+			} else {
+				return null;
+			}
 		}
 		Indexible obj = getIndexible(territoryRef, index);
 		Monster result = new Monster(species.getByWeight(obj));
-		populateMonsterTrait(obj, result);
+		if(i<8) {
+			populateMonsterTrait(obj, result);
+		}else {
+			result.setPersonality(getPersonality(obj));
+		}
 		return result;
 	}
 	private void populateMonsterTrait(Indexible obj, Monster result) {
@@ -191,10 +206,10 @@ public class MonsterModel {
 	
 	public Monster getWanderingMonster(Random rand,int i,Pair<BiomeType,BiomeType> habitats,Threat threat) {
 		WeightedTable<Species> species;
-		if(i<4) {
-			species = BeastType.getSpecies(habitats.key1);
-		}else if(i<8) {
-			species = BeastType.getSpecies(habitats.key2);
+		if(i<BEASTCOUNT) {
+			species = BeastMonsterType.getSpecies(habitats.key1);
+		}else if(i<BEASTCOUNT*2) {
+			species = BeastMonsterType.getSpecies(habitats.key2);
 		}else {
 			throw new UnsupportedOperationException("Branch not finished");
 		}
@@ -205,7 +220,7 @@ public class MonsterModel {
 	}
 	
 	public Point getTerritoryRef(Point p,int i) {
-		if(i<8) {
+		if(i<BEASTCOUNT*2) {
 		int x = p.x/50;
 		int y = p.y/50;
 		x = x + (x+i/2)%2;

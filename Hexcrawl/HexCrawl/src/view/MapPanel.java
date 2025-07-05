@@ -667,7 +667,7 @@ public class MapPanel  extends JPanel{
 			for(int j=r.y;j<r.height;j+=1) {
 				if(!controller.getGrid().isWater(i,j)) {
 					Point p = new Point(i,j);
-					if(getRiverWidth(controller.getPrecipitation().getFlowVolume(p))>riverRenderThreshold()) {
+					if(controller.getPrecipitation().getFlowVolume(p)>1.1) {
 						BasicSpline spline = splineCache.get(p);
 						if(spline==null) spline = getRiverSpline(p);
 						newcache.put(p, spline);
@@ -715,7 +715,7 @@ public class MapPanel  extends JPanel{
 		Float volume = controller.getPrecipitation().getFlowVolume(p0);
 		if(spline!=null && volume!=null) {
 			float width = getRiverWidth(volume);
-			if(showRivers||width>riverRenderThreshold()) {
+			if(showRivers||(volume>1.1 && width > 0.5)) {
 				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0);
 			}
 		}
@@ -725,10 +725,6 @@ public class MapPanel  extends JPanel{
 		float width = (float) (Math.sqrt(volume)/15.0f*scale);
 		if(width>scale) width = (float) scale;
 		return width;
-	}
-
-	private double riverRenderThreshold() {
-		return 1+scale/20;
 	}
 
 	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0) {

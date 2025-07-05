@@ -8,11 +8,12 @@ import data.population.Species;
 import data.threat.CreatureType;
 import names.IndexibleNameGenerator;
 
-public enum HumanoidType implements Species{
-	AARAKOCRA,BUGBEAR,BULLYWUG,DEEP_SCION,DERRO_SAVANT,DERRO,DROW,DUERGAR,FLIND,GIFF,GITHYANKI,GITHZERAI,GNOLL,GOBLIN,GRIMLOCK,
-	GRUNG,HOBGOBLIN,JACKALWERE,KENKU,KOBOLD,KUOTOA,LIZARDFOLK,MEAZEL,MERFOLK,NAGPA,NILBOG,
-	ORC,OROG,QUAGGOTH,SAHUAGIN,SEA_SPAWN,SOUL_MONGER,SVIRFNEBLIN,THRIKREEN,TORTLE,TROGLODYTE,
-	WEREBEAR,WEREBOAR,WERERAT,WERETIGER,WEREWOLF,XVART,YUANTI_ABOMINATION,YUANTI_PUREBLOOD;
+public enum AberrationType implements Species{
+	BALHANNOTH,MORKOTH,BERBALANG,CHOKER,NEOGI_HATCHLING,NEOGI,NEOGI_MASTER,STAR_SPAWN_GRUE,STAR_SPAWN_SEER,STAR_SPAWN_LARVA_MAGE,FLUMPH,GAZER,GIBBERING_MOUTHER,
+	INTELLECT_DEVOURER,NOTHIC,GRELL,SPECTATOR,CHUUL,MINDWITNESS,OTYUGH,GAUTH,MIND_FLAYER,CLOAKER,MIND_FLAYER_ARCANIST,ULITHARID,ABOLETH,DEATH_KISS,BEHOLDER,
+	NEOTHELID,ELDER_BRAIN,GRAY_SLAAD
+	;
+
 
 	private static HashMap<BiomeType,WeightedTable<Species>> habitats;
 
@@ -27,89 +28,88 @@ public enum HumanoidType implements Species{
 		habitats = new HashMap<BiomeType,WeightedTable<Species>>();
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,GNOLL,ORC,OROG,WEREBEAR,FLIND};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.SNOW, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,MERFOLK,TORTLE,SAHUAGIN,SEA_SPAWN,DEEP_SCION,NAGPA};
+			Species[] array = new Species[] {BALHANNOTH,MORKOTH};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.BEACH, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,GNOLL,HOBGOBLIN,JACKALWERE,MEAZEL,THRIKREEN,YUANTI_PUREBLOOD,YUANTI_ABOMINATION,WERETIGER,GITHYANKI,NAGPA};
+			Species[] array = new Species[] {BERBALANG,CHOKER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.DESERT, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,GOBLIN,GRUNG,KENKU,GNOLL,HOBGOBLIN,LIZARDFOLK,ORC,BUGBEAR,GOBLIN,MEAZEL,NILBOG,YUANTI_PUREBLOOD,LIZARDFOLK,OROG,WERERAT,
-					YUANTI_ABOMINATION,WEREWOLF,WEREBOAR,WERETIGER,WEREBEAR,FLIND,NAGPA};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.FOREST, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {GOBLIN,GNOLL,HOBGOBLIN,JACKALWERE,ORC,BUGBEAR,GOBLIN,MEAZEL,THRIKREEN,OROG,WEREBOAR,WERETIGER,FLIND,};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.GRASSLAND, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,XVART,GOBLIN,GNOLL,HOBGOBLIN,ORC,MEAZEL,NILBOG,OROG,WEREWOLF,WEREBOAR,WEREBEAR,FLIND,};
+			Species[] array = new Species[] {NEOGI_HATCHLING,NEOGI,NEOGI_MASTER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.ROCKYHILLS, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {GOBLIN,GRUNG,LIZARDFOLK,YUANTI_PUREBLOOD,YUANTI_ABOMINATION,WEREBOAR,WERETIGER,};
+			Species[] array = new Species[] {};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.JUNGLE, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,AARAKOCRA,DERRO,ORC,DUERGAR,MEAZEL,OROG,GITHYANKI,GITHZERAI};
+			Species[] array = new Species[] {STAR_SPAWN_GRUE,CHOKER,BALHANNOTH,STAR_SPAWN_SEER,STAR_SPAWN_LARVA_MAGE};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.MOUNTAINS, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,BULLYWUG,LIZARDFOLK,ORC,MEAZEL,YUANTI_PUREBLOOD,YUANTI_ABOMINATION,NAGPA,};
+			Species[] array = new Species[] {STAR_SPAWN_GRUE,STAR_SPAWN_SEER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.WETLAND, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,XVART,DERRO,DROW,GOBLIN,GRIMLOCK,KUOTOA,TROGLODYTE,HOBGOBLIN,ORC,SVIRFNEBLIN,BUGBEAR,DUERGAR,MEAZEL,NILBOG,OROG,QUAGGOTH,
-					YUANTI_ABOMINATION,DERRO_SAVANT,SOUL_MONGER,NAGPA};
+			Species[] array = new Species[] {FLUMPH,NEOGI_HATCHLING,GAZER,CHOKER,GIBBERING_MOUTHER,INTELLECT_DEVOURER,NOTHIC,GRELL,NEOGI,SPECTATOR,CHUUL,NEOGI_MASTER,MINDWITNESS,
+					OTYUGH,GAUTH,MIND_FLAYER,CLOAKER,MIND_FLAYER_ARCANIST,ULITHARID,ABOLETH,DEATH_KISS,BALHANNOTH,BEHOLDER,NEOTHELID,ELDER_BRAIN};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.VOID, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {MERFOLK,SAHUAGIN};
+			Species[] array = new Species[] {MORKOTH};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.LAKE, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {MERFOLK,SAHUAGIN,SEA_SPAWN,DEEP_SCION};
+			Species[] array = new Species[] {MORKOTH};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.WATER, list);
 		}
 		{
 			WeightedTable<Species> list = new WeightedTable<Species>();
-			Species[] array = new Species[] {KOBOLD,KENKU,MEAZEL,YUANTI_PUREBLOOD,WERERAT,GIFF,GITHYANKI,GITHZERAI,SOUL_MONGER,NAGPA};
+			Species[] array = new Species[] {GRAY_SLAAD,STAR_SPAWN_SEER};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.CITY, list);
-			}
 		}
-	
+	}
+
 	@Override
 	public IndexibleNameGenerator getNameGen() {
-		return CreatureType.HUMANOID.getNameGen();
+		return CreatureType.ABERRATION.getNameGen();
 	}
 
 }

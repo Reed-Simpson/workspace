@@ -127,17 +127,17 @@ public enum BeastType implements Species {
 					POISONOUS_SNAKE,OX,RACCOON,RIDING_HORSE,SQUIRREL,FLY,MOTH,GOOSE,BAT,CROCODILE,WASP,WARHORSE,SPIDER,TURTLE,HUMMINGBIRD,LOCUST,MAGPIE,MOCKINGBIRD,SPARROW};
 			for(Species s:array) list.put(s);
 			habitats.put(BiomeType.CITY, list);
-			}
 		}
-
-		@Override
-		public IndexibleNameGenerator getNameGen() {
-			return CreatureType.BEAST.getNameGen();
-		}
-
-
-
-
-
-
 	}
+
+	@Override
+	public IndexibleNameGenerator getNameGen() {
+		return CreatureType.BEAST.getNameGen();
+	}
+
+
+
+
+
+
+}

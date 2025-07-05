@@ -44,6 +44,7 @@ import data.HexData;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.biome.BiomeType;
+import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import io.AppData;
 import io.SaveRecord;
@@ -233,6 +234,7 @@ public class MapPanel  extends JPanel{
 		if(this.displayData!=displayData) {
 			this.displayData = displayData;
 			colorCache = new HashMap<Point,Pair<Color,Color>>();
+			iconCache = new HashMap<Point, List<Icon>>();
 			//			iconCache = new HashMap<Point,List<Icon>>();
 		}
 	}
@@ -352,8 +354,15 @@ public class MapPanel  extends JPanel{
 	}
 
 	private List<Icon> getIcons(Point p) {
-		BiomeType biome = controller.getBiomes().getBiome(p);
-		return Icon.getIcons(biome);
+		List<Icon> result = null;
+		if(HexData.POPULATION.equals(displayData)) {
+			NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
+			if(species!=null) result = species.getIcons();
+		}else {
+			BiomeType biome = controller.getBiomes().getBiome(p);
+			result = biome.getIcons();
+		}
+		return result;
 	}
 
 

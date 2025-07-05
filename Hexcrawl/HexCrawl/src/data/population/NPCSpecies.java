@@ -1,5 +1,10 @@
 package data.population;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+
 import data.Indexible;
 import data.threat.subtype.HumanoidType;
 import data.threat.subtype.UndeadType;
@@ -23,6 +28,7 @@ import names.npc.HalflingNameGenerator;
 import names.npc.HumanNameGenerator;
 import names.npc.OrcNameGenerator;
 import util.Util;
+import view.Icon;
 
 public enum NPCSpecies implements Species{
 	HUMAN(		1,0.0f,60f/360f,new HumanCityNameGenerator(),		new HumanNameGenerator(),		1.0f),
@@ -124,6 +130,52 @@ public enum NPCSpecies implements Species{
 
 	public float getWeight() {
 		return weight;
+	}
+	
+
+	public List<Icon> getIcons() {
+		List<Icon> result = new ArrayList<Icon>();
+		switch(this) {
+		case HUMAN:
+			result.add(new Icon('\u270A', new Point(-100,70), Color.black, 2.0, 1.0f, true));
+			break;
+		case AASIMAR:
+			result.add(new Icon('\u2e19', new Point(0,0), Color.black, 1.0, 1.0f, true));
+			break;
+		case DRAGONBORN:
+			result.add(new Icon('\u2a4c', new Point(-85,70), Color.black, 2.0, 1.0f, true));
+			break;
+		case DWARF:
+			result.add(new Icon('\u26F0', new Point(-75,40), Color.black, 1.5, 1.0f, true));
+			break;
+		case ELF:
+			result.add(new Icon('\u26b2', new Point(0,0), Color.black, 1.0, 1.0f, true));
+			break;
+		case GENASI:
+			result.add(new Icon('\u2601', new Point(-70,60), Color.black, 1.5, 1.0f, true));
+			break;
+		case GNOME:
+			result.add(new Icon('\u22c4', new Point(0,0), Color.black, 1.0, 1.0f, true));
+			break;
+		case GOBLINOID:
+			result.add(new Icon('\u2620', new Point(-75,50), Color.black, 1.5, 1.0f, true));
+			break;
+		case GOLIATH:
+			result.add(new Icon('\u260d', new Point(-70,70), Color.black, 2.0, 1.0f, true));
+			break;
+		case HALFLING:
+			result.add(new Icon('\u273F', new Point(-60,50), Color.black, 1.5, 1.0f, true));
+			break;
+		case ORC:
+			result.add(new Icon('\u2694', new Point(-70,60), Color.black, 1.8, 1.0f, true));
+			break;
+		case TIEFLING:
+			result.add(new Icon('\u2660', new Point(0,0), Color.black, 1.0, 1.0f, true));
+			break;
+		default:
+			break;
+		}
+		return result;
 	}
 	
 }

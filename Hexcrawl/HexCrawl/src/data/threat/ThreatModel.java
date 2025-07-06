@@ -13,6 +13,7 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.npc.Faction;
 import data.npc.NPC;
+import data.npc.NPCJobType;
 import data.npc.NPCModel;
 import data.population.Species;
 import io.SaveRecord;
@@ -121,7 +122,7 @@ public class ThreatModel extends DataModel{
 		result.setPlan(ThreatDetails.getPlan(result));
 		result.setName(getThreatName(result ));
 		if(result.getName().contains("${job placeholder}")) {
-			result.setDomain(NPCModel.getJob(result)+"s");
+			result.setDomain(NPCJobType.getJob(result)+"s");
 		}else {
 			result.setDomain(CreatureType.getDomain(result));
 		}

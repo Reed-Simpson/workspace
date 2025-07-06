@@ -28,18 +28,6 @@ public class NPCModel extends DataModel {
 	//STATIC CONSTANTS
 	private static final int SEED_OFFSET = 9*Util.getOffsetX();
 	private static final int TABLECOUNT = 10;
-	private static final String CIVILIZED = "Acolyte,Actor,Apothacary,Baker,Barber,Blacksmith,Brewer,Bureaucrat,Butcher,Carpenter,Clockmaker,Courier,"+
-			"Courtier,Diplomat,Fishmonger,Guard,Haberdasher,Innkeeper,Item-seller,Jeweler,Knight,Locksmith,Mason,Miller,"+
-			"Musician,Noble,Painter,Priest,Scholar,Scribe,Sculptor,Shipwright,Soldier,Tailor,Taxidermist,Wigmaker,Artificer,Bard,Cleric,Monk,Paladin,${wizard}";
-	private static WeightedTable<String> civilized;
-	private static final String UNDERWORLD = "Alchemist,Animal-breeder,Assassin,Acrobat,Beggar,Burglar,Chimneysweep,Con Man,Cultist,Cutpurse,Deserter,Ditchdigger,"+
-			"Fence,Forger,Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Laborer,Lamplighter,Mercenary,"+
-			"Poet,Poisoner,Privateer,Rat-Catcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,Vagabond,Gutter Mage,Rogue,Sorcerer,Warlock";
-	private static WeightedTable<String> underworld;
-	private static final String WILDERNESS = "Apiarist,Bandit,Caravan Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisher,Forager,Fugative,Hedge Wizard,"+
-			"Hermit,Hunter,Messenger,Minstrel,Monk,Monster Hunter,Outlander,Tinker,Pilgrim,Poacher,Raider,Ranger,"+
-			"Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tinker,Tomb Raider,Trader,Trapper,Witch,Woodcutter,Barbarian,Druid,Ranger";
-	private static WeightedTable<String> wilderness;
 	private static final String ASSETS = "Has authority,Avoids detection,Calls in favors,Is charming,Cooks the books,Erases the evidence,Excellent liar,Extremely Rich,Leader of ${faction index},Member of ${faction index},Feared,Has a fortified base,"+
 			"Gorgeous,Hears rumors,Huge family,Huge library,Impersonator,Interrogator,Knows a guy,Knows a way in,Launders money,Learned,Local celebrity,Posesses local knowledge,"+
 			"Has loyal henchmen,Middling Oracle,Has nothing to lose,Owns the guards,Has a powerful spouse,Procures gear,Pulls the strings,Has a secret lab,Sells contraband,Smuggles goods,Has a spy network,War hero";
@@ -106,9 +94,6 @@ public class NPCModel extends DataModel {
 	private static WeightedTable<String> domains;
 
 	private static void populateAllTables() {
-		civilized = new WeightedTable<String>().populate(CIVILIZED,",");
-		underworld = new WeightedTable<String>().populate(UNDERWORLD,",");
-		wilderness = new WeightedTable<String>().populate(WILDERNESS,",");
 		assets = new WeightedTable<String>().populate(ASSETS,",");
 		liabilities = new WeightedTable<String>().populate(LIABILITIES,",");
 		goals = new WeightedTable<String>().populate(GOALS,",");
@@ -128,40 +113,6 @@ public class NPCModel extends DataModel {
 	}
 
 
-	public static String getCivilized(Indexible obj) {
-		if(civilized==null) populateAllTables();
-		return civilized.getByWeight(obj);
-	}
-	public static String getUnderworld(Indexible obj) {
-		if(underworld==null) populateAllTables();
-		return underworld.getByWeight(obj);
-	}
-	public static String getWilderness(Indexible obj) {
-		if(wilderness==null) populateAllTables();
-		return wilderness.getByWeight(obj);
-	}
-	public static String getJob(Indexible obj,boolean isCity,boolean isTown) {
-		int id = obj.reduceTempId(10);
-		if(isCity) {
-			if(id<5) return getCivilized(obj);//50%
-			else if(id<9) return getUnderworld(obj);//40%
-			else return getWilderness(obj);//10%
-		}else if(isTown) {
-			if(id<4) return getCivilized(obj);//40%
-			else if(id<5) return getUnderworld(obj);//10%
-			else return getWilderness(obj);//50%
-		}else {
-			if(id<1) return getCivilized(obj);//10%
-			else if(id<2) return getUnderworld(obj);//10%
-			else return getWilderness(obj);//80%
-		}
-	}
-	public static String getJob(Indexible obj) {
-		int id = obj.reduceTempId(3);
-		if(id==0) return getCivilized(obj);
-		else if(id==1) return getUnderworld(obj);
-		else return getWilderness(obj);
-	}
 	public static String getAsset(Indexible obj) {
 		if(assets==null) populateAllTables();
 		return Util.formatTableResult(assets.getByWeight(obj),obj);
@@ -289,7 +240,7 @@ public class NPCModel extends DataModel {
 	}
 	private void setJob(Point p, NPC npc) {
 		if(npc.getJob()==null) {
-			npc.setJob(getJob(npc,population.isCity(p), population.isTown(p)));
+			npc.setJob(NPCJobType.getJob(npc,population.isCity(p), population.isTown(p)));
 		}
 	}
 	private void setAsset(Point p, NPC npc) {

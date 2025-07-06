@@ -15,6 +15,7 @@ import data.location.LocationModel;
 import data.location.LocationType;
 import data.magic.MagicModel;
 import data.monster.MonsterModel;
+import data.npc.NPCJobType;
 import data.npc.NPCModel;
 import data.population.SettlementModel;
 import data.population.Species;
@@ -156,12 +157,12 @@ public class Util {
 			}
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj));
-			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCJobType.getJob(obj));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionType.getFaction(obj).toString());
 			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
 			if(result.contains("${character index}")) {
-				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
+				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCJobType.getJob(obj));
 				else result = Util.replace(result,"${character index}",FactionType.getFaction(obj).toString());
 			}
 			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",NPCSpecies.GOLIATH.getCityNameGen().getName(obj));
@@ -205,10 +206,10 @@ public class Util {
 		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionType.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));
 
-		if(result.contains("${job}")) result = Util.replace(result,"${job}",NPCModel.getJob(obj));
-		if(result.contains("${civilized npc}")) result = Util.replace(result,"${civilized npc}",NPCModel.getCivilized(obj));
-		if(result.contains("${underworld npc}")) result = Util.replace(result,"${underworld npc}",NPCModel.getUnderworld(obj));
-		if(result.contains("${wilderness npc}")) result = Util.replace(result,"${wilderness npc}",NPCModel.getWilderness(obj));
+		if(result.contains("${job}")) result = Util.replace(result,"${job}",NPCJobType.getJob(obj));
+		if(result.contains("${civilized npc}")) result = Util.replace(result,"${civilized npc}",NPCJobType.getCivilized(obj));
+		if(result.contains("${underworld npc}")) result = Util.replace(result,"${underworld npc}",NPCJobType.getUnderworld(obj));
+		if(result.contains("${wilderness npc}")) result = Util.replace(result,"${wilderness npc}",NPCJobType.getWilderness(obj));
 		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",NPCModel.getMission(obj));
 		if(result.contains("${domain}")) result = Util.replace(result,"${domain}",NPCModel.getDomain(obj));
 		if(result.contains("${personality}")) result = Util.replace(result,"${personality}",NPCModel.getPersonality(obj));

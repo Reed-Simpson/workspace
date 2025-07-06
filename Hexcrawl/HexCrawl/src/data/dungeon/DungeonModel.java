@@ -11,6 +11,7 @@ import data.WeightedTable;
 import data.monster.MonsterModel;
 import io.SaveRecord;
 import util.Util;
+import view.InfoPanel;
 
 public class DungeonModel extends DataModel {
 	private static final int SEED_OFFSET = 12*Util.getOffsetX();
@@ -148,6 +149,20 @@ public class DungeonModel extends DataModel {
 
 	public DungeonModel(SaveRecord record) {
 		super(record);
+	}
+	
+	public int[] getDungeonPositions(Point p) {
+		float[] floats = new float[1];
+		for(int n=0;n<floats.length;n++) {
+			floats[n] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+n), p.x, p.y);
+		}
+		Indexible obj = new Indexible(floats);
+		int[] result = new int[InfoPanel.POICOUNT];
+		for(int n=0;n<InfoPanel.DUNGEONCOUNT;n++) {
+			int index=obj.reduceTempId(InfoPanel.POICOUNT);
+			result[index]++;
+		}
+		return result;
 	}
 
 	public Dungeon getDungeon(int i,Point p) {

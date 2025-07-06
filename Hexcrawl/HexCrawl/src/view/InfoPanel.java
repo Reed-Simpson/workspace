@@ -208,7 +208,7 @@ public class InfoPanel extends JTabbedPane{
 		}
 		JScrollPane dEntranceScrollPane = new JScrollPane(dEntrancePanel);
 		dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("Dungeon", dEntranceScrollPane);
+		//detailsTabs.addTab("Dungeon", dEntranceScrollPane);
 		this.DUNGEON_TAB_INDEX = detailsTabs.getTabCount()-1;
 
 		JPanel hexNotePanel = new JPanel();

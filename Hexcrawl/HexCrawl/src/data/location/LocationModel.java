@@ -6,17 +6,14 @@ import java.util.Random;
 
 import controllers.DataController;
 import data.DataModel;
-import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
-import data.Reference;
 import data.WeightedTable;
 import data.dungeon.Dungeon;
 import data.population.SettlementModel;
 import io.SaveRecord;
 import names.InnNameGenerator;
 import util.Util;
-import view.InfoPanel;
 
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
@@ -59,7 +56,7 @@ public class LocationModel extends DataModel{
 			"Remote,Resourceful,Ruined,Rustic,Safe,Multifunctional,Simple,Small,Spacious,Storage,Strange,Stylish,Suspicious,Tall,Threatening,Tranquil,Unexpected,Unpleasant,Unusual,Useful,Warm,Warning,Watery,Welcoming";
 	private static WeightedTable<String> descriptors;
 	private static final String[] VISIBILITY = {"Landmark","Standard","Hidden"};
-	
+
 	private static void populateAllTables() {
 		biomes = new WeightedTable<String>();
 		populate(biomes,BIOMES,",");
@@ -84,8 +81,8 @@ public class LocationModel extends DataModel{
 		if(descriptors==null) populateAllTables();
 		return descriptors.getByWeight(e);
 	}
-	
-	
+
+
 
 	public static String getBiome(Indexible obj) {
 		if(biomes==null) populateAllTables();
@@ -127,9 +124,9 @@ public class LocationModel extends DataModel{
 	}
 	private DataController controller;
 	private InnNameGenerator innNames;
-	
-	
-	
+
+
+
 	public LocationModel(SaveRecord record,DataController controller) {
 		super(record);
 		this.controller = controller;
@@ -142,11 +139,17 @@ public class LocationModel extends DataModel{
 
 	private ArrayList<String> getDungeons(Point p, int i) {
 		ArrayList<String> result = new ArrayList<String>();
-		for(int n=0;n<InfoPanel.DUNGEONCOUNT;n++) {
-			Dungeon d = controller.getDungeon().getDefaultValue(p, n);
-			if(d.getLocation().getIndex()==i) {
-				String s = d.getEntrance()+" leading to "+new Reference(HexData.DUNGEON, record.normalizePOS(p), n);
-				result.add(s);
+		int[] dungeonPositions = controller.getDungeon().getDungeonPositions(p);
+		if(dungeonPositions[i]>0) {
+			int index = 0;
+			for(int n=0;n<i;n++) index+=dungeonPositions[n];
+			for(int n=index;n<index+dungeonPositions[i];n++) {
+				Dungeon d = controller.getDungeon().getDefaultValue(p, n);
+				result.add(d.toString());
+//				if(d.getLocation().getIndex()==i) {
+//					String s = d.getEntrance()+" leading to "+new Reference(HexData.DUNGEON, record.normalizePOS(p), n);
+//					result.add(s);
+//				}
 			}
 		}
 		return result;
@@ -178,7 +181,7 @@ public class LocationModel extends DataModel{
 		if(dungeons.size()>0) {
 			dungeon = "\r\nDungeon Entrances: ";
 			for(String s:dungeons) {
-				dungeon+="\r\n    "+s;
+				dungeon+="\r\n   "+s;
 			}
 		}
 		return descriptor1+" and "+descriptor2+" "+location+proprietor+visibility+dungeon;
@@ -192,7 +195,7 @@ public class LocationModel extends DataModel{
 	public String getDefaultValue(Point p, int i) {
 		return getPOI(i, p, false);
 	}
-	
+
 
 	public String getInnText(Point p) {
 		Indexible obj = new Indexible(getLocationDetailIndex(0, p),getLocationDetailIndex(1, p),getLocationDetailIndex(2, p),getLocationDetailIndex(3, p));
@@ -217,7 +220,7 @@ public class LocationModel extends DataModel{
 		}
 		return innname+innquirk+inndescriptors+proprietor+dungeon;
 	}
-	
+
 	public String getInnName(Indexible obj) {
 		return innNames.getName(obj);
 	}

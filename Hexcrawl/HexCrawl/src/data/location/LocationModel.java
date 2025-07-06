@@ -14,6 +14,7 @@ import data.population.SettlementModel;
 import io.SaveRecord;
 import names.InnNameGenerator;
 import util.Util;
+import view.InfoPanel;
 
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
@@ -137,54 +138,41 @@ public class LocationModel extends DataModel{
 		return Util.getIndexFromSimplex(val);
 	}
 
-	private ArrayList<String> getDungeons(Point p, int i) {
-		ArrayList<String> result = new ArrayList<String>();
+	private ArrayList<Dungeon> getDungeons(Point p, int i) {
+		ArrayList<Dungeon> result = new ArrayList<Dungeon>();
 		int[] dungeonPositions = controller.getDungeon().getDungeonPositions(p);
 		if(dungeonPositions[i]>0) {
 			int index = 0;
 			for(int n=0;n<i;n++) index+=dungeonPositions[n];
 			for(int n=index;n<index+dungeonPositions[i];n++) {
 				Dungeon d = controller.getDungeon().getDefaultValue(p, n);
-				result.add(d.toString());
-//				if(d.getLocation().getIndex()==i) {
-//					String s = d.getEntrance()+" leading to "+new Reference(HexData.DUNGEON, record.normalizePOS(p), n);
-//					result.add(s);
-//				}
+				result.add(d);
 			}
 		}
 		return result;
 	}
 	public String getPOI(int i,Point p,boolean isCity) {
-		Indexible obj = new Indexible(getLocationDetailIndex(3+i*TABLECOUNT, p));
-		ArrayList<String> dungeons = getDungeons(p,i);
-		String poi = getPOI(isCity, obj,i,dungeons);
-		return Util.formatTableResultPOS(poi, obj, p,record.getZero());
+		Location location = new Location(getLocationDetailIndex(3+i*TABLECOUNT, p));
+		String poi = getPOI(isCity, location,i,p);
+		return Util.formatTableResultPOS(poi, location, p,record.getZero());
 	}
 	public String getPOI(Random random,Point p,boolean isCity,int i) {
-		Indexible obj = new Indexible(random.nextInt());
-		ArrayList<String> dungeons = getDungeons(p,i);
-		String poi = getPOI(isCity, obj,i,dungeons);
-		return Util.formatTableResultPOS(poi, obj, p,record.getZero());
+		Location location = new Location(random.nextInt());
+		String poi = getPOI(isCity, location,i,p);
+		return Util.formatTableResultPOS(poi, location, p,record.getZero());
 	}
-	private String getPOI(boolean isCity, Indexible obj,int i,ArrayList<String> dungeons) {
-		String location;
-		if(isCity) location = SettlementModel.getBuilding(obj);
-		else location = getStructure(obj);
-		String descriptor1 = getDescriptor(obj);
-		String descriptor2 = getDescriptor(obj);
-		String proprietor = "";
+	private String getPOI(boolean isCity, Location location,int i,Point p) {
+		String type;
+		if(isCity) type = SettlementModel.getBuilding(location);
+		else type = getStructure(location);
+		location.setType(type);
+		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
 		if(isCity) {
-			proprietor = "\r\nProprietor: ${npc index}";
+			location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
 		}
-		String visibility = "\r\nVisibility: "+getVisibility(i);
-		String dungeon = "";
-		if(dungeons.size()>0) {
-			dungeon = "\r\nDungeon Entrances: ";
-			for(String s:dungeons) {
-				dungeon+="\r\n   "+s;
-			}
-		}
-		return descriptor1+" and "+descriptor2+" "+location+proprietor+visibility+dungeon;
+		location.setVisibility(getVisibility(i));
+		location.setDungeons(getDungeons(p, i));
+		return location.toString();
 	}
 	private String getVisibility(int i) {
 		if(i<2) return VISIBILITY[0];
@@ -198,37 +186,22 @@ public class LocationModel extends DataModel{
 
 
 	public String getInnText(Point p) {
-		Indexible obj = new Indexible(getLocationDetailIndex(0, p),getLocationDetailIndex(1, p),getLocationDetailIndex(2, p),getLocationDetailIndex(3, p));
+		Location obj = new Location(getLocationDetailIndex(0, p),getLocationDetailIndex(1, p),getLocationDetailIndex(2, p),getLocationDetailIndex(3, p));
 		return Util.formatTableResultPOS(getInnText(obj,p),obj,p,record.getZero());
 	}
 	public String getInnText(Random random,Point p) {
-		Indexible obj = new Indexible(random.nextInt(),random.nextInt(),random.nextInt(),random.nextInt());
+		Location obj = new Location(random.nextInt(),random.nextInt(),random.nextInt(),random.nextInt());
 		return getInnText(obj,p);
 	}
-	private String getInnText(Indexible obj,Point p) {
-		String innname = "Inn: "+getInnName(obj);
-		String innquirk = "\r\nQuirk: "+getInnQuirk(obj);
-		String inndescriptors = "\r\nDescriptors: "+getInnDescriptor(obj)+" and "+getInnDescriptor(obj);
-		String proprietor = "\r\nProprietor: ${npc index}";
-		String dungeon = "";
-		ArrayList<String> dungeons = getDungeons(p,0);
-		if(dungeons.size()>0) {
-			dungeon = "\r\nDungeon Entrances: ";
-			for(String s:dungeons) {
-				dungeon+="\r\n    "+s;
-			}
-		}
-		return innname+innquirk+inndescriptors+proprietor+dungeon;
-	}
-
-	public String getInnName(Indexible obj) {
-		return innNames.getName(obj);
-	}
-	public String getInnQuirk(Indexible obj) {
-		return innNames.getQuirk(obj);
-	}
-	public String getInnDescriptor(Indexible obj) {
-		return LocationModel.getDescriptor(obj);
+	private String getInnText(Location location,Point p) {
+		location.setType("Inn");
+		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
+		location.setName(innNames.getName((Indexible) location));
+		location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
+		location.setVisibility(getVisibility(0));
+		location.setQuirk(innNames.getQuirk(location));
+		location.setDungeons(getDungeons(p, 0));
+		return location.toString();
 	}
 
 }

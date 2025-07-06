@@ -38,9 +38,9 @@ public class MonsterModel {
 			"No legs,Long tongue,Many eyes,Many limbs,Mucus,Pincers,Plates,Plumage,Probiscus,Scales,Segmented body,Shaggy hair,"+
 			"Shell,Spikes,Spinnerets,Spines,Stinger,Suction cups,Tail,Talons,Tentacles,Trunk,Tusks,Wings";
 	private static WeightedTable<String> features;
-	private static final String TRAITS = "Amphibious,Bloated,Brittle,Cannibal,Clay-like,Colossal,Crystalline,Emaciated,${ethereal element},Ethereal,Immortal,Eyeless,"+
+	private static final String TRAITS = "Amphibious,Bloated,Brittle,Cannibal,Clay-like,Colossal,Crystalline,Emaciated,${ethereal element}y,Ethereal,Immortal,Eyeless,"+
 			"Fearless,Fluffy,Fungal,Gelatinous,Geometric,Hardened,Illusory,Intelligent,Iridescent,Luminous,Multiheaded,Mechanical,"+
-			"${physical element},Cosmic,Reflective,Rubbery,Shadowy,Sharp,Skeletal,Slimy,Sticky,Stinking,Tiny,Translucent";
+			"${physical element}y,Cosmic,Reflective,Rubbery,Shadowy,Sharp,Skeletal,Slimy,Sticky,Stinking,Tiny,Translucent";
 	private static WeightedTable<String> traits;
 	private static final String ABILITIES = "Absorbing,Acid blood,Anti-magic,Blinding,Breath weapon,Camoflaging,Duplicating,Electric,Entangling,${ethereal effect},Exploding,Flying,"+
 			"Gaze weapon,Hypnotizing,Impervious,Invisible,Life-draining,Magnetic,Mimicking,Mind-reading,Paralyzing,Phasing,${physical effect},Venomous,"+
@@ -130,13 +130,14 @@ public class MonsterModel {
 	
 	public static String getMonster(Indexible obj) {
 		String animal = getAnimal(obj);
-		String feature = getFeature(obj);
-		String trait = getTrait(obj);
-		String ability = getAbility(obj);
-		String tactic = getTactic(obj);
-		String personality = getPersonality(obj);
-		String weakness = getWeakness(obj);
-		return trait+", "+(personality+" "+animal+"(s) with "+ability+" "+feature).toLowerCase()+". Uses "+(tactic+" tactics and has a weakness to "+weakness+".").toLowerCase();
+		Monster monster = new Monster(animal);
+		monster.setFeature(getFeature(obj));
+		monster.setTrait(getTrait(obj));
+		monster.setAbility(getAbility(obj));
+		monster.setTactic(getTactic(obj));
+		monster.setPersonality(getPersonality(obj));
+		monster.setWeakness(getWeakness(obj));
+		return monster.toString();
 	}
 
 	private SaveRecord record;

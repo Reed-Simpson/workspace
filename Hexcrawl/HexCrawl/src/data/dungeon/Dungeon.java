@@ -68,9 +68,10 @@ public class Dungeon extends Indexible{
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ Dungeon #"+(i)+" ~~~~~\r\n");
+		e1Text.append("Dungeon Entrance: "+this.getEntrance() +"\r\n      ");
 		e1Text.append(this.getLayout()+" "+this.getForm() + " of " + this.getRuination() + "\r\n      ");
-		e1Text.append("Entrance: "+this.getEntrance() /*+ " near " + this.location.toString()*/ +"\r\n      ");
-//		e1Text.append("Ruination: "+this.getRuination() + "\r\n");
+		//e1Text.append("Entrance: "+this.getEntrance() + " near " + this.location.toString() +"\r\n      ");
+		//e1Text.append("Ruination: "+this.getRuination() + "\r\n");
 		e1Text.append("Reward: "+this.getReward() + "\r\n      ");
 		e1Text.append("Tricks: "+Util.parseArray(this.getTrick()).toLowerCase()+"\r\n      ");
 		e1Text.append("Monster: "+this.getMonster());

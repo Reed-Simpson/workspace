@@ -4,6 +4,7 @@ import data.population.Species;
 
 public class Monster {
 	Species species;
+	String speciesName;
 	String feature;
 	String trait;
 	String ability;
@@ -13,6 +14,10 @@ public class Monster {
 	
 	public Monster(Species species) {
 		this.species = species;
+		this.speciesName = species.getSpeciesName();
+	}
+	public Monster(String speciesName) {
+		this.speciesName = speciesName;
 	}
 
 	public Species getSpecies() {
@@ -21,6 +26,7 @@ public class Monster {
 
 	public void setSpecies(Species species) {
 		this.species = species;
+		this.speciesName = species.getSpeciesName();
 	}
 
 	public String getFeature() {
@@ -72,8 +78,8 @@ public class Monster {
 	}
 	
 	public String toString() {
-		if(this.species==null) return null;
-		String part1 = species.getSpeciesName();
+		if(this.speciesName==null) return null;
+		String part1 = speciesName;
 		if(personality!=null && trait != null) {
 			part1 = trait+", "+personality+" "+part1;
 		}else if(personality !=null) {

@@ -165,6 +165,21 @@ public class Util {
 		}
 		return result;
 	}
+	public static Reference getReferenceForIndex(String string,Indexible obj,Point p,Point zero) {
+		Reference result = null;
+		Point displayPos = normalizePos(p, zero);
+		if(string.contains("${location index}")) result = getRandomReference(obj, "location", InfoPanel.POICOUNT, displayPos);
+		if(string.contains("${npc index}")) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos);
+		if(string.contains("${faction index}")) result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos);
+		if(string.contains("${faith index}")) result = getRandomReference(obj, "faith", InfoPanel.FACTIONCOUNT, displayPos);
+		if(string.contains("${district index}")) result = getRandomReference(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos);
+		if(string.contains("${character index}")) {
+			if(obj.reduceTempId(2)%2==0) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos);
+			else result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos);
+		}
+		if(string.contains("${town index}")) result = getRandomReference(obj, "town", 1, displayPos);
+		return result;
+	}
 
 	public static String formatTableResult(String string,Indexible obj) {
 		String result = string;
@@ -282,8 +297,11 @@ public class Util {
 	}
 
 	public static String getIndexString(Indexible obj,String type,int count,Point p) {
+		return getRandomReference(obj,type,count,p).toString();
+	}
+	public static Reference getRandomReference(Indexible obj,String type,int count,Point p) {
 		int index = obj.reduceTempId(count);
-		return new Reference("{"+type+":"+p.x+","+p.y+","+(index+1)+"}$").toString();
+		return new Reference("{"+type+":"+p.x+","+p.y+","+(index+1)+"}$");
 	}
 
 	public static String formatSubtype(String string,CreatureSubtype type) {
@@ -352,7 +370,7 @@ public class Util {
 		String padding = String.format("%" + ((width-s.length())/2) + "s", "");
 		return padding+s+padding;
 	}
-	
+
 	//converts a float between 0 and 1 to a curve that tends toward 0 below 0.5 and 1 above 0.5
 	public static float getLogisticalCurve(float f) {
 		float value = (f-1f/2)/4;

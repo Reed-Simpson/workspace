@@ -106,44 +106,25 @@ public class NPCModel extends DataModel {
 	private static WeightedTable<String> domains;
 
 	private static void populateAllTables() {
-		civilized = new WeightedTable<String>();
-		populate(civilized,CIVILIZED,",");
-		underworld = new WeightedTable<String>();
-		populate(underworld,UNDERWORLD,",");
-		wilderness = new WeightedTable<String>();
-		populate(wilderness,WILDERNESS,",");
-		assets = new WeightedTable<String>();
-		populate(assets,ASSETS,",");
-		liabilities = new WeightedTable<String>();
-		populate(liabilities,LIABILITIES,",");
-		goals = new WeightedTable<String>();
-		populate(goals,GOALS,",");
-		misfortunes = new WeightedTable<String>();
-		populate(misfortunes,MISFORTUNE_ADJECTIVES,",");
-		missions = new WeightedTable<String>();
-		populate(missions,MISSION_VERBS,",");
-		methods = new WeightedTable<String>();
-		populate(methods,METHOD_NOUNS,",");
-		appearances = new WeightedTable<String>();
-		populate(appearances,APPEARANCE_ADJECTIVES,",");
-		details = new WeightedTable<String>();
-		populate(details,APPEARANCE_NOUNS,",");
-		costumes = new WeightedTable<String>();
-		populate(costumes,COSTUME_ADJECTIVES,",");
-		personalities = new WeightedTable<String>();
-		populate(personalities,PERSONALITY_ADJECTIVES,",");
-		mannerisms = new WeightedTable<String>();
-		populate(mannerisms,MANNERISMS,",");
-		secrets = new WeightedTable<String>();
-		populate(secrets,SECRETS,",");
-		reputations = new WeightedTable<String>();
-		populate(reputations,REPUTATION_ADJECTIVES,",");
-		hobbies = new WeightedTable<String>();
-		populate(hobbies,HOBBY_NOUNS,",");
-		relationships = new WeightedTable<String>();
-		populate(relationships,RELATIONSHIP_NOUNS,",");
-		domains = new WeightedTable<String>();
-		populate(domains,DOMAIN_NOUNS,",");
+		civilized = new WeightedTable<String>().populate(CIVILIZED,",");
+		underworld = new WeightedTable<String>().populate(UNDERWORLD,",");
+		wilderness = new WeightedTable<String>().populate(WILDERNESS,",");
+		assets = new WeightedTable<String>().populate(ASSETS,",");
+		liabilities = new WeightedTable<String>().populate(LIABILITIES,",");
+		goals = new WeightedTable<String>().populate(GOALS,",");
+		misfortunes = new WeightedTable<String>().populate(MISFORTUNE_ADJECTIVES,",");
+		missions = new WeightedTable<String>().populate(MISSION_VERBS,",");
+		methods = new WeightedTable<String>().populate(METHOD_NOUNS,",");
+		appearances = new WeightedTable<String>().populate(APPEARANCE_ADJECTIVES,",");
+		details = new WeightedTable<String>().populate(APPEARANCE_NOUNS,",");
+		costumes = new WeightedTable<String>().populate(COSTUME_ADJECTIVES,",");
+		personalities = new WeightedTable<String>().populate(PERSONALITY_ADJECTIVES,",");
+		mannerisms = new WeightedTable<String>().populate(MANNERISMS,",");
+		secrets = new WeightedTable<String>().populate(SECRETS,",");
+		reputations = new WeightedTable<String>().populate(REPUTATION_ADJECTIVES,",");
+		hobbies = new WeightedTable<String>().populate(HOBBY_NOUNS,",");
+		relationships = new WeightedTable<String>().populate(RELATIONSHIP_NOUNS,",");
+		domains = new WeightedTable<String>().populate(DOMAIN_NOUNS,",");
 	}
 
 

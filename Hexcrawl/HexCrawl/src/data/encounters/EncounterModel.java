@@ -11,6 +11,7 @@ import data.Reference;
 import data.WeightedTable;
 import data.dungeon.DungeonModel;
 import data.location.LocationModel;
+import data.location.LocationType;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
 import io.SaveRecord;
@@ -77,18 +78,12 @@ public class EncounterModel extends DataModel{
 	}
 	private static void populateAllTables() {
 		populateEncounterFocus();
-		encounterVerb = new WeightedTable<String>();
-		populate(encounterVerb,VERBS,",");
-		encounterNoun = new WeightedTable<String>();
-		populate(encounterNoun,NOUNS,",");
-		encounterAdverb = new WeightedTable<String>();
-		populate(encounterAdverb,ADVERB,",");
-		encounterAdj = new WeightedTable<String>();
-		populate(encounterAdj,ADJECTIVE,",");
-		encounterChar = new WeightedTable<String>();
-		populate(encounterChar,CHARACTER_ADJECTIVES,",");
-		encounterObj = new WeightedTable<String>();
-		populate(encounterObj,OBJECT_ADJECTIVES,",");
+		encounterVerb = new WeightedTable<String>().populate(VERBS,",");
+		encounterNoun = new WeightedTable<String>().populate(NOUNS,",");
+		encounterAdverb = new WeightedTable<String>().populate(ADVERB,",");
+		encounterAdj = new WeightedTable<String>().populate(ADJECTIVE,",");
+		encounterChar = new WeightedTable<String>().populate(CHARACTER_ADJECTIVES,",");
+		encounterObj = new WeightedTable<String>().populate(OBJECT_ADJECTIVES,",");
 	}
 	public static String getVerb(Indexible e) {
 		if(encounterVerb==null) populateAllTables();
@@ -124,8 +119,8 @@ public class EncounterModel extends DataModel{
 	}
 
 	public String getLocation(Indexible e,boolean isCity) {
-		if(isCity) return SettlementModel.getBuilding(e);
-		else return LocationModel.getStructureOrLandmark(e);
+		if(isCity) return LocationType.getBuilding(e);
+		else return LocationType.getStructureOrLandmark(e);
 	}
 	public String getLocationReference(Indexible e,Point p) {
 		return Util.formatTableResultPOS("${location index}", e,p,record.getZero());

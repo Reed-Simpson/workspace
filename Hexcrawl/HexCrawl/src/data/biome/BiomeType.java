@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.Indexible;
+import data.WeightedTable;
 import util.Pair;
 import view.Icon;
 
@@ -40,6 +42,20 @@ public enum BiomeType {
 	CITY(Color.getHSBColor(75f/360f, 0.0f, 0.9f), '\u2605',"city",0) , 
 	TOWN(Color.getHSBColor(0.345f, 0.0f, 0.5f), '\u2B24',"town",0),
 	DELTA(Color.getHSBColor(200f/360f, 0.7f, 1f), '\u2056',"delta",6) ;
+	
+
+	private static final String BIOMES = "Ash,Badlands,Bay,Beach,Delta,Desert,Dunes,Dustbowl,Fjords,Flood,"+
+			"Forest,Glacier,Heath,Highland,Hills,Icefield,Jungle,Lowland,Mesas,Moor,Mountains,Plains"+
+			"Rainforest,Riverlands,Saltpan,Savanna,Steppe,Taiga,Thickets,Tundra,Volcanic,Wetlands,Woods";
+	private static WeightedTable<String> biomes;
+
+	private static void populateAllTables() {
+		biomes = new WeightedTable<String>().populate(BIOMES,",");
+	}
+	public static String getBiome(Indexible obj) {
+		if(biomes==null) populateAllTables();
+		return biomes.getByWeight(obj);
+	}
 
 	private Color color;
 	private Character ch;

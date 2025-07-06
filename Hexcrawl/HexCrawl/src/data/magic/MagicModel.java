@@ -77,46 +77,26 @@ public class MagicModel extends DataModel{
 
 
 	private static void populateAllTables() {
-		weirdness = new WeightedTable<String>();
-		populate(weirdness, WEIRDNESS, ",");
-		spells = new WeightedTable<String>();
-		populate(spells, SPELLS, ",");
-		physicaleffects = new WeightedTable<String>();
-		populate(physicaleffects, PHYSICALEFFECTS, ",");
-		etherealeffects = new WeightedTable<String>();
-		populate(etherealeffects, ETHEREALEFFECTS, ",");
-		physicalelements = new WeightedTable<String>();
-		populate(physicalelements, PHYSICALELEMENTS, ",");
-		etherealelements = new WeightedTable<String>();
-		populate(etherealelements, ETHEREALELEMENTS, ",");
-		physicalforms = new WeightedTable<String>();
-		populate(physicalforms, PHYSICALFORMS, ",");
-		etherealforms = new WeightedTable<String>();
-		populate(etherealforms, ETHEREALFORMS, ",");
-		mutations = new WeightedTable<String>();
-		populate(mutations, MUTATIONS, ",");
-		insanities = new WeightedTable<String>();
-		populate(insanities, INSANITIES, ",");
-		omens = new WeightedTable<String>();
-		populate(omens, OMENS, ",");
-		spellcasters = new WeightedTable<String>();
-		populate(spellcasters, SPELLCASTERS, ",");
-		wizards = new WeightedTable<String>();
-		populate(wizards, WIZARDS, ",");
-		warlocks = new WeightedTable<String>();
-		populate(warlocks, WARLOCKS, ",");
-		sorcerers = new WeightedTable<String>();
-		populate(sorcerers, SORCERERS, ",");
-		clerics = new WeightedTable<String>();
-		populate(clerics, CLERICS, ",");
-		druids = new WeightedTable<String>();
-		populate(druids, DRUIDS, ",");
-		bards = new WeightedTable<String>();
-		populate(bards, BARDS, ",");
-		artificer = new WeightedTable<String>();
-		populate(artificer, ARTIFICER, ",");
-		adjective = new WeightedTable<String>();
-		populate(adjective, MAGIC_ADJECTIVE, ",");
+		weirdness = new WeightedTable<String>().populate( WEIRDNESS, ",");
+		spells = new WeightedTable<String>().populate( SPELLS, ",");
+		physicaleffects = new WeightedTable<String>().populate( PHYSICALEFFECTS, ",");
+		etherealeffects = new WeightedTable<String>().populate( ETHEREALEFFECTS, ",");
+		physicalelements = new WeightedTable<String>().populate( PHYSICALELEMENTS, ",");
+		etherealelements = new WeightedTable<String>().populate( ETHEREALELEMENTS, ",");
+		physicalforms = new WeightedTable<String>().populate( PHYSICALFORMS, ",");
+		etherealforms = new WeightedTable<String>().populate( ETHEREALFORMS, ",");
+		mutations = new WeightedTable<String>().populate( MUTATIONS, ",");
+		insanities = new WeightedTable<String>().populate( INSANITIES, ",");
+		omens = new WeightedTable<String>().populate( OMENS, ",");
+		spellcasters = new WeightedTable<String>().populate( SPELLCASTERS, ",");
+		wizards = new WeightedTable<String>().populate( WIZARDS, ",");
+		warlocks = new WeightedTable<String>().populate( WARLOCKS, ",");
+		sorcerers = new WeightedTable<String>().populate( SORCERERS, ",");
+		clerics = new WeightedTable<String>().populate( CLERICS, ",");
+		druids = new WeightedTable<String>().populate( DRUIDS, ",");
+		bards = new WeightedTable<String>().populate( BARDS, ",");
+		artificer = new WeightedTable<String>().populate( ARTIFICER, ",");
+		adjective = new WeightedTable<String>().populate( MAGIC_ADJECTIVE, ",");
 	}
 	@Deprecated
 	public static String getWeirdness(int index) {

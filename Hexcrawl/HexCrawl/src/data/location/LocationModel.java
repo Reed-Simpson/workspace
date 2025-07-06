@@ -10,7 +10,6 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.dungeon.Dungeon;
-import data.population.SettlementModel;
 import io.SaveRecord;
 import names.InnNameGenerator;
 import util.Util;
@@ -19,18 +18,6 @@ import view.InfoPanel;
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
 	private static final int TABLECOUNT = 5;
-	private static final String BIOMES = "Ash,Badlands,Bay,Beach,Delta,Desert,Dunes,Dustbowl,Fjords,Flood,"+
-			"Forest,Glacier,Heath,Highland,Hills,Icefield,Jungle,Lowland,Mesas,Moor,Mountains,Plains"+
-			"Rainforest,Riverlands,Saltpan,Savanna,Steppe,Taiga,Thickets,Tundra,Volcanic,Wetlands,Woods";
-	private static WeightedTable<String> biomes;
-	private static final String LANDMARKS = "Bog,Boulder,Butte,Cave,Cliff,Crag,Crater,Creek,Crossing,Ditch,Field,Forest,"+
-			"Grove,Hill,Hollow,Hotspring,Lair,Lake,Lakebed,Marsh,Mesa,Moor,Pass,Peak,Pit,"+
-			"Pond,Rapids,Ravine,Ridge,Rise,River,Rockslide,Spring,Swamp,Thicket,Valley,Fall";
-	private static WeightedTable<String> landmarks;
-	private static final String STRUCTURES = "Altar,Aqueduct,Bandit Camp,Battlefield,Bonfire,Bridge,Cairn,Crossroads,Crypt,Dam,Dungeon,Farm,"+
-			"Ford,Fortress,Gallows,Graveyard,Hedge,Hunter Camp,Inn,Lumber Camp,Mine,Monastery,Monument,Orchard,"+
-			"Outpost,Pasture,Ruin,Seclusion,Shack,Shrine,Standing Stone,Temple,Village,Wall,Watchtower,Waystone";
-	private static WeightedTable<String> structures;
 	private static final String DISCOVERIES = "Blood Stains,Bones,Broken Weapons,Burrow,${city activity},${civilized npc},Cut Ropes,Dead Animal,${dungeon activity},Food Scraps,Grave Marker,Human Corpse,"+
 			"${item},Lost ${job},${spell},Map,Message,Migration,${mutation},Nest,Portal,Resources,Rift,Strange Plant,"+
 			"Stunned ${job},Supplies,Torn Flag,Tracks,Trap,Treasure Cache,${underworld npc},${wilderness activity},${landmark},${structure},${wilderness npc},Wizard Duel";
@@ -59,24 +46,12 @@ public class LocationModel extends DataModel{
 	private static final String[] VISIBILITY = {"Landmark","Standard","Hidden"};
 
 	private static void populateAllTables() {
-		biomes = new WeightedTable<String>();
-		populate(biomes,BIOMES,",");
-		landmarks = new WeightedTable<String>();
-		populate(landmarks,LANDMARKS,",");
-		structures = new WeightedTable<String>();
-		populate(structures,STRUCTURES,",");
-		discoveries = new WeightedTable<String>();
-		populate(discoveries,DISCOVERIES,",");
-		wildactivities = new WeightedTable<String>();
-		populate(wildactivities,WILDACTIVITIES,",");
-		hazards = new WeightedTable<String>();
-		populate(hazards,HAZARDS,",");
-		edibles = new WeightedTable<String>();
-		populate(edibles,EDIBLE,",");
-		poisons = new WeightedTable<String>();
-		populate(poisons,POISON,",");
-		descriptors = new WeightedTable<String>();
-		populate(descriptors,DESCRIPTORS,",");
+		discoveries = new WeightedTable<String>().populate(DISCOVERIES,",");
+		wildactivities = new WeightedTable<String>().populate(WILDACTIVITIES,",");
+		hazards = new WeightedTable<String>().populate(HAZARDS,",");
+		edibles = new WeightedTable<String>().populate(EDIBLE,",");
+		poisons = new WeightedTable<String>().populate(POISON,",");
+		descriptors = new WeightedTable<String>().populate(DESCRIPTORS,",");
 	}
 	public static String getDescriptor(Indexible e) {
 		if(descriptors==null) populateAllTables();
@@ -84,25 +59,6 @@ public class LocationModel extends DataModel{
 	}
 
 
-
-	public static String getBiome(Indexible obj) {
-		if(biomes==null) populateAllTables();
-		return biomes.getByWeight(obj);
-	}
-	public static String getLandmark(Indexible obj) {
-		if(landmarks==null) populateAllTables();
-		return landmarks.getByWeight(obj);
-	}
-	public static String getStructure(Indexible obj) {
-		if(structures==null) populateAllTables();
-		return structures.getByWeight(obj);
-	}
-	public static String getStructureOrLandmark(Indexible obj) {
-		if(structures==null) populateAllTables();
-		int i = obj.reduceTempId(2);
-		if(i==0) return getStructure(obj);
-		else return getLandmark(obj);
-	}
 	public static String getActivity(Indexible obj) {
 		if(wildactivities==null) populateAllTables();
 		return Util.formatTableResult(wildactivities.getByWeight(obj),obj);
@@ -163,8 +119,8 @@ public class LocationModel extends DataModel{
 	}
 	private String getPOI(boolean isCity, Location location,int i,Point p) {
 		String type;
-		if(isCity) type = SettlementModel.getBuilding(location);
-		else type = getStructure(location);
+		if(isCity) type = LocationType.getBuilding(location);
+		else type = LocationType.getStructure(location);
 		location.setType(type);
 		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
 		if(isCity) {

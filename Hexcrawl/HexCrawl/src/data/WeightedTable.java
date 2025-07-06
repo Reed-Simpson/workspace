@@ -45,4 +45,12 @@ public class WeightedTable<T> extends LinkedHashMap<T,Integer> {
 	public Integer put(T key) {
 		return this.put(key, 1);
 	}
+
+	@SuppressWarnings("unchecked")
+	public WeightedTable<T> populate(String list, String separator) {
+		for(String s:list.split(separator)) {
+			this.put((T) s);
+		}
+		return this;
+	}
 }

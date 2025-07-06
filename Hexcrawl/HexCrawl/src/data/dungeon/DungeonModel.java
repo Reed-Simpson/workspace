@@ -66,30 +66,18 @@ public class DungeonModel extends DataModel {
 	private static WeightedTable<String> traptriggers;
 
 	private static void populateAllTables() {
-		entrances = new WeightedTable<String>();
-		populate(entrances,ENTRANCES,",");
-		forms = new WeightedTable<String>();
-		populate(forms,FORMS,",");
-		layouts = new WeightedTable<String>();
-		populate(layouts,LAYOUTS,",");
-		ruinations = new WeightedTable<String>();
-		populate(ruinations,RUINATIONS,",");
-		rewards = new WeightedTable<String>();
-		populate(rewards,REWARDS,",");
-		activities = new WeightedTable<String>();
-		populate(activities,ACTIVITIES,",");
-		rooms = new WeightedTable<String>();
-		populate(rooms,ROOMS,",");
-		details = new WeightedTable<String>();
-		populate(details,DETAILS,",");
-		tricks = new WeightedTable<String>();
-		populate(tricks,TRICKS,",");
-		hazards = new WeightedTable<String>();
-		populate(hazards,HAZARDS,",");
-		trapeffects = new WeightedTable<String>();
-		populate(trapeffects,TRAPEFFECTS,",");
-		traptriggers = new WeightedTable<String>();
-		populate(traptriggers,TRAPTRIGGERS,",");
+		entrances = new WeightedTable<String>().populate(ENTRANCES,",");
+		forms = new WeightedTable<String>().populate(FORMS,",");
+		layouts = new WeightedTable<String>().populate(LAYOUTS,",");
+		ruinations = new WeightedTable<String>().populate(RUINATIONS,",");
+		rewards = new WeightedTable<String>().populate(REWARDS,",");
+		activities = new WeightedTable<String>().populate(ACTIVITIES,",");
+		rooms = new WeightedTable<String>().populate(ROOMS,",");
+		details = new WeightedTable<String>().populate(DETAILS,",");
+		tricks = new WeightedTable<String>().populate(TRICKS,",");
+		hazards = new WeightedTable<String>().populate(HAZARDS,",");
+		trapeffects = new WeightedTable<String>().populate(TRAPEFFECTS,",");
+		traptriggers = new WeightedTable<String>().populate(TRAPTRIGGERS,",");
 	}
 	
 

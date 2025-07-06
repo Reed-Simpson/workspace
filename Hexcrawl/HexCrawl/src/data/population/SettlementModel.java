@@ -36,14 +36,6 @@ public class SettlementModel extends DataModel{
 			"Government,Graveyards,Green Space,Industrialization,Judgement,Livestock,Marketplace,Memorials,Military,Opulence,Pollution,Poverty,"+
 			"Punishment,Religion,Science,Trade,Trash,${underworld npc},${upper class building},${lower class building},Vices,${wilderness npc},Wizardry,Wonders";
 	private static WeightedTable<String> districts;
-	public static final String UCBUILDINGS = "Academy,Alchemist,Archive,Art Dealer,Barber,Bookbinder,Bookseller,Castle,Clockmaker,Clothier,Courthouse,Furrier,"+
-			"Gallery,Garden,Haberdashery,Jeweler,Law Office,Locksmith,Lounge,Manor,Museum,Observatory,Opera House,Park,"+
-			"Physician,Printer,Public Baths,Restaurant,Salon,Stables,Taxidermist,Temple,Tobacconist,Townhouse,Winery,Zoo";
-	private static WeightedTable<String> ucBuildings;
-	public static final String LCBUILDINGS = "Apothacary,Asylum,Baker,Brewery,Butcher,Candlemaker,Catacombs,Cheesemaker,Criminal Den,Curiosity Shop,Dock,Fighting Pit,"+
-			"Forge,Fortuneteller,Gambling Hall,Leatherworks,Marketplace,Mason,Mill,Moneylender,Orphanage,Outfitter,Prison,Sewers,"+
-			"Shipyards,Shrine,Stockyard,Stonecarver,Tattooist,Tavern,Theater,Veterinarian,Warehouse,Watchtower,Weaver,Workshop";
-	private static WeightedTable<String> lcBuildings;
 	public static final String ACTIVITIES = "Abduct,Beg,Brawl,Burgle,Celebrate,Chase,Construct,Cook,Dance,Duel,${dungeon activity},Execute,"+
 			"Extinguish,Extort,Follow,Gamble,Interrogate,Marry,${mission},Mourn,Party,Patrol,Perform,"+
 			"Play,Preach,Process,Proclaim,Protest,Release,Repair,Riot,Rob,Search,Sell,${wilderness activity}";
@@ -68,28 +60,15 @@ public class SettlementModel extends DataModel{
 
 
 	private static void populateAllTables() {
-		themes = new WeightedTable<String>();
-		populate(themes,THEMES,",");
-		events = new WeightedTable<String>();
-		populate(events,EVENTS,",");
-		districts = new WeightedTable<String>();
-		populate(districts,DISTRICTS,",");
-		ucBuildings = new WeightedTable<String>();
-		populate(ucBuildings,UCBUILDINGS,",");
-		lcBuildings = new WeightedTable<String>();
-		populate(lcBuildings,LCBUILDINGS,",");
-		activities = new WeightedTable<String>();
-		populate(activities,ACTIVITIES,",");
-		rooms = new WeightedTable<String>();
-		populate(rooms,ROOMS,",");
-		streets = new WeightedTable<String>();
-		populate(streets,STREETS,",");
-		features = new WeightedTable<String>();
-		populate(features,FEATURES,",");
-		leader = new WeightedTable<String>();
-		populate(leader,LEADER,",");
-		government = new WeightedTable<String>();
-		populate(government,GOVERNMENT,",");
+		themes = new WeightedTable<String>().populate(THEMES,",");
+		events = new WeightedTable<String>().populate(EVENTS,",");
+		districts = new WeightedTable<String>().populate(DISTRICTS,",");
+		activities = new WeightedTable<String>().populate(ACTIVITIES,",");
+		rooms = new WeightedTable<String>().populate(ROOMS,",");
+		streets = new WeightedTable<String>().populate(STREETS,",");
+		features = new WeightedTable<String>().populate(FEATURES,",");
+		leader = new WeightedTable<String>().populate(LEADER,",");
+		government = new WeightedTable<String>().populate(GOVERNMENT,",");
 	}
 
 
@@ -104,19 +83,6 @@ public class SettlementModel extends DataModel{
 	public static String getDistrict(Indexible obj) {
 		if(districts==null) populateAllTables();
 		return Util.formatTableResult(districts.getByWeight(obj),obj);
-	}
-	public static String getBuilding(Indexible obj) {
-		if(ucBuildings==null) populateAllTables();
-		if(obj.reduceTempId(2)==0) return ucBuildings.getByWeight(obj);
-		else return lcBuildings.getByWeight(obj);
-	}
-	public static String getUCBuilding(Indexible obj) {
-		if(ucBuildings==null) populateAllTables();
-		return ucBuildings.getByWeight(obj);
-	}
-	public static String getLCBuilding(Indexible obj) {
-		if(lcBuildings==null) populateAllTables();
-		return lcBuildings.getByWeight(obj);
 	}
 	public static String getActivity(Indexible obj) {
 		if(activities==null) populateAllTables();

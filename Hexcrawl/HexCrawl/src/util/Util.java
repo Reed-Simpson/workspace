@@ -7,10 +7,12 @@ import java.util.List;
 import data.GenericTables;
 import data.Indexible;
 import data.Reference;
+import data.biome.BiomeType;
 import data.dungeon.DungeonModel;
 import data.encounters.EncounterModel;
 import data.item.EquipmentModel;
 import data.location.LocationModel;
+import data.location.LocationType;
 import data.magic.MagicModel;
 import data.monster.MonsterModel;
 import data.npc.NPCModel;
@@ -152,7 +154,7 @@ public class Util {
 				result = Util.replace(result,"${town index}",getIndexString(obj, "town", 1, displayPos));
 			}
 		}else {
-			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationModel.getStructure(obj));
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj).toString());
 			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
@@ -191,10 +193,13 @@ public class Util {
 		if(result.contains("${city activity}")) result = Util.replace(result,"${city activity}",SettlementModel.getActivity(obj));
 		if(result.contains("${city event}")) result = Util.replace(result,"${city event}",SettlementModel.getEvent(obj));
 		if(result.contains("${district}")) result = Util.replace(result,"${district}",SettlementModel.getDistrict(obj));
-		if(result.contains("${lower class building}")) result = Util.replace(result,"${lower class building}",SettlementModel.getLCBuilding(obj));
-		if(result.contains("${upper class building}")) result = Util.replace(result,"${upper class building}",SettlementModel.getUCBuilding(obj));
-		if(result.contains("${building}")) result = Util.replace(result,"${building}",SettlementModel.getBuilding(obj));
 		if(result.contains("${building room}")) result = Util.replace(result,"${building room}",SettlementModel.getRoom(obj));
+		
+		if(result.contains("${lower class building}")) result = Util.replace(result,"${lower class building}",LocationType.getLCBuilding(obj));
+		if(result.contains("${upper class building}")) result = Util.replace(result,"${upper class building}",LocationType.getUCBuilding(obj));
+		if(result.contains("${building}")) result = Util.replace(result,"${building}",LocationType.getBuilding(obj));
+		if(result.contains("${landmark}")) result = Util.replace(result,"${landmark}",LocationType.getLandmark(obj));
+		if(result.contains("${structure}")) result = Util.replace(result,"${structure}",LocationType.getStructure(obj));
 
 		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionNameGenerator.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));
@@ -270,12 +275,11 @@ public class Util {
 		if(result.contains("${artificer}")) result = Util.replace(result,"${artificer}",MagicModel.getArtificer(obj));
 		if(result.contains("${weirdness}")) result = Util.replace(result,"${weirdness}",MagicModel.getWeirdness(obj));
 
-		if(result.contains("${biome}")) result = Util.replace(result,"${biome}",LocationModel.getBiome(obj));
+		if(result.contains("${biome}")) result = Util.replace(result,"${biome}",BiomeType.getBiome(obj));
+		
 		if(result.contains("${wilderness activity}")) result = Util.replace(result,"${wilderness activity}",LocationModel.getActivity(obj));
 		if(result.contains("${edible plant}")) result = Util.replace(result,"${edible plant}",LocationModel.getEdiblePlant(obj));
 		if(result.contains("${poisonous plant}")) result = Util.replace(result,"${poisonous plant}",LocationModel.getPoisonousPlant(obj));
-		if(result.contains("${landmark}")) result = Util.replace(result,"${landmark}",LocationModel.getLandmark(obj));
-		if(result.contains("${structure}")) result = Util.replace(result,"${structure}",LocationModel.getStructure(obj));
 		if(result.contains("${hazard}")) result = Util.replace(result,"${hazard}",LocationModel.getHazard(obj));
 
 		if(result.contains("${inn prefix}")) result = Util.replace(result,"${inn prefix}",InnNameGenerator.getPrefix(obj));

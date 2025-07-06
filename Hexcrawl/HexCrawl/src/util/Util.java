@@ -21,6 +21,7 @@ import data.population.Species;
 import data.population.NPCSpecies;
 import data.threat.CreatureSubtype;
 import names.FactionNameGenerator;
+import names.FactionType;
 import names.InnNameGenerator;
 import names.npc.HumanNameGenerator;
 import view.InfoPanel;
@@ -156,12 +157,12 @@ public class Util {
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCModel.getJob(obj));
-			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionNameGenerator.getFaction(obj).toString());
+			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionType.getFaction(obj).toString());
 			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
 			if(result.contains("${character index}")) {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCModel.getJob(obj));
-				else result = Util.replace(result,"${character index}",FactionNameGenerator.getFaction(obj).toString());
+				else result = Util.replace(result,"${character index}",FactionType.getFaction(obj).toString());
 			}
 			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",NPCSpecies.GOLIATH.getCityNameGen().getName(obj));
 		}
@@ -201,7 +202,7 @@ public class Util {
 		if(result.contains("${landmark}")) result = Util.replace(result,"${landmark}",LocationType.getLandmark(obj));
 		if(result.contains("${structure}")) result = Util.replace(result,"${structure}",LocationType.getStructure(obj));
 
-		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionNameGenerator.getFaction(obj).toString());
+		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionType.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));
 
 		if(result.contains("${job}")) result = Util.replace(result,"${job}",NPCModel.getJob(obj));

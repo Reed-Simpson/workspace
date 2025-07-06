@@ -1,6 +1,8 @@
 package names;
 
+import data.Indexible;
 import data.threat.CreatureType;
+import util.Util;
 
 public enum FactionType {
 	DARK_CULT("Dark Cult"),
@@ -46,6 +48,10 @@ public enum FactionType {
 	TRADE_COMPANY("Trade Company"),
 	WIZARD_CIRCLE("Wizard Circle");
 
+	private static final FactionType[] FAITHS = {DARK_CULT,HERETICAL_SECT,NATIONAL_CHURCH,RELIGIOUS_ORDER,RELIGIOUS_SECT,DRUID_CIRCLE,MONASTIC_ORDER};
+	private static final FactionType[] FACTIONS = {ART_MOVEMENT,BARD_COLLEGE,BEGGAR_GUILD,BLACK_MARKET,BROTHERHOOD,CITY_GUARD,CONSPIRACY,CRAFT_GUILD,CRIME_FAMILY,CRIME_RING,EXPLORER_CLUB,
+			FREE_COMPANY,GOURMAND_CLUB,HEIST_CREW,HIGH_COUNCIL,HIRED_KILLERS,LOCAL_MILITIA,NOBLE_HOUSE,OUTLANDER_CLAN,OUTLAW_GANG,POLITICAL_PARTY,KNIGHTLY_ORDER,RESISTANCE,ROYAL_ARMY,
+			ROYAL_HOUSE,SCHOLAR_CIRCLE,SECRET_SOCIETY,SPY_NETWORK,STREET_ARTISTS,STREET_GANG,THEATER_TROUPE,TRADE_COMPANY,WIZARD_CIRCLE};
 	private static final FactionType[] ABERRATION = {DARK_CULT,DARK_CULT,DARK_CULT,DARK_CULT,DARK_CULT,HERETICAL_SECT,HERETICAL_SECT,HERETICAL_SECT,NATIONAL_CHURCH,RELIGIOUS_ORDER,RELIGIOUS_SECT,
 			ART_MOVEMENT,BROTHERHOOD,CONSPIRACY,CRAFT_GUILD,EXPLORER_CLUB,NOBLE_HOUSE,SCHOLAR_CIRCLE,SECRET_SOCIETY,STREET_ARTISTS,BARD_COLLEGE,THEATER_TROUPE,WIZARD_CIRCLE};
 	private static final FactionType[] BEAST = {DARK_CULT,DRUID_CIRCLE,OUTLANDER_CLAN,OUTLAW_GANG,EXPLORER_CLUB,WIZARD_CIRCLE};
@@ -99,9 +105,20 @@ public enum FactionType {
 		return text;
 	}
 	public String toString() {
-		return text;
+		return Util.toCamelCase(Util.replace(this.name(), "_", " "));
 	}
 	public boolean isFaith() {
-		return FactionNameGenerator.isFaith(this);
+		for(FactionType t:FAITHS) {
+			if(this.equals(t)) return true;
+		}
+		return false;
+	}
+	
+
+	public static FactionType getFaction(Indexible obj) {
+		return (FactionType) Util.getElementFromArray(FACTIONS, obj);
+	}
+	public static FactionType getFaith(Indexible obj) {
+		return (FactionType) Util.getElementFromArray(FAITHS, obj);
 	}
 }

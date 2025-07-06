@@ -192,28 +192,28 @@ public class SettlementModel extends DataModel{
 	
 	public Faction getFaction(int i,Point p) {
 		Faction result = getIndexedFaction(i, p);
-		FactionType type = FactionNameGenerator.getFaction(result);
+		FactionType type = FactionType.getFaction(result);
 		result.setType(type);
 		populateFactionDetails(result, p);
 		return result;
 	}
 	public Faction getFaction(Random random,Point p) {
 		Faction result = getRandomIndexedFaction(random);
-		FactionType type = FactionNameGenerator.getFaction(result);
+		FactionType type = FactionType.getFaction(result);
 		result.setType(type);
 		populateFactionDetails(result, p);
 		return result;
 	}
 	public Faction getFaith(int i,Point p) {
 		Faction result = getIndexedFaction(i+InfoPanel.FACTIONCOUNT, p);
-		FactionType type = FactionNameGenerator.getFaith(result);
+		FactionType type = FactionType.getFaith(result);
 		result.setType(type);
 		populateFactionDetails(result, p);
 		return result;
 	}
 	public Faction getFaith(Random random,Point p) {
 		Faction result = getRandomIndexedFaction(random);
-		FactionType type = FactionNameGenerator.getFaith(result);
+		FactionType type = FactionType.getFaith(result);
 		result.setType(type);
 		populateFactionDetails(result, p);
 		return result;

@@ -8,12 +8,9 @@ import util.Util;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static LinkedHashMap<FactionType,AdjectiveNounNameGenerator> factionNameGenerators;
-	private static LinkedHashMap<FactionType, AdjectiveNounNameGenerator> faithNameGenerators;
 	//	private static final String FACTIONS = "art movement,beggar's guild,black market,brotherhood,city guard,conspiracy,craft guild,crime family,crime ring,dark cult,explorer's club,free company,"+
 	//			"gourmand club,heist crew,heretical sect,high council,hired killers,local militia,national church,noble house,outlander clan,outlaw gang,political party,religious order,"+
 	//			"religious sect,resistance,royal army,royal house,scholar's circle,secret society,spy network,street artists,street gang,street musicians,theater troupe,trade company";
-	private static WeightedTable<FactionType> factions;
-	private static WeightedTable<FactionType> faiths;
 	public static final String TRAITS = "bankrupt,bureaucratic,charitable,confused,connected,corrupt,decadent,decaying,delusional,divided,dwindling,efficient,"+
 			"esoteric,expanding,hunted,incompetent,incorruptible,insane,insular,manipulative,martial,${personality},pious,popular,"+
 			"righteous,ruthless,secret,subversive,suppressed,threatened,thriving,unpopular,up-and-coming,wealthy,well-prepared,xenophobic";
@@ -355,21 +352,17 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		populateFaiths();
 	}
 	private static void populateFaiths() {
-		faithNameGenerators = new LinkedHashMap<FactionType, AdjectiveNounNameGenerator>();
-		faithNameGenerators.put(FactionType.DARK_CULT,new DarkCultNameGen());
-		faithNameGenerators.put(FactionType.HERETICAL_SECT,new HereticalSectNameGen());
-		faithNameGenerators.put(FactionType.NATIONAL_CHURCH,new NationalChurchNameGen());
-		faithNameGenerators.put(FactionType.RELIGIOUS_ORDER,new ReligiousOrderNameGen());
-		faithNameGenerators.put(FactionType.RELIGIOUS_SECT,new ReligiousSectNameGen());
-		faithNameGenerators.put(FactionType.DRUID_CIRCLE,new ReligiousSectNameGen());
-		faithNameGenerators.put(FactionType.MONASTIC_ORDER,new ReligiousSectNameGen());
-		faiths = new WeightedTable<FactionType>();
-		for(FactionType s:faithNameGenerators.keySet()) {
-			faiths.put(s);
-		}
 	}
 	private static void populateFaction() {
 		factionNameGenerators = new LinkedHashMap<FactionType, AdjectiveNounNameGenerator>();
+		factionNameGenerators.put(FactionType.DARK_CULT,new DarkCultNameGen());
+		factionNameGenerators.put(FactionType.HERETICAL_SECT,new HereticalSectNameGen());
+		factionNameGenerators.put(FactionType.NATIONAL_CHURCH,new NationalChurchNameGen());
+		factionNameGenerators.put(FactionType.RELIGIOUS_ORDER,new ReligiousOrderNameGen());
+		factionNameGenerators.put(FactionType.RELIGIOUS_SECT,new ReligiousSectNameGen());
+		factionNameGenerators.put(FactionType.DRUID_CIRCLE,new ReligiousSectNameGen());
+		factionNameGenerators.put(FactionType.MONASTIC_ORDER,new ReligiousSectNameGen());
+		
 		factionNameGenerators.put(FactionType.ART_MOVEMENT,new ArtMovementNameGen());
 		factionNameGenerators.put(FactionType.BEGGAR_GUILD,new BeggarGuildNameGen());
 		factionNameGenerators.put(FactionType.BLACK_MARKET,new BlackMarketNameGen());
@@ -403,19 +396,6 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		factionNameGenerators.put(FactionType.THEATER_TROUPE,new TheaterTroupeNameGen());
 		factionNameGenerators.put(FactionType.TRADE_COMPANY,new TradeCompanyNameGen());
 		factionNameGenerators.put(FactionType.WIZARD_CIRCLE,new ScholarCircleNameGen());
-
-		factions = new WeightedTable<FactionType>();
-		for(FactionType s:factionNameGenerators.keySet()) {
-			factions.put(s);
-		}
-	}
-	public static FactionType getFaction(Indexible obj) {
-		if(factions==null) populateAllTables();
-		return factions.getByWeight(obj);
-	}
-	public static FactionType getFaith(Indexible obj) {
-		if(faiths==null) populateAllTables();
-		return faiths.getByWeight(obj);
 	}
 	public static String getTrait(Indexible obj) {
 		if(traits==null) populateAllTables();
@@ -737,13 +717,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		return name;
 	}
 	public static AdjectiveNounNameGenerator getNameGenerator(FactionType type) {
-		AdjectiveNounNameGenerator gen;
-		if(type.isFaith()) gen = faithNameGenerators.get(type);
-		else gen = factionNameGenerators.get(type);
-		return gen;
-	}
-	public static boolean isFaith(FactionType type) {
-		return faiths.containsKey(type);
+		return factionNameGenerators.get(type);
 	}
 	
 	private static class ArtMovementNameGen extends AdjectiveNounNameGenerator{

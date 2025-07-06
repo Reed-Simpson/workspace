@@ -76,7 +76,7 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		roadsPanel.add(roads);
 		roadsPanel.add(Box.createHorizontalStrut(10));
 		roadsPanel.add(Box.createHorizontalGlue());
-		this.crossing = new JLabel("Crossing: ");
+		this.crossing = new JLabel("River Crossing: ");
 		roadsPanel.add(crossing);
 		roadsPanel.add(Box.createHorizontalStrut(100));
 		JPanel dummy2 = new JPanel();

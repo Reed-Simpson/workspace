@@ -94,6 +94,10 @@ public class EconomicModel extends DataModel{
 	}
 
 	public String getRoadDescription(Point p) {
+		int roadId = calcFinalRoadId(p);
+		return getRoadType(roadId);
+	}
+	private int calcFinalRoadId(Point p) {
 		int roadId = getRoadPopId(p);
 		int mainRoad = -1;
 		for(Point p1:roads.getAdjacencyList(p)) {
@@ -103,7 +107,35 @@ public class EconomicModel extends DataModel{
 		if(mainRoad>-1) {
 			roadId = Math.max(roadId, getRoadWealthId(p))+mainRoad-1;
 		}
-		return getRoadType(roadId);
+		return roadId;
+	}
+	public String getCrossingDescription(Point p) {
+		int roadId = calcFinalRoadId(p);
+		Float volume = precipitation.getFlowVolume(p);
+		if(roadId>=7) {
+			if(volume>20) return "Ferry";
+			else if(volume>7) return "Toll Bridge";
+			else return "Bridge";
+		}else if(roadId==6) {
+			if(volume>15) return "Ferry";
+			else if(volume>5) return "Toll Bridge";
+			else return "Bridge";
+		}else if(roadId==5) {
+			if(volume>14) return "Ferry";
+			else if(volume>11) return "Ford";
+			else if(volume>3) return "Toll Bridge";
+			else return "Bridge";
+		}else if(roadId==4) {
+			if(volume>12) return "None";
+			else if(volume>7) return "Ferry";
+			else return "Ford";
+		}else if(roadId==3) {
+			if(volume>4) return "None";
+			else return "Ford";
+		}else {
+			return "None";
+		}
+		
 	}
 
 	private String getRoadType(int roadId) {

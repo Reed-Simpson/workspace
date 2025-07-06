@@ -37,6 +37,8 @@ public class HexPanelGeneralStatPanel extends JPanel{
 	private JLabel innName;
 	private JLabel innText;
 
+	private JLabel crossing;
+
 	public HexPanelGeneralStatPanel(InfoPanel panel) {
 		this.info = panel;
 		this.setLayout(new BorderLayout());
@@ -69,9 +71,14 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		this.add(dummy1,BorderLayout.NORTH);
 
 		JPanel roadsPanel = new JPanel();
-		roadsPanel.setLayout(new BoxLayout(roadsPanel, BoxLayout.Y_AXIS));
+		roadsPanel.setLayout(new BoxLayout(roadsPanel, BoxLayout.X_AXIS));
 		this.roads = new JLabel("Roads: ");
 		roadsPanel.add(roads);
+		roadsPanel.add(Box.createHorizontalStrut(10));
+		roadsPanel.add(Box.createHorizontalGlue());
+		this.crossing = new JLabel("Crossing: ");
+		roadsPanel.add(crossing);
+		roadsPanel.add(Box.createHorizontalStrut(100));
 		JPanel dummy2 = new JPanel();
 		dummy2.setLayout(new BoxLayout(dummy2, BoxLayout.X_AXIS));
 		dummy2.add(roadsPanel);
@@ -123,8 +130,13 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		String biome = info.getBiomeText(pos);
 		this.setBiome("Biome Type: "+biome);
 		
-		if(grid.isWater(pos)||precipitation.isLake(pos))  this.setRoads("Roads: none");
-		else this.setRoads("Roads: "+controller.getEconomy().getRoadDescription(pos));
+		if(grid.isWater(pos)||precipitation.isLake(pos)) {
+			this.setRoads("Roads: none");
+			this.crossing.setText("Crossing: None");
+		}else {
+			this.setRoads("Roads: "+controller.getEconomy().getRoadDescription(pos));
+			this.crossing.setText("Crossing: "+controller.getEconomy().getCrossingDescription(pos));
+		}
 		
 	}
 	

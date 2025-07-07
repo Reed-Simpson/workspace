@@ -1,6 +1,7 @@
 package data.location;
 
 import data.Indexible;
+import data.npc.NPCJobType;
 import util.Util;
 
 public enum LocationType {
@@ -47,6 +48,106 @@ public enum LocationType {
 		int i = obj.reduceTempId(2);
 		if(i==0) return getStructure(obj);
 		else return getLandmark(obj);
+	}
+	public NPCJobType[] getJobTypes() {
+		switch(this) {
+		case Bandit_Camp: return NPCJobType.Bandit_Camp_jobs;
+		case Bonfire: return NPCJobType.Bonfire_jobs;
+		case Bridge: return NPCJobType.Bridge_jobs;
+		case Crossroads: return NPCJobType.Crossroads_jobs;
+		case Crypt: return NPCJobType.Crypt_jobs;
+		case Dungeon: return NPCJobType.Dungeon_jobs;
+		case Farm: return NPCJobType.Farm_jobs;
+		case Ford: return NPCJobType.Ford_jobs;
+		case Fortress: return NPCJobType.Fortress_jobs;
+		case Gallows: return NPCJobType.Gallows_jobs;
+		case Graveyard: return NPCJobType.Graveyard_jobs;
+		case Hedge: return NPCJobType.Hedge_jobs;
+		case Hunter_Camp: return NPCJobType.Hunter_Camp_jobs;
+		case Inn: return NPCJobType.Inn_jobs;
+		case Lumber_Camp: return NPCJobType.Lumber_Camp_jobs;
+		case Mine: return NPCJobType.Mine_jobs;
+		case Monastery: return NPCJobType.Monastery_jobs;
+		case Orchard: return NPCJobType.Orchard_jobs;
+		case Outpost: return NPCJobType.Outpost_jobs;
+		case Pasture: return NPCJobType.Pasture_jobs;
+		case Seclusion: return NPCJobType.Seclusion_jobs;
+		case Shack: return NPCJobType.Shack_jobs;
+		case Shrine: return NPCJobType.Shrine_jobs;
+		case Temple: return NPCJobType.Temple_jobs;
+		case Village: return NPCJobType.Village_jobs;
+		case Wall: return NPCJobType.Wall_jobs;
+		case Watchtower: return NPCJobType.Watchtower_jobs;
+		case Academy: return NPCJobType.Academy_jobs;
+		case Alchemist: return NPCJobType.Alchemist_jobs;
+		case Archive: return NPCJobType.Archive_jobs;
+		case Art_Dealer: return NPCJobType.Art_Dealer_jobs;
+		case Barber: return NPCJobType.Barber_jobs;
+		case Bookbinder: return NPCJobType.Bookbinder_jobs;
+		case Bookseller: return NPCJobType.Bookseller_jobs;
+		case Castle: return NPCJobType.Castle_jobs;
+		case Clockmaker: return NPCJobType.Clockmaker_jobs;
+		case Clothier: return NPCJobType.Clothier_jobs;
+		case Courthouse: return NPCJobType.Courthouse_jobs;
+		case Furrier: return NPCJobType.Furrier_jobs;
+		case Gallery: return NPCJobType.Gallery_jobs;
+		case Garden: return NPCJobType.Garden_jobs;
+		case Haberdashery: return NPCJobType.Haberdashery_jobs;
+		case Jeweler: return NPCJobType.Jeweler_jobs;
+		case Law_Office: return NPCJobType.Law_Office_jobs;
+		case Locksmith: return NPCJobType.Locksmith_jobs;
+		case Lounge: return NPCJobType.Lounge_jobs;
+		case Manor: return NPCJobType.Manor_jobs;
+		case Museum: return NPCJobType.Museum_jobs;
+		case Observatory: return NPCJobType.Observatory_jobs;
+		case Opera_House: return NPCJobType.Opera_House_jobs;
+		case Park: return NPCJobType.Park_jobs;
+		case Physician: return NPCJobType.Physician_jobs;
+		case Printer: return NPCJobType.Printer_jobs;
+		case Restaurant: return NPCJobType.Restaurant_jobs;
+		case Salon: return NPCJobType.Salon_jobs;
+		case Stables: return NPCJobType.Stables_jobs;
+		case Taxidermist: return NPCJobType.Taxidermist_jobs;
+		case Tobacconist: return NPCJobType.Tobacconist_jobs;
+		case Townhouse: return NPCJobType.Townhouse_jobs;
+		case Winery: return NPCJobType.Winery_jobs;
+		case Zoo: return NPCJobType.Zoo_jobs;
+		case Apothacary: return NPCJobType.Apothacary_jobs;
+		case Asylum: return NPCJobType.Asylum_jobs;
+		case Baker: return NPCJobType.Baker_jobs;
+		case Brewery: return NPCJobType.Brewery_jobs;
+		case Butcher: return NPCJobType.Butcher_jobs;
+		case Candlemaker: return NPCJobType.Candlemaker_jobs;
+		case Catacombs: return NPCJobType.Catacombs_jobs;
+		case Cheesemaker: return NPCJobType.Cheesemaker_jobs;
+		case Criminal_Den: return NPCJobType.Criminal_Den_jobs;
+		case Curiosity_Shop: return NPCJobType.Curiosity_Shop_jobs;
+		case Dock: return NPCJobType.Dock_jobs;
+		case Fighting_Pit: return NPCJobType.Fighting_Pit_jobs;
+		case Forge: return NPCJobType.Forge_jobs;
+		case Fortuneteller: return NPCJobType.Fortuneteller_jobs;
+		case Gambling_Hall: return NPCJobType.Gambling_Hall_jobs;
+		case Leatherworks: return NPCJobType.Leatherworks_jobs;
+		case Marketplace: return NPCJobType.Marketplace_jobs;
+		case Mason: return NPCJobType.Mason_jobs;
+		case Mill: return NPCJobType.Mill_jobs;
+		case Moneylender: return NPCJobType.Moneylender_jobs;
+		case Orphanage: return NPCJobType.Orphanage_jobs;
+		case Outfitter: return NPCJobType.Outfitter_jobs;
+		case Prison: return NPCJobType.Prison_jobs;
+		case Sewers: return NPCJobType.Sewers_jobs;
+		case Shipyards: return NPCJobType.Shipyards_jobs;
+		case Stockyard: return NPCJobType.Stockyard_jobs;
+		case Stonecarver: return NPCJobType.Stonecarver_jobs;
+		case Tattooist: return NPCJobType.Tattooist_jobs;
+		case Tavern: return NPCJobType.Tavern_jobs;
+		case Theater: return NPCJobType.Theater_jobs;
+		case Veterinarian: return NPCJobType.Veterinarian_jobs;
+		case Warehouse: return NPCJobType.Warehouse_jobs;
+		case Weaver: return NPCJobType.Weaver_jobs;
+		case Workshop: return NPCJobType.Workshop_jobs;
+		default: return new NPCJobType[] {null};
+		}
 	}
 	
 	public String toString() {

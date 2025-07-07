@@ -3,6 +3,7 @@ package data.economy;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ public class EconomicModel extends DataModel{
 	private AStarGraph travel;
 	private AStarGraph roads;
 	private HashSet<Point> roadsCache;
+	private HashMap<Point,ArrayList<Point>> neighborCache;
 
 	public EconomicModel(SaveRecord record, PopulationModel population,BiomeModel biomes,PrecipitationModel precipitation,AltitudeModel grid) {
 		super(record);
@@ -42,6 +44,7 @@ public class EconomicModel extends DataModel{
 		this.travel = new AStarGraph(1);
 		this.roads = new AStarGraph(1);
 		this.roadsCache = new HashSet<Point>();
+		this.neighborCache = new HashMap<Point,ArrayList<Point>>();
 	}
 
 	private float getLocalFactor(Point p) {
@@ -202,7 +205,9 @@ public class EconomicModel extends DataModel{
 		}
 		if(!roads.contains(p)) roads.add(p);
 		boolean isCity = population.isCity(p);
-		for(Point town:nearbyTowns) {
+		Iterator<Point> it = nearbyTowns.iterator();
+		while(it.hasNext()) {
+			Point town = it.next();
 			int weight = 1;
 			int maxdistance = 36;
 			LinkedList<Point> path = new LinkedList<Point>();
@@ -232,8 +237,11 @@ public class EconomicModel extends DataModel{
 					if(travel.getEdgeWeight(next, p1)>roadweight) travel.addEdge(next, p1, roadweight);
 					p1=next;
 				}
+			}else {
+				it.remove();
 			}
 		}
+		neighborCache.put(p, nearbyTowns);
 		roadsCache.add(p);
 	}
 

@@ -293,7 +293,6 @@ public class MyTextPane extends JTextPane {
 		}
 
 		private void doPopupMenu(MouseEvent e) {
-			System.out.println(getType()+" index:"+index);
 			JPopupMenu menu = new JPopupMenu();
 			if(index>-1) {
 				if(HexData.CHARACTER.equals(type)) {

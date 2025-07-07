@@ -900,7 +900,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	public void drawHex(Graphics2D g2,int x,int y,Color borderColor,Color background,Color center,int scale,Color crosshatch) {
-		int[] xs = new int[] {x,						x+scale+1,				x+scale,				x,						x-scale,				x-scale};
+		int[] xs = new int[] {x,						x+scale,				x+scale,				x,						x-scale,				x-scale};
 		int[] ys = new int[] {(int)(y+scale*2/sqrt3),	(int)(y+scale/sqrt3+1),	(int)(y-scale/sqrt3),	(int)(y-scale*2/sqrt3),	(int)(y-scale/sqrt3),	(int)(y+scale/sqrt3)};
 		Polygon p = new Polygon(xs,ys,6);
 		if(background!=null) {
@@ -961,29 +961,34 @@ public class MapPanel  extends JPanel{
 		}
 		logger.logln("Towns drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
-	private synchronized void loadRoads() {
-		Rectangle r = getRenderArea();
-		int sum = (r.width-r.x);
-		int step = getStep();
+	private synchronized void loadRoads(boolean wideview) {
+		if(HexData.ECONOMY.equals(displayData)&&!wideview) {
+			Rectangle r = getRenderArea();
+			int sum = (r.width-r.x);
+			int step = getStep();
 
-		MyLogger logger = new MyLogger(LOG_THRESHOLD);
-		Counter counter = new Counter(sum, dialog.getProgressBar());
-		counter.setLog(logger);
-		if(printLoadingInfo.get()) {
-			dialog.createProgressUI("Loading roads: ");
-		}
-		logger.log("Loading roads: ");
-		for(int i=r.x;i<r.width;i+=step) {
-			for(int j=r.y;j<r.height;j+=step) {
-				Point p = new Point(i,j);
-				if(controller.getPopulation().isTown(p)) {
-					controller.getEconomy().findTradeRoads(p);
-				}
+			MyLogger logger = new MyLogger(LOG_THRESHOLD);
+			Counter counter = new Counter(sum, dialog.getProgressBar());
+			counter.setLog(logger);
+			if(printLoadingInfo.get()) {
+				dialog.createProgressUI("Loading roads: ");
 			}
-			counter.increment();
+			logger.log("Loading roads: ");
+			for(int i=r.x;i<r.width;i+=step) {
+				for(int j=r.y;j<r.height;j+=step) {
+					Point p = new Point(i,j);
+					if(controller.getPopulation().isTown(p)) {
+						controller.getEconomy().findTradeRoads(p);
+					}
+				}
+				counter.increment();
+			}
+			dialog.removeProgressUI();
+			logger.logln("Roads loaded "+(System.currentTimeMillis()-time)+" ms");
+		}else {
+			Point capital = controller.getPopulation().getAbsoluteFealty(getSelectedGridPoint());
+			controller.getEconomy().findTradeRoads(capital);
 		}
-		dialog.removeProgressUI();
-		logger.logln("Roads loaded "+(System.currentTimeMillis()-time)+" ms");
 	}
 
 	private void drawRoads(Graphics2D g2, int step, int displayScale, Color roadColor) {
@@ -1046,9 +1051,7 @@ public class MapPanel  extends JPanel{
 					calculateRivers();
 				}
 				calculateHexColors();
-				if(HexData.ECONOMY.equals(displayData)&&!wideview) {
-					loadRoads();
-				}
+				loadRoads(wideview);
 			}catch(Exception e){
 				e.printStackTrace();
 			}

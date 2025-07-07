@@ -92,7 +92,7 @@ public class InfoPanel extends JTabbedPane{
 	private JLabel citySizeLabel;
 	private ArrayList<MyTextPane> encounterTexts;
 	private ArrayList<MyTextPane> npcTexts;
-	private ArrayList<MyTextPane> dungeonTexts;
+	//private ArrayList<MyTextPane> dungeonTexts;
 	private ArrayList<MyTextPane> poiTexts;
 	private ArrayList<MyTextPane> dEntranceTexts;
 	//	private JScrollPane dEntranceScrollPane;
@@ -255,13 +255,13 @@ public class InfoPanel extends JTabbedPane{
 
 		dungeonPanel = new JPanel();
 		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
-		dungeonTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<panel.getRecord().getDungeonEncounters(panel.getSelectedGridPoint()).size();i++) {
-			MyTextPane pane = createDungeonEncounter();
-			pane.doPaint();
-		}
-		JScrollPane dungeonScrollPane = new JScrollPane(dungeonPanel);
-		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		dungeonTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<panel.getRecord().getDungeonEncounters(panel.getSelectedGridPoint()).size();i++) {
+//			MyTextPane pane = createDungeonEncounter();
+//			pane.doPaint();
+//		}
+//		JScrollPane dungeonScrollPane = new JScrollPane(dungeonPanel);
+//		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//detailsTabs.addTab("D.Encounters", dungeonScrollPane);
 		this.DUNGEON_ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount()-1;
 
@@ -709,16 +709,16 @@ public class InfoPanel extends JTabbedPane{
 			}
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
-			for(int i = 0;i<this.dungeonTexts.size();i++) {
-				MyTextPane pane = this.dungeonTexts.get(i);
-				if(i==selectedDEncounter) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
-				pane.doPaint();
-			}
-			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
+//			for(int i = 0;i<this.dungeonTexts.size();i++) {
+//				MyTextPane pane = this.dungeonTexts.get(i);
+//				if(i==selectedDEncounter) {
+//					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+//				}else {
+//					pane.setBackground(TEXTBACKGROUNDCOLOR);
+//				}
+//				pane.doPaint();
+//			}
+//			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
 
 			if(population.isCity(capital)) {
 				for(int i = 0;i<this.factionTexts.size();i++) {

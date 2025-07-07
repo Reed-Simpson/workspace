@@ -293,6 +293,7 @@ public class MyTextPane extends JTextPane {
 		}
 
 		private void doPopupMenu(MouseEvent e) {
+			System.out.println(getType()+" index:"+index);
 			JPopupMenu menu = new JPopupMenu();
 			if(index>-1) {
 				if(HexData.CHARACTER.equals(type)) {
@@ -339,7 +340,7 @@ public class MyTextPane extends JTextPane {
 					}
 				});
 				menu.add(revert);
-				if(HexData.ENCOUNTER.equals(getType())&&HexData.D_ENCOUNTER.equals(getType())){
+				if(HexData.ENCOUNTER.equals(getType())||HexData.D_ENCOUNTER.equals(getType())){
 					JMenuItem remove = new JMenuItem("Remove");
 					remove.addActionListener(new ActionListener() {
 						@Override
@@ -354,36 +355,38 @@ public class MyTextPane extends JTextPane {
 					menu.add(remove);
 				}
 			}
-			JMenuItem encounter = new JMenuItem("Add Encounter");
-			encounter.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Point point = controller.getRecord().normalizePOS(getPoint());
-					Reference ref = new Reference(getType(), point, getIndex());
-					if(HexData.DUNGEON.equals(getType())) {
-						MyTextPane pane = info.createDungeonEncounter();
-						pane.genNewData(ref);
-						info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
-						pane.flicker();
-					}else if(HexData.ENCOUNTER.equals(getType())) {
-						MyTextPane pane = info.createEncounter();
-						pane.saveData(MyTextPane.this.rawText);
-						info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
-						pane.flicker();
-					}else if(HexData.D_ENCOUNTER.equals(getType())) {
-						MyTextPane pane = info.createDungeonEncounter();
-						pane.saveData(MyTextPane.this.rawText);
-						info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
-						pane.flicker();
-					}else {
-						MyTextPane pane = info.createEncounter();
-						pane.genNewData(ref);
-						info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
-						pane.flicker();
+			if(!HexData.ENCOUNTER.equals(getType())&&!HexData.D_ENCOUNTER.equals(getType())){
+				JMenuItem encounter = new JMenuItem("Add Encounter");
+				encounter.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						Point point = controller.getRecord().normalizePOS(getPoint());
+						Reference ref = new Reference(getType(), point, getIndex());
+						if(HexData.DUNGEON.equals(getType())) {
+							MyTextPane pane = info.createDungeonEncounter();
+							pane.genNewData(ref);
+							info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
+							pane.flicker();
+						}else if(HexData.ENCOUNTER.equals(getType())) {
+							MyTextPane pane = info.createEncounter();
+							pane.saveData(MyTextPane.this.rawText);
+							info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
+							pane.flicker();
+						}else if(HexData.D_ENCOUNTER.equals(getType())) {
+							MyTextPane pane = info.createDungeonEncounter();
+							pane.saveData(MyTextPane.this.rawText);
+							info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
+							pane.flicker();
+						}else {
+							MyTextPane pane = info.createEncounter();
+							pane.genNewData(ref);
+							info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
+							pane.flicker();
+						}
 					}
-				}
-			});
-			menu.add(encounter);
+				});
+				menu.add(encounter);
+			}
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}

@@ -8,7 +8,10 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.encounters.EncounterModel;
+import data.location.Location;
+import data.location.LocationModel;
 import data.magic.MagicModel;
+import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.Species;
 import data.threat.CreatureType;
@@ -18,7 +21,6 @@ import data.threat.subtype.HumanoidType;
 import data.threat.subtype.OozeType;
 import data.threat.subtype.PlantType;
 import data.threat.subtype.UndeadType;
-import data.population.NPCSpecies;
 import io.SaveRecord;
 import names.threat.HumanoidNameGenerator;
 import util.Util;
@@ -180,10 +182,12 @@ public class NPCModel extends DataModel {
 
 	//NON_STATIC CODE
 	private PopulationModel population;
+	private LocationModel location;
 
-	public NPCModel(SaveRecord record,PopulationModel population) {
+	public NPCModel(SaveRecord record,PopulationModel population,LocationModel location) {
 		super(record);
 		this.population = population;
+		this.location = location;
 	}
 
 	public NPC getNPC(int i,Point p) {
@@ -195,6 +199,11 @@ public class NPCModel extends DataModel {
 
 		populateNPCData(p, result);
 		return result;
+	}
+	public NPC getProprietor(int i, Point p) {
+		NPC result = getNPC(i+InfoPanel.NPCCOUNT*2, p);
+		if(setProprietorJob(p, i, result)) return result;
+		else return null;
 	}
 	private void populateNPCData(Point p, NPC npc) {
 		setSpecies(p, npc);
@@ -315,6 +324,26 @@ public class NPCModel extends DataModel {
 	}
 
 
+
+
+	public NPC getProprietor(Point p, Random random, int i) {
+		NPC result = getNPC(p, random);
+		if(setProprietorJob(p, i, result)) return result;
+		else return null;
+	}
+
+
+	private boolean setProprietorJob(Point p, int i, NPC result) {
+		Location l;
+		if(i==0) l = location.getInnText(p);
+		else l = location.getPOI(i, p);
+		NPCJobType jobType = l.getProprietorJob();
+		if(jobType!=null) {
+			result.setJob(jobType.toString());
+			return true;
+		}
+		else return false;
+	}
 	public NPC getNPC(Point p,Random random) {
 		int[] ints = new int[TABLECOUNT];
 		for(int x=0;x<ints.length;x++) {

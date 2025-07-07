@@ -14,7 +14,7 @@ public class Monster {
 	
 	public Monster(Species species) {
 		this.species = species;
-		this.speciesName = species.getSpeciesName();
+		if(species!=null)this.speciesName = species.getSpeciesName();
 	}
 	public Monster(String speciesName) {
 		this.speciesName = speciesName;

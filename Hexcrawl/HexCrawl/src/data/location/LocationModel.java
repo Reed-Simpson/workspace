@@ -14,7 +14,6 @@ import data.WeightedTable;
 import io.SaveRecord;
 import names.InnNameGenerator;
 import util.Util;
-import view.InfoPanel;
 
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
@@ -108,28 +107,31 @@ public class LocationModel extends DataModel{
 		}
 		return result;
 	}
-	public String getPOI(int i,Point p,boolean isCity) {
+	public Location getPOI(int i,Point p) {
+		boolean isCity = controller.getPopulation().isCity(p);
 		Location location = new Location(getLocationDetailIndex(3+i*TABLECOUNT, p));
-		String poi = getPOI(isCity, location,i,p);
-		return Util.formatTableResultPOS(poi, location, p,record.getZero());
+		populateLocationFields(isCity, location,i,p);
+		return location;
 	}
-	public String getPOI(Random random,Point p,boolean isCity,int i) {
+	public Location getPOI(Random random,Point p,boolean isCity,int i) {
 		Location location = new Location(random.nextInt());
-		String poi = getPOI(isCity, location,i,p);
-		return Util.formatTableResultPOS(poi, location, p,record.getZero());
+		populateLocationFields(isCity, location,i,p);
+		return location;
 	}
-	private String getPOI(boolean isCity, Location location,int i,Point p) {
+	private Location populateLocationFields(boolean isCity, Location location,int i,Point p) {
 		LocationType type;
 		if(isCity) type = LocationType.getBuilding(location);
 		else type = LocationType.getStructure(location);
 		location.setType(type);
 		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
-		if(isCity) {
-			location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
-		}
+		location.setProprietorJob(type.getRandomJobType(location));
+		if(location.getProprietorJob()!=null) location.setProprietor(new Reference(HexData.PROPRIETOR, record.normalizePOS(p), i));
+//		if(isCity) {
+//			location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
+//		}
 		location.setVisibility(getVisibility(i));
 		location.setDungeons(getDungeons(p, i));
-		return location.toString();
+		return location;
 	}
 	private String getVisibility(int i) {
 		if(i<2) return VISIBILITY[0];
@@ -138,23 +140,27 @@ public class LocationModel extends DataModel{
 	}
 	@Override
 	public String getDefaultValue(Point p, int i) {
-		return getPOI(i, p, false);
+		return getPOI(i, p).toString();
 	}
 
 
-	public String getInnText(Point p) {
+	public Location getInnText(Point p) {
 		Location obj = new Location(getLocationDetailIndex(0, p),getLocationDetailIndex(1, p),getLocationDetailIndex(2, p),getLocationDetailIndex(3, p));
-		return Util.formatTableResultPOS(getInnText(obj,p),obj,p,record.getZero());
+		populateInnFields(obj,p);
+		return obj;
 	}
-	public String getInnText(Random random,Point p) {
+	public Location getInnText(Random random,Point p) {
 		Location obj = new Location(random.nextInt(),random.nextInt(),random.nextInt(),random.nextInt());
-		return getInnText(obj,p);
+		populateInnFields(obj,p);
+		return obj;
 	}
-	private String getInnText(Location location,Point p) {
+	private String populateInnFields(Location location,Point p) {
 		location.setType(LocationType.Inn);
 		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
 		location.setName(innNames.getName((Indexible) location));
-		location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
+		location.setProprietorJob(LocationType.Inn.getRandomJobType(location));
+		if(location.getProprietorJob()!=null) location.setProprietor(new Reference(HexData.PROPRIETOR, record.normalizePOS(p), 0));
+		//location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
 		location.setVisibility(getVisibility(0));
 		location.setQuirk(innNames.getQuirk(location));
 		location.setDungeons(getDungeons(p, 0));

@@ -40,10 +40,9 @@ public class SaveRecord implements Serializable {
 	private LinkedHashMap<Point,String> notes;
 	private HashMap<Point,String> threats;
 	private HashMap<Point,String> cities;
-	private HashMap<Point,String> locations;
-	private HashMap<Point,String> dungeonEncounters;
 	private HashMap<Point,String> regionNames;
 	private HashMap<Point,ArrayList<String>> npcs2;
+	private HashMap<Point,ArrayList<String>> proprietors;
 	private HashMap<Point,ArrayList<String>> encounters2;
 	private HashMap<Point,ArrayList<String>> dungeonEncounters2;
 	private HashMap<Point,ArrayList<String>> locations2;
@@ -68,12 +67,11 @@ public class SaveRecord implements Serializable {
 		this.notes = new LinkedHashMap<Point,String>();
 		this.threats = new HashMap<Point,String>();
 		this.cities = new HashMap<Point,String>();
-		this.locations = new HashMap<Point,String>();
-		this.dungeonEncounters = new HashMap<Point,String>();
 		this.regionNames = new HashMap<Point,String>();
 
 
 		this.npcs2 = new HashMap<Point,ArrayList<String>>();
+		this.proprietors = new HashMap<Point,ArrayList<String>>();
 		this.encounters2 = new HashMap<Point,ArrayList<String>>();
 		this.dungeonEncounters2 = new HashMap<Point,ArrayList<String>>();
 		this.locations2 = new HashMap<Point,ArrayList<String>>();
@@ -207,29 +205,7 @@ public class SaveRecord implements Serializable {
 			} catch (Exception ex) {}
 		}
 		if(loadedRecord!=null) {
-			if(loadedRecord.notes==null) loadedRecord.notes=new LinkedHashMap<Point,String>();
-			if(loadedRecord.threats==null) loadedRecord.threats=new HashMap<Point,String>();
-			if(loadedRecord.cities==null) loadedRecord.cities=new HashMap<Point,String>();
-			if(loadedRecord.locations==null) loadedRecord.locations=new HashMap<Point,String>();
-			if(loadedRecord.dungeonEncounters==null) loadedRecord.dungeonEncounters=new HashMap<Point,String>();
-			if(loadedRecord.regionNames==null) loadedRecord.regionNames=new HashMap<Point,String>();
-
-
-			if(loadedRecord.npcs2==null) loadedRecord.npcs2 = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.encounters2==null) loadedRecord.encounters2 = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.dungeonEncounters2==null) loadedRecord.dungeonEncounters2 = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.locations2==null) loadedRecord.locations2 = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.dungeons==null) loadedRecord.dungeons = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.factions==null) loadedRecord.factions = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.faiths==null) loadedRecord.faiths = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.highlights==null) loadedRecord.highlights = new HashMap<Point,Color>();
-			if(loadedRecord.minions==null) loadedRecord.minions = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.beasts==null) loadedRecord.beasts = new HashMap<Point,ArrayList<String>>();
-			
-			if(loadedRecord.campaignCharacters==null) loadedRecord.campaignCharacters = new ArrayList<Reference>();
-			if(loadedRecord.campaignThreads==null) loadedRecord.campaignThreads = new ArrayList<String>();
-			if(loadedRecord.explored==null) loadedRecord.explored = new HashSet<Point>();
-			if(loadedRecord.hero==null) loadedRecord.hero = loadedRecord.zero;
+			if(loadedRecord.proprietors==null) loadedRecord.proprietors = new HashMap<Point,ArrayList<String>>();
 		}
 		return loadedRecord;
 	}
@@ -370,6 +346,31 @@ public class SaveRecord implements Serializable {
 	}
 	public String removeNPC(Point p,int i) {
 		ArrayList<String> npcs = this.npcs2.get(p);
+		if(npcs==null||npcs.size()<=i) return null;
+		String set = npcs.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+
+	public String putProprietor(Point p,int i,String s) {
+		if(!this.proprietors.containsKey(p)) this.proprietors.put(p, new ArrayList<String>());
+		ArrayList<String> npcs = this.proprietors.get(p);
+		while(npcs.size()<i+1) npcs.add(null);
+		String set = npcs.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getProprietor(Point p,int i) {
+		ArrayList<String> npcs = this.proprietors.get(p);
+		if(npcs==null||npcs.size()<=i) return null;
+		return npcs.get(i);
+	}
+	public String removeProprietor(Point p,int i) {
+		ArrayList<String> npcs = this.proprietors.get(p);
 		if(npcs==null||npcs.size()<=i) return null;
 		String set = npcs.set(i, null);
 		if(set!=null) {
@@ -560,7 +561,7 @@ public class SaveRecord implements Serializable {
 		Reference ref = new Reference(s);
 		while(this.campaignCharacters.size()<i+1) this.campaignCharacters.add(null);
 		Reference set = this.campaignCharacters.set(i, ref);
-		if(set!=null&&!set.equals(s)) {
+		if(set!=null&&!set.toString().equals(s)) {
 			this.hasUnsavedData = true;
 		}
 		if(set==null) return null;

@@ -122,6 +122,7 @@ public class InfoPanel extends JTabbedPane{
 	private int selectedMinion;
 	private ArrayList<MyTextPane> beastsTexts;
 	private int selectedBeast;
+	private ArrayList<MyTextPane> proprietorTexts;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -169,6 +170,14 @@ public class InfoPanel extends JTabbedPane{
 			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 			npcPanel.add(npci);
 			npcTexts.add(npci);
+		}
+		proprietorTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<POICOUNT;i++) {
+			npcPanel.add(new JLabel("~~~~~ Proprietor #"+(i+1)+" ~~~~~"));
+			MyTextPane npci = new MyTextPane(this, i, HexData.PROPRIETOR);
+			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			npcPanel.add(npci);
+			proprietorTexts.add(npci);
 		}
 		JScrollPane npcScrollPane = new JScrollPane(npcPanel);
 		npcScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -664,6 +673,16 @@ public class InfoPanel extends JTabbedPane{
 					//					SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
 					this.npcTexts.get(selectedNPC).setCaretPosition(0);
 				}
+				
+				for(int i = 0;i<this.proprietorTexts.size();i++) {
+					MyTextPane pane = this.proprietorTexts.get(i);
+//					if(i==selectedNPC) {
+//						pane.setBackground(TEXTHIGHLIGHTCOLOR);
+//					}else {
+//						pane.setBackground(TEXTBACKGROUNDCOLOR);
+//					}
+					pane.doPaint();
+				}
 			}else {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, false);
 			}
@@ -812,7 +831,7 @@ public class InfoPanel extends JTabbedPane{
 		detailsTabs.setEnabledAt(LOCATION_TAB_INDEX, false);
 		detailsTabs.setEnabledAt(DUNGEON_TAB_INDEX, false);
 		detailsTabs.setEnabledAt(DUNGEON_ENCOUNTER_TAB_INDEX, false);
-		detailsTabs.setSelectedIndex(5);
+		//detailsTabs.setSelectedIndex(5);
 
 		enableCityTabs(false);
 	}

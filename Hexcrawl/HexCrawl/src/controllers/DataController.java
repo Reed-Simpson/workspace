@@ -17,6 +17,7 @@ import data.location.LocationModel;
 import data.magic.MagicModel;
 import data.monster.Monster;
 import data.monster.MonsterModel;
+import data.npc.NPC;
 import data.npc.NPCModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
@@ -56,10 +57,10 @@ public class DataController {
 		this.biomes = new BiomeModel(record, grid, precipitation,population);
 		this.economy = new EconomicModel(record,population,biomes,precipitation,grid);
 		this.names = new LocationNameModel(record);
-		this.npcs = new NPCModel(record, population);
+		this.pois = new LocationModel(record,this);
+		this.npcs = new NPCModel(record, population,pois);
 		this.threats = new ThreatModel(record,npcs);
 		this.settlements = new SettlementModel(record,this);
-		this.pois = new LocationModel(record,this);
 		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);
 		this.monsters = new MonsterModel(this);
@@ -78,6 +79,7 @@ public class DataController {
 
 		case ENCOUNTER: return encounters;
 		case NPC: return npcs;
+		case PROPRIETOR: return npcs;
 		case LOCATION: return pois;
 		case DUNGEON: return dungeons;
 		case D_ENCOUNTER: return encounters;
@@ -104,9 +106,15 @@ public class DataController {
 		case NPC: {
 			value =  npcs.getNPC(i,p).toString(); break;
 		}
+		case PROPRIETOR: {
+			NPC proprietor = npcs.getProprietor(i,p);
+			if(proprietor!=null) value =  proprietor.toString();
+			else value = null;
+			break;
+		}
 		case LOCATION: {
 			if(i==0) value = getDefaultInnText(p);
-			else value = pois.getPOI(i, p,population.isCity(p));break;
+			else value = pois.getPOI(i, p).toString();break;
 		}
 		case DUNGEON: value = dungeons.getDungeon(i, p).toString();break;
 		case D_ENCOUNTER: value = "";break;
@@ -171,7 +179,7 @@ public class DataController {
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			return "Inn: none";
 		}else {
-			return pois.getInnText(pos);
+			return pois.getInnText(pos).toString();
 		}
 	}
 	public String getData(HexData type,Point p, int i) {
@@ -182,6 +190,7 @@ public class DataController {
 		}
 		case ENCOUNTER: return record.getEncounter(p, i);
 		case NPC: return record.getNPC(p, i);
+		case PROPRIETOR: return record.getProprietor(p, i);
 		case LOCATION: return record.getLocation(p, i);
 		case DUNGEON: return record.getDungeon(p, i);
 		case D_ENCOUNTER: return record.getDungeonEncounter(p, i);
@@ -228,6 +237,7 @@ public class DataController {
 		}
 		case ENCOUNTER: return record.removeEncounter(p, i);
 		case NPC: return record.removeNPC(p, i);
+		case PROPRIETOR: return record.removeProprietor(p, i);
 		case LOCATION: return record.removeLocation(p, i);
 		case DUNGEON: return record.removeDungeon(p, i);
 		case D_ENCOUNTER: return record.removeDungeonEncounter(p, i);
@@ -269,6 +279,7 @@ public class DataController {
 		}
 		case ENCOUNTER: return record.putEncounter(p, i, s);
 		case NPC: return record.putNPC(p, i, s);
+		case PROPRIETOR: return record.putProprietor(p, i, s);
 		case LOCATION: return record.putLocation(p, i, s);
 		case DUNGEON: return record.putDungeon(p, i, s);
 		case D_ENCOUNTER: return record.putDungeonEncounter(p, i, s);
@@ -314,9 +325,10 @@ public class DataController {
 		case THREAT: return threats.getThreat(p,record.getRandom()).toString();
 		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom(),ref).toString();
 		case NPC: return npcs.getNPC(p,record.getRandom()).toString();
+		case PROPRIETOR: return npcs.getProprietor(p,record.getRandom(),i).toString();
 		case LOCATION: {
-			if(i==0) return pois.getInnText(record.getRandom(),p);
-			else return pois.getPOI(record.getRandom(), p,population.isCity(p),i);
+			if(i==0) return pois.getInnText(record.getRandom(),p).toString();
+			else return pois.getPOI(record.getRandom(), p,population.isCity(p),i).toString();
 		}
 		case DUNGEON: return dungeons.getDungeon(record.getRandom(), p).toString();
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();

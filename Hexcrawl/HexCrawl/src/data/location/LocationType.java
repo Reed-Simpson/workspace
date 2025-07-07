@@ -49,6 +49,9 @@ public enum LocationType {
 		if(i==0) return getStructure(obj);
 		else return getLandmark(obj);
 	}
+	public NPCJobType getRandomJobType(Indexible obj) {
+		return (NPCJobType) Util.getElementFromArray(getJobTypes(), obj);
+	}
 	public NPCJobType[] getJobTypes() {
 		switch(this) {
 		case Bandit_Camp: return NPCJobType.Bandit_Camp_jobs;

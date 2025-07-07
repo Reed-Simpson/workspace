@@ -102,7 +102,7 @@ public class ThreatModel extends DataModel{
 	public Threat getThreat(Point p) {
 		Point threatSource = getCenter(p);
 		if(threatCache.get(threatSource)!=null) return threatCache.get(threatSource);
-		NPC npc = npcs.getNPC(InfoPanel.NPCCOUNT*2+1, threatSource);
+		NPC npc = npcs.getNPC(InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT+1, threatSource);
 		int[] indexes = new int[25];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getThreatDetailIndex(p,i);

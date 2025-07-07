@@ -82,7 +82,8 @@ public class MyTextPane extends JTextPane {
 	public void doPaint() {
 		if(getIndex()>-1) {
 			String text = controller.getText(getType(), getPoint(), getIndex());
-			this.setText(text);
+			if(text!=null) this.setText(text);
+			else this.setText("None");
 		}
 	}
 

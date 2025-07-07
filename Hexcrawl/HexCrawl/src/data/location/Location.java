@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import data.Indexible;
 import data.Reference;
+import data.npc.NPCJobType;
 import util.Util;
 
 public class Location extends Indexible {
@@ -12,6 +13,7 @@ public class Location extends Indexible {
 	String visibility;
 	LocationType type;
 	String quirk;
+	NPCJobType proprietorJob;
 	Reference proprietor;
 	ArrayList<Reference> dungeons;
 
@@ -60,6 +62,12 @@ public class Location extends Indexible {
 		this.proprietor = proprietor;
 	}
 	
+	public NPCJobType getProprietorJob() {
+		return proprietorJob;
+	}
+	public void setProprietorJob(NPCJobType proprietorJob) {
+		this.proprietorJob = proprietorJob;
+	}
 	public ArrayList<Reference> getDungeons() {
 		return dungeons;
 	}
@@ -71,7 +79,7 @@ public class Location extends Indexible {
 		if(name!=null) result+="\r\nName: "+this.name;
 		if(visibility!=null) result+="\r\nVisibility: "+this.visibility;
 		if(quirk!=null) result+="\r\nQuirk: "+this.quirk;
-		if(proprietor!=null) result+="\r\nProprietor: "+this.proprietor.toString();
+		if(proprietorJob!=null) result+="\r\nProprietor: "+this.proprietor.toString();
 		if(dungeons!=null&&!dungeons.isEmpty()) {
 			if(dungeons.size()>0) {
 				for(Reference s:dungeons) {

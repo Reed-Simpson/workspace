@@ -262,7 +262,7 @@ public class InfoPanel extends JTabbedPane{
 		}
 		JScrollPane dungeonScrollPane = new JScrollPane(dungeonPanel);
 		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("D.Encounters", dungeonScrollPane);
+		//detailsTabs.addTab("D.Encounters", dungeonScrollPane);
 		this.DUNGEON_ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount()-1;
 
 		hexPanel.add(detailsTabs);
@@ -271,12 +271,12 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	public MyTextPane createDungeonEncounter() {
-		int i = dungeonTexts.size();
+		int i = encounterTexts.size();
 		MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
 		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
-		dungeonPanel.add(encounteri,0);
-		dungeonTexts.add(encounteri);
+		encounterPanel.add(encounteri,0);
+		encounterTexts.add(encounteri);
 		return encounteri;
 	}
 
@@ -292,7 +292,7 @@ public class InfoPanel extends JTabbedPane{
 
 	public void removeDungeonEncounter(int index) {
 		panel.getController().removeData(HexData.D_ENCOUNTER, panel.getSelectedGridPoint(), index);
-		dungeonTexts.remove(dungeonTexts.size()-1).setVisible(false);
+		encounterTexts.remove(encounterTexts.size()-1).setVisible(false);
 		repaint();
 	}
 

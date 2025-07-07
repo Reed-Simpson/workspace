@@ -27,24 +27,24 @@ public enum LocationType {
 			Theater,Veterinarian,Warehouse,Watchtower,Weaver,Workshop};
 	
 
-	public static String getBuilding(Indexible obj) {
+	public static LocationType getBuilding(Indexible obj) {
 		if(obj.reduceTempId(2)==0) return getUCBuilding(obj);
 		else return getLCBuilding(obj);
 	}
-	public static String getUCBuilding(Indexible obj) {
-		return Util.getElementFromArray(ucBuildings, obj).toString();
+	public static LocationType getUCBuilding(Indexible obj) {
+		return (LocationType) Util.getElementFromArray(ucBuildings, obj);
 	}
-	public static String getLCBuilding(Indexible obj) {
-		return Util.getElementFromArray(lcBuildings, obj).toString();
+	public static LocationType getLCBuilding(Indexible obj) {
+		return (LocationType) Util.getElementFromArray(lcBuildings, obj);
 	}
 
-	public static String getLandmark(Indexible obj) {
-		return Util.getElementFromArray(landmarks, obj).toString();
+	public static LocationType getLandmark(Indexible obj) {
+		return (LocationType) Util.getElementFromArray(landmarks, obj);
 	}
-	public static String getStructure(Indexible obj) {
-		return Util.getElementFromArray(structures, obj).toString();
+	public static LocationType getStructure(Indexible obj) {
+		return (LocationType) Util.getElementFromArray(structures, obj);
 	}
-	public static String getStructureOrLandmark(Indexible obj) {
+	public static LocationType getStructureOrLandmark(Indexible obj) {
 		int i = obj.reduceTempId(2);
 		if(i==0) return getStructure(obj);
 		else return getLandmark(obj);

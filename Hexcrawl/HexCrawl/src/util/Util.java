@@ -156,7 +156,7 @@ public class Util {
 				result = Util.replace(result,"${town index}",getIndexString(obj, "town", 1, displayPos));
 			}
 		}else {
-			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj));
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj).toString());
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCJobType.getJob(obj));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionType.getFaction(obj).toString());
 			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
@@ -197,11 +197,11 @@ public class Util {
 		if(result.contains("${district}")) result = Util.replace(result,"${district}",SettlementModel.getDistrict(obj));
 		if(result.contains("${building room}")) result = Util.replace(result,"${building room}",SettlementModel.getRoom(obj));
 		
-		if(result.contains("${lower class building}")) result = Util.replace(result,"${lower class building}",LocationType.getLCBuilding(obj));
-		if(result.contains("${upper class building}")) result = Util.replace(result,"${upper class building}",LocationType.getUCBuilding(obj));
-		if(result.contains("${building}")) result = Util.replace(result,"${building}",LocationType.getBuilding(obj));
-		if(result.contains("${landmark}")) result = Util.replace(result,"${landmark}",LocationType.getLandmark(obj));
-		if(result.contains("${structure}")) result = Util.replace(result,"${structure}",LocationType.getStructure(obj));
+		if(result.contains("${lower class building}")) result = Util.replace(result,"${lower class building}",LocationType.getLCBuilding(obj).toString());
+		if(result.contains("${upper class building}")) result = Util.replace(result,"${upper class building}",LocationType.getUCBuilding(obj).toString());
+		if(result.contains("${building}")) result = Util.replace(result,"${building}",LocationType.getBuilding(obj).toString());
+		if(result.contains("${landmark}")) result = Util.replace(result,"${landmark}",LocationType.getLandmark(obj).toString());
+		if(result.contains("${structure}")) result = Util.replace(result,"${structure}",LocationType.getStructure(obj).toString());
 
 		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionType.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));

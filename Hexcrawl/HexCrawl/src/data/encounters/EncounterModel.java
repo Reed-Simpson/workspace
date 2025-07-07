@@ -119,8 +119,8 @@ public class EncounterModel extends DataModel{
 	}
 
 	public String getLocation(Indexible e,boolean isCity) {
-		if(isCity) return LocationType.getBuilding(e);
-		else return LocationType.getStructureOrLandmark(e);
+		if(isCity) return LocationType.getBuilding(e).toString();
+		else return LocationType.getStructureOrLandmark(e).toString();
 	}
 	public String getLocationReference(Indexible e,Point p) {
 		return Util.formatTableResultPOS("${location index}", e,p,record.getZero());

@@ -119,7 +119,7 @@ public class LocationModel extends DataModel{
 		return Util.formatTableResultPOS(poi, location, p,record.getZero());
 	}
 	private String getPOI(boolean isCity, Location location,int i,Point p) {
-		String type;
+		LocationType type;
 		if(isCity) type = LocationType.getBuilding(location);
 		else type = LocationType.getStructure(location);
 		location.setType(type);
@@ -151,7 +151,7 @@ public class LocationModel extends DataModel{
 		return getInnText(obj,p);
 	}
 	private String getInnText(Location location,Point p) {
-		location.setType("Inn");
+		location.setType(LocationType.Inn);
 		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
 		location.setName(innNames.getName((Indexible) location));
 		location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));

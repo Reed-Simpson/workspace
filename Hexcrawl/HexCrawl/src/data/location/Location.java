@@ -10,7 +10,7 @@ public class Location extends Indexible {
 	String name;
 	String[] descriptors;
 	String visibility;
-	String type;
+	LocationType type;
 	String quirk;
 	Reference proprietor;
 	ArrayList<Reference> dungeons;
@@ -41,10 +41,10 @@ public class Location extends Indexible {
 	public void setVisibility(String visibility) {
 		this.visibility = visibility;
 	}
-	public String getType() {
+	public LocationType getType() {
 		return type;
 	}
-	public void setType(String type) {
+	public void setType(LocationType type) {
 		this.type = type;
 	}
 	public String getQuirk() {
@@ -67,7 +67,7 @@ public class Location extends Indexible {
 		this.dungeons = dungeons;
 	}
 	public String toString() {
-		String result = Util.parseArray(this.descriptors)+" "+this.type;
+		String result = Util.parseArray(this.descriptors)+" "+this.type.toString();
 		if(name!=null) result+="\r\nName: "+this.name;
 		if(visibility!=null) result+="\r\nVisibility: "+this.visibility;
 		if(quirk!=null) result+="\r\nQuirk: "+this.quirk;

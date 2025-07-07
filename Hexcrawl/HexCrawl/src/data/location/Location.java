@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import data.Indexible;
 import data.Reference;
-import data.dungeon.Dungeon;
 import util.Util;
 
 public class Location extends Indexible {
@@ -14,7 +13,7 @@ public class Location extends Indexible {
 	String type;
 	String quirk;
 	Reference proprietor;
-	ArrayList<Dungeon> dungeons;
+	ArrayList<Reference> dungeons;
 
 	
 	public Location(float... floats) {
@@ -61,10 +60,10 @@ public class Location extends Indexible {
 		this.proprietor = proprietor;
 	}
 	
-	public ArrayList<Dungeon> getDungeons() {
+	public ArrayList<Reference> getDungeons() {
 		return dungeons;
 	}
-	public void setDungeons(ArrayList<Dungeon> dungeons) {
+	public void setDungeons(ArrayList<Reference> dungeons) {
 		this.dungeons = dungeons;
 	}
 	public String toString() {
@@ -75,7 +74,7 @@ public class Location extends Indexible {
 		if(proprietor!=null) result+="\r\nProprietor: "+this.proprietor.toString();
 		if(dungeons!=null&&!dungeons.isEmpty()) {
 			if(dungeons.size()>0) {
-				for(Dungeon s:dungeons) {
+				for(Reference s:dungeons) {
 					result+="\r\n"+s.toString();
 				}
 			}

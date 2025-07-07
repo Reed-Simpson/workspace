@@ -48,7 +48,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int INFOPANELWIDTH = 450;
 	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
-	public static final int POICOUNT = 20;
+	public static final int POICOUNT = 14;
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
@@ -196,18 +196,18 @@ public class InfoPanel extends JTabbedPane{
 		detailsTabs.addTab("Locations", poiScrollPane);
 		this.LOCATION_TAB_INDEX = detailsTabs.getTabCount()-1;
 
-		JPanel dEntrancePanel = new JPanel();
-		dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
+		//JPanel dEntrancePanel = new JPanel();
+		//dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
 		dEntranceTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<DUNGEONCOUNT;i++) {
-			dEntrancePanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
+			poiPanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
 			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-			dEntrancePanel.add(poii);
+			poiPanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
-		JScrollPane dEntranceScrollPane = new JScrollPane(dEntrancePanel);
-		dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//JScrollPane dEntranceScrollPane = new JScrollPane(dEntrancePanel);
+		//dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//detailsTabs.addTab("Dungeon", dEntranceScrollPane);
 		this.DUNGEON_TAB_INDEX = detailsTabs.getTabCount()-1;
 

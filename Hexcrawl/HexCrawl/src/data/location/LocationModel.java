@@ -6,10 +6,11 @@ import java.util.Random;
 
 import controllers.DataController;
 import data.DataModel;
+import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
+import data.Reference;
 import data.WeightedTable;
-import data.dungeon.Dungeon;
 import io.SaveRecord;
 import names.InnNameGenerator;
 import util.Util;
@@ -94,15 +95,15 @@ public class LocationModel extends DataModel{
 		return Util.getIndexFromSimplex(val);
 	}
 
-	private ArrayList<Dungeon> getDungeons(Point p, int i) {
-		ArrayList<Dungeon> result = new ArrayList<Dungeon>();
+	private ArrayList<Reference> getDungeons(Point p, int i) {
+		ArrayList<Reference> result = new ArrayList<Reference>();
 		int[] dungeonPositions = controller.getDungeon().getDungeonPositions(p);
 		if(dungeonPositions[i]>0) {
 			int index = 0;
 			for(int n=0;n<i;n++) index+=dungeonPositions[n];
 			for(int n=index;n<index+dungeonPositions[i];n++) {
-				Dungeon d = controller.getDungeon().getDefaultValue(p, n);
-				result.add(d);
+				//Dungeon d = controller.getDungeon().getDefaultValue(p, n);
+				result.add(new Reference(HexData.DUNGEON, record.normalizePOS(p), n));
 			}
 		}
 		return result;

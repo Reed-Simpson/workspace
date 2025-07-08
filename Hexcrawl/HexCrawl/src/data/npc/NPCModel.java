@@ -46,10 +46,6 @@ public class NPCModel extends DataModel {
 			"discredited,dismissed,disowned,exiled,famished,forgotten,framed,haunted,humiliated,impoverished,kidnapped,lost,"+
 			"mobbed,mutilated,overworked,poisoned,pursued,rejected,replaced,robbed,sick,sued,suspected,transformed";
 	private static WeightedTable<String> misfortunes;
-	private static final String MISSION_VERBS = "Apprehend,Assassinate,Blackmail,Burgle,Chart,Convince,Deface,Defraud,Deliver,Destroy,Discredit,Escort,"+
-			"Exfiltrate,Extort,Follow,Frame,Impersonate,Impress,Infiltrate,Interrogate,Investigate,Kidnap,Locate,Plant,"+
-			"Protect,Raid,Replace,Retrieve,Rob,Ruin,Sabotage,Smuggle,Surveil,Control,Terrorize,Threaten";
-	private static WeightedTable<String> missions;
 	private static final String METHOD_NOUNS = "alchemy,blackmail,bluster,bribery,bullying,bureaucracy,charm,commerce,cronies,debate,deceit,deduction,"+
 			"eloquence,espionage,fast-talking,favors,hard work,humor,investigation,legal maneuvers,manipulation,misdirection,money,nagging,"+
 			"negotiation,persistence,piety,preparation,quick wit,research,rumors,sabotage,teamwork,theft,threats,violence";
@@ -100,7 +96,6 @@ public class NPCModel extends DataModel {
 		liabilities = new WeightedTable<String>().populate(LIABILITIES,",");
 		goals = new WeightedTable<String>().populate(GOALS,",");
 		misfortunes = new WeightedTable<String>().populate(MISFORTUNE_ADJECTIVES,",");
-		missions = new WeightedTable<String>().populate(MISSION_VERBS,",");
 		methods = new WeightedTable<String>().populate(METHOD_NOUNS,",");
 		appearances = new WeightedTable<String>().populate(APPEARANCE_ADJECTIVES,",");
 		details = new WeightedTable<String>().populate(APPEARANCE_NOUNS,",");
@@ -130,10 +125,6 @@ public class NPCModel extends DataModel {
 	public static String getMisfortune(Indexible obj) {
 		if(misfortunes==null) populateAllTables();
 		return misfortunes.getByWeight(obj);
-	}
-	public static String getMission(Indexible obj) {
-		if(missions==null) populateAllTables();
-		return missions.getByWeight(obj);
 	}
 	public static String getMethod(Indexible obj) {
 		if(methods==null) populateAllTables();

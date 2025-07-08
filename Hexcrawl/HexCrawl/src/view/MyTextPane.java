@@ -250,8 +250,12 @@ public class MyTextPane extends JTextPane {
 							Integer.valueOf(matcher.group(2)),
 							Integer.valueOf(matcher.group(3)),
 							Integer.valueOf(matcher.group(4))-1);
-					tooltipText = removeLinks(tooltipText.replaceAll("\n", "<br>"));
-					textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
+					if(tooltipText!=null) {
+						tooltipText = removeLinks(tooltipText.replaceAll("\n", "<br>"));
+						textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
+					}else {
+						textPane.setToolTipText(null);
+					}
 				}
 			}
 		}

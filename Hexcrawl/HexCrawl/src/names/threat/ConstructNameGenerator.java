@@ -4,9 +4,9 @@ import data.Indexible;
 import data.WeightedTable;
 import data.encounters.EncounterModel;
 import data.magic.MagicModel;
+import data.mission.MissionModel;
 import data.npc.Creature;
 import data.npc.NPC;
-import data.npc.NPCModel;
 import data.population.Species;
 import data.threat.Threat;
 import data.threat.subtype.ConstructType;
@@ -88,7 +88,7 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		return defects.getByWeight(obj);
 	}
 	public static String getMissionNoun(Indexible obj) {
-		String mission = NPCModel.getMission(obj);
+		String mission = MissionModel.getMission(obj);
 		if(mission.endsWith("e")) mission+="r";
 		else mission+="er";
 		return mission;

@@ -14,6 +14,7 @@ import data.item.EquipmentModel;
 import data.location.LocationModel;
 import data.location.LocationType;
 import data.magic.MagicModel;
+import data.mission.MissionModel;
 import data.monster.MonsterModel;
 import data.npc.NPCJobType;
 import data.npc.NPCModel;
@@ -35,7 +36,7 @@ public class Util {
 	private static double SCALAR_2 = 0.01; // national scale
 	private static double SCALAR_3 = 0.1; // city scale
 	private static double SCALAR_4 = 1; // micro scale
-	private static final int SEED_OFFSET_FACTOR = 1000;
+	private static final int SEED_OFFSET_FACTOR = 10000;
 
 	public static double getSScale() {
 		return SCALAR_0;
@@ -210,7 +211,6 @@ public class Util {
 		if(result.contains("${civilized npc}")) result = Util.replace(result,"${civilized npc}",NPCJobType.getCivilized(obj));
 		if(result.contains("${underworld npc}")) result = Util.replace(result,"${underworld npc}",NPCJobType.getUnderworld(obj));
 		if(result.contains("${wilderness npc}")) result = Util.replace(result,"${wilderness npc}",NPCJobType.getWilderness(obj));
-		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",NPCModel.getMission(obj));
 		if(result.contains("${domain}")) result = Util.replace(result,"${domain}",NPCModel.getDomain(obj));
 		if(result.contains("${personality}")) result = Util.replace(result,"${personality}",NPCModel.getPersonality(obj));
 		if(result.contains("${reputation}")) result = Util.replace(result,"${reputation}",NPCModel.getReputation(obj));
@@ -218,6 +218,8 @@ public class Util {
 		if(result.contains("${relationship}")) result = Util.replace(result,"${relationship}",NPCModel.getRelationship(obj));
 		if(result.contains("${misfortune}")) result = Util.replace(result,"${misfortune}",NPCModel.getMisfortune(obj));
 		if(result.contains("${hobby}")) result = Util.replace(result,"${hobby}",NPCModel.getHobby(obj));
+
+		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",MissionModel.getMission(obj));
 
 		if(result.contains("${last name}")) result = Util.replace(result,"${last name}",HumanNameGenerator.getLastName(obj));
 		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",NPCSpecies.HUMAN.getCityNameGen().getName(obj));

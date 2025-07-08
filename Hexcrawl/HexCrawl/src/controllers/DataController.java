@@ -403,6 +403,7 @@ public class DataController {
 	}
 
 	public String getToolTipText(HexData type, int x, int y, int index) {
+		if(HexData.TOWN.equals(type)) return null;
 		Point displayPos = new Point(x,y);
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		String result = this.getText(type, actualPos, index);

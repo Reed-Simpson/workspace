@@ -873,6 +873,7 @@ public class InfoPanel extends JTabbedPane{
 		case "minion": selectTab(1,MINIONS_TAB_INDEX,index);break;
 		case "beast": selectTab(1,BEASTS_TAB_INDEX,index);break;
 		case "character": selectTab(2,0,index);break;
+		case "town": selectTab(1,CITY_TAB_INDEX,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
 		}
 		panel.preprocessThenRepaint();

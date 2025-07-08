@@ -60,9 +60,9 @@ public class EconomicModel extends DataModel{
 	private void populateEdges(Point p) {
 		boolean pIsWater = grid.isWater(p)||precipitation.isLake(p);
 		for(Point p1:Util.getAdjacentPoints(p)) {
-			int weight = biomes.getBiome(p1).getTravel()*2;
+			int weight = biomes.getBiome(p1).getTravel();
 			boolean p1IsWater = grid.isWater(p1)||precipitation.isLake(p1);
-			if(p1IsWater!=pIsWater&&!population.isTown(p)&&!population.isTown(p1)) weight = 10*2;
+			if(p1IsWater!=pIsWater&&!population.isTown(p)&&!population.isTown(p1)) weight = 10;
 			if(travel.getEdgeWeight(p, p1)==-1) travel.addEdge(p, p1, weight);
 		}
 		Point p1 = precipitation.getFlow(p);
@@ -138,7 +138,7 @@ public class EconomicModel extends DataModel{
 		}else {
 			return "None";
 		}
-		
+
 	}
 
 	private String getRoadType(int roadId) {
@@ -233,6 +233,9 @@ public class EconomicModel extends DataModel{
 						roads.addEdge(p1, next,weight);
 					}
 					int roadweight = 3;
+					if((grid.isWater(next)||precipitation.isLake(next))&&(grid.isWater(p1)||precipitation.isLake(p1))) {
+						roadweight=2;
+					}
 					if(travel.getEdgeWeight(p1, next)>roadweight) travel.addEdge(p1, next, roadweight);
 					if(travel.getEdgeWeight(next, p1)>roadweight) travel.addEdge(next, p1, roadweight);
 					p1=next;
@@ -248,9 +251,45 @@ public class EconomicModel extends DataModel{
 	public AStarGraph getRoads(){
 		return this.roads;
 	}
+	public AStarGraph getTravel(){
+		return this.travel;
+	}
+	public int getTravelTime(Point p1,Point p2) {
+		LinkedList<Point> path = new LinkedList<Point>();
+		travel.shortestPath(p1, p2,path);
+		int sum = 0;
+		Iterator<Point> it = path.iterator();
+		Point prev = it.next();
+		if(prev.equals(p2)) return 9999;
+		while(it.hasNext()) {
+			Point next = it.next();
+			int dist = travel.getEdgeWeight(prev, next);
+			if(dist<0) System.err.println("getTravelTime"+record.normalizePOS(prev)+"->"+record.normalizePOS(next));
+			if(dist==2) sum+=3;
+			else if(dist==3) sum+= 6;
+			else sum+=dist;
+			prev = next;
+		}
+		return sum;
+	}
 
 	@Override
 	public Float getDefaultValue(Point p, int i) {
 		return getLocalFactor(p);
+	}
+	public ArrayList<Point> getNeighboringTowns(Point p) {
+		return neighborCache.get(p);
+	}
+	public ArrayList<Point> getNeighboringCities(Point p) {
+		ArrayList<Point> result = new ArrayList<Point>();
+		ArrayList<Point> towns = neighborCache.get(p);
+		if(towns!=null) {
+			for(Point p1:towns) {
+				if(population.isCity(p1)) result.add(p1);
+			}
+		}else {
+			return null;
+		}
+		return result;
 	}
 }

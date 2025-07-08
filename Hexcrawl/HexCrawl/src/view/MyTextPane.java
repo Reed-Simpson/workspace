@@ -50,6 +50,7 @@ public class MyTextPane extends JTextPane {
 	private HashMap<Interval,Interval> links;
 	private Reference ref;
 	private int offset;
+	private Point pos;
 
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
@@ -57,6 +58,7 @@ public class MyTextPane extends JTextPane {
 		this.index = index;
 		this.type = type;
 		this.offset = 0;
+		this.pos = getPoint();
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setCaret(new NoScrollCaret());
 		this.setContentType("text/html");
@@ -81,6 +83,10 @@ public class MyTextPane extends JTextPane {
 	}
 	public void doPaint() {
 		if(getIndex()>-1) {
+			if(!this.pos.equals(getPoint())) {
+				controller.updateData(getType(), this.getRawText(), pos, getIndex());
+				this.pos = getPoint();
+			}
 			String text = controller.getText(getType(), getPoint(), getIndex());
 			if(text!=null) this.setText(text);
 			else this.setText("None");
@@ -213,7 +219,7 @@ public class MyTextPane extends JTextPane {
 		public void focusLost(FocusEvent e) {
 			if(getIndex()>-1) {
 				String text = MyTextPane.this.getRawText();
-				controller.updateData(getType(), text, getPoint(), getIndex());
+				controller.updateData(getType(), text, pos, getIndex());
 			}
 		}
 	}

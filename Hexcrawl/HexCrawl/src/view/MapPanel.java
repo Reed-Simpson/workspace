@@ -236,7 +236,6 @@ public class MapPanel  extends JPanel{
 			this.displayData = displayData;
 			colorCache = new HashMap<Point,Pair<Color,Color>>();
 			iconCache = new HashMap<Point, List<Icon>>();
-			//			iconCache = new HashMap<Point,List<Icon>>();
 		}
 	}
 
@@ -359,7 +358,7 @@ public class MapPanel  extends JPanel{
 		if(HexData.POPULATION.equals(displayData)) {
 			NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
 			if(species!=null) result = species.getIcons();
-		}if(HexData.THREAT.equals(displayData)) {
+		}else if(HexData.THREAT.equals(displayData)) {
 			CreatureType type = controller.getThreats().getThreatCreatureType(p);
 			if(type!=null) result = type.getIcons();
 		}else {

@@ -139,7 +139,7 @@ public class DataController {
 			Point capital = population.getLocalFealty(p);
 			NPCSpecies species = population.getMajoritySpecies(capital.x,capital.y);
 			if(species==null) {
-				System.err.println("null species "+record.normalizePOS(capital));
+				System.err.println("getDefaultText null species "+record.normalizePOS(capital));
 				value = null;break;
 			}else {
 				value =  names.getName(species.getCityNameGen(), capital);break;

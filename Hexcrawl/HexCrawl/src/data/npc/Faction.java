@@ -75,7 +75,7 @@ public class Faction extends Indexible {
 		if(this.getDomain()!=null) c1Text.append("   Domain: "+this.getDomain()+"\r\n");
 		c1Text.append("   Type: "+this.getType()+"\r\n");
 		c1Text.append("   Trait: "+this.getTrait()+"\r\n");
-		c1Text.append("   Goal: "+this.getGoal()+"\r\n");
+		c1Text.append("   Goal: "+this.getGoal());
 		return c1Text.toString();
 	}
 	

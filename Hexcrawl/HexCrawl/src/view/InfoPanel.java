@@ -377,19 +377,19 @@ public class InfoPanel extends JTabbedPane{
 		this.FACTION_TAB_INDEX = regionTabs.getTabCount()-1;
 
 		//Faiths tab
-		JPanel faithsPanel = new JPanel();
-		faithsPanel.setLayout(new BoxLayout(faithsPanel, BoxLayout.Y_AXIS));
+		//JPanel faithsPanel = new JPanel();
+		//faithsPanel.setLayout(new BoxLayout(faithsPanel, BoxLayout.Y_AXIS));
 		faithsTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<FACTIONCOUNT;i++) {
-			faithsPanel.add(new JLabel("~~~~~ Faith #"+(i+1)+" ~~~~~"));
+			factionPanel.add(new JLabel("~~~~~ Faith #"+(i+1)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FAITH);
 			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
-			faithsPanel.add(factioni);
+			factionPanel.add(factioni);
 			faithsTexts.add(factioni);
 		}
-		JScrollPane faithsScrollPane = new JScrollPane(faithsPanel);
-		faithsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		regionTabs.addTab("Faiths", faithsScrollPane);
+		//JScrollPane faithsScrollPane = new JScrollPane(faithsPanel);
+		//faithsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//regionTabs.addTab("Faiths", faithsScrollPane);
 		this.FAITH_TAB_INDEX = regionTabs.getTabCount()-1;
 
 

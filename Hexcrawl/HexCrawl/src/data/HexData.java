@@ -16,7 +16,7 @@ public enum HexData {
 	NPC("npc"),
 	LOCATION("location"),
 	DUNGEON("dungeon"),
-	D_ENCOUNTER("d.encounter"),
+	D_ENCOUNTER("dencounter"),
 	FACTION("faction"),
 	FAITH("faith"),
 	DISTRICT("district"),
@@ -26,7 +26,8 @@ public enum HexData {
 	THREAD("thread"), 
 	MINION("minion"), 
 	MONSTER("beast"), 
-	PROPRIETOR("proprietor");
+	PROPRIETOR("proprietor"), 
+	FACTION_NPC("fnpc");
 	
 	public static HexData[] getMapViews() {
 		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT,EXPLORATION};

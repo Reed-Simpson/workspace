@@ -196,6 +196,14 @@ public class NPCModel extends DataModel {
 		if(setProprietorJob(p, i, result)) return result;
 		else return null;
 	}
+	public NPC getFactionNPC(int i, Point p) {
+		Point capital = population.getAbsoluteFealty(p);
+		NPC result = getNPC(i+InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT, capital);
+		if(setFactionJob(capital, i, result)) return result;
+		else return null;
+	}
+
+
 	private void populateNPCData(Point p, NPC npc) {
 		setSpecies(p, npc);
 		setSubspecies(p, npc);
@@ -322,6 +330,12 @@ public class NPCModel extends DataModel {
 		if(setProprietorJob(p, i, result)) return result;
 		else return null;
 	}
+	public NPC getFactionNPC(Point p, Random random, int i) {
+		Point capital = population.getAbsoluteFealty(p);
+		NPC result = getNPC(capital, random);
+		if(setFactionJob(capital, i, result)) return result;
+		else return null;
+	}
 
 
 	private boolean setProprietorJob(Point p, int i, NPC result) {
@@ -334,6 +348,10 @@ public class NPCModel extends DataModel {
 			return true;
 		}
 		else return false;
+	}
+	private boolean setFactionJob(Point p, int i, NPC result) {
+		//TODO faction jobs
+		return true;
 	}
 	public NPC getNPC(Point p,Random random) {
 		int[] ints = new int[TABLECOUNT];

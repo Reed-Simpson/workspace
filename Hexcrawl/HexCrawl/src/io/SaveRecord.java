@@ -42,6 +42,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,String> cities;
 	private HashMap<Point,String> regionNames;
 	private HashMap<Point,ArrayList<String>> npcs2;
+	private HashMap<Point,ArrayList<String>> factionNPCs;
 	private HashMap<Point,ArrayList<String>> proprietors;
 	private HashMap<Point,ArrayList<String>> encounters2;
 	private HashMap<Point,ArrayList<String>> dungeonEncounters2;
@@ -71,6 +72,7 @@ public class SaveRecord implements Serializable {
 
 
 		this.npcs2 = new HashMap<Point,ArrayList<String>>();
+		this.factionNPCs = new HashMap<Point,ArrayList<String>>();
 		this.proprietors = new HashMap<Point,ArrayList<String>>();
 		this.encounters2 = new HashMap<Point,ArrayList<String>>();
 		this.dungeonEncounters2 = new HashMap<Point,ArrayList<String>>();
@@ -206,6 +208,7 @@ public class SaveRecord implements Serializable {
 		}
 		if(loadedRecord!=null) {
 			if(loadedRecord.proprietors==null) loadedRecord.proprietors = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.factionNPCs==null) loadedRecord.factionNPCs = new HashMap<Point,ArrayList<String>>();
 		}
 		return loadedRecord;
 	}
@@ -346,6 +349,31 @@ public class SaveRecord implements Serializable {
 	}
 	public String removeNPC(Point p,int i) {
 		ArrayList<String> npcs = this.npcs2.get(p);
+		if(npcs==null||npcs.size()<=i) return null;
+		String set = npcs.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+
+	public String putFactionNPC(Point p,int i,String s) {
+		if(!this.factionNPCs.containsKey(p)) this.factionNPCs.put(p, new ArrayList<String>());
+		ArrayList<String> npcs = this.factionNPCs.get(p);
+		while(npcs.size()<i+1) npcs.add(null);
+		String set = npcs.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getFactionNPC(Point p,int i) {
+		ArrayList<String> npcs = this.factionNPCs.get(p);
+		if(npcs==null||npcs.size()<=i) return null;
+		return npcs.get(i);
+	}
+	public String removeFactionNPC(Point p,int i) {
+		ArrayList<String> npcs = this.factionNPCs.get(p);
 		if(npcs==null||npcs.size()<=i) return null;
 		String set = npcs.set(i, null);
 		if(set!=null) {

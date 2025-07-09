@@ -290,56 +290,67 @@ public class SettlementModel extends DataModel{
 		Faction result = new Faction(ints);
 		return result;
 	}
-	private void populateFactionDetails(Faction result, Point p) {
+	private void populateFactionDetails(Faction result, Point p,int i) {
 		boolean isFaith = result.getType().isFaith();
 		if(isFaith) result.setDomain(NPCModel.getDomain(result));
 		String name = FactionNameGenerator.getName(result.getType(),result);
 		result.setName(name);
 		result.setTrait(FactionNameGenerator.getTrait(result));
 		String goal = formatGoal(FactionNameGenerator.getGoal(result),result,isFaith);
+		if(i<InfoPanel.FACTIONCOUNT*2) {
+			populateFactionNPCs(result, p, i*2,HexData.FACTION_NPC);
+		}else {
+			populateFactionNPCs(result, p, 1,HexData.MINION);
+		}
 		result.setGoal(Util.formatTableResultPOS(goal,result,p,record.getZero()));
+	}
+
+
+	private void populateFactionNPCs(Faction result, Point p, int i,HexData type) {
+		result.setLeader(new Reference(type, record.normalizePOS(p), i));
+		result.setMember(new Reference(type, record.normalizePOS(p), i+1));
 	}
 	
 	public Faction getFaction(int i,Point p) {
 		Faction result = getIndexedFaction(i, p);
 		FactionType type = FactionType.getFaction(result);
 		result.setType(type);
-		populateFactionDetails(result, p);
+		populateFactionDetails(result, p,i);
 		return result;
 	}
-	public Faction getFaction(Random random,Point p) {
+	public Faction getFaction(Random random,Point p,int i) {
 		Faction result = getRandomIndexedFaction(random);
 		FactionType type = FactionType.getFaction(result);
 		result.setType(type);
-		populateFactionDetails(result, p);
+		populateFactionDetails(result, p,i);
 		return result;
 	}
 	public Faction getFaith(int i,Point p) {
 		Faction result = getIndexedFaction(i+InfoPanel.FACTIONCOUNT, p);
 		FactionType type = FactionType.getFaith(result);
 		result.setType(type);
-		populateFactionDetails(result, p);
+		populateFactionDetails(result, p,i+InfoPanel.FACTIONCOUNT);
 		return result;
 	}
-	public Faction getFaith(Random random,Point p) {
+	public Faction getFaith(Random random,Point p,int i) {
 		Faction result = getRandomIndexedFaction(random);
 		FactionType type = FactionType.getFaith(result);
 		result.setType(type);
-		populateFactionDetails(result, p);
+		populateFactionDetails(result, p,i+InfoPanel.FACTIONCOUNT);
 		return result;
 	}
 	public Faction getFaction(int i,Point p,FactionType... types) {
 		Faction result = getIndexedFaction(i, p);
 		FactionType type = (FactionType) Util.getElementFromArray(types, result);
 		result.setType(type);
-		populateFactionDetails(result, p);
+		populateFactionDetails(result, p,InfoPanel.FACTIONCOUNT*2);
 		return result;
 	}
 	public Faction getFaction(Random random,Point p,FactionType... types) {
 		Faction result = getRandomIndexedFaction(random);
 		FactionType type = (FactionType) Util.getElementFromArray(types, result);
 		result.setType(type);
-		populateFactionDetails(result, p);
+		populateFactionDetails(result, p,InfoPanel.FACTIONCOUNT*2);
 		return result;
 	}
 

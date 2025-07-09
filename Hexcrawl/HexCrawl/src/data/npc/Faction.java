@@ -1,6 +1,7 @@
 package data.npc;
 
 import data.Indexible;
+import data.Reference;
 import names.FactionType;
 import util.Util;
 
@@ -11,6 +12,8 @@ public class Faction extends Indexible {
 	String goal;
 	String name;
 	String domain;
+	Reference leader;
+	Reference member;
 
 	public Faction(float... floats) {
 		super(floats);
@@ -61,6 +64,22 @@ public class Faction extends Indexible {
 
 
 
+	public Reference getLeader() {
+		return leader;
+	}
+
+	public void setLeader(Reference leader) {
+		this.leader = leader;
+	}
+
+	public Reference getMember() {
+		return member;
+	}
+
+	public void setMember(Reference member) {
+		this.member = member;
+	}
+
 	private String formatName() {
 		String name = this.getName();
 		if(this.getName().contains("${placeholder domain}")) {
@@ -76,6 +95,8 @@ public class Faction extends Indexible {
 		c1Text.append("   Type: "+this.getType()+"\r\n");
 		c1Text.append("   Trait: "+this.getTrait()+"\r\n");
 		c1Text.append("   Goal: "+this.getGoal());
+		if(leader!=null) c1Text.append("\r\nLeader: "+leader.toString());
+		if(member!=null) c1Text.append("\r\nMember: "+member.toString());
 		return c1Text.toString();
 	}
 	

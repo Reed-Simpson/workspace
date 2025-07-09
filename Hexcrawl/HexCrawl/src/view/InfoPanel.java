@@ -123,6 +123,9 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<MyTextPane> beastsTexts;
 	private int selectedBeast;
 	private ArrayList<MyTextPane> proprietorTexts;
+	private ArrayList<MyTextPane> factionNPCTexts;
+	private int FACTION_NPC_TAB_INDEX;
+	private int selectedFactionNPC;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -391,6 +394,23 @@ public class InfoPanel extends JTabbedPane{
 		//faithsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//regionTabs.addTab("Faiths", faithsScrollPane);
 		this.FAITH_TAB_INDEX = regionTabs.getTabCount()-1;
+
+
+		//Faction NPCs tab
+		JPanel factionNPCPanel = new JPanel();
+		factionNPCPanel.setLayout(new BoxLayout(factionNPCPanel, BoxLayout.Y_AXIS));
+		factionNPCTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<(FACTIONCOUNT*2)*2;i++) {
+			factionNPCPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
+			MyTextPane minion = new MyTextPane(this, i, HexData.FACTION_NPC);
+			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			factionNPCPanel.add(minion);
+			factionNPCTexts.add(minion);
+		}
+		JScrollPane factionNPCScrollPane = new JScrollPane(factionNPCPanel);
+		factionNPCScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("NPCs", factionNPCScrollPane);
+		this.FACTION_NPC_TAB_INDEX = regionTabs.getTabCount()-1;
 
 
 		//Minions tab
@@ -752,6 +772,16 @@ public class InfoPanel extends JTabbedPane{
 			pane.doPaint();
 		}
 
+		for(int i = 0;i<this.factionNPCTexts.size();i++) {
+			MyTextPane pane = this.factionNPCTexts.get(i);
+			if(i==selectedFactionNPC) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+		}
+
 		for(int i = 0;i<this.minionsTexts.size();i++) {
 			MyTextPane pane = this.minionsTexts.get(i);
 			if(i==selectedMinion) {
@@ -858,22 +888,24 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	public void selectTabAndIndex(String tab, int x, int y, int index) {
+		HexData type = HexData.get(tab);
 		Point displayPos = new Point(x,y);
 		Point actualPos = Util.denormalizePos(displayPos, panel.getRecord().getZero());
 		panel.recenter(actualPos, true);
-		switch(tab) {
-		case "npc": selectTab(0,NPC_TAB_INDEX,index);break;
-		case "location": selectTab(0,LOCATION_TAB_INDEX,index);break;
-		case "dungeon": selectTab(0,DUNGEON_TAB_INDEX,index);break;
-		case "encounter": selectTab(0,ENCOUNTER_TAB_INDEX,index);break;
-		case "d.encounter": selectTab(0,DUNGEON_ENCOUNTER_TAB_INDEX,index);break;
-		case "faction": selectTab(1,FACTION_TAB_INDEX,index);break;
-		case "district": selectTab(1,CITY_TAB_INDEX,index);break;
-		case "faith": selectTab(1,FAITH_TAB_INDEX,index);break;
-		case "minion": selectTab(1,MINIONS_TAB_INDEX,index);break;
-		case "beast": selectTab(1,BEASTS_TAB_INDEX,index);break;
-		case "character": selectTab(2,0,index);break;
-		case "town": selectTab(1,CITY_TAB_INDEX,index);break;
+		switch(type) {
+		case NPC: selectTab(0,NPC_TAB_INDEX,index);break;
+		case LOCATION: selectTab(0,LOCATION_TAB_INDEX,index);break;
+		case DUNGEON: selectTab(0,DUNGEON_TAB_INDEX,index);break;
+		case ENCOUNTER: selectTab(0,ENCOUNTER_TAB_INDEX,index);break;
+		case D_ENCOUNTER: selectTab(0,DUNGEON_ENCOUNTER_TAB_INDEX,index);break;
+		case FACTION: selectTab(1,FACTION_TAB_INDEX,index);break;
+		case FACTION_NPC: selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
+		case DISTRICT: selectTab(1,CITY_TAB_INDEX,index);break;
+		case FAITH: selectTab(1,FAITH_TAB_INDEX,index);break;
+		case MINION: selectTab(1,MINIONS_TAB_INDEX,index);break;
+		case MONSTER: selectTab(1,BEASTS_TAB_INDEX,index);break;
+		case CHARACTER: selectTab(2,0,index);break;
+		case TOWN: selectTab(1,CITY_TAB_INDEX,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
 		}
 		panel.preprocessThenRepaint();

@@ -79,6 +79,7 @@ public class DataController {
 
 		case ENCOUNTER: return encounters;
 		case NPC: return npcs;
+		case FACTION_NPC: return npcs;
 		case PROPRIETOR: return npcs;
 		case LOCATION: return pois;
 		case DUNGEON: return dungeons;
@@ -104,9 +105,8 @@ public class DataController {
 		}
 		case D_ENCOUNTER: value = "";break;
 		case ENCOUNTER: value = "";break;
-		case NPC: {
-			value =  npcs.getNPC(i,p).toString(); break;
-		}
+		case NPC: value =  npcs.getNPC(i,p).toString(); break;
+		case FACTION_NPC: value =  npcs.getFactionNPC(i,p).toString(); break;
 		case PROPRIETOR: {
 			NPC proprietor = npcs.getProprietor(i,p);
 			if(proprietor!=null) value =  proprietor.toString();
@@ -191,6 +191,7 @@ public class DataController {
 		case D_ENCOUNTER: //return record.getDungeonEncounter(p, i);
 		case ENCOUNTER: return record.getEncounter(p, i);
 		case NPC: return record.getNPC(p, i);
+		case FACTION_NPC: return record.getFactionNPC(p, i);
 		case PROPRIETOR: return record.getProprietor(p, i);
 		case LOCATION: return record.getLocation(p, i);
 		case DUNGEON: return record.getDungeon(p, i);
@@ -238,6 +239,7 @@ public class DataController {
 		case D_ENCOUNTER: //return record.removeDungeonEncounter(p, i);
 		case ENCOUNTER: return record.removeEncounter(p, i);
 		case NPC: return record.removeNPC(p, i);
+		case FACTION_NPC: return record.removeFactionNPC(p, i);
 		case PROPRIETOR: return record.removeProprietor(p, i);
 		case LOCATION: return record.removeLocation(p, i);
 		case DUNGEON: return record.removeDungeon(p, i);
@@ -280,6 +282,7 @@ public class DataController {
 		case D_ENCOUNTER: //return record.putDungeonEncounter(p, i, s);
 		case ENCOUNTER: return record.putEncounter(p, i, s);
 		case NPC: return record.putNPC(p, i, s);
+		case FACTION_NPC: return record.putFactionNPC(p, i, s);
 		case PROPRIETOR: return record.putProprietor(p, i, s);
 		case LOCATION: return record.putLocation(p, i, s);
 		case DUNGEON: return record.putDungeon(p, i, s);
@@ -326,14 +329,16 @@ public class DataController {
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
 		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom(),ref).toString();
 		case NPC: return npcs.getNPC(p,record.getRandom()).toString();
+		case FACTION_NPC: {return npcs.getFactionNPC(p,record.getRandom(),i).toString();
+		}
 		case PROPRIETOR: return npcs.getProprietor(p,record.getRandom(),i).toString();
 		case LOCATION: {
 			if(i==0) return pois.getInnText(record.getRandom(),p).toString();
 			else return pois.getPOI(record.getRandom(), p,population.isCity(p),i).toString();
 		}
 		case DUNGEON: return dungeons.getDungeon(record.getRandom(), p).toString();
-		case FACTION: return settlements.getFaction(record.getRandom(),p).toString(); 
-		case FAITH: return settlements.getFaith(record.getRandom(),p).toString(); 
+		case FACTION: return settlements.getFaction(record.getRandom(),p,i).toString(); 
+		case FAITH: return settlements.getFaith(record.getRandom(),p,i).toString(); 
 		case MINION:{
 			if(i==0) return threats.getFaction(this, record.getRandom(), p, null).toString();
 			else return threats.getMinion(this,record.getRandom(),p,null).toString(); 

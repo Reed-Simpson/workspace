@@ -101,7 +101,7 @@ public class MyTextPane extends JTextPane {
 			while(matcher.find()) {
 				doc.insertString(doc.getLength(), string.substring(closebrace+1,matcher.start()), basic);
 				Interval linkInterval = insertLink(string.substring(matcher.start(), matcher.end()));
-				links.put(linkInterval, new Interval(matcher.start(),matcher.end()));
+				if(linkInterval!=null) links.put(linkInterval, new Interval(matcher.start(),matcher.end()));
 				closebrace = matcher.end()-1;
 			}
 			doc.insertString(doc.getLength(), string.substring(closebrace+1), basic);
@@ -116,8 +116,7 @@ public class MyTextPane extends JTextPane {
 		Style regularBlue = getLinkStyle(link, doc);
 		String linkText = controller.getLinkText(link);
 		if(linkText==null) {
-			System.err.println("null link text: "+link);
-			doc.insertString(doc.getLength(), "null", regularBlue);
+			doc.insertString(doc.getLength(), "none", DEFAULT);
 			return new Interval(doc.getLength(),doc.getLength()+4);
 		}
 		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
@@ -474,7 +473,7 @@ public class MyTextPane extends JTextPane {
 					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,matcher.start()), basic);
 					closebrace = matcher.end()-1;
 					Interval linkInterval = insertLink(fb,string.substring(matcher.start(), matcher.end()));
-					links.put(linkInterval, new Interval(matcher.start(), matcher.end()));
+					if(linkInterval!=null) links.put(linkInterval, new Interval(matcher.start(), matcher.end()));
 				}
 				super.insertString(fb, doc.getLength(), string.substring(closebrace+1), basic);
 			} catch (BadLocationException e) {
@@ -486,6 +485,10 @@ public class MyTextPane extends JTextPane {
 			StyledDocument doc = MyTextPane.this.getStyledDocument();
 			Style regularBlue = getLinkStyle(link, doc);
 			String linkText = controller.getLinkText(link);
+			if(linkText==null) {
+				doc.insertString(doc.getLength(), "none", DEFAULT);
+				return new Interval(doc.getLength(),doc.getLength()+4);
+			}
 			Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
 			super.insertString(fb, doc.getLength(), linkText, regularBlue);
 			return result;

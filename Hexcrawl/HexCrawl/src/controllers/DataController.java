@@ -385,10 +385,10 @@ public class DataController {
 		}
 		return link;
 	}
-	public String getLinkText(HexData type, Point pos,int index) {
+	public String getRawLinkText(HexData type, Point pos,int index) {
 		String fullText = getText(type, pos, index);
 		if(fullText==null) {
-			System.err.println("null link text: {"+type+":"+record.normalizePOS(pos)+","+index+"}");
+			//System.err.println("null link text: {"+type+":"+record.normalizePOS(pos)+","+index+"}");
 			return null;
 		}
 		int firstLine = fullText.indexOf("\n");
@@ -402,9 +402,9 @@ public class DataController {
 		Point displayPos = new Point(x,y);
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		HexData type = HexData.get(tab);
-		String linkText = getLinkText(type, actualPos, index);
+		String linkText = getRawLinkText(type, actualPos, index);
 		if(linkText==null) {
-			System.err.println("null link text: {"+type+":"+displayPos+","+index+"}");
+			//System.err.println("null link text: {"+type+":"+displayPos+","+index+"}");
 			return null;
 		}
 		Matcher matcher = Reference.PATTERN.matcher(linkText);

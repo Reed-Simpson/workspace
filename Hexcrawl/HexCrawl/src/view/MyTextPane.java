@@ -279,7 +279,9 @@ public class MyTextPane extends JTextPane {
 				doPopupMenu(e);
 			}
 		}
-		public void mouseExited(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {
+			info.getPanel().setHighlightedHex(null);
+		}
 		public void mouseEntered(MouseEvent e) {}
 		public void mouseClicked(MouseEvent e){
 			@SuppressWarnings("deprecation")

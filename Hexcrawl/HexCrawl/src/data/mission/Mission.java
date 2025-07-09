@@ -80,7 +80,10 @@ public class Mission extends Indexible{
 		if(remote!=null) c1Text.append("\r\n").append("Remote NPC: ").append(remote.toString());
 		if(remoteRef!=null) c1Text.append("\r\n").append("    \u21B3Location: ").append(remoteRef.toString());
 		if(regional!=null) c1Text.append("\r\n").append("Regional NPC: ").append(regional.toString());
-		if(regionalRef!=null) c1Text.append("\r\n").append("    \u21B3Faction: ").append(regionalRef.toString());
+		String role;
+		if(regional.getIndex()%2==0) role = "Leader of ";
+		else role = "Member of ";
+		if(regionalRef!=null) c1Text.append("\r\n").append("    \u21B3"+role).append(regionalRef.toString());
 		return c1Text.toString();
 	}
 

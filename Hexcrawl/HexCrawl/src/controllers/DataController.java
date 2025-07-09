@@ -32,7 +32,7 @@ import util.Pair;
 import util.Util;
 
 public class DataController {
-	
+
 	private AltitudeModel grid;
 	private PrecipitationModel precipitation;
 	private PopulationModel population;
@@ -68,7 +68,7 @@ public class DataController {
 		this.monsters = new MonsterModel(this);
 		this.missions = new MissionModel(record, population);
 	}
-	
+
 	public DataModel getModel(HexData type) {
 		switch(type) {
 		case ALTITUDE: return grid;
@@ -420,15 +420,16 @@ public class DataController {
 		if(HexData.TOWN.equals(type)) return null;
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		String result = this.getText(type, actualPos, index);
-		
-		Matcher matcher;
-		matcher = Reference.LINKDETECT.matcher(result);
-		while(matcher.find()) {
-			result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
+		if(result!=null) {
+			Matcher matcher;
+			matcher = Reference.LINKDETECT.matcher(result);
+			while(matcher.find()) {
+				result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
+			}
 		}
 		return result;
 	}
-	
+
 	public Point getOriginPoint(HexData type,Point p,int i) {
 		switch(type) {
 		case THREAT: 

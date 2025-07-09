@@ -88,7 +88,7 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		return defects.getByWeight(obj);
 	}
 	public static String getMissionNoun(Indexible obj) {
-		String mission = MissionModel.getMission(obj);
+		String mission = MissionModel.getMissionVerb(obj);
 		if(mission.endsWith("e")) mission+="r";
 		else mission+="er";
 		return mission;

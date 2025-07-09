@@ -27,7 +27,8 @@ public enum HexData {
 	MINION("minion"), 
 	MONSTER("beast"), 
 	PROPRIETOR("proprietor"), 
-	FACTION_NPC("fnpc");
+	FACTION_NPC("fnpc"), 
+	MISSION("mission");
 	
 	public static HexData[] getMapViews() {
 		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT,EXPLORATION};

@@ -182,23 +182,32 @@ public class NPCModel extends DataModel {
 	}
 
 	public NPC getNPC(int i,Point p) {
+		if(i>=InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT) return getFactionNPC(i-(InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT), p);
+		else if(i>=InfoPanel.NPCCOUNT*2) return getProprietor(i-InfoPanel.NPCCOUNT*2, p);
+		NPC result = getIndexedNPC(i, p);
+		populateNPCData(p, result);
+		return result;
+	}
+
+
+	private NPC getIndexedNPC(int i, Point p) {
 		float[] floats = new float[TABLECOUNT];
 		for(int x=0;x<floats.length;x++) {
 			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
 		}
 		NPC result = new NPC(floats);
-
-		populateNPCData(p, result);
 		return result;
 	}
 	public NPC getProprietor(int i, Point p) {
-		NPC result = getNPC(i+InfoPanel.NPCCOUNT*2, p);
+		NPC result = getIndexedNPC(i+InfoPanel.NPCCOUNT*2, p);
+		populateNPCData(p, result);
 		if(setProprietorJob(p, i, result)) return result;
 		else return null;
 	}
 	public NPC getFactionNPC(int i, Point p) {
 		Point capital = population.getAbsoluteFealty(p);
-		NPC result = getNPC(i+InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT, capital);
+		NPC result = getIndexedNPC(i+InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT, capital);
+		populateNPCData(capital, result);
 		if(setFactionJob(capital, i, result)) return result;
 		else return null;
 	}
@@ -339,9 +348,7 @@ public class NPCModel extends DataModel {
 
 
 	private boolean setProprietorJob(Point p, int i, NPC result) {
-		Location l;
-		if(i==0) l = location.getInnText(p);
-		else l = location.getPOI(i, p);
+		Location l = location.getPOI(i, p);
 		NPCJobType jobType = l.getProprietorJob();
 		if(jobType!=null) {
 			result.setJob(jobType.toString());
@@ -365,11 +372,7 @@ public class NPCModel extends DataModel {
 	}
 	public NPC getMinion(int i,Point p,Threat threat) {
 		i+=InfoPanel.NPCCOUNT; //minion offset
-		float[] floats = new float[TABLECOUNT];
-		for(int x=0;x<floats.length;x++) {
-			floats[x] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+i*TABLECOUNT+x), p.x, p.y);
-		}
-		NPC result = new NPC(floats);
+		NPC result = getIndexedNPC(i, p);
 		setMinionSpecies(getMinionSpecies(threat,result),result,threat);
 
 		populateNPCData(p, result);

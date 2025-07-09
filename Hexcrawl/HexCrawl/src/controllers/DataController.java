@@ -15,6 +15,7 @@ import data.economy.EconomicModel;
 import data.encounters.EncounterModel;
 import data.location.LocationModel;
 import data.magic.MagicModel;
+import data.mission.MissionModel;
 import data.monster.Monster;
 import data.monster.MonsterModel;
 import data.npc.NPC;
@@ -47,6 +48,7 @@ public class DataController {
 	private EncounterModel encounters;
 	private SaveRecord record;
 	private MonsterModel monsters;
+	private MissionModel missions;
 
 	public DataController(SaveRecord record) {
 		this.record = record;
@@ -64,6 +66,7 @@ public class DataController {
 		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);
 		this.monsters = new MonsterModel(this);
+		this.missions = new MissionModel(record, population);
 	}
 	
 	public DataModel getModel(HexData type) {
@@ -88,6 +91,7 @@ public class DataController {
 		case FAITH: return settlements;
 		case CITY: return settlements;
 		case TOWN: return settlements;
+		case MISSION: return missions;
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -105,7 +109,12 @@ public class DataController {
 		}
 		case D_ENCOUNTER: value = "";break;
 		case ENCOUNTER: value = "";break;
-		case NPC: value =  npcs.getNPC(i,p).toString(); break;
+		case NPC:{
+			NPC npc = npcs.getNPC(i,p);
+			if(npc!=null) value =  npc.toString(); 
+			else value = null;
+			break;
+		}
 		case FACTION_NPC: value =  npcs.getFactionNPC(i,p).toString(); break;
 		case PROPRIETOR: {
 			NPC proprietor = npcs.getProprietor(i,p);
@@ -113,10 +122,7 @@ public class DataController {
 			else value = null;
 			break;
 		}
-		case LOCATION: {
-			if(i==0) value = getDefaultInnText(p);
-			else value = pois.getPOI(i, p).toString();break;
-		}
+		case LOCATION: value = pois.getPOI(i, p).toString();break;
 		case DUNGEON: value = dungeons.getDungeon(i, p).toString();break;
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -170,17 +176,11 @@ public class DataController {
 			else value = "None";
 			break;
 		}
+		case MISSION: value = missions.getMission(p, i).toString(); break;
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
 		if(value==null) return null;
 		else return value.toString();
-	}
-	private String getDefaultInnText(Point pos) {
-		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-			return "Inn: none";
-		}else {
-			return pois.getInnText(pos).toString();
-		}
 	}
 	public String getData(HexData type,Point p, int i) {
 		switch(type) {
@@ -191,7 +191,10 @@ public class DataController {
 		case D_ENCOUNTER: //return record.getDungeonEncounter(p, i);
 		case ENCOUNTER: return record.getEncounter(p, i);
 		case NPC: return record.getNPC(p, i);
-		case FACTION_NPC: return record.getFactionNPC(p, i);
+		case FACTION_NPC: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getFactionNPC(capital, i);
+		}
 		case PROPRIETOR: return record.getProprietor(p, i);
 		case LOCATION: return record.getLocation(p, i);
 		case DUNGEON: return record.getDungeon(p, i);
@@ -227,6 +230,7 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.getBeast(region, i/4);
 		}
+		case MISSION: return record.getMission(p,i);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -239,7 +243,10 @@ public class DataController {
 		case D_ENCOUNTER: //return record.removeDungeonEncounter(p, i);
 		case ENCOUNTER: return record.removeEncounter(p, i);
 		case NPC: return record.removeNPC(p, i);
-		case FACTION_NPC: return record.removeFactionNPC(p, i);
+		case FACTION_NPC: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeFactionNPC(capital, i);
+		}
 		case PROPRIETOR: return record.removeProprietor(p, i);
 		case LOCATION: return record.removeLocation(p, i);
 		case DUNGEON: return record.removeDungeon(p, i);
@@ -270,6 +277,7 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.removeBeast(region,i/4);
 		}
+		case MISSION: return record.removeMission(p, i);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -282,7 +290,10 @@ public class DataController {
 		case D_ENCOUNTER: //return record.putDungeonEncounter(p, i, s);
 		case ENCOUNTER: return record.putEncounter(p, i, s);
 		case NPC: return record.putNPC(p, i, s);
-		case FACTION_NPC: return record.putFactionNPC(p, i, s);
+		case FACTION_NPC:{
+			Point capital = population.getAbsoluteFealty(p);
+			return record.putFactionNPC(capital, i, s);
+		}
 		case PROPRIETOR: return record.putProprietor(p, i, s);
 		case LOCATION: return record.putLocation(p, i, s);
 		case DUNGEON: return record.putDungeon(p, i, s);
@@ -313,6 +324,7 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.putBeast(region, i/4, s);
 		}
+		case MISSION: return record.putMission(p, i, s);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -329,13 +341,9 @@ public class DataController {
 		case D_ENCOUNTER: return encounters.getDungeonEncounter(record.getRandom()).toString();
 		case ENCOUNTER: return encounters.getEncounter(p,record.getRandom(),ref).toString();
 		case NPC: return npcs.getNPC(p,record.getRandom()).toString();
-		case FACTION_NPC: {return npcs.getFactionNPC(p,record.getRandom(),i).toString();
-		}
+		case FACTION_NPC: return npcs.getFactionNPC(p,record.getRandom(),i).toString();
 		case PROPRIETOR: return npcs.getProprietor(p,record.getRandom(),i).toString();
-		case LOCATION: {
-			if(i==0) return pois.getInnText(record.getRandom(),p).toString();
-			else return pois.getPOI(record.getRandom(), p,population.isCity(p),i).toString();
-		}
+		case LOCATION: return pois.getPOI(record.getRandom(), p,population.isCity(p),i).toString();
 		case DUNGEON: return dungeons.getDungeon(record.getRandom(), p).toString();
 		case FACTION: return settlements.getFaction(record.getRandom(),p,i).toString(); 
 		case FAITH: return settlements.getFaith(record.getRandom(),p,i).toString(); 
@@ -361,6 +369,7 @@ public class DataController {
 			Monster monster = monsters.getWanderingMonster(record.getRandom(),i,biomes,threat);
 			return monster.toString(); 
 		}
+		case MISSION: return missions.getMission(p, record.getRandom()).toString();
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}

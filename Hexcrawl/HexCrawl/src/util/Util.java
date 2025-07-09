@@ -219,7 +219,7 @@ public class Util {
 		if(result.contains("${misfortune}")) result = Util.replace(result,"${misfortune}",NPCModel.getMisfortune(obj));
 		if(result.contains("${hobby}")) result = Util.replace(result,"${hobby}",NPCModel.getHobby(obj));
 
-		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",MissionModel.getMission(obj));
+		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",MissionModel.getMissionVerb(obj));
 
 		if(result.contains("${last name}")) result = Util.replace(result,"${last name}",HumanNameGenerator.getLastName(obj));
 		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",NPCSpecies.HUMAN.getCityNameGen().getName(obj));

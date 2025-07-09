@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -126,6 +127,9 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<MyTextPane> factionNPCTexts;
 	private int FACTION_NPC_TAB_INDEX;
 	private int selectedFactionNPC;
+	private Container missionsPanel;
+	private ArrayList<MyTextPane> missionsTexts;
+	private int MISSIONS_TAB_INDEX;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -267,6 +271,20 @@ public class InfoPanel extends JTabbedPane{
 //		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//detailsTabs.addTab("D.Encounters", dungeonScrollPane);
 		this.DUNGEON_ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount()-1;
+		
+
+		missionsPanel = new JPanel();
+		missionsPanel.setLayout(new BoxLayout(missionsPanel, BoxLayout.Y_AXIS));
+		missionsTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<panel.getRecord().getMissions(panel.getSelectedGridPoint()).size()||i<3;i++) {
+			MyTextPane pane = createMission();
+			pane.doPaint();
+		}
+		JScrollPane missionsScrollPane = new JScrollPane(missionsPanel);
+		missionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		missionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		detailsTabs.addTab("Missions", missionsScrollPane);
+		this.MISSIONS_TAB_INDEX = detailsTabs.getTabCount()-1;
 
 		hexPanel.add(detailsTabs);
 
@@ -290,6 +308,16 @@ public class InfoPanel extends JTabbedPane{
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 		encounterPanel.add(encounteri,0);
 		encounterTexts.add(encounteri);
+		return encounteri;
+	}
+
+	private MyTextPane createMission() {
+		int i = missionsTexts.size();
+		MyTextPane encounteri = new MyTextPane(this, i, HexData.MISSION);
+		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+		missionsPanel.add(encounteri,0);
+		missionsTexts.add(encounteri);
 		return encounteri;
 	}
 
@@ -898,6 +926,7 @@ public class InfoPanel extends JTabbedPane{
 		case DUNGEON: selectTab(0,DUNGEON_TAB_INDEX,index);break;
 		case ENCOUNTER: selectTab(0,ENCOUNTER_TAB_INDEX,index);break;
 		case D_ENCOUNTER: selectTab(0,DUNGEON_ENCOUNTER_TAB_INDEX,index);break;
+		case MISSION: selectTab(0,MISSIONS_TAB_INDEX,index);break;
 		case FACTION: selectTab(1,FACTION_TAB_INDEX,index);break;
 		case FACTION_NPC: selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
 		case DISTRICT: selectTab(1,CITY_TAB_INDEX,index);break;

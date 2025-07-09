@@ -326,6 +326,17 @@ public class PopulationModel extends DataModel{
 		}
 		return p;
 	}
+	
+	public WeightedTable<Point> getWeightedNearbyPointsTable(Point p){
+		WeightedTable<Point> result = new WeightedTable<Point>();
+		result.put(p,getTransformedUniversalPopulation(p));
+		for(int i=1;i<20;i++) {
+			for(Point p1:Util.getRing(p, i)) {
+				result.put(p1,getTransformedUniversalPopulation(p1)/i);
+			}
+		}
+		return result;
+	}
 
 	@Override
 	public Integer getDefaultValue(Point p, int i) {

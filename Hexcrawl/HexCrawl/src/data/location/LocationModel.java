@@ -108,12 +108,14 @@ public class LocationModel extends DataModel{
 		return result;
 	}
 	public Location getPOI(int i,Point p) {
+		if(i==0) return getInnText(p);
 		boolean isCity = controller.getPopulation().isCity(p);
 		Location location = new Location(getLocationDetailIndex(3+i*TABLECOUNT, p));
 		populateLocationFields(isCity, location,i,p);
 		return location;
 	}
 	public Location getPOI(Random random,Point p,boolean isCity,int i) {
+		if(i==0) return getInnText(random, p);
 		Location location = new Location(random.nextInt());
 		populateLocationFields(isCity, location,i,p);
 		return location;

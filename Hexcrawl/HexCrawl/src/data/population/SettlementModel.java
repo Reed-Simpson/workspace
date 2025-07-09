@@ -383,12 +383,14 @@ public class SettlementModel extends DataModel{
 			p2 = p1;
 			p1 = p;
 		}
+		String s1 = controller.getText(HexData.TOWN, p1, 0);
+		String s2 = controller.getText(HexData.TOWN, p2, 0);
 		if(obj.reduceTempId(2)==0) {
-			relationship = Util.replace(relationship, "${A}", new Reference(HexData.TOWN, record.normalizePOS(p1), 0).toString());
-			relationship = Util.replace(relationship, "${B}", new Reference(HexData.TOWN, record.normalizePOS(p2), 0).toString());
+			relationship = Util.replace(relationship, "${A}", s1);
+			relationship = Util.replace(relationship, "${B}", s2);
 		}else {
-			relationship = Util.replace(relationship, "${A}", new Reference(HexData.TOWN, record.normalizePOS(p2), 0).toString());
-			relationship = Util.replace(relationship, "${B}", new Reference(HexData.TOWN, record.normalizePOS(p1), 0).toString());
+			relationship = Util.replace(relationship, "${A}", s2);
+			relationship = Util.replace(relationship, "${B}", s1);
 		}
 		return relationship;
 	}

@@ -416,9 +416,8 @@ public class DataController {
 		return linkText;
 	}
 
-	public String getToolTipText(HexData type, int x, int y, int index) {
+	public String getToolTipText(HexData type, Point displayPos, int index) {
 		if(HexData.TOWN.equals(type)) return null;
-		Point displayPos = new Point(x,y);
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
 		String result = this.getText(type, actualPos, index);
 		
@@ -428,6 +427,31 @@ public class DataController {
 			result = Util.replace(result,matcher.group(1), getLinkText(matcher.group(1)));
 		}
 		return result;
+	}
+	
+	public Point getOriginPoint(HexData type,Point p,int i) {
+		switch(type) {
+		case THREAT: 
+		case MINION: return threats.getCenter(p);
+		case FACTION_NPC: 
+		case FACTION: 
+		case FAITH: 
+		case CITY: return population.getAbsoluteFealty(p);
+		case TOWN: return population.getLocalFealty(p);
+		case BIOME: return biomes.getAbsoluteRegion(p);
+		case THREAD: 
+		case CHARACTER: return null;
+		case MONSTER: return monsters.getTerritoryRef(p,i);
+		case D_ENCOUNTER: 
+		case ENCOUNTER: 
+		case NPC: 
+		case PROPRIETOR: 
+		case LOCATION: 
+		case DUNGEON: 
+		case NONE: 
+		case MISSION: return p;
+		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
+		}
 	}
 
 

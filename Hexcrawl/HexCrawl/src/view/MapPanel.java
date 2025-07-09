@@ -89,6 +89,7 @@ public class MapPanel  extends JPanel{
 	private ConcurrentHashMap<Point,BasicSpline> splineCache;
 	private boolean showIcons;
 	private boolean printMode;
+	private Point highlightedHex;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
@@ -461,6 +462,9 @@ public class MapPanel  extends JPanel{
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		Point p = this.getMiddleGridPoint();
 		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null);
+		if(highlightedHex!=null) {
+			this.drawHex(g2, getScreenPos(highlightedHex),Color.MAGENTA,null,null,Math.max((int)scale,1),null);
+		}
 		g2.setStroke(defaultStroke);
 	}
 
@@ -1339,6 +1343,13 @@ public class MapPanel  extends JPanel{
 		}
 		this.printMode = false;
 		this.repaint();
+	}
+
+	public void setHighlightedHex(Point p) {
+		if(this.highlightedHex!=p) {
+			this.highlightedHex = p;
+			this.repaint();
+		}
 	}
 
 }

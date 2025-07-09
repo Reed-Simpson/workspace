@@ -130,6 +130,7 @@ public class InfoPanel extends JTabbedPane{
 	private Container missionsPanel;
 	private ArrayList<MyTextPane> missionsTexts;
 	private int MISSIONS_TAB_INDEX;
+	private int selectedMission;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -703,6 +704,16 @@ public class InfoPanel extends JTabbedPane{
 			}
 			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
 
+			for(int i = 0;i<this.missionsTexts.size();i++) {
+				MyTextPane pane = this.missionsTexts.get(i);
+				if(i==selectedMission) {
+					pane.setBackground(TEXTHIGHLIGHTCOLOR);
+				}else {
+					pane.setBackground(TEXTBACKGROUNDCOLOR);
+				}
+				pane.doPaint();
+			}
+
 			if(transformedUniversalPopulation>0) {
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
 				for(int i = 0;i<this.npcTexts.size();i++) {
@@ -927,10 +938,10 @@ public class InfoPanel extends JTabbedPane{
 		case ENCOUNTER: selectTab(0,ENCOUNTER_TAB_INDEX,index);break;
 		case D_ENCOUNTER: selectTab(0,DUNGEON_ENCOUNTER_TAB_INDEX,index);break;
 		case MISSION: selectTab(0,MISSIONS_TAB_INDEX,index);break;
-		case FACTION: selectTab(1,FACTION_TAB_INDEX,index);break;
-		case FACTION_NPC: selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
 		case DISTRICT: selectTab(1,CITY_TAB_INDEX,index);break;
+		case FACTION: selectTab(1,FACTION_TAB_INDEX,index);break;
 		case FAITH: selectTab(1,FAITH_TAB_INDEX,index);break;
+		case FACTION_NPC: selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
 		case MINION: selectTab(1,MINIONS_TAB_INDEX,index);break;
 		case MONSTER: selectTab(1,BEASTS_TAB_INDEX,index);break;
 		case CHARACTER: selectTab(2,0,index);break;
@@ -945,7 +956,7 @@ public class InfoPanel extends JTabbedPane{
 		if(maintab==0) {
 			detailsTabs.setSelectedIndex(subtab);
 			if(ENCOUNTER_TAB_INDEX==subtab) {
-				//				selectedEncounter=index;
+				selectedEncounter=index;
 				//				this.repaint();
 			}else if(NPC_TAB_INDEX==subtab) {
 				selectedNPC=index;
@@ -957,7 +968,10 @@ public class InfoPanel extends JTabbedPane{
 				selectedDungeon=index;
 				this.repaint();
 			}else if(DUNGEON_ENCOUNTER_TAB_INDEX==subtab) {
-				//				selectedDEncounter=index;
+				selectedDEncounter=index;
+				//				this.repaint();
+			}else if(MISSIONS_TAB_INDEX==subtab) {
+				selectedMission=index;
 				//				this.repaint();
 			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}else {
@@ -967,6 +981,9 @@ public class InfoPanel extends JTabbedPane{
 				selectedFaction=index;
 				this.repaint();
 			}else if(FAITH_TAB_INDEX==subtab) {
+				selectedFaith=index;
+				this.repaint();
+			}else if(FACTION_NPC_TAB_INDEX==subtab) {
 				selectedFaith=index;
 				this.repaint();
 			}else if(MINIONS_TAB_INDEX==subtab) {

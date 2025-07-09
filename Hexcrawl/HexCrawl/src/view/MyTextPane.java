@@ -241,21 +241,25 @@ public class MyTextPane extends JTextPane {
 		protected void execute(){
 			if(textLink==null) {
 				textPane.setToolTipText(null);
+				info.getPanel().setHighlightedHex(controller.getOriginPoint(getType(), getPoint(), getIndex()));
 			} else {
 				Matcher matcher = Reference.PATTERN.matcher(textLink);
 				if(matcher.matches()) {
 					HexData type = HexData.get(matcher.group(1));
-					String tooltipText = controller.getToolTipText(
-							type,
+					Point displayPos = new Point(
 							Integer.valueOf(matcher.group(2)),
-							Integer.valueOf(matcher.group(3)),
-							Integer.valueOf(matcher.group(4))-1);
+							Integer.valueOf(matcher.group(3))
+						);
+					int i = Integer.valueOf(matcher.group(4))-1;
+					String tooltipText = controller.getToolTipText(type,displayPos,i);
 					if(tooltipText!=null) {
 						tooltipText = removeLinks(tooltipText.replaceAll("\n", "<br>"));
 						textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
 					}else {
 						textPane.setToolTipText(null);
 					}
+					Point actualPOS = controller.getRecord().denormalizePOS(displayPos);
+					info.getPanel().setHighlightedHex(controller.getOriginPoint(type, actualPOS, i));
 				}
 			}
 		}

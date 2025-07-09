@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import controllers.DataController;
 import data.HexData;
 import data.Indexible;
+import data.Reference;
 import util.Util;
 
 public class Settlement extends Indexible {
@@ -69,7 +70,7 @@ public class Settlement extends Indexible {
 				c1Text.append("None");
 			}
 			for(Point p:neighbors) {
-				String s = controller.getText(HexData.TOWN, p, 0);
+				Reference ref = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p), 0);
 				char ch = 'x';
 				NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
 				if(species!=null && species.getIcons()!=null) {
@@ -77,7 +78,7 @@ public class Settlement extends Indexible {
 				}
 				String relationship = controller.getSettlements().getRelationship(pos, p);
 				int dist = controller.getEconomy().getTravelTime(pos, p)*20/24;
-				c1Text.append("("+Util.posString(p,controller.getRecord().getZero())+") "+s+" "+ch+" distance:"+dist/20.0+" days"+"\r\n");
+				c1Text.append("("+Util.posString(p,controller.getRecord().getZero())+") "+ref.toString()+" "+ch+" distance:"+dist/20.0+" days"+"\r\n");
 				c1Text.append("    "+relationship+"\r\n");
 			}
 		}else {

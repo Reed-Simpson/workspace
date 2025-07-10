@@ -1,7 +1,11 @@
 package util;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
@@ -13,8 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -230,7 +236,33 @@ public class DiceRoller {
 		            }
 				}
 			});
-			
+			JPanel buttonPanel = new JPanel();
+			//buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+			buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+			buttonPanel.add(createDiceButton("d100"));
+			buttonPanel.add(createDiceButton("d20"));
+			buttonPanel.add(createDiceButton("d12"));
+			buttonPanel.add(createDiceButton("d10"));
+			buttonPanel.add(createDiceButton("d8"));
+			buttonPanel.add(createDiceButton("d6"));
+			buttonPanel.add(createDiceButton("d4"));
+			buttonPanel.setPreferredSize(new Dimension(40, 40));
+			this.add(buttonPanel,BorderLayout.WEST);
+			this.pack();
+		}
+
+		private JButton createDiceButton(String dice) {
+			JButton dieButton = new JButton(dice);
+			//dieButton.setMinimumSize(new Dimension(40,40));
+			dieButton.setPreferredSize(new Dimension(40,40));
+			dieButton.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2,Color.gray));
+			dieButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					processString(dice);
+					updateArchive();
+				}
+			});
+			return dieButton;
 		}
 
 	    public void showDialog() {

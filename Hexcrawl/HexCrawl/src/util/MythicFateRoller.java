@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -121,6 +122,9 @@ public class MythicFateRoller {
 				public void mouseExited(MouseEvent e) {}
 			});
 			this.add(table);
+			
+			JLabel sliderLabel = new JLabel("<html>C<br>h<br>a<br>o<br>s<br> <br>F<br>a<br>c<br>t<br>o<br>r</html>") ;
+			sliderLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 			slider = new JSlider(JSlider.VERTICAL);
 			slider.setInverted(true);
@@ -131,6 +135,7 @@ public class MythicFateRoller {
 			slider.setPaintTicks(true);
 			slider.setPaintLabels(true);
 			slider.setPaintTrack(false);
+			slider.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 			slider.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
 					record.setChaosFactor(slider.getValue());
@@ -139,6 +144,8 @@ public class MythicFateRoller {
 				}
 			});
 			this.add(slider);
+			
+			this.add(sliderLabel);
 
 			this.field = new MyTextPane(info, -1, HexData.ENCOUNTER);
 			field.setPreferredSize(new Dimension(270,270));

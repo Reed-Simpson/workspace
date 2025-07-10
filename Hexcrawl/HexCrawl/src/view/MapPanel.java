@@ -206,7 +206,6 @@ public class MapPanel  extends JPanel{
 		recenter(getMiddleGridPoint(),true);
 	}
 	public void recenter(Point p,boolean updatePrevious) {
-		record.addExplored(p);
 		if(updatePrevious&&previousIndex>-1) {
 			for(int i=previous.size()-1;i>previousIndex;i--) {
 				previous.remove(i);
@@ -553,10 +552,9 @@ public class MapPanel  extends JPanel{
 	private void drawLegend(Graphics2D g2, int step, int displayScale) {
 		Stroke defaultStroke = g2.getStroke();
 		if(this.printMode) {
-			Point c = getMiddleOfScreen();
 			g2.setStroke(new BasicStroke(3));
 			g2.setColor(Color.BLACK);
-			g2.drawRect(c.x-550, c.y-425, 1100, 850);
+			g2.drawRect(0, 0, 1100, 850);
 
 		} else {
 			int corneroffset = 50;
@@ -1331,7 +1329,9 @@ public class MapPanel  extends JPanel{
 		return this.showCities;
 	}
 
-	public void print(BufferedImage image) {
+	public boolean print(BufferedImage image,Point viewCorner) {
+		Point realCenter = center;
+		center= new Point(viewCorner.x, viewCorner.y);
 		this.printMode = true;
 		this.repaint();
 		int result = JOptionPane.showConfirmDialog(this.frame,
@@ -1341,8 +1341,10 @@ public class MapPanel  extends JPanel{
 		if(result==JOptionPane.YES_OPTION) {
 			this.paint(image.getGraphics());
 		}
+		center = realCenter;
 		this.printMode = false;
 		this.repaint();
+		return result==JOptionPane.YES_OPTION;
 	}
 
 	public void setHighlightedHex(Point p) {

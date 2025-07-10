@@ -9,6 +9,7 @@ public class OrcNameGenerator extends IndexibleNameGenerator{
 			"Baggi","Emen","Engong","Kansif","Myev","Neega","Ovak","Ownka","Shautha","Sutha","Vola","Volen","Yevelda",
 			"Ayesha","Uthra","Namesh","Kell","Deindra","Kalla","Meninta","Ell","Baghi","Cayillka","Fenog","Inenn","Wethrya","Kaya","Corwynth","Feresk","Jaegesh","Shakar","Veltar","Hasksha",
 			"Kor","Nudin","Ruben","Throkk","Yorsh","Orwen","Andyesh","Bikar","Gaster","Corwek","Grammesh","Uthor","Norwick","Velsork","Zandthar","Blud","Operoh","Jask","Wovek","Viskoth",
+			
 			"Rattle","Scratch","Wallow","Groak","Gimble","Scar","Cratch","Creech","Shush","Glush","Slar","Gnash","Stoad","Grig","Bleat","Chortle","Cluck","Slith","Mongo","Creak","Burble",
 			"Vrusk","Snuffle","Leech","Herk"};
 	private static final String[] LAST = {"Burska","Gruuthok","Hrondl","Jarzzok","Kraltus","Shamog","Skrangval","Ungart","Uuthrakt","Vrakir","Yuldra","Zulrax",

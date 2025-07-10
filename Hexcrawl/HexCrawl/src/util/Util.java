@@ -205,6 +205,7 @@ public class Util {
 		if(result.contains("${building}")) result = Util.replace(result,"${building}",LocationType.getBuilding(obj).toString());
 		if(result.contains("${landmark}")) result = Util.replace(result,"${landmark}",LocationType.getLandmark(obj).toString());
 		if(result.contains("${structure}")) result = Util.replace(result,"${structure}",LocationType.getStructure(obj).toString());
+		if(result.contains("${location}")) result = Util.replace(result,"${location}",LocationType.getStructureOrLandmark(obj).toString());
 
 		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionType.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));

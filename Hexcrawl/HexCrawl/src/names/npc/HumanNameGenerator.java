@@ -5,7 +5,7 @@ import names.IndexibleNameGenerator;
 import util.Util;
 
 public class HumanNameGenerator extends IndexibleNameGenerator{
-	private static final String[] FIRST = {"Adrik","Alvyn","Aurora","Eldeth","Eldon","Farris","Kathra","Kellen","Nissa","Xinli","Zorra",
+	private static final String[] FIRST = {"Adrik","Alvyn","Aurora","Eldeth","Eldon","Farris","Kathra","Kellen","Nissa","Xinli","Zorra","Merryweather","Jaerin","Garrick",
 			"Willoughby","Ryley","Ryle","Teddie","York","Stroud","Redford","Erwin","Unwin","Thurstan","Salisbury","Launcelot","Ransom","Thurlow","Burley","Manning","Morland","Frayne","Rockwell",
 			"Lyndell","Barton","Chadwick","Radcliff","Rufford","Shelley","Kendrick","Penley","Southwell","Waite","Saunderson","Rumford","Prescott","Pollock","Aldwyn","Marlow","Huntley","Locke",
 			"Oxford","Everard","Paxton","Whitcombe","Raven","Kirkwood","Aldridge","Lane","Somerset","Snowden","Welby","Marley","Rawley","Wyndam","Buckley","Haven","Radnor","Rayburn","Ainsley",
@@ -37,16 +37,12 @@ public class HumanNameGenerator extends IndexibleNameGenerator{
 			"Edlyn","Wilona","Ashley","Lona","Janelle","Haralda","Linford","Litton","Shepherd","Vane","Morton","Seabrook","Sydney","Fielding","Sanborn","Reginald","Westby","Radcliffe","Melinda",
 			"Maitane","Wheaton","Elsdon","Thornton","Rochester","Richelle","Wylie","Tinble","Eostre","Daffodil","Norma","Unity","Ranald","Warmund","Seabert","Osma","Warley","Rushford","Walwyn",
 			"Reynold","Gladstone","Ridgeway","Livingston","Norwood","Milford","Medwin","Dallin"};
-	private static final String[] LAST = {"${color}${element}","${material}fist","${color}castle","Good${item}","${color}beard","${material}beard",
-			"${ethereal form}${landmark}","Brightsun","Dundragon","Garrick","Jaerin","Merryweather","Wren"};
+	private static final String[] LAST = {"${color}${element}","${color}${building}","${color}${location}","Good${item}","${color}${bodypart}","${material}${bodypart}",
+			"${ethereal form}${landmark}","${ethereal element}sun","Dundragon","New${building}","${element}${form}"};
 
-	public static String getLastName(int... val) {
-		if(val.length<3) throw new IllegalArgumentException("Expected 3 or more values");
-		int[] remainder = Util.getRemainder(val, 1);
-		return Util.formatTableResult(getElementFromArray(LAST,val[0]),new Indexible(remainder));
-	}
 	public static String getLastName(Indexible obj) {
-		return Util.formatTableResult(getElementFromArray(LAST,obj),obj);
+		if(obj.reduceTempId(3)==0) return getElementFromArray(FIRST,obj);
+		else return Util.formatTableResult(getElementFromArray(LAST,obj),obj);
 	}
 
 

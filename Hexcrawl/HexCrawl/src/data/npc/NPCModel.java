@@ -90,7 +90,7 @@ public class NPCModel extends DataModel {
 			"judgement,love,memory,monsters,moon,motherhood,${job}s,oaths,order,plague,purification,reason,"+
 			"schemes,secrets,storms,summer,sun,forge,sea,wild,time,underworld,wealth,winter";
 	private static WeightedTable<String> domains;
-	public static final String BODYPART = "Hair,Horn,Skull,Face,Eye,Ear,Nose,Tongue,Jaw,Fang,Tooth,Neck,Spine,Shoulder,Heart,Blood,Arm,Hand,Fist,Claw,Finger,Thumb,Back,Leg,Foot,Toe";
+	public static final String BODYPART = "Hair,Horn,Skull,Face,Eye,Ear,Nose,Tongue,Jaw,Fang,Tooth,Chin,Beard,Neck,Spine,Shoulder,Heart,Blood,Arm,Hand,Fist,Claw,Finger,Thumb,Back,Leg,Foot,Toe";
 	private static WeightedTable<String> bodypart;
 
 	private static void populateAllTables() {

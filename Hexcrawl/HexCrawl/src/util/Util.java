@@ -22,6 +22,7 @@ import data.population.SettlementModel;
 import data.population.Species;
 import data.population.NPCSpecies;
 import data.threat.CreatureSubtype;
+import data.threat.subtype.ElementalType;
 import names.FactionNameGenerator;
 import names.FactionType;
 import names.InnNameGenerator;
@@ -191,6 +192,7 @@ public class Util {
 		if(result.contains("${fancy color}")) result = Util.replace(result,"${fancy color}",GenericTables.getFancyColor(obj));
 		if(result.contains("${basic color}")) result = Util.replace(result,"${basic color}",GenericTables.getBasicColor(obj));
 		if(result.contains("${color}")) result = Util.replace(result,"${color}",GenericTables.getColor(obj));
+		if(result.contains("${basic material}")) result = Util.replace(result,"${basic material}",GenericTables.getBasicMaterial(obj));
 
 		if(result.contains("${city theme}")) result = Util.replace(result,"${city theme}",SettlementModel.getTheme(obj));
 		if(result.contains("${city activity}")) result = Util.replace(result,"${city activity}",SettlementModel.getActivity(obj));
@@ -218,6 +220,7 @@ public class Util {
 		if(result.contains("${relationship}")) result = Util.replace(result,"${relationship}",NPCModel.getRelationship(obj));
 		if(result.contains("${misfortune}")) result = Util.replace(result,"${misfortune}",NPCModel.getMisfortune(obj));
 		if(result.contains("${hobby}")) result = Util.replace(result,"${hobby}",NPCModel.getHobby(obj));
+		if(result.contains("${bodypart}")) result = Util.replace(result,"${bodypart}",NPCModel.getBodypart(obj));
 
 		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",MissionModel.getMissionVerb(obj));
 
@@ -290,6 +293,8 @@ public class Util {
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
 
 		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
+		
+		if(result.contains("${elemental type}")) result = Util.replace(result,"${elemental type}",ElementalType.getByWeight(obj).toString());
 
 		if(!result.equals(string)) {
 			result = formatTableResult(result, obj);

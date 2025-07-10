@@ -23,6 +23,7 @@ import names.npc.DwarfNameGenerator;
 import names.npc.ElfNameGenerator;
 import names.npc.GenasiNameGenerator;
 import names.npc.GnomeNameGenerator;
+import names.npc.GoblinoidNameGenerator;
 import names.npc.GoliathNameGenerator;
 import names.npc.HalflingNameGenerator;
 import names.npc.HumanNameGenerator;
@@ -40,8 +41,8 @@ public enum NPCSpecies implements Species{
 	GOLIATH(	7,0.8f,300f/360f,new GoliathCityNameGenerator(),	new GoliathNameGenerator(),		0.8f),
 	ORC(		8,0.8f,330f/360f,new OrcCityNameGenerator(),		new OrcNameGenerator(),			1.0f),
 	GENASI(		9,0.0f,180f/360f,new GenasiCityNameGenerator(),		new GenasiNameGenerator(),		1.0f),
-	GOBLINOID(	11,1.0f,240f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			1.0f),
-	KOBOLD(		12,1.0f,180f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			0.5f),
+	GOBLINOID(	11,1.0f,240f/360f,ORC.getCityNameGen(),				new GoblinoidNameGenerator(),	1.0f),
+	KOBOLD(		12,1.0f,180f/360f,GOBLINOID.getCityNameGen(),		GOBLINOID.getNameGen(),			0.5f),
 	LIZARDFOLK(	13,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			0.5f),
 	GNOLL(		14,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			0.5f),
 	TROG(		15,1.0f,150f/360f,ORC.getCityNameGen(),				ORC.getNameGen(),			0.1f),

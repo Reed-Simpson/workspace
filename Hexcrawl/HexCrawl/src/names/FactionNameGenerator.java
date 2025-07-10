@@ -125,7 +125,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	public static final String NOBLEHOUSE_NOUNS = "House,Lineage,Clan,Line,Lord";
 	private static WeightedTable<String> noblehouse_adjectives;
 	private static WeightedTable<String> noblehouse_nouns;
-	public static final String OUTLANDERCLAN_ADJECTIVES = "${city name},${last name},${material}blood,${landmark}warden,${element}${landmark},${basic color}${form},${animal}-lord";
+	public static final String OUTLANDERCLAN_ADJECTIVES = "${city name},${last name},${material}blood,${landmark}warden,${elemental type}${landmark},${basic color}${form},${animal}-lord";
 	public static final String OUTLANDERCLAN_NOUNS = "Clan,Tribe,Alliance,Folk,People,Nation,Horde";
 	private static WeightedTable<String> outlanderclan_adjectives;
 	private static WeightedTable<String> outlanderclan_nouns;

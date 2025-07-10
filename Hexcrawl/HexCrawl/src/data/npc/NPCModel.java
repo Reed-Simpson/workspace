@@ -90,6 +90,8 @@ public class NPCModel extends DataModel {
 			"judgement,love,memory,monsters,moon,motherhood,${job}s,oaths,order,plague,purification,reason,"+
 			"schemes,secrets,storms,summer,sun,forge,sea,wild,time,underworld,wealth,winter";
 	private static WeightedTable<String> domains;
+	public static final String BODYPART = "Hair,Horn,Skull,Face,Eye,Ear,Nose,Tongue,Jaw,Fang,Tooth,Neck,Spine,Shoulder,Heart,Blood,Arm,Hand,Fist,Claw,Finger,Thumb,Back,Leg,Foot,Toe";
+	private static WeightedTable<String> bodypart;
 
 	private static void populateAllTables() {
 		assets = new WeightedTable<String>().populate(ASSETS,",");
@@ -107,6 +109,7 @@ public class NPCModel extends DataModel {
 		hobbies = new WeightedTable<String>().populate(HOBBY_NOUNS,",");
 		relationships = new WeightedTable<String>().populate(RELATIONSHIP_NOUNS,",");
 		domains = new WeightedTable<String>().populate(DOMAIN_NOUNS,",");
+		bodypart = new WeightedTable<String>().populate(BODYPART,",");
 	}
 
 
@@ -169,6 +172,10 @@ public class NPCModel extends DataModel {
 	public static String getDomain(Indexible obj) {
 		if(domains==null) populateAllTables();
 		return Util.formatTableResult(domains.getByWeight(obj),obj);
+	}
+	public static String getBodypart(Indexible obj) {
+		if(bodypart==null) populateAllTables();
+		return Util.formatTableResult(bodypart.getByWeight(obj),obj);
 	}
 
 	//NON_STATIC CODE

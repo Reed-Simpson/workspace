@@ -15,9 +15,9 @@ public class EquipmentModel {
 			"Gauntlets,Glove,Gown,Hat,Helmet,Hose,Leather armor,Locket,Mail shirt,Mask,Necklace,Padded armor,"+
 			"Plate mail,Ring,Robe,Sandals,Scarf,Shirt,Shoes,Skirt,Slippers,Socks,Trousers,Veil";
 	private static WeightedTable<String> apparel;
-	private static final String WEAPONS = "Arming sword,Backsword,Battleaxe,Blowpipe,Claymore,Club,Crossbow,Cutlass,Dagger,Flail,Flanged mace,Glaive,"+
-			"Halberd,Hammer,Hatchet,Horsebow,Hunting knife,Lance,Longbow,Longsword,Mace,Maul,Morningstar,Pike,"+
-			"Scimitar,Shortbow,Sickle,Sling,Spear,Staff,Stake,Stiletto,Throwing axe,Warhammer,Warpick,Whip";
+	private static final String WEAPONS = "Sword,Backsword,Battleaxe,Blowpipe,Claymore,Club,Crossbow,Cutlass,Dagger,Flail,Glaive,"+
+			"Halberd,Hammer,Hatchet,Horsebow,Knife,Lance,Longbow,Longsword,Mace,Maul,Morningstar,Pike,"+
+			"Scimitar,Shortbow,Sickle,Sling,Spear,Staff,Stake,Stiletto,Axe,Warhammer,Warpick,Whip";
 	private static WeightedTable<String> weapons;
 	private static final String BOOKS = "Alchemy,Art,Astrology,Blackmail,Charts and maps,Conspiracies,Cookbook,Criminals,Divination,Etiquette,Fashion,Genealogy,"+
 			"Hagiography,History,Journal,Language,Laws,Letters,Lost empires,Lost places,Love poems,Monsters,Mythology,Odd customs,"+
@@ -43,7 +43,7 @@ public class EquipmentModel {
 			"${element},Embellished,Encoded,Exotic,Extra-planar,Famous,Forbidden,Fragile,Heavy,Immovable,Impractical,Indestructible,"+
 			"Intelligent,Masterwork,Militarily valuable,Non-human,Owned,Partial,Politically valuable,Religiously valuable,Repaired,Royal,Toxic,Vile";
 	private static WeightedTable<String> traits;
-	private static final String METALS = "Iron,Bronze,Copper,Brass,Steel,Quicksilver,Lead";
+	private static final String METALS = "Iron,Bronze,Copper,Brass,Steel,Lead";
 	private static WeightedTable<String> metals;
 	private static final String WOODS = "Oak,Bamboo,Ironwood,Ash,Rosewood,Ebony,Pine,Birch";
 	private static WeightedTable<String> woods;

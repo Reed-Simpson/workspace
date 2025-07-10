@@ -57,16 +57,16 @@ public class MissionModel  extends DataModel{
 		Point n1 = record.normalizePOS(p1);
 		if(mission.reduceTempId(2)==0) {
 			int index = mission.reduceTempId(InfoPanel.NPCCOUNT);
-			mission.setLocal(new Reference(HexData.NPC,n,(index+1)));
+			mission.setLocal(new Reference(HexData.NPC,n,(index)));
 			int index1 = mission.reduceTempId(InfoPanel.POICOUNT);
-			mission.setRemote(new Reference(HexData.NPC,n1,(InfoPanel.NPCCOUNT*2+index1+1)));
-			mission.setRemoteRef(new Reference(HexData.LOCATION,n1,(index1+1)));
+			mission.setRemote(new Reference(HexData.NPC,n1,(InfoPanel.NPCCOUNT*2+index1)));
+			mission.setRemoteRef(new Reference(HexData.LOCATION,n1,(index1)));
 		}else {
 			int index = mission.reduceTempId(InfoPanel.POICOUNT);
-			mission.setLocal(new Reference(HexData.NPC,n,(InfoPanel.NPCCOUNT*2+index+1)));
-			mission.setLocalRef(new Reference(HexData.LOCATION,n,(index+1)));
+			mission.setLocal(new Reference(HexData.NPC,n,(InfoPanel.NPCCOUNT*2+index)));
+			mission.setLocalRef(new Reference(HexData.LOCATION,n,(index)));
 			int index1 = mission.reduceTempId(InfoPanel.NPCCOUNT);
-			mission.setRemote(new Reference(HexData.NPC,n1,(index1+1)));
+			mission.setRemote(new Reference(HexData.NPC,n1,(index1)));
 		}
 		Point f;
 		if(mission.reduceTempId(2)==0) {

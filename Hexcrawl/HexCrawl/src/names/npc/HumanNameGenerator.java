@@ -36,7 +36,17 @@ public class HumanNameGenerator extends IndexibleNameGenerator{
 			"Edwerdina","Whoopi","Devona","Radella","Zelene","Roden","Langworth","Scott","Alger","Fane","Stanford","Ronald","Crewe","Bray","Tranter","Kenton","Sunny","Blythe","Eden","Elethea",
 			"Edlyn","Wilona","Ashley","Lona","Janelle","Haralda","Linford","Litton","Shepherd","Vane","Morton","Seabrook","Sydney","Fielding","Sanborn","Reginald","Westby","Radcliffe","Melinda",
 			"Maitane","Wheaton","Elsdon","Thornton","Rochester","Richelle","Wylie","Tinble","Eostre","Daffodil","Norma","Unity","Ranald","Warmund","Seabert","Osma","Warley","Rushford","Walwyn",
-			"Reynold","Gladstone","Ridgeway","Livingston","Norwood","Milford","Medwin","Dallin"};
+			"Reynold","Gladstone","Ridgeway","Livingston","Norwood","Milford","Medwin","Dallin",
+			"Solana","Keelan","Cadigan","Sola","Kodroth","Kione","Katja","Tio","Artiga","Eos","Bastien","Elli","Maura","Haleema","Abella","Morter","Wulan","Mai","Farina","Pearce","Wynne","Haf",
+			"Aeddon","Khinara","Milla","Nakata","Kynan","Kiah","Jaggar","Beca","Ikram","Melia","Sidan","Deshi","Tessa","Sibila","Morien","Mona","Padma","Avella","Naila","Lio","Cera","Ithela",
+			"Zhan","Kaivan","Valeri","Hirsham","Pemba","Edda","Lestara","Lago","Elstan","Saskia","Kabeera","Caldas","Nisus","Serene","Chenda","Themon","Erin","Alban","Parcell","Jelma","Willa",
+			"Nadira","Gwen","Amara","Masias","Kanno","Razeena","Mira","Perella","Myrick","Qamar","Kormak","Zura","Zanita","Brynn","Tegan","Pendry","Quinn","Fanir","Glain","Emelyn","Kendi","Althus",
+			"Leela","Ishana","Flint","Delkash","Nia","Nan","Keeara","Katania","Morell","Temir","Bas","Sabine","Tallus","Segura","Gethin","Bataar","Basira","Joa","Glynn","Toran","Arasen","Kuron",
+			"Griff","Owena","Adda","Euros","Kova","Kara","Morgan","Nanda","Tamara","Asha","Delos","Torgan","Makari","Selva","Kimura","Rhian","Tristan","Siorra","Sayer","Cortina","Vesna","Kataka",
+			"Keyshia","Mila","Lili","Vigo","Sadia","Malik","Dag","Kuno","Reva","Kai","Kalina","Jihan","Hennion","Abram","Aida","Myrtle","Nekun","Menna","Tahir","Sarria","Nakura","Akiya","Talan",
+			"Mattick","Okoth","Khulan","Verena","Beltran","Del","Ranna","Alina","Muna","Mura","Torrens","Yuda","Nazmi","Ghalen","Sarda","Shona","Kalidas","Wena","Sendra","Kori","Setara","Lucia",
+			"Maya","Reema","Yorath","Rhoddri","Shekhar","Servan","Reese","Kenrick","Indirra","Giliana","Jebran","Kotama","Fara","Katrin","Namba","Lona","Taylah","Kato","Esra","Eleri","Irsia",
+			"Kayu","Bevan","Chandra"};
 	private static final String[] LAST = {"${color}${element}","${color}${building}","${color}${location}","Good${item}","${color}${bodypart}","${material}${bodypart}",
 			"${ethereal form}${landmark}","${ethereal element}sun","Dundragon","New${building}","${element}${form}"};
 

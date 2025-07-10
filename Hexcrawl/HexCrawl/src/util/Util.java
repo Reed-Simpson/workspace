@@ -154,9 +154,7 @@ public class Util {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
 				else result = Util.replace(result,"${character index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
 			}
-			if(result.contains("${town index}")) {
-				result = Util.replace(result,"${town index}",getIndexString(obj, "town", 1, displayPos));
-			}
+			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",getIndexString(obj, "town", 1, displayPos));
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj).toString());
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCJobType.getJob(obj));

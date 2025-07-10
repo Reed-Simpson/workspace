@@ -3,14 +3,16 @@ package names.npc;
 import data.Indexible;
 import names.IndexibleNameGenerator;
 
-public class OrcNameGenerator extends IndexibleNameGenerator{
-	private static final String[] FIRST = {"Abzug","Bajok","Bharash","Grovis","Gruuna","Hokrun","Mardred","Rhogar","Skuldark","Thokk","Urzul","Varka",
+public class GnollNameGenerator extends IndexibleNameGenerator{
+	private static final String[] FIRST = {"Vata","Zora","Jasna","Charna","Tana","Soveen","Radka","Zlata","Leesla","Byna","Meeka","Iskra","Jarek","Darva","Neda","Keha","Zhivka","Kvata","Staysa","Evka",
+			"Vuksha","Muko","Dreko","Aleko","Vojan",
+
+			//TODO Replace placeholder orc names:
+			"Abzug","Bajok","Bharash","Grovis","Gruuna","Hokrun","Mardred","Rhogar","Skuldark","Thokk","Urzul","Varka",
 			"Dench","Feng","Gell","Henk","Holg","Imsh","Keth","Krusk","Mhurren","Ront","Shump","Thokk",
 			"Baggi","Emen","Engong","Kansif","Myev","Neega","Ovak","Ownka","Shautha","Sutha","Vola","Volen","Yevelda",
 			"Ayesha","Uthra","Namesh","Kell","Deindra","Kalla","Meninta","Ell","Baghi","Cayillka","Fenog","Inenn","Wethrya","Kaya","Corwynth","Feresk","Jaegesh","Shakar","Veltar","Hasksha",
-			"Kor","Nudin","Ruben","Throkk","Yorsh","Orwen","Andyesh","Bikar","Gaster","Corwek","Grammesh","Uthor","Norwick","Velsork","Zandthar","Blud","Operoh","Jask","Wovek","Viskoth",
-			"Rattle","Scratch","Wallow","Groak","Gimble","Scar","Cratch","Creech","Shush","Glush","Slar","Gnash","Stoad","Grig","Bleat","Chortle","Cluck","Slith","Mongo","Creak","Burble",
-			"Vrusk","Snuffle","Leech","Herk"};
+			"Kor","Nudin","Ruben","Throkk","Yorsh","Orwen","Andyesh","Bikar","Gaster","Corwek","Grammesh","Uthor","Norwick","Velsork","Zandthar","Blud","Operoh","Jask","Wovek","Viskoth"};
 	private static final String[] LAST = {"Burska","Gruuthok","Hrondl","Jarzzok","Kraltus","Shamog","Skrangval","Ungart","Uuthrakt","Vrakir","Yuldra","Zulrax",
 			"Bigaxe","Bloodbane","Blackbeast","Bogfang","Bonecrusher","Brokunblade","Darkcleaver","Doomhammer","Dreadboar","Firebringer","Frostskull",
 			"Gorehide","Greenstalker","Grimklaw","Helltaker","Ironjaw","Killgor","Nighthowl","Skullhorn","Smashrock","Soulslayer","Steeltooth","Stonesplitter",

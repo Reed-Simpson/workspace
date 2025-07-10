@@ -4,7 +4,11 @@ import data.Indexible;
 import names.IndexibleNameGenerator;
 
 public class GoliathNameGenerator extends IndexibleNameGenerator{
-	private static final String[] FIRST = {"Abzug","Bajok","Bharash","Grovis","Gruuna","Hokrun","Mardred","Rhogar","Skuldark","Thokk","Urzul","Varka",
+	private static final String[] FIRST = {"Chony","Banda","Jochu","Kira","Khatir","Chaidu","Atan","Buandu","Javyn","Khashin","Bayara","Temura","Kidha","Kathos","Tanua","Bashtu","Jaran",
+			"Othos","Khutan","Otaan","Martu","Baku","Tuban","Qudan","Denua",
+			
+			//TODO Replace placeholder orc names:
+			"Abzug","Bajok","Bharash","Grovis","Gruuna","Hokrun","Mardred","Rhogar","Skuldark","Thokk","Urzul","Varka",
 			"Dench","Feng","Gell","Henk","Holg","Imsh","Keth","Krusk","Mhurren","Ront","Shump","Thokk",
 			"Baggi","Emen","Engong","Kansif","Myev","Neega","Ovak","Ownka","Shautha","Sutha","Vola","Volen","Yevelda",
 			"Ayesha","Uthra","Namesh","Kell","Deindra","Kalla","Meninta","Ell","Baghi","Cayillka","Fenog","Inenn","Wethrya","Kaya","Corwynth","Feresk","Jaegesh","Shakar","Veltar","Hasksha",
@@ -15,7 +19,6 @@ public class GoliathNameGenerator extends IndexibleNameGenerator{
 			"Flower","Sly","Hard","Master","Rain","Hide","Fear","Night","Truth","Root","Deer","Low"};
 	private static final String[] TITLE_SUFFIX = {"finder","hunter","helper","mender","storm","picker","eye","killer","warrior",
 			"vigor","chief","stalker","weaver","smasher","maker","guard","watcher","feller","carver","leaper","hand","walker","herder"};
-	
 
 	
 	public String getTitle(Indexible obj) {

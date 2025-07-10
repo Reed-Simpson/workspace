@@ -22,6 +22,7 @@ import data.population.SettlementModel;
 import data.population.Species;
 import data.population.NPCSpecies;
 import data.threat.CreatureSubtype;
+import data.threat.subtype.DragonType;
 import data.threat.subtype.ElementalType;
 import names.FactionNameGenerator;
 import names.FactionType;
@@ -292,8 +293,10 @@ public class Util {
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
 
 		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
-		
+		if(result.contains("${character element}")) result = Util.replace(result,"${character element}",EncounterModel.getChar(obj));
+
 		if(result.contains("${elemental type}")) result = Util.replace(result,"${elemental type}",ElementalType.getByWeight(obj).toString());
+		if(result.contains("${dragon type}")) result = Util.replace(result,"${dragon type}",DragonType.getByWeight(obj).toString());
 
 		if(!result.equals(string)) {
 			result = formatTableResult(result, obj);

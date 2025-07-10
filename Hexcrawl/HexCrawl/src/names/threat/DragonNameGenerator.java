@@ -35,7 +35,7 @@ public class DragonNameGenerator extends ThreatNameGenerator{
 	private static final String[] DEEP = {"The Deep ${noun}","${adjective} Survivor"};
 	private static final String[] MOONSTONE = {"The Opalescent ${noun}","${adjective} Muse"};
 	private static final String[] SHADOW = {"The Shadowy ${noun}","${adjective} Hermit"};
-	private static final String[] DRACOLICH = {"The Immortal ${noun}","${adjective} Fiend"};
+	private static final String[] DRACOLICH = {"The Immortal ${noun}","${adjective} Death"};
 	private static final String[] NOUNS = {"Enigma","Conqueror","Tyrant","Mastermind","Slumberer","Glutton","Sorcerer","Beguiler","Missile"};
 
 	private static final String FACTION_ADJECTIVES = "Draconic,Winged,${subtype} Scaled,${subtype} Winged,${subtype} Shield,${subtype} Fang,${subtype} Claw,${subtype} Steel,${subtype} Heart";

@@ -3,6 +3,7 @@ package names.npc;
 import data.Indexible;
 import data.population.NPCSpecies;
 import names.IndexibleNameGenerator;
+import util.Util;
 
 public class HalflingNameGenerator extends IndexibleNameGenerator{
 	private static final String[] FIRST = {"Alton","Ander","Cade","Corrin","Eldon","Errich","Finnan","Garret","Lindal","Lyle","Merric","Milo","Osborn","Perrin","Reed","Roscoe","Wellby",
@@ -26,7 +27,7 @@ public class HalflingNameGenerator extends IndexibleNameGenerator{
 		int index = obj.reduceTempId(8);
 		if(index==0) return NPCSpecies.HUMAN.getNameGen().getName(obj);
 		else if(index==1) return NPCSpecies.ELF.getNameGen().getName(obj);
-		return getElementFromArray(FIRST,obj)+" "+getElementFromArray(LAST,obj);
+		return Util.toCamelCase(getElementFromArray(FIRST,obj)+" "+getElementFromArray(LAST,obj));
 	}
 
 }

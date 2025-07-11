@@ -2,7 +2,6 @@ package data.dungeon;
 
 import data.Indexible;
 import data.Reference;
-import util.Util;
 
 public class Dungeon extends Indexible{
 	private String entrance;
@@ -11,8 +10,10 @@ public class Dungeon extends Indexible{
 	private String layout;
 	private String ruination;
 	private String reward;
-	private String[] trick;
+	private String trick;
 	private String monster;
+	private String hazard;
+	private String trap;
 	
 	
 	
@@ -58,22 +59,24 @@ public class Dungeon extends Indexible{
 	public void setReward(String reward) {
 		this.reward = reward;
 	}
-	public String[] getTrick() {
+	public String getTrick() {
 		return trick;
 	}
-	public void setTrick(String[] trick) {
-		this.trick = trick;
+	public void setTrick(String string) {
+		this.trick = string;
 	}
 	
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ Dungeon #"+(i)+" ~~~~~\r\n");
 		e1Text.append(this.getEntrance() +" leading to ");
-		e1Text.append(this.getLayout()+" "+this.getForm() + " of " + this.getRuination() + "\r\n");
+		e1Text.append(this.getLayout()+" "+this.getForm() + " of " + this.getTrick() + "\r\n");
 		//e1Text.append("Entrance: "+this.getEntrance() + " near " + this.location.toString() +"\r\n      ");
-		//e1Text.append("Ruination: "+this.getRuination() + "\r\n");
+		e1Text.append("Ruination: "+this.getRuination() + "\r\n");
 		e1Text.append("Reward: "+this.getReward() + "\r\n");
-		e1Text.append("Tricks: "+Util.parseArray(this.getTrick()).toLowerCase()+"\r\n");
+		//e1Text.append("Tricks: "+this.getTrick().toLowerCase()+"\r\n");
+		e1Text.append("Hazard: "+this.getHazard().toLowerCase()+"\r\n");
+		e1Text.append("Traps: "+this.getTrap().toLowerCase()+"\r\n");
 		e1Text.append("Monster: "+this.getMonster());
 		return e1Text.toString();
 	}
@@ -82,6 +85,18 @@ public class Dungeon extends Indexible{
 	}
 	public void setMonster(String monster) {
 		this.monster = monster;
+	}
+	public String getHazard() {
+		return hazard;
+	}
+	public void setHazard(String hazard) {
+		this.hazard = hazard;
+	}
+	public String getTrap() {
+		return trap;
+	}
+	public void setTrap(String trap) {
+		this.trap = trap;
 	}
 
 }

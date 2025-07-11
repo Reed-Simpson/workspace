@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.Random;
 
 import data.DataModel;
+import data.HexData;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.Reference;
@@ -176,9 +177,11 @@ public class DungeonModel extends DataModel {
 		result.setLocation(new Reference(Util.formatTableResultPOS("${location index}", result, p,record.getZero())));
 		result.setForm(getForm(result));
 		result.setLayout(getLayout(result));
-		result.setRuination(getRuination(result));
+		result.setRuination(new Reference(HexData.HISTORY, record.normalizePOS(p), result.reduceTempId(4)).toString());
 		result.setReward(Util.formatTableResultPOS(getReward(result),result,p,record.getZero()));
-		result.setTrick(new String[] {getTrick(result),getHazard(result),getTrap(result)});
+		result.setTrick(getTrick(result));
+		result.setHazard(getHazard(result));
+		result.setTrap(getTrap(result));
 		result.setMonster(MonsterModel.getMonster(result));
 	}
 	@Override

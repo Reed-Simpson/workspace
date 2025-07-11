@@ -4,10 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import controllers.DataController;
-import data.HexData;
 import data.Indexible;
-import data.Reference;
-import util.Util;
 
 public class Settlement extends Indexible {
 	private String leadership;
@@ -59,7 +56,7 @@ public class Settlement extends Indexible {
 		StringBuilder c1Text = new StringBuilder();
 		c1Text.append("City Theme: "+this.getTheme()+"\r\n");
 		c1Text.append("City Leadership: "+this.getLeadership()+"\r\n");
-		c1Text.append("City Event: "+this.getEvent()+"\r\n");
+		if(this.getEvent()!=null) c1Text.append("City Event: "+this.getEvent()+"\r\n");
 		c1Text.append("~~~~~ Districts ~~~~~\r\n");
 		for(String s:districts) {
 			c1Text.append(s+"\r\n");
@@ -70,15 +67,8 @@ public class Settlement extends Indexible {
 				c1Text.append("None");
 			}
 			for(Point p:neighbors) {
-				Reference ref = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p), 0);
-				char ch = 'x';
-				NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
-				if(species!=null && species.getIcons()!=null) {
-					ch = species.getIcons().get(0).getCh();
-				}
+				c1Text.append(controller.getTownInfotext(pos,p));
 				String relationship = controller.getSettlements().getRelationship(pos, p,true);
-				int dist = controller.getEconomy().getTravelTime(pos, p)*20/24;
-				c1Text.append("("+Util.posString(p,controller.getRecord().getZero())+") "+ref.toString()+" "+ch+" distance:"+dist/20.0+" days"+"\r\n");
 				c1Text.append("    "+relationship+"\r\n");
 			}
 		}else {

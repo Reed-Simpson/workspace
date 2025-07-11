@@ -191,6 +191,10 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			value = monsters.getRuination(region); break;
 		}
+		case EVENT: {
+			Point capital = population.getAbsoluteFealty(p);
+			value = settlements.getEvent(capital); break;
+		}
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
 		if(value==null) return null;
@@ -257,6 +261,10 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.getHistory(region);
 		}
+		case EVENT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getEvent(capital);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -315,6 +323,10 @@ public class DataController {
 		case HISTORY: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.removeHistory(region);
+		}
+		case EVENT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeEvent(capital);
 		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
@@ -375,6 +387,10 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.putHistory(region,s);
 		}
+		case EVENT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.putEvent(capital,s);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -429,6 +445,10 @@ public class DataController {
 			return settlements.getRelationship(capital, i, record.getRandom());
 		}
 		case HISTORY: return monsters.getRuination(record.getRandom()); 
+		case EVENT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return settlements.getEvent(capital);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -475,9 +495,9 @@ public class DataController {
 		return linkText;
 	}
 
-	public String getToolTipText(HexData type, Point displayPos, int index) {
-		if(HexData.TOWN.equals(type)) return null;
+	public String getToolTipText(HexData type, Point displayPos, int index, Point source) {
 		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
+		if(HexData.TOWN.equals(type)) return getTownInfotext(source,actualPos);
 		String result = this.getText(type, actualPos, index);
 		if(result!=null) {
 			Matcher matcher;
@@ -495,6 +515,7 @@ public class DataController {
 		case THREATMONSTER: 
 		case MINION: return threats.getCenter(p);
 		case CITYHISTORY:
+		case EVENT:
 		case FACTION_NPC: 
 		case FACTION: 
 		case FAITH: 
@@ -515,6 +536,18 @@ public class DataController {
 		case MISSION: return p;
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
+	}
+
+	public String getTownInfotext(Point pos,Point town) {
+		Reference ref = new Reference(HexData.TOWN, record.normalizePOS(town), 0);
+		char ch = 'x';
+		NPCSpecies species = population.getMajoritySpecies(town.x, town.y);
+		if(species!=null && species.getIcons()!=null) {
+			ch = species.getIcons().get(0).getCh();
+		}
+		int dist = economy.getTravelTime(pos, town)*20/24;
+		String str = "("+Util.posString(town,record.getZero())+") "+ref.toString()+" "+ch+" distance:"+dist/20.0+" days"+"\r\n";
+		return str;
 	}
 
 

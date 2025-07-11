@@ -31,7 +31,8 @@ public enum HexData {
 	FACTION_NPC("fnpc"), 
 	MISSION("mission"),
 	CITYHISTORY("chistory"),
-	HISTORY("history");
+	HISTORY("history"),
+	EVENT("event");
 	
 	public static HexData[] getMapViews() {
 		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT,EXPLORATION};

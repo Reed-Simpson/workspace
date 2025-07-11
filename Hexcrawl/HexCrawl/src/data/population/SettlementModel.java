@@ -229,8 +229,8 @@ public class SettlementModel extends DataModel{
 	}
 
 	public Settlement getSettlement(Point p) {
-		float[] vals = new float[SETTLEMENTTABLES];
-		for(int j=0;j<SETTLEMENTTABLES;j++) {
+		float[] vals = new float[SETTLEMENTTABLES-1];
+		for(int j=0;j<vals.length;j++) {
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+j), p.x, p.y);
 		}
 		Settlement result = new Settlement(vals);
@@ -239,8 +239,12 @@ public class SettlementModel extends DataModel{
 		populateDistricts(p, result);
 		return result;
 	}
-	public Object getSettlement(Point p,Random random) {
-		int[] vals = new int[SETTLEMENTTABLES];
+	public String getEvent(Point p) {
+		Indexible obj = new Indexible(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES-1), p.x, p.y));
+		return getEvent(obj);
+	}
+	public Settlement getSettlement(Point p,Random random) {
+		int[] vals = new int[SETTLEMENTTABLES-1];
 		for(int j=0;j<vals.length;j++) {
 			vals[j] = random.nextInt();
 		}
@@ -254,7 +258,7 @@ public class SettlementModel extends DataModel{
 		result.setPos(p);
 		result.setTheme(Util.formatTableResultPOS(getTheme(result), result, p, record.getZero()));
 		result.setLeadership(getLeadership(result));
-		result.setEvent(getEvent(result));
+		result.setEvent(new Reference(HexData.EVENT, record.normalizePOS(p), 0).toString());
 		result.setNeighbors(controller.getEconomy().getNeighboringCities(p));
 	}
 	private void populateDistricts(Point p, Settlement result) {
@@ -409,7 +413,7 @@ public class SettlementModel extends DataModel{
 		}
 		double age = obj.getDouble(100);
 		double years = Math.pow(10, age)*MEDIAN_RECENT_EVENT_YEARS;
-		System.out.println(MEDIAN_RECENT_EVENT_YEARS+"*10^"+age+"="+years);
+		//System.out.println(MEDIAN_RECENT_EVENT_YEARS+"*10^"+age+"="+years);
 		String timeString;
 		if(years<1) {
 			timeString = " ("+(int)Math.floor(years*12)+" months ago)";

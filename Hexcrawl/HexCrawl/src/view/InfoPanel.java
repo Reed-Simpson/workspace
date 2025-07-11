@@ -137,6 +137,7 @@ public class InfoPanel extends JTabbedPane{
 	private int selectedHistory;
 	private ArrayList<MyTextPane> cityHistoryTexts;
 	private int selectedCityHistory;
+	private MyTextPane event;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -499,6 +500,13 @@ public class InfoPanel extends JTabbedPane{
 		//History tab
 		JPanel historyPanel = new JPanel();
 		historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
+		historyPanel.add(new JLabel("~~~~~ Current Events ~~~~~"));
+		event = new MyTextPane(this, 0, HexData.EVENT);
+		event.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+		event.setPreferredSize(new Dimension(INFOPANELWIDTH-30,5));
+		event.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+		historyPanel.add(event);
+		
 		cityHistoryTexts = new ArrayList<MyTextPane>();
 		historyPanel.add(new JLabel("~~~~~ Recent History ~~~~~"));
 		for(int i=0;i<RECENT_HISTORY_COUNT;i++) {
@@ -896,6 +904,8 @@ public class InfoPanel extends JTabbedPane{
 			}
 			pane.doPaint();
 		}
+		
+		event.doPaint();
 
 		for(int i = 0;i<this.cityHistoryTexts.size();i++) {
 			MyTextPane pane = this.cityHistoryTexts.get(i);

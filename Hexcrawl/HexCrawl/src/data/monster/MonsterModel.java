@@ -266,7 +266,7 @@ public class MonsterModel {
 	private String getTimePeriod(Indexible obj) {
 		double age = obj.getDouble(100);
 		double years = Math.pow(10, age*HISTORY_YEARS_RANGE)*MEDIAN_HISTORY_YEARS;
-		System.out.println(MEDIAN_HISTORY_YEARS+"*10^"+age+"="+years);
+		//System.out.println(MEDIAN_HISTORY_YEARS+"*10^"+age+"="+years);
 		String timeString;
 		if(years<1) {
 			timeString = " ("+(int)Math.floor(years*12)+" months ago)";

@@ -253,7 +253,7 @@ public class MyTextPane extends JTextPane {
 							Integer.valueOf(matcher.group(3))
 						);
 					int i = Integer.valueOf(matcher.group(4))-1;
-					String tooltipText = controller.getToolTipText(type,displayPos,i);
+					String tooltipText = controller.getToolTipText(type,displayPos,i,getPoint());
 					if(tooltipText!=null) {
 						tooltipText = removeLinks(tooltipText.replaceAll("\n", "<br>"));
 						textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");

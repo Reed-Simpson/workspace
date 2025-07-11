@@ -62,6 +62,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> missions;
 	private HashMap<Pair<Point,Point>,String> cityHistory;
 	private HashMap<Point,String> history;
+	private HashMap<Point,String> events;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -92,6 +93,7 @@ public class SaveRecord implements Serializable {
 		this.missions = new HashMap<Point,ArrayList<String>>();
 		this.cityHistory = new HashMap<Pair<Point,Point>,String>();
 		this.history = new HashMap<Point,String>();
+		this.events = new HashMap<Point,String>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
 		this.campaignThreads = new ArrayList<String>();
@@ -222,6 +224,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.threatMonsters==null) loadedRecord.threatMonsters = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.cityHistory==null) loadedRecord.cityHistory = new HashMap<Pair<Point,Point>,String>();
 			if(loadedRecord.history==null) loadedRecord.history = new HashMap<Point,String>();
+			if(loadedRecord.events==null) loadedRecord.events = new HashMap<Point,String>();
 		}
 		return loadedRecord;
 	}
@@ -831,6 +834,24 @@ public class SaveRecord implements Serializable {
 	}
 	public String removeHistory(Point p) {
 		String remove = history.remove(p);
+		if(remove!=null) {
+			this.hasUnsavedData = true;
+		}
+		return remove;
+	}
+	
+	public String putEvent(Point p,String s) {
+		String put = events.put(p, s);
+		if(put!=null&&!put.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
+	}
+	public String getEvent(Point p) {
+		return events.get(p);
+	}
+	public String removeEvent(Point p) {
+		String remove = events.remove(p);
 		if(remove!=null) {
 			this.hasUnsavedData = true;
 		}

@@ -175,7 +175,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<NPCCOUNT;i++) {
 			npcPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
 			MyTextPane npci = new MyTextPane(this, i, HexData.NPC);
-			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			npcPanel.add(npci);
 			npcTexts.add(npci);
 		}
@@ -183,7 +183,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<POICOUNT;i++) {
 			npcPanel.add(new JLabel("~~~~~ Proprietor #"+(i+1)+" ~~~~~"));
 			MyTextPane npci = new MyTextPane(this, i, HexData.PROPRIETOR);
-			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			npcPanel.add(npci);
 			proprietorTexts.add(npci);
 		}
@@ -198,13 +198,13 @@ public class InfoPanel extends JTabbedPane{
 		poiTexts = new ArrayList<MyTextPane>();
 		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
 		MyTextPane inn = new MyTextPane(this, 0, HexData.LOCATION);
-		inn.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		inn.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		poiPanel.add(inn);
 		poiTexts.add(inn);
 		for(int i=1;i<POICOUNT;i++) {
 			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.LOCATION);
-			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			poiPanel.add(poii);
 			poiTexts.add(poii);
 		}
@@ -219,7 +219,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<DUNGEONCOUNT;i++) {
 			poiPanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
 			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
-			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			poiPanel.add(poii);
 			dEntranceTexts.add(poii);
 		}
@@ -295,7 +295,7 @@ public class InfoPanel extends JTabbedPane{
 	public MyTextPane createDungeonEncounter() {
 		int i = encounterTexts.size();
 		MyTextPane encounteri = new MyTextPane(this, i, HexData.D_ENCOUNTER);
-		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 		encounterPanel.add(encounteri,0);
 		encounterTexts.add(encounteri);
@@ -305,7 +305,7 @@ public class InfoPanel extends JTabbedPane{
 	public MyTextPane createEncounter() {
 		int i = encounterTexts.size();
 		MyTextPane encounteri = new MyTextPane(this, i, HexData.ENCOUNTER);
-		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 		encounterPanel.add(encounteri,0);
 		encounterTexts.add(encounteri);
@@ -315,7 +315,7 @@ public class InfoPanel extends JTabbedPane{
 	private MyTextPane createMission() {
 		int i = missionsTexts.size();
 		MyTextPane encounteri = new MyTextPane(this, i, HexData.MISSION);
-		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 		missionsPanel.add(encounteri,0);
 		missionsTexts.add(encounteri);
@@ -399,7 +399,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<FACTIONCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);
-			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			factionPanel.add(factioni);
 			factionTexts.add(factioni);
 		}
@@ -415,7 +415,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<FACTIONCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faith #"+(i+1)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FAITH);
-			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			factionPanel.add(factioni);
 			faithsTexts.add(factioni);
 		}
@@ -432,7 +432,7 @@ public class InfoPanel extends JTabbedPane{
 		for(int i=0;i<(FACTIONCOUNT*2)*2;i++) {
 			factionNPCPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
 			MyTextPane minion = new MyTextPane(this, i, HexData.FACTION_NPC);
-			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			factionNPCPanel.add(minion);
 			factionNPCTexts.add(minion);
 		}
@@ -448,13 +448,13 @@ public class InfoPanel extends JTabbedPane{
 		minionsTexts = new ArrayList<MyTextPane>();
 		minionsPanel.add(new JLabel("~~~~~ Faction ~~~~~"));
 		MyTextPane threatFaction = new MyTextPane(this, 0, HexData.MINION);
-		threatFaction.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		threatFaction.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		minionsPanel.add(threatFaction);
 		minionsTexts.add(threatFaction);
 		for(int i=1;i<NPCCOUNT;i++) {
 			minionsPanel.add(new JLabel("~~~~~ Minion #"+(i)+" ~~~~~"));
 			MyTextPane minion = new MyTextPane(this, i, HexData.MINION);
-			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			minionsPanel.add(minion);
 			minionsTexts.add(minion);
 		}
@@ -472,7 +472,7 @@ public class InfoPanel extends JTabbedPane{
 			if(i<MonsterModel.BEASTCOUNT*2)beastsPanel.add(new JLabel("~~~~~ Regional Monster #"+(i+1)+" ~~~~~"));
 			else beastsPanel.add(new JLabel("~~~~~ Threat Monster #"+(i+1-MonsterModel.BEASTCOUNT*2)+" ~~~~~"));
 			MyTextPane beast = new MyTextPane(this, i, HexData.MONSTER);
-			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			beastsPanel.add(beast);
 			beastsTexts.add(beast);
 		}
@@ -503,19 +503,19 @@ public class InfoPanel extends JTabbedPane{
 		campaignPanel.add(charactersHeader);
 		this.charactersList = new ArrayList<MyTextPane>();
 		charactersPanel.setLayout(new BoxLayout(charactersPanel, BoxLayout.Y_AXIS));
-		charactersPanel.setMaximumSize(new Dimension(INFOPANELWIDTH-20,99999));
-		//charactersPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-20,999));
+		charactersPanel.setMaximumSize(new Dimension(INFOPANELWIDTH-30,99999));
+		//charactersPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-30,999));
 		ArrayList<Reference> chars = panel.getRecord().getCampaignCharacters();
 		for(int i=0;i<chars.size();i++) {
 			MyTextPane pane = new MyTextPane(this, i, HexData.CHARACTER);
-			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			pane.setRef(chars.get(i));
 			pane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2,Color.gray));
 			charactersPanel.add(pane);
 			charactersList.add(pane);
 		}
 		charactersEmpty = new MyTextPane(this, chars.size(), HexData.CHARACTER);
-		charactersEmpty.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		charactersEmpty.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		charactersEmpty.setEnabled(false);
 		charactersEmpty.setText("None");
 		charactersPanel.add(charactersEmpty);
@@ -547,7 +547,7 @@ public class InfoPanel extends JTabbedPane{
 
 
 		JPanel threadsPanel = new JPanel(new BorderLayout());
-		//		threadsPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-20,999));
+		//		threadsPanel.setPreferredSize(new Dimension(INFOPANELWIDTH-30,999));
 		JPanel threadsHeader = new JPanel();
 		threadsHeader.setLayout(new BoxLayout(threadsHeader, BoxLayout.X_AXIS));
 		threadsHeader.add(Box.createHorizontalStrut(40));
@@ -582,7 +582,7 @@ public class InfoPanel extends JTabbedPane{
 		ArrayList<String> threadText = panel.getRecord().getCampaignThreads();
 		for(int i=0;i<threadText.size();i++) {
 			MyTextPane pane = new MyTextPane(this, i, HexData.THREAD);
-			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+			pane.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			pane.doPaint();
 			threads.add(pane);
 			threadsList.add(pane);
@@ -592,7 +592,7 @@ public class InfoPanel extends JTabbedPane{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MyTextPane pane = new MyTextPane(InfoPanel.this, threadsList.size(), HexData.THREAD);
-				pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+				pane.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 				threads.add(pane);
 				threadsList.add(pane);
 				threads.add(Box.createVerticalStrut(2));
@@ -1021,7 +1021,7 @@ public class InfoPanel extends JTabbedPane{
 		pane.setRef(ref);
 		pane.doPaint();
 		pane.setAlignmentX(LEFT_ALIGNMENT);
-		pane.setMaximumSize(new Dimension(INFOPANELWIDTH-20,9999));
+		pane.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 		pane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2,Color.gray));
 		charactersPanel.add(pane);
 		charactersList.add(pane);

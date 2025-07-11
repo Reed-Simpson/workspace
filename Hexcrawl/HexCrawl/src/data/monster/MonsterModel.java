@@ -131,12 +131,18 @@ public class MonsterModel {
 	public static String getMonster(Indexible obj) {
 		String animal = getAnimal(obj);
 		Monster monster = new Monster(animal);
-		monster.setFeature(getFeature(obj));
-		monster.setTrait(getTrait(obj));
-		monster.setAbility(getAbility(obj));
-		monster.setTactic(getTactic(obj));
-		monster.setPersonality(getPersonality(obj));
-		monster.setWeakness(getWeakness(obj));
+		
+		int index = obj.reduceTempId(2);
+		if(index==0) monster.setPersonality(getPersonality(obj));
+		else monster.setTrait(getTrait(obj));
+		
+		index = obj.reduceTempId(2);
+		if(index==0) monster.setFeature(getFeature(obj));
+		else monster.setAbility(getAbility(obj));
+		
+		index = obj.reduceTempId(2);
+		if(index==0) monster.setTactic(getTactic(obj));
+		else monster.setWeakness(getWeakness(obj));
 		return monster.toString();
 	}
 

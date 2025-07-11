@@ -23,6 +23,7 @@ import util.Util;
 import view.InfoPanel;
 
 public class SettlementModel extends DataModel{
+	private static final int MEDIAN_RECENT_EVENT_YEARS = 5;
 	private static final int SEED_OFFSET = 10*Util.getOffsetX();
 	private static final int FACTIONTABLES = 20;
 	private static final int SETTLEMENTTABLES = 5;
@@ -379,12 +380,17 @@ public class SettlementModel extends DataModel{
 		float f1 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES), p1.x, p1.y);
 		float f2 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES), p2.x, p2.y);
 		Indexible obj = new Indexible(f1+f2);
-		String relationship = getRelationship(obj);
 		if(f1<f2) {
 			Point p = p2;
 			p2 = p1;
 			p1 = p;
 		}
+		return populateRelationship(p1, p2, links, obj);
+	}
+
+
+	private String populateRelationship(Point p1, Point p2, boolean links, Indexible obj) {
+		String relationship = getRelationship(obj);
 		String s1;
 		String s2;
 		if(links) {
@@ -401,7 +407,16 @@ public class SettlementModel extends DataModel{
 			relationship = Util.replace(relationship, "${A}", s2);
 			relationship = Util.replace(relationship, "${B}", s1);
 		}
-		return relationship;
+		double age = obj.getDouble(100);
+		double years = Math.pow(10, age)*MEDIAN_RECENT_EVENT_YEARS;
+		System.out.println(MEDIAN_RECENT_EVENT_YEARS+"*10^"+age+"="+years);
+		String timeString;
+		if(years<1) {
+			timeString = " ("+(int)Math.floor(years*12)+" months ago)";
+		}else {
+			timeString = " ("+(int)Math.floor(years)+" years ago)";
+		}
+		return relationship+timeString;
 	}
 	public Pair<Point,Point> getCityPair(Point p,int i) {
 		ArrayList<Point> nearby = controller.getEconomy().getNeighboringCities(p);
@@ -423,25 +438,7 @@ public class SettlementModel extends DataModel{
 	}
 	public String getRelationship(Point p1,Point p2,boolean links,Random rand) {
 		Indexible obj = new Indexible(rand.nextInt());
-		String relationship = getRelationship(obj);
-
-		String s1;
-		String s2;
-		if(links) {
-			s1 = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p1), 0).toString();
-			s2 = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p2), 0).toString();
-		}else {
-			s1 = controller.getText(HexData.TOWN, p1, 0);
-			s2 = controller.getText(HexData.TOWN, p2, 0);
-		}
-		if(obj.reduceTempId(2)==0) {
-			relationship = Util.replace(relationship, "${A}", s1);
-			relationship = Util.replace(relationship, "${B}", s2);
-		}else {
-			relationship = Util.replace(relationship, "${A}", s2);
-			relationship = Util.replace(relationship, "${B}", s1);
-		}
-		return relationship;
+		return populateRelationship(p1, p2, links, obj);
 	}
 
 

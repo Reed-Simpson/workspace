@@ -58,6 +58,8 @@ public class MonsterModel {
 	private static final String WEAKNESSES = "Bells,Birdsong,Children,Cold,Cold iron,Competition,Conversation,Deformity,Flattery,Flowers,Gifts,Gold,"+
 			"Heat,Holy icon,Water,Home cooking,${insanity},Mirrors,Mistletoe,Moonlight,Music,${method},Phylactery,${physical element},"+
 			"Puzzles,Riddles,Rituals,Silver,Sunlight,Tears,True name,${rare material},Weak spot,${weapon},Wine,Wormwood";
+	private static final double MEDIAN_HISTORY_YEARS = 1000;
+	private static final double HISTORY_YEARS_RANGE = 2;
 	private static WeightedTable<String> weaknesses;
 
 	private static void populate(WeightedTable<String> table,String values,String regex) {
@@ -255,10 +257,22 @@ public class MonsterModel {
 	}
 	public String getRuination(Point territory) {
 		Indexible obj = new Indexible(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+BiomeType.count()*2+BEASTCOUNT*2), territory.x, territory.y));
-		return DungeonModel.getRuination(obj);
+		return DungeonModel.getRuination(obj)+getTimePeriod(obj);
 	}
 	public String getRuination(Random rand) {
 		Indexible obj = new Indexible(rand.nextInt());
-		return DungeonModel.getRuination(obj);
+		return DungeonModel.getRuination(obj)+getTimePeriod(obj);
+	}
+	private String getTimePeriod(Indexible obj) {
+		double age = obj.getDouble(100);
+		double years = Math.pow(10, age*HISTORY_YEARS_RANGE)*MEDIAN_HISTORY_YEARS;
+		System.out.println(MEDIAN_HISTORY_YEARS+"*10^"+age+"="+years);
+		String timeString;
+		if(years<1) {
+			timeString = " ("+(int)Math.floor(years*12)+" months ago)";
+		}else {
+			timeString = " ("+(int)Math.floor(years)+" years ago)";
+		}
+		return timeString;
 	}
 }

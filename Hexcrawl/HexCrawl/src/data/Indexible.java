@@ -1,7 +1,6 @@
 package data;
 
 import java.math.BigInteger;
-
 import util.Util;
 
 public class Indexible {
@@ -61,5 +60,9 @@ public class Indexible {
 		int result = this.tempId.mod(val).intValue();
 		this.tempId= this.tempId.divide(val);
 		return result;
+	}
+	public double getDouble(int granularity) {
+		int random = this.reduceTempId(granularity-1)+1;
+		return Util.percentileToZ(random*1.0/granularity)/2;
 	}
 }

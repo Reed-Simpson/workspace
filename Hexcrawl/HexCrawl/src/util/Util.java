@@ -397,4 +397,21 @@ public class Util {
 	public static float adjustSimplex(float f,float min,float max) {
 		return (f+1)/2*(max-min)+min;
 	}
+
+	public static double percentileToZ(double percentile) {
+		if(percentile<=0||percentile>=100) throw new IllegalArgumentException("Expected value between (0,100) exclusive");
+		double $p = Math.abs(percentile - 0.5);
+
+		double $z;
+		if($p > 0.42) {
+			double $r=Math.sqrt(-Math.log(0.5 - $p));
+			$z=(((2.3212128 * $r + 4.8501413) * $r + (-2.2979648)) * $r + (-2.7871893)) / ((1.6370678 * $r + 3.5438892) * $r + 1);
+		}
+		else {
+			double $r = $p * $p;
+			$z = $p * (((-25.4410605 * $r + 41.3911977) * $r + (-18.6150006)) * $r + 2.5066282) / ((((3.1308291 * $r + (-21.0622410)) * $r + 23.0833674) * $r + (-8.4735109)) * $r + 1);
+		}
+		if(percentile < 0.5) $z = -$z;
+		return $z;
+	}
 }

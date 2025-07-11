@@ -57,6 +57,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> minions;
 	private HashSet<Point> explored;
 	private HashMap<Point,ArrayList<String>> beasts;
+	private HashMap<Point,ArrayList<String>> threatMonsters;
 	private HashMap<Point,ArrayList<String>> missions;
 
 	public SaveRecord() {
@@ -84,6 +85,7 @@ public class SaveRecord implements Serializable {
 		this.highlights = new HashMap<Point,Color>();
 		this.minions = new HashMap<Point,ArrayList<String>>();
 		this.beasts = new HashMap<Point,ArrayList<String>>();
+		this.threatMonsters = new HashMap<Point,ArrayList<String>>();
 		this.missions = new HashMap<Point,ArrayList<String>>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
@@ -212,6 +214,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.proprietors==null) loadedRecord.proprietors = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.factionNPCs==null) loadedRecord.factionNPCs = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.missions==null) loadedRecord.missions = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.threatMonsters==null) loadedRecord.threatMonsters = new HashMap<Point,ArrayList<String>>();
 		}
 		return loadedRecord;
 	}
@@ -711,6 +714,32 @@ public class SaveRecord implements Serializable {
 		}
 		return set;
 	}
+
+	public String putThreatMonster(Point p,int i,String s) {
+		if(!this.threatMonsters.containsKey(p)) this.threatMonsters.put(p, new ArrayList<String>());
+		ArrayList<String> beast = this.threatMonsters.get(p);
+		while(beast.size()<i+1) beast.add(null);
+		String set = beast.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getThreatMonster(Point p,int i) {
+		ArrayList<String> beast = this.threatMonsters.get(p);
+		if(beast==null||beast.size()<=i) return null;
+		return beast.get(i);
+	}
+	public String removeThreatMonster(Point p,int i) {
+		ArrayList<String> beast = this.threatMonsters.get(p);
+		if(beast==null||beast.size()<=i) return null;
+		String set = beast.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	
 	public String putMission(Point p, int i,String s) {
 		if(!this.missions.containsKey(p)) this.missions.put(p, new ArrayList<String>());
 		ArrayList<String> encounters = this.missions.get(p);

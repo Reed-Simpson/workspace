@@ -168,10 +168,16 @@ public class DataController {
 		case CHARACTER: value = "";break;
 		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
-			BiomeType townBiome = null;
-			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
-			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
-			Monster monster = monsters.getWanderingMonster(region, i,biomes);
+			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
+			Monster monster = monsters.getWanderingMonster(region, i,habitats);
+			if(monster!=null) value = monster.toString();
+			else value = "None";
+			break;
+		}
+		case THREATMONSTER: {
+			Point center = threats.getCenter(p);
+			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
+			Monster monster = monsters.getThreatMonster(center, i,habitats);
 			if(monster!=null) value = monster.toString();
 			else value = "None";
 			break;
@@ -230,6 +236,10 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.getBeast(region, i/4);
 		}
+		case THREATMONSTER: {
+			Point center = threats.getCenter(p);
+			return record.getThreatMonster(center, i);
+		}
 		case MISSION: return record.getMission(p,i);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
@@ -276,6 +286,10 @@ public class DataController {
 		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.removeBeast(region,i/4);
+		}
+		case THREATMONSTER: {
+			Point center = threats.getCenter(p);
+			return record.removeThreatMonster(center,i);
 		}
 		case MISSION: return record.removeMission(p, i);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
@@ -324,6 +338,10 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.putBeast(region, i/4, s);
 		}
+		case THREATMONSTER: {
+			Point center = threats.getCenter(p);
+			return record.putThreatMonster(center, i, s);
+		}
 		case MISSION: return record.putMission(p, i, s);
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
@@ -362,11 +380,15 @@ public class DataController {
 		case THREAD: return "";
 		case CHARACTER: return "";
 		case MONSTER:{
-			BiomeType townBiome = null;
-			if(population.isTown(p)) townBiome = biomes.getBaseBiome(p);
-			Pair<BiomeType,BiomeType> biomes = this.getBiomes().getBiome(p).getHabitat(townBiome);
+			Pair<BiomeType,BiomeType> biomes = this.biomes.getHabitatBiomes(p);
 			Threat threat = this.getThreats().getThreat(p);
 			Monster monster = monsters.getWanderingMonster(record.getRandom(),i,biomes,threat);
+			return monster.toString(); 
+		}
+		case THREATMONSTER:{
+			Pair<BiomeType,BiomeType> biomes = this.biomes.getHabitatBiomes(p);
+			Threat threat = this.getThreats().getThreat(p);
+			Monster monster = monsters.getThreatMonster(record.getRandom(),i,biomes,threat);
 			return monster.toString(); 
 		}
 		case MISSION: return missions.getMission(p, record.getRandom()).toString();
@@ -433,6 +455,7 @@ public class DataController {
 	public Point getOriginPoint(HexData type,Point p,int i) {
 		switch(type) {
 		case THREAT: 
+		case THREATMONSTER: 
 		case MINION: return threats.getCenter(p);
 		case FACTION_NPC: 
 		case FACTION: 

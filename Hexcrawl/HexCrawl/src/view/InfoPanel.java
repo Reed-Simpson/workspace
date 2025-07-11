@@ -30,7 +30,6 @@ import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.magic.MagicModel;
-import data.monster.MonsterModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
@@ -53,7 +52,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
 	public static final int DISTRICTCOUNT = 6;
-	public static final int MONSTERCOUNT = 16;
+	public static final int MONSTERCOUNT = 8;
 
 	private int FAITH_TAB_INDEX;
 	private int FACTION_TAB_INDEX;
@@ -131,6 +130,8 @@ public class InfoPanel extends JTabbedPane{
 	private ArrayList<MyTextPane> missionsTexts;
 	private int MISSIONS_TAB_INDEX;
 	private int selectedMission;
+	private ArrayList<MyTextPane> threatMonsterTexts;
+	private int selectedMonster;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -469,13 +470,22 @@ public class InfoPanel extends JTabbedPane{
 		beastsPanel.setLayout(new BoxLayout(beastsPanel, BoxLayout.Y_AXIS));
 		beastsTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<MONSTERCOUNT;i++) {
-			if(i<MonsterModel.BEASTCOUNT*2)beastsPanel.add(new JLabel("~~~~~ Regional Monster #"+(i+1)+" ~~~~~"));
-			else beastsPanel.add(new JLabel("~~~~~ Threat Monster #"+(i+1-MonsterModel.BEASTCOUNT*2)+" ~~~~~"));
+			beastsPanel.add(new JLabel("~~~~~ Regional Monster #"+(i+1)+" ~~~~~"));
 			MyTextPane beast = new MyTextPane(this, i, HexData.MONSTER);
 			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			beastsPanel.add(beast);
 			beastsTexts.add(beast);
 		}
+		selectedBeast = -1;
+		threatMonsterTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<MONSTERCOUNT;i++) {
+			beastsPanel.add(new JLabel("~~~~~ Threat Monster #"+(i+1)+" ~~~~~"));
+			MyTextPane beast = new MyTextPane(this, i, HexData.THREATMONSTER);
+			beast.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+			beastsPanel.add(beast);
+			threatMonsterTexts.add(beast);
+		}
+		selectedMonster = -1;
 		JScrollPane beastsScrollPane = new JScrollPane(beastsPanel);
 		beastsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Monsters", beastsScrollPane);
@@ -841,6 +851,16 @@ public class InfoPanel extends JTabbedPane{
 			pane.doPaint();
 		}
 
+		for(int i = 0;i<this.threatMonsterTexts.size();i++) {
+			MyTextPane pane = this.threatMonsterTexts.get(i);
+			if(i==selectedMonster) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+		}
+
 		hexNote1.doPaint();
 		changeSelected = true;
 	}
@@ -943,6 +963,7 @@ public class InfoPanel extends JTabbedPane{
 		case FAITH: selectTab(1,FAITH_TAB_INDEX,index);break;
 		case FACTION_NPC: selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
 		case MINION: selectTab(1,MINIONS_TAB_INDEX,index);break;
+		case THREATMONSTER:
 		case MONSTER: selectTab(1,BEASTS_TAB_INDEX,index);break;
 		case CHARACTER: selectTab(2,0,index);break;
 		case TOWN: selectTab(1,CITY_TAB_INDEX,index);break;

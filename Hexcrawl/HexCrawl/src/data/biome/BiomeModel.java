@@ -354,6 +354,13 @@ public class BiomeModel extends DataModel {
 		}
 		return group;
 	}
+	
+	public Pair<BiomeType,BiomeType> getHabitatBiomes(Point p){
+		BiomeType townBiome = null;
+		if(population.isTown(p)) townBiome = this.getBaseBiome(p);
+		return this.getBiome(p).getHabitat(townBiome);
+	}
+	
 	@Override
 	public BiomeType getDefaultValue(Point p, int i) {
 		return getBiome(p);

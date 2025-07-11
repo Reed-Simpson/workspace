@@ -127,19 +127,19 @@ public class MonsterModel {
 		if(weaknesses==null) populateAllTables();
 		return Util.formatTableResult(weaknesses.getByWeight(obj),obj);
 	}
-	
+
 	public static String getMonster(Indexible obj) {
 		String animal = getAnimal(obj);
 		Monster monster = new Monster(animal);
-		
+
 		int index = obj.reduceTempId(2);
 		if(index==0) monster.setPersonality(getPersonality(obj));
 		else monster.setTrait(getTrait(obj));
-		
+
 		index = obj.reduceTempId(2);
 		if(index==0) monster.setFeature(getFeature(obj));
 		else monster.setAbility(getAbility(obj));
-		
+
 		index = obj.reduceTempId(2);
 		if(index==0) monster.setTactic(getTactic(obj));
 		else monster.setWeakness(getWeakness(obj));
@@ -167,14 +167,14 @@ public class MonsterModel {
 		}
 		return new Indexible(floats);
 	}
-	
+
 	public Monster getWanderingMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
 		WeightedTable<Species> species;
 		int index;
 		if(i<BEASTCOUNT) {
 			species = BeastMonsterType.getSpecies(habitats.key1);
 			index = habitats.key1.getID(0);
-		}else if(i<BEASTCOUNT*2) {
+		}else {
 			if(habitats.key2!=null) {
 				species = BeastMonsterType.getSpecies(habitats.key2);
 				if(habitats.key1==habitats.key2) index = habitats.key2.getID(1);
@@ -182,27 +182,31 @@ public class MonsterModel {
 			} else {
 				return null;
 			}
-		}else if(i<BEASTCOUNT*3) {
-			Threat threat = controller.getThreats().getThreat(territoryRef);
-			species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key1, threat);
-			index = i-8;
-		}else {
-			if(habitats.key2!=null) {
-				Threat threat = controller.getThreats().getThreat(territoryRef);
-				species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key2, threat);
-				index = i-8;
-			} else {
-				return null;
-			}
 		}
 		Indexible obj = getIndexible(territoryRef, index);
 		Monster result = new Monster(species.getByWeight(obj));
 		if(result.getSpecies()==null) return null;
-		if(i<8) {
-			populateMonsterTrait(obj, result);
+		populateMonsterTrait(obj, result);
+		return result;
+	}
+
+	public Monster getThreatMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
+		WeightedTable<Species> species;
+		if(i<BEASTCOUNT) {
+			Threat threat = controller.getThreats().getThreat(territoryRef);
+			species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key1, threat);
 		}else {
-			result.setPersonality(getPersonality(obj));
+			if(habitats.key2!=null) {
+				Threat threat = controller.getThreats().getThreat(territoryRef);
+				species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key2, threat);
+			} else {
+				return null;
+			}
 		}
+		Indexible obj = getIndexible(territoryRef, i);
+		Monster result = new Monster(species.getByWeight(obj));
+		if(result.getSpecies()==null) return null;
+		result.setPersonality(getPersonality(obj));
 		return result;
 	}
 	private void populateMonsterTrait(Indexible obj, Monster result) {
@@ -211,31 +215,41 @@ public class MonsterModel {
 		else if(branch==1) result.setFeature(getFeature(obj));
 		else result.setAbility(getAbility(obj));
 	}
-	
+
 	public Monster getWanderingMonster(Random rand,int i,Pair<BiomeType,BiomeType> habitats,Threat threat) {
 		WeightedTable<Species> species;
 		if(i<BEASTCOUNT) {
 			species = BeastMonsterType.getSpecies(habitats.key1);
-		}else if(i<BEASTCOUNT*2) {
-			species = BeastMonsterType.getSpecies(habitats.key2);
 		}else {
-			throw new UnsupportedOperationException("Branch not finished");
+			species = BeastMonsterType.getSpecies(habitats.key2);
 		}
 		Indexible obj = getIndexible(rand);
 		Monster result = new Monster(species.getByWeight(obj));
 		populateMonsterTrait(obj, result);
 		return result;
 	}
-	
+
+	public Monster getThreatMonster(Random rand,int i,Pair<BiomeType,BiomeType> habitats,Threat threat) {
+		WeightedTable<Species> species;
+		if(i<BEASTCOUNT) {
+			species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key1, threat);
+		}else {
+			if(habitats.key2!=null) {
+				species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key2, threat);
+			} else {
+				return null;
+			}
+		}
+		Indexible obj = getIndexible(rand);
+		Monster result = new Monster(species.getByWeight(obj));
+		populateMonsterTrait(obj, result);
+		return result;
+	}
 	public Point getTerritoryRef(Point p,int i) {
-		if(i<BEASTCOUNT*2) {
-		int x = p.x/50;
 		int y = p.y/50;
+		int x = (p.x+p.y/2)/50;
 		x = x + (x+i/2)%2;
 		y = y + (y+i)%2;
 		return new Point(x*2,y*2);
-		}else {
-			return controller.getThreats().getCenter(p);
-		}
 	}
 }

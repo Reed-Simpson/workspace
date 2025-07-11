@@ -183,6 +183,14 @@ public class DataController {
 			break;
 		}
 		case MISSION: value = missions.getMission(p, i).toString(); break;
+		case CITYHISTORY: {
+			Point capital = population.getAbsoluteFealty(p);
+			value = settlements.getRelationship(capital, i); break;
+		}
+		case HISTORY: {
+			Point region = monsters.getTerritoryRef(p,i);
+			value = monsters.getRuination(region); break;
+		}
 		default: value = getModel(type).getDefaultValue(p, i).toString();
 		}
 		if(value==null) return null;
@@ -241,6 +249,14 @@ public class DataController {
 			return record.getThreatMonster(center, i);
 		}
 		case MISSION: return record.getMission(p,i);
+		case CITYHISTORY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getCityHistory(settlements.getCityPair(capital, i));
+		}
+		case HISTORY: {
+			Point region = monsters.getTerritoryRef(p,i);
+			return record.getHistory(region);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -292,6 +308,14 @@ public class DataController {
 			return record.removeThreatMonster(center,i);
 		}
 		case MISSION: return record.removeMission(p, i);
+		case CITYHISTORY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeCityHistory(settlements.getCityPair(capital, i));
+		}
+		case HISTORY: {
+			Point region = monsters.getTerritoryRef(p,i);
+			return record.removeHistory(region);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -343,6 +367,14 @@ public class DataController {
 			return record.putThreatMonster(center, i, s);
 		}
 		case MISSION: return record.putMission(p, i, s);
+		case CITYHISTORY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.putCityHistory(settlements.getCityPair(capital, i),s);
+		}
+		case HISTORY: {
+			Point region = monsters.getTerritoryRef(p,i);
+			return record.putHistory(region,s);
+		}
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -392,6 +424,11 @@ public class DataController {
 			return monster.toString(); 
 		}
 		case MISSION: return missions.getMission(p, record.getRandom()).toString();
+		case CITYHISTORY: {
+			Point capital = population.getAbsoluteFealty(p);
+			return settlements.getRelationship(capital, i, record.getRandom());
+		}
+		case HISTORY: return monsters.getRuination(record.getRandom()); 
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}
 	}
@@ -457,6 +494,7 @@ public class DataController {
 		case THREAT: 
 		case THREATMONSTER: 
 		case MINION: return threats.getCenter(p);
+		case CITYHISTORY:
 		case FACTION_NPC: 
 		case FACTION: 
 		case FAITH: 
@@ -465,6 +503,7 @@ public class DataController {
 		case BIOME: return biomes.getAbsoluteRegion(p);
 		case THREAD: 
 		case CHARACTER: return null;
+		case HISTORY:
 		case MONSTER: return monsters.getTerritoryRef(p,i);
 		case D_ENCOUNTER: 
 		case ENCOUNTER: 

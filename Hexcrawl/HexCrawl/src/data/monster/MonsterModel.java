@@ -8,6 +8,7 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
 import data.biome.BiomeType;
+import data.dungeon.DungeonModel;
 import data.monster.subtype.BeastMonsterType;
 import data.population.Species;
 import data.threat.CreatureType;
@@ -203,7 +204,7 @@ public class MonsterModel {
 				return null;
 			}
 		}
-		Indexible obj = getIndexible(territoryRef, i);
+		Indexible obj = getIndexible(territoryRef, i+BiomeType.count()*2);
 		Monster result = new Monster(species.getByWeight(obj));
 		if(result.getSpecies()==null) return null;
 		result.setPersonality(getPersonality(obj));
@@ -251,5 +252,13 @@ public class MonsterModel {
 		x = x + (x+i/2)%2;
 		y = y + (y+i)%2;
 		return new Point(x*2,y*2);
+	}
+	public String getRuination(Point territory) {
+		Indexible obj = new Indexible(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+BiomeType.count()*2+BEASTCOUNT*2), territory.x, territory.y));
+		return DungeonModel.getRuination(obj);
+	}
+	public String getRuination(Random rand) {
+		Indexible obj = new Indexible(rand.nextInt());
+		return DungeonModel.getRuination(obj);
 	}
 }

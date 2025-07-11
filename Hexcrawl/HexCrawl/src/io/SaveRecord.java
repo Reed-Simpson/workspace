@@ -21,6 +21,7 @@ import data.Reference;
 import data.altitude.AltitudeModel;
 import data.population.PopulationModel;
 import util.DiceRoller;
+import util.Pair;
 import util.Util;
 import view.MapFrame;
 
@@ -59,6 +60,8 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,ArrayList<String>> beasts;
 	private HashMap<Point,ArrayList<String>> threatMonsters;
 	private HashMap<Point,ArrayList<String>> missions;
+	private HashMap<Pair<Point,Point>,String> cityHistory;
+	private HashMap<Point,String> history;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -87,6 +90,8 @@ public class SaveRecord implements Serializable {
 		this.beasts = new HashMap<Point,ArrayList<String>>();
 		this.threatMonsters = new HashMap<Point,ArrayList<String>>();
 		this.missions = new HashMap<Point,ArrayList<String>>();
+		this.cityHistory = new HashMap<Pair<Point,Point>,String>();
+		this.history = new HashMap<Point,String>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
 		this.campaignThreads = new ArrayList<String>();
@@ -215,6 +220,8 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.factionNPCs==null) loadedRecord.factionNPCs = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.missions==null) loadedRecord.missions = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.threatMonsters==null) loadedRecord.threatMonsters = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.cityHistory==null) loadedRecord.cityHistory = new HashMap<Pair<Point,Point>,String>();
+			if(loadedRecord.history==null) loadedRecord.history = new HashMap<Point,String>();
 		}
 		return loadedRecord;
 	}
@@ -767,5 +774,66 @@ public class SaveRecord implements Serializable {
 			this.hasUnsavedData = true;
 		}
 		return set;
+	}
+
+	public String putCityHistory(Pair<Point,Point> pair,String s) {
+		return putCityHistory(pair.key1, pair.key2,s);
+	}
+	public String putCityHistory(Point p1,Point p2,String s) {
+		Pair<Point,Point> pair = new Pair<Point,Point>(p1,p2);
+		Pair<Point,Point> pair2 = new Pair<Point,Point>(p2,p1);
+		if(!cityHistory.containsKey(pair)&&cityHistory.containsKey(pair2)) {
+			pair = pair2;
+		}
+		String put = cityHistory.put(pair, s);
+		if(put!=null&&!put.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
+	}
+	public String getCityHistory(Pair<Point,Point> pair) {
+		if(pair==null) return null;
+		return getCityHistory(pair.key1, pair.key2);
+	}
+	public String getCityHistory(Point p1,Point p2) {
+		Pair<Point,Point> pair = new Pair<Point,Point>(p1,p2);
+		Pair<Point,Point> pair2 = new Pair<Point,Point>(p2,p1);
+		if(!cityHistory.containsKey(pair)&&cityHistory.containsKey(pair2)) {
+			pair = pair2;
+		}
+		return cityHistory.get(pair);
+	}
+	public String removeCityHistory(Pair<Point,Point> pair) {
+		return removeCityHistory(pair.key1, pair.key2);
+	}
+	public String removeCityHistory(Point p1,Point p2) {
+		Pair<Point,Point> pair = new Pair<Point,Point>(p1,p2);
+		Pair<Point,Point> pair2 = new Pair<Point,Point>(p2,p1);
+		if(!cityHistory.containsKey(pair)&&cityHistory.containsKey(pair2)) {
+			pair = pair2;
+		}
+		String remove = cityHistory.remove(pair);
+		if(remove!=null) {
+			this.hasUnsavedData = true;
+		}
+		return remove;
+	}
+	
+	public String putHistory(Point p,String s) {
+		String put = history.put(p, s);
+		if(put!=null&&!put.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
+	}
+	public String getHistory(Point p) {
+		return history.get(p);
+	}
+	public String removeHistory(Point p) {
+		String remove = history.remove(p);
+		if(remove!=null) {
+			this.hasUnsavedData = true;
+		}
+		return remove;
 	}
 }

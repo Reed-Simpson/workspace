@@ -29,7 +29,9 @@ public enum HexData {
 	THREATMONSTER("tmonster"), 
 	PROPRIETOR("proprietor"), 
 	FACTION_NPC("fnpc"), 
-	MISSION("mission");
+	MISSION("mission"),
+	CITYHISTORY("chistory"),
+	HISTORY("history");
 	
 	public static HexData[] getMapViews() {
 		return new HexData[] {BIOME,ALTITUDE,PRECIPITATION,POPULATION,ECONOMY,MAGIC,THREAT,EXPLORATION};

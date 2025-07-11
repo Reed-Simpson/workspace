@@ -42,6 +42,7 @@ import view.infopanels.HexPanelGeneralStatPanel;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
+	private static final int RECENT_HISTORY_COUNT = 20;
 	private static final int TAB_TITLE_LENGTH = 34;
 	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
 	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
@@ -132,6 +133,10 @@ public class InfoPanel extends JTabbedPane{
 	private int selectedMission;
 	private ArrayList<MyTextPane> threatMonsterTexts;
 	private int selectedMonster;
+	private ArrayList<MyTextPane> historyTexts;
+	private int selectedHistory;
+	private ArrayList<MyTextPane> cityHistoryTexts;
+	private int selectedCityHistory;
 
 	public InfoPanel(MapPanel panel) {
 		this.panel = panel;
@@ -490,6 +495,37 @@ public class InfoPanel extends JTabbedPane{
 		beastsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Monsters", beastsScrollPane);
 		this.BEASTS_TAB_INDEX = regionTabs.getTabCount()-1;
+		
+		//History tab
+		JPanel historyPanel = new JPanel();
+		historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
+		cityHistoryTexts = new ArrayList<MyTextPane>();
+		historyPanel.add(new JLabel("~~~~~ Recent History ~~~~~"));
+		for(int i=0;i<RECENT_HISTORY_COUNT;i++) {
+			MyTextPane history = new MyTextPane(this, i, HexData.CITYHISTORY);
+			history.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+			history.setPreferredSize(new Dimension(INFOPANELWIDTH-30,5));
+			history.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+			historyPanel.add(history);
+			cityHistoryTexts.add(history);
+		}
+		selectedCityHistory = -1;
+		historyTexts = new ArrayList<MyTextPane>();
+		historyPanel.add(new JLabel("~~~~~ Ancient History ~~~~~"));
+		for(int i=0;i<4;i++) {
+			MyTextPane history = new MyTextPane(this, i, HexData.HISTORY);
+			history.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+			history.setPreferredSize(new Dimension(INFOPANELWIDTH-30,5));
+			history.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+			historyPanel.add(history);
+			historyTexts.add(history);
+		}
+		historyPanel.add(Box.createVerticalGlue());
+		selectedHistory = -1;
+		JScrollPane historyScrollPane = new JScrollPane(historyPanel);
+		historyScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("History", historyScrollPane);
+		
 
 		regionPanel.add(regionTabs);
 
@@ -854,6 +890,31 @@ public class InfoPanel extends JTabbedPane{
 		for(int i = 0;i<this.threatMonsterTexts.size();i++) {
 			MyTextPane pane = this.threatMonsterTexts.get(i);
 			if(i==selectedMonster) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+		}
+
+		for(int i = 0;i<this.cityHistoryTexts.size();i++) {
+			MyTextPane pane = this.cityHistoryTexts.get(i);
+			if(i==selectedCityHistory) {
+				pane.setBackground(TEXTHIGHLIGHTCOLOR);
+			}else {
+				pane.setBackground(TEXTBACKGROUNDCOLOR);
+			}
+			pane.doPaint();
+			if(pane.getRawText()==null) {
+				pane.setVisible(false);
+			}else {
+				pane.setVisible(true);
+			}
+		}
+
+		for(int i = 0;i<this.historyTexts.size();i++) {
+			MyTextPane pane = this.historyTexts.get(i);
+			if(i==selectedHistory) {
 				pane.setBackground(TEXTHIGHLIGHTCOLOR);
 			}else {
 				pane.setBackground(TEXTBACKGROUNDCOLOR);

@@ -88,14 +88,17 @@ public class MyTextPane extends JTextPane {
 				this.pos = getPoint();
 			}
 			String text = controller.getText(getType(), getPoint(), getIndex());
-			if(text!=null) this.setText(text);
-			else this.setText("None");
+			this.setText(text);
 		}
 	}
 
 	private void writeStringToDocument(String string) {
 		StyledDocument doc = this.getStyledDocument();
 		try {
+			if(string==null) {
+				doc.insertString(0, "None", basic);
+				return;
+			}
 			Matcher matcher = Reference.PATTERN.matcher(string);
 			int closebrace = -1;
 			while(matcher.find()) {
@@ -116,7 +119,7 @@ public class MyTextPane extends JTextPane {
 		Style regularBlue = getLinkStyle(link, doc);
 		String linkText = controller.getLinkText(link);
 		if(linkText==null) {
-			doc.insertString(doc.getLength(), "none", DEFAULT);
+			doc.insertString(doc.getLength(), "none", basic);
 			return new Interval(doc.getLength(),doc.getLength()+4);
 		}
 		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());

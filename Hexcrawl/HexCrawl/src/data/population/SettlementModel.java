@@ -18,6 +18,7 @@ import data.npc.NPCModel;
 import io.SaveRecord;
 import names.FactionNameGenerator;
 import names.FactionType;
+import util.Pair;
 import util.Util;
 import view.InfoPanel;
 
@@ -59,46 +60,46 @@ public class SettlementModel extends DataModel{
 	public static final String GOVERNMENT = "Autocrat,Elected Official,Monarch,Plutocrats,Aristocracy,Theocracy,Tribes,Commune,Elected Council";
 	private static WeightedTable<String> government;
 	public static final String RELATIONSHIP = "${A} proposed a bad trade deal and was accepted.,"
-			+ "${A} proposed a fair-trade deal and was accepted.,"
-			+ "${A} proposed a great trade deal and was accepted.,"
-			+ "${A} proposed a bad trade deal and was refused.,"
-			+ "${A} proposed a fair-trade deal and was refused.,"
-			+ "${A} proposed a great trade deal and was refused.,"
-			+ "${A} requested an alliance and was accepted.,"
-			+ "${A} requested an alliance and was refused.,"
-			+ "${A} started a war.,"
-			+ "${A} won a war.,"
-			+ "${A} lost a war.,"
+			+ "${A} proposed a fair-trade deal with ${B} and was accepted.,"
+			+ "${A} proposed a great trade deal with ${B} and was accepted.,"
+			+ "${A} proposed a bad trade deal with ${B} and was refused.,"
+			+ "${A} proposed a fair-trade deal with ${B} and was refused.,"
+			+ "${A} proposed a great trade deal with ${B} and was refused.,"
+			+ "${A} requested an alliance with ${B} and was accepted.,"
+			+ "${A} requested an alliance with ${B} and was refused.,"
+			+ "${A} started a war with ${B}.,"
+			+ "${A} won a war with ${B}.,"
+			+ "${A} lost a war with ${B}.,"
 			+ "${A} joined an ally in war against ${B}.,"
-			+ "${A} joined an ally in war and won.,"
-			+ "${A} joined an ally in war and lost.,"
-			+ "${A} discovered an affair between the ruling power’s spouses.,"
-			+ "${A} proposed a political marriage and was denied.,"
-			+ "${A} proposed a political marriage and was accepted.,"
+			+ "${A} joined an ally in war against ${B} and won.,"
+			+ "${A} joined an ally in war against ${B} and lost.,"
+			+ "${A} and ${B} discovered an affair between the ruling power’s spouses.,"
+			+ "${A} proposed a political marriage with ${B} and was denied.,"
+			+ "${A} proposed a political marriage with ${B} and was accepted.,"
 			+ "${A} attempted to bribe officials in ${B},"
 			+ "Higher up in ${A} produced Illegitmate Child from ${B} complicating the line of succession and power,"
-			+ "${A} aided in rigging an election in their favor and was caught.,"
-			+ "${A} aided in rigging an election in their favor and succeeded.,"
-			+ "${A} aided in rigging an election in their favor and failed.,"
-			+ "${A} abducted noble for blackmail.,"
-			+ "${A} attempted an assassination and succeeded.,"
-			+ "${A} attempted an assassination and failed.,"
+			+ "${A} manipulated the power structure of ${B} in their favor and was caught.,"
+			+ "${A} manipulated the power structure of ${B} in their favor and succeeded.,"
+			+ "${A} manipulated the power structure of ${B} in their favor and failed.,"
+			+ "${A} abducted noble from ${B} for blackmail.,"
+			+ "${A} attempted an assassination in ${B} and succeeded.,"
+			+ "${A} attempted an assassination in ${B} and failed.,"
 			+ "${A} invaded ${B} in search of resources.,"
 			+ "${A} invaded ${B} in search of treasure.,"
-			+ "${A} invaded ${B} in religious belief.,"
+			+ "${A} invaded ${B} out of religious belief.,"
 			+ "${A} invaded ${B} in search of new land.,"
-			+ "${A} hosted an assembly to open negotiations.,"
+			+ "${A} hosted a diplomatic assembly with ${B}.,"
 			+ "${A} attempted to start a spy ring in ${B} and succeeded.,"
 			+ "${A} attempted to start a spy ring in ${B} and failed.,"
 			+ "${A} discovered a spy ring run by ${B}.,"
 			+ "${A} sent priests to ${B} to spread their religion and succeeded,"
 			+ "${A} sent priests to ${B} to spread their religion and are persecuted,"
-			+ "${A} tried to collect repayment for a loan and succeeded.,"
-			+ "${A} tried to collect repayment for a loan and failed.,"
-			+ "${A} provided aid after a natural disaster.,"
+			+ "${A} tried to collect repayment for a loan from ${B} and succeeded.,"
+			+ "${A} tried to collect repayment for a loan from ${B} and failed.,"
+			+ "${A} provided aid to ${B} after a natural disaster.,"
 			+ "${A} took advantage of ${B} after they suffered a natural disaster.,"
-			+ "${A} helped depose the previous ruler to install the current ruler.,"
-			+ "${A} broke a non-aggression pact.,"
+			+ "${A} helped depose the previous ruler of ${B} to install the current ruler.,"
+			+ "${A} broke a non-aggression pact with ${B}.,"
 			+ "${A} secured a treaty that humilated ${B}.,"
 			+ "${A} aided ${B} in defeating a rebellion.,"
 			+ "${A} refused to aid ${B} in defeating a rebellion.,"
@@ -121,7 +122,7 @@ public class SettlementModel extends DataModel{
 			+ "${A} used magic to scry on ${B} and was caught,"
 			+ "${A} used magic to scry on ${B} and succeeded,"
 			+ "${A} used magic to scry on ${B} and failed,"
-			+ "Kingdoms raced to achieve technological or social victory (sail around the world build the tallest structure etc),"
+			+ "${A} and ${B} raced to achieve technological or social victory (sail around the world build the tallest structure etc),"
 			+ "${A} sent urgent aid to ${B} who was struggling with disease and sickness,"
 			+ "${A} sent urgent aid to ${B} who was struggling with monster threat,"
 			+ "${A} requested urgent aid from ${B} struggling with disease and sickness,"
@@ -136,16 +137,16 @@ public class SettlementModel extends DataModel{
 			+ "${A} warred with ${B} to stop them from exploring uncharted territory,"
 			+ "${A} began teaching ${B}'s military tactics advancing / changing their strategies,"
 			+ "${A} hired mercenaries from ${B} to drill and train their soldiers in tactics,"
-			+ "${A}'s new work of art swept through foreign land,"
-			+ "Strange phenomena caused Kingdoms to work together to investigate its occurance,"
-			+ "People went missing and multiple Kingdoms engaged in discovering why,"
+			+ "${A}'s new work of art swept through ${B},"
+			+ "${A} and ${B} cooperate to investigate a strange phenomena,"
+			+ "${B} and ${B} cooperate to investigate the cause of missing people,"
 			+ "${A} started a war with ${B} to force a marriage,"
 			+ "${A} funded rebel group/barbarians/religious zealots within ${B} empowering them to attack,"
 			+ "${A} sent an emissary to ${B} to learn of their customs and return,"
-			+ "${A} sent thieves to steal religious artifact,"
-			+ "${A} sent thieves to steal historical object / object of national pride,"
+			+ "${A} sent thieves to steal religious artifact from ${B},"
+			+ "${A} sent thieves to steal cultural artifact from ${B},"
 			+ "${A} stole significant object of ${B}'s nobility,"
-			+ "${A} helped criminal escape into their country,"
+			+ "${A} sheltered a wanted criminal from ${B},"
 			+ "${A} banished signifcant figure to ${B},"
 			+ "${A} established an embassy in ${B},"
 			+ "${A} rebels seized embassy of ${B} and demand ransom in exchange for hostages,"
@@ -373,7 +374,8 @@ public class SettlementModel extends DataModel{
 		if(i<districts.size()&&i>-1) return districts.get(i);
 		return null;
 	}
-	public String getRelationship(Point p1,Point p2) {
+	public String getRelationship(Point p1,Point p2,boolean links) {
+		if(p2==null) return null;
 		float f1 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES), p1.x, p1.y);
 		float f2 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES), p2.x, p2.y);
 		Indexible obj = new Indexible(f1+f2);
@@ -383,8 +385,55 @@ public class SettlementModel extends DataModel{
 			p2 = p1;
 			p1 = p;
 		}
-		String s1 = controller.getText(HexData.TOWN, p1, 0);
-		String s2 = controller.getText(HexData.TOWN, p2, 0);
+		String s1;
+		String s2;
+		if(links) {
+			s1 = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p1), 0).toString();
+			s2 = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p2), 0).toString();
+		}else {
+			s1 = controller.getText(HexData.TOWN, p1, 0);
+			s2 = controller.getText(HexData.TOWN, p2, 0);
+		}
+		if(obj.reduceTempId(2)==0) {
+			relationship = Util.replace(relationship, "${A}", s1);
+			relationship = Util.replace(relationship, "${B}", s2);
+		}else {
+			relationship = Util.replace(relationship, "${A}", s2);
+			relationship = Util.replace(relationship, "${B}", s1);
+		}
+		return relationship;
+	}
+	public Pair<Point,Point> getCityPair(Point p,int i) {
+		ArrayList<Point> nearby = controller.getEconomy().getNeighboringCities(p);
+		if(nearby==null) return null;
+		else if(i>=nearby.size()) return new Pair<Point,Point>(p,null);
+		else return new Pair<Point,Point>(p,nearby.get(i));
+	}
+	public String getRelationship(Point p,int i) {
+		Pair<Point,Point> pair = getCityPair(p, i);
+		if(pair==null) {
+			if(i==0) return "Loading...";
+			else return null;
+		}
+		return getRelationship(pair.key1, pair.key2, true);
+	}
+	public String getRelationship(Point p,int i,Random rand) {
+		Pair<Point,Point> pair = getCityPair(p, i);
+		return getRelationship(pair.key1, pair.key2, true,rand);
+	}
+	public String getRelationship(Point p1,Point p2,boolean links,Random rand) {
+		Indexible obj = new Indexible(rand.nextInt());
+		String relationship = getRelationship(obj);
+
+		String s1;
+		String s2;
+		if(links) {
+			s1 = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p1), 0).toString();
+			s2 = new Reference(HexData.TOWN, controller.getRecord().normalizePOS(p2), 0).toString();
+		}else {
+			s1 = controller.getText(HexData.TOWN, p1, 0);
+			s2 = controller.getText(HexData.TOWN, p2, 0);
+		}
 		if(obj.reduceTempId(2)==0) {
 			relationship = Util.replace(relationship, "${A}", s1);
 			relationship = Util.replace(relationship, "${B}", s2);

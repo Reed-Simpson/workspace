@@ -76,7 +76,7 @@ public class Settlement extends Indexible {
 				if(species!=null && species.getIcons()!=null) {
 					ch = species.getIcons().get(0).getCh();
 				}
-				String relationship = controller.getSettlements().getRelationship(pos, p);
+				String relationship = controller.getSettlements().getRelationship(pos, p,true);
 				int dist = controller.getEconomy().getTravelTime(pos, p)*20/24;
 				c1Text.append("("+Util.posString(p,controller.getRecord().getZero())+") "+ref.toString()+" "+ch+" distance:"+dist/20.0+" days"+"\r\n");
 				c1Text.append("    "+relationship+"\r\n");

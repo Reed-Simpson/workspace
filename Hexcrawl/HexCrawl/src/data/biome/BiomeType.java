@@ -144,7 +144,10 @@ public enum BiomeType {
 		throw new IllegalStateException();
 	}
 	public int getID(int x) {
-		return this.getID()+x*values().length;
+		return this.getID()+x*count();
+	}
+	public static int count() {
+		return values().length;
 	}
 	
 

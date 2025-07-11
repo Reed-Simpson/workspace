@@ -58,7 +58,7 @@ public class HumanNameGenerator extends IndexibleNameGenerator{
 
 	@Override
 	public String getName(Indexible obj) {
-		return getElementFromArray(FIRST,obj)+" "+getLastName(obj);
+		return getElementFromArray(FIRST,obj)+" "+Util.toCamelCase(getLastName(obj));
 	}
 
 

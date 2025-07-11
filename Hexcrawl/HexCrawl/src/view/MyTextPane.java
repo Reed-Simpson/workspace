@@ -40,7 +40,8 @@ import view.infopanels.TextLinkAction;
 public class MyTextPane extends JTextPane {
 	private static final Style DEFAULT = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
-	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
+	private static final Color YELLOW_HIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
+	private static final Color BLUE_HIGHLIGHTCOLOR = Color.getHSBColor(220f/360, 20f/100, 100f/100);
 	private final Style basic;
 	private InfoPanel info;
 	private String rawText;
@@ -51,6 +52,7 @@ public class MyTextPane extends JTextPane {
 	private Reference ref;
 	private int offset;
 	private Point pos;
+	private boolean custom;
 
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
@@ -88,6 +90,7 @@ public class MyTextPane extends JTextPane {
 				this.pos = getPoint();
 			}
 			String text = controller.getText(getType(), getPoint(), getIndex());
+			this.custom = (controller.getData(getType(), getPoint(), getIndex())!=null);
 			this.setText(text);
 		}
 	}
@@ -500,7 +503,8 @@ public class MyTextPane extends JTextPane {
 		}
 	}
 	public void setHighlight(boolean b) {
-		if(b) this.setBackground(TEXTHIGHLIGHTCOLOR);
+		if(b) this.setBackground(YELLOW_HIGHLIGHTCOLOR);
+		else if(custom) this.setBackground(BLUE_HIGHLIGHTCOLOR);
 		else this.setBackground(TEXTBACKGROUNDCOLOR);
 	}
 	public void flicker() {

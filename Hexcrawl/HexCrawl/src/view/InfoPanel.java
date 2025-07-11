@@ -44,8 +44,6 @@ import view.infopanels.HexPanelGeneralStatPanel;
 public class InfoPanel extends JTabbedPane{
 	private static final int RECENT_HISTORY_COUNT = 20;
 	private static final int TAB_TITLE_LENGTH = 34;
-	private static final Color TEXTBACKGROUNDCOLOR = Color.WHITE;
-	private static final Color TEXTHIGHLIGHTCOLOR = Color.getHSBColor(65f/360, 20f/100, 100f/100);
 	public static final int INFOPANELWIDTH = 450;
 	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
@@ -105,6 +103,14 @@ public class InfoPanel extends JTabbedPane{
 	int selectedDEncounter;
 	int selectedFaction;
 	int selectedEncounter;
+	private int selectedFaith;
+	private int selectedMinion;
+	private int selectedBeast;
+	private int selectedFactionNPC;
+	private int selectedMission;
+	private int selectedMonster;
+	private int selectedHistory;
+	private int selectedCityHistory;
 	boolean changeSelected;
 
 	private HexPanelGeneralStatPanel hexGeneralPanel;
@@ -116,27 +122,19 @@ public class InfoPanel extends JTabbedPane{
 	private JPanel charactersPanel;
 	private ArrayList<MyTextPane> faithsTexts;
 	//	private JScrollPane faithsScrollPane;
-	private int selectedFaith;
 	private JPanel encounterPanel;
 	private JPanel dungeonPanel;
 	private ArrayList<MyTextPane> minionsTexts;
-	private int selectedMinion;
 	private ArrayList<MyTextPane> beastsTexts;
-	private int selectedBeast;
 	private ArrayList<MyTextPane> proprietorTexts;
 	private ArrayList<MyTextPane> factionNPCTexts;
 	private int FACTION_NPC_TAB_INDEX;
-	private int selectedFactionNPC;
 	private Container missionsPanel;
 	private ArrayList<MyTextPane> missionsTexts;
 	private int MISSIONS_TAB_INDEX;
-	private int selectedMission;
 	private ArrayList<MyTextPane> threatMonsterTexts;
-	private int selectedMonster;
 	private ArrayList<MyTextPane> historyTexts;
-	private int selectedHistory;
 	private ArrayList<MyTextPane> cityHistoryTexts;
-	private int selectedCityHistory;
 	private MyTextPane event;
 
 	public InfoPanel(MapPanel panel) {
@@ -482,7 +480,6 @@ public class InfoPanel extends JTabbedPane{
 			beastsPanel.add(beast);
 			beastsTexts.add(beast);
 		}
-		selectedBeast = -1;
 		threatMonsterTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<MONSTERCOUNT;i++) {
 			beastsPanel.add(new JLabel("~~~~~ Threat Monster #"+(i+1)+" ~~~~~"));
@@ -491,7 +488,6 @@ public class InfoPanel extends JTabbedPane{
 			beastsPanel.add(beast);
 			threatMonsterTexts.add(beast);
 		}
-		selectedMonster = -1;
 		JScrollPane beastsScrollPane = new JScrollPane(beastsPanel);
 		beastsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Monsters", beastsScrollPane);
@@ -517,7 +513,6 @@ public class InfoPanel extends JTabbedPane{
 			historyPanel.add(history);
 			cityHistoryTexts.add(history);
 		}
-		selectedCityHistory = -1;
 		historyTexts = new ArrayList<MyTextPane>();
 		historyPanel.add(new JLabel("~~~~~ Ancient History ~~~~~"));
 		for(int i=0;i<4;i++) {
@@ -529,7 +524,6 @@ public class InfoPanel extends JTabbedPane{
 			historyTexts.add(history);
 		}
 		historyPanel.add(Box.createVerticalGlue());
-		selectedHistory = -1;
 		JScrollPane historyScrollPane = new JScrollPane(historyPanel);
 		historyScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("History", historyScrollPane);
@@ -669,6 +663,14 @@ public class InfoPanel extends JTabbedPane{
 		selectedDungeon = -1;
 		selectedPOI = -1;
 		selectedFaction = -1;
+		selectedFaith = -1;
+		selectedMinion = -1;
+		selectedBeast = -1;
+		selectedFactionNPC = -1;
+		selectedMission = -1;
+		selectedMonster = -1;
+		selectedHistory = -1;
+		selectedCityHistory = -1;
 	}
 
 	@Override
@@ -748,11 +750,7 @@ public class InfoPanel extends JTabbedPane{
 
 			for(int i = 0;i<this.encounterTexts.size();i++) {
 				MyTextPane pane = this.encounterTexts.get(i);
-				if(i==selectedEncounter) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
+				pane.setHighlight(i==selectedEncounter);
 				pane.doPaint();
 
 			}
@@ -760,11 +758,7 @@ public class InfoPanel extends JTabbedPane{
 
 			for(int i = 0;i<this.missionsTexts.size();i++) {
 				MyTextPane pane = this.missionsTexts.get(i);
-				if(i==selectedMission) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
+				pane.setHighlight(i==selectedMission);
 				pane.doPaint();
 			}
 
@@ -772,28 +766,15 @@ public class InfoPanel extends JTabbedPane{
 				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
 				for(int i = 0;i<this.npcTexts.size();i++) {
 					MyTextPane pane = this.npcTexts.get(i);
-					if(i==selectedNPC) {
-						pane.setBackground(TEXTHIGHLIGHTCOLOR);
-					}else {
-						pane.setBackground(TEXTBACKGROUNDCOLOR);
-					}
+					pane.setHighlight(i==selectedNPC);
 					pane.doPaint();
 				}
 				if(selectedNPC>-1) {
-					//					MyTextPane pane = npcTexts.get(selectedNPC);
-					//					pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-					//					npcScrollPane.scrollRectToVisible(pane.getBounds());
-					//					SwingUtilities.invokeLater(() -> { encounterScrollPane.scrollRectToVisible(pane.getBounds()); });
 					this.npcTexts.get(selectedNPC).setCaretPosition(0);
 				}
 				
 				for(int i = 0;i<this.proprietorTexts.size();i++) {
 					MyTextPane pane = this.proprietorTexts.get(i);
-//					if(i==selectedNPC) {
-//						pane.setBackground(TEXTHIGHLIGHTCOLOR);
-//					}else {
-//						pane.setBackground(TEXTBACKGROUNDCOLOR);
-//					}
 					pane.doPaint();
 				}
 			}else {
@@ -802,45 +783,22 @@ public class InfoPanel extends JTabbedPane{
 
 			for(int i = 0;i<this.poiTexts.size();i++) {
 				MyTextPane pane = this.poiTexts.get(i);
-				if(i==selectedPOI) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
+				pane.setHighlight(i==selectedPOI);
 				pane.doPaint();
 			}
 			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
 
 			for(int i = 0;i<this.dEntranceTexts.size();i++) {
 				MyTextPane pane = this.dEntranceTexts.get(i);
-				if(i==selectedDungeon) {
-					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-				}else {
-					pane.setBackground(TEXTBACKGROUNDCOLOR);
-				}
+				pane.setHighlight(i==selectedDungeon);
 				pane.doPaint();
 			}
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
-//			for(int i = 0;i<this.dungeonTexts.size();i++) {
-//				MyTextPane pane = this.dungeonTexts.get(i);
-//				if(i==selectedDEncounter) {
-//					pane.setBackground(TEXTHIGHLIGHTCOLOR);
-//				}else {
-//					pane.setBackground(TEXTBACKGROUNDCOLOR);
-//				}
-//				pane.doPaint();
-//			}
-//			if(selectedDEncounter>-1) this.dungeonTexts.get(selectedDEncounter).setCaretPosition(0);
-
 			if(population.isCity(capital)) {
 				for(int i = 0;i<this.factionTexts.size();i++) {
 					MyTextPane pane = this.factionTexts.get(i);
-					if(i==selectedFaction) {
-						pane.setBackground(TEXTHIGHLIGHTCOLOR);
-					}else {
-						pane.setBackground(TEXTBACKGROUNDCOLOR);
-					}
+					pane.setHighlight(i==selectedFaction);
 					pane.doPaint();
 				}
 				if(selectedFaction>-1) this.factionTexts.get(selectedFaction).setCaretPosition(0);
@@ -857,51 +815,31 @@ public class InfoPanel extends JTabbedPane{
 
 		for(int i = 0;i<this.faithsTexts.size();i++) {
 			MyTextPane pane = this.faithsTexts.get(i);
-			if(i==selectedFaith) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedFaith);
 			pane.doPaint();
 		}
 
 		for(int i = 0;i<this.factionNPCTexts.size();i++) {
 			MyTextPane pane = this.factionNPCTexts.get(i);
-			if(i==selectedFactionNPC) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedFactionNPC);
 			pane.doPaint();
 		}
 
 		for(int i = 0;i<this.minionsTexts.size();i++) {
 			MyTextPane pane = this.minionsTexts.get(i);
-			if(i==selectedMinion) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedMinion);
 			pane.doPaint();
 		}
 
 		for(int i = 0;i<this.beastsTexts.size();i++) {
 			MyTextPane pane = this.beastsTexts.get(i);
-			if(i==selectedBeast) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedBeast);
 			pane.doPaint();
 		}
 
 		for(int i = 0;i<this.threatMonsterTexts.size();i++) {
 			MyTextPane pane = this.threatMonsterTexts.get(i);
-			if(i==selectedMonster) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedMonster);
 			pane.doPaint();
 		}
 		
@@ -909,11 +847,7 @@ public class InfoPanel extends JTabbedPane{
 
 		for(int i = 0;i<this.cityHistoryTexts.size();i++) {
 			MyTextPane pane = this.cityHistoryTexts.get(i);
-			if(i==selectedCityHistory) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedCityHistory);
 			pane.doPaint();
 			if(pane.getRawText()==null) {
 				pane.setVisible(false);
@@ -924,11 +858,7 @@ public class InfoPanel extends JTabbedPane{
 
 		for(int i = 0;i<this.historyTexts.size();i++) {
 			MyTextPane pane = this.historyTexts.get(i);
-			if(i==selectedHistory) {
-				pane.setBackground(TEXTHIGHLIGHTCOLOR);
-			}else {
-				pane.setBackground(TEXTBACKGROUNDCOLOR);
-			}
+			pane.setHighlight(i==selectedHistory);
 			pane.doPaint();
 		}
 

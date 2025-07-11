@@ -224,23 +224,50 @@ public class NPCModel extends DataModel {
 		setSpecies(p, npc);
 		setSubspecies(p, npc);
 		setJob(p, npc);
-		setAsset(p, npc);
-		setLiability(p, npc);
-		setGoal(p, npc);
-		setMisfortune(p, npc);
-		setMethod(p, npc);
+		
 		setAppearance(p, npc);
 		setDetail(p, npc);
 		setCostume(p, npc);
-		setPersonality(p, npc);
 		setMannerism(p, npc);
-		setHobby(p, npc);
-		setReputation(p, npc);
-		setSecret(p, npc);
-		setDomain(p, npc);
-		setRelationship(p, npc);
+		
+		int index = npc.reduceTempId(5);
+		if(index==0) setPersonality(p, npc);
+		else if(index==1) setReputation(p, npc);
+		else if(index==2) setRelationship(p, npc);
+		else if(index==3) setFaction(p, npc);
+		else if(index==4) {
+			index = npc.reduceTempId(6);
+			if(index==0||index==1||index==2) setPersonality(p, npc);
+			if(index==0||index==3||index==4) setReputation(p, npc);
+			if(index==1||index==3||index==5) setRelationship(p, npc);
+			if(index==2||index==4||index==5) setFaction(p, npc);
+		}
+		
+		setGoal(p, npc);
+		index = npc.reduceTempId(5);
+		if(index==0) setAsset(p, npc);
+		else if(index==1) setMethod(p, npc);
+		else if(index==2) setHobby(p, npc);
+		else if(index==3) setDomain(p, npc);
+		else if(index==4) {
+			index = npc.reduceTempId(6);
+			if(index==0||index==1||index==2) setAsset(p, npc);
+			if(index==0||index==3||index==4) setMethod(p, npc);
+			if(index==1||index==3||index==5) setHobby(p, npc);
+			if(index==2||index==4||index==5) setDomain(p, npc);
+		}
+
+		index = npc.reduceTempId(7);
+		if(index<2) setLiability(p, npc);
+		else if(index<4) setMisfortune(p, npc);
+		else if(index<6) setSecret(p, npc);
+		else {
+			index = npc.reduceTempId(3);
+			if(index==0||index==1) setLiability(p, npc);
+			else if(index==0||index==2) setMisfortune(p, npc);
+			else if(index==1||index==2) setSecret(p, npc);
+		}
 		setName(p, npc);
-		setFaction(p, npc);
 		setDescriptors(p,npc);
 	}
 

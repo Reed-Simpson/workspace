@@ -462,6 +462,7 @@ public class MapPanel  extends JPanel{
 		Point p = this.getMiddleGridPoint();
 		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null);
 		if(highlightedHex!=null) {
+			g2.setStroke(new BasicStroke(Math.max(strokeSize,1)+1));
 			this.drawHex(g2, getScreenPos(highlightedHex),Color.MAGENTA,null,null,Math.max((int)scale,1),null);
 		}
 		g2.setStroke(defaultStroke);

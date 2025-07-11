@@ -180,26 +180,33 @@ public class NPC extends Creature{
 		String species = this.getSpecies().getSpeciesName();
 		if(this.getSubspecies()!=null) species = this.getSubspecies();
 		e1Text.append(name+Util.toCamelCase(species)+" "+this.getJob() + "\r\n");
-		e1Text.append("• Descriptors: "+Util.parseArray(this.getDescriptors()));
+		if(this.descriptors!=null) e1Text.append("• Descriptors: "+Util.parseArray(this.getDescriptors()));
 		e1Text.append("\r\n");
 		//appearance
 		e1Text.append("• Appearance: "+this.getAppearance()+" with "+this.getDetail()+". ");
 		e1Text.append("Their outfit appears to be "+this.getCostume()+". ");
+		e1Text.append("Is "+this.getMannerism()+". ");
 		e1Text.append("\r\n");
 		//social
-		e1Text.append("• Social: Has a "+this.getPersonality()+" personality and is "+this.getMannerism()+". ");
-		e1Text.append("Has a reputation for being "+this.getReputation()+". ");
-		e1Text.append("Has a close relationship with a "+this.getRelationship()+". ");
+		e1Text.append("• Social: ");
+		if(this.getPersonality()!=null) e1Text.append("Has a "+this.getPersonality()+" personality. ");
+		if(this.getReputation()!=null) e1Text.append("Has a reputation for being "+this.getReputation()+". ");
+		if(this.getRelationship()!=null) e1Text.append("Has a close relationship with a "+this.getRelationship()+". ");
+		if(this.getFaction()!=null) e1Text.append("Has connections with "+this.getFaction()+".");
 		e1Text.append("\r\n");
 		//personal
-		e1Text.append("• Personal: Seeks "+this.getGoal()+". ");
-		e1Text.append(this.getAsset()+" and adept at using "+this.getMethod()+". ");
-		e1Text.append("Likes to study "+this.getHobby()+". ");
-		e1Text.append("Practices the faith of "+this.getDomain()+".");
+		e1Text.append("• Personal: ");
+		if(this.getGoal()!=null) e1Text.append("Seeks "+this.getGoal()+". ");
+		if(this.getAsset()!=null) e1Text.append(this.getAsset()+". ");
+		if(this.getMethod()!=null) e1Text.append("Adept at using "+this.getMethod()+". ");
+		if(this.getHobby()!=null) e1Text.append("Likes to study "+this.getHobby()+". ");
+		if(this.getDomain()!=null) e1Text.append("Practices the faith of "+this.getDomain()+".");
 		e1Text.append("\r\n");
 		//Liabilities
-		e1Text.append("• Liabilities: "+this.getLiability()+" and is currently "+this.getMisfortune()+". ");
-		e1Text.append("Secretly is "+this.getSecret()+". ");
+		e1Text.append("• Liabilities: ");
+		if(this.getLiability()!=null) e1Text.append(this.getLiability()+". ");
+		if(this.getMisfortune()!=null) e1Text.append("Is currently "+this.getMisfortune()+". ");
+		if(this.getSecret()!=null) e1Text.append("Secretly is "+this.getSecret()+". ");
 		return formatText(e1Text.toString());
 	}
 

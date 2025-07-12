@@ -31,12 +31,12 @@ public class PopulationModel extends DataModel{
 	public static final int SEED_OFFSET = 2*Util.getOffsetX();
 	private static final int INFLUENCE_RADIUS = 8;
 	private static final int INDEX_STEP = 2;
+	public static final DecimalFormat populationStringFormat = new DecimalFormat ("##,##0");
+	public static final DecimalFormat populationPercentStringFormat = new DecimalFormat("#0.00%");
 	private AltitudeModel grid;
 	private PrecipitationModel precipitation;
 	private HashMap<Point,LinkedHashMap<NPCSpecies,Float>> cache;
 	private HashMap<Point,Point> fealtyCache;
-	private DecimalFormat populationStringFormat = new DecimalFormat ("##,##0");
-	private DecimalFormat populationPercentStringFormat = new DecimalFormat("#0.00%");
 	private DataController controller;
 
 	public float getPopulation(int x,int y, NPCSpecies species) {

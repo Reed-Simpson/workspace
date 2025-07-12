@@ -3,8 +3,10 @@ package view.infopanels;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,6 +22,7 @@ public class DemographicsPanel extends JPanel {
 	private InfoPanel info;
 	private JLabel demoLabel;
 	private JTextArea demographics;
+	private JLabel toleranceLabel;
 	
 	public DemographicsPanel(InfoPanel info) {
 		this.info = info;
@@ -31,6 +34,10 @@ public class DemographicsPanel extends JPanel {
 		dummy3.setLayout(new BoxLayout(dummy3, BoxLayout.X_AXIS));
 		dummy3.setAlignmentX(RIGHT_ALIGNMENT);
 		dummy3.add(demoLabel);
+		dummy3.add(Box.createHorizontalGlue());
+		toleranceLabel = new JLabel("Tolerance: ");
+		dummy3.add(toleranceLabel);
+		dummy3.add(Box.createHorizontalStrut(100));
 		this.add(dummy3,BorderLayout.NORTH);
 
 		demographics = new JTextArea();
@@ -54,11 +61,17 @@ public class DemographicsPanel extends JPanel {
 
 		float pop = population.getUniversalPopulation(pos);
 		int popScale = population.getPopScale(pos) ;
+		LinkedHashMap<NPCSpecies,Integer> demographics = population.getTransformedDemographics(pos);
 
 		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
 		this.setDemoLabel("Demographics: "+getDemoLabelText(pop, popScale,transformedUniversalPopulation));
+		Iterator<NPCSpecies> iterator = demographics.keySet().iterator();
+		if(iterator.hasNext()) {
+			float isolationFactor = Math.min(population.getIsolationFactor(pos, iterator.next(), NPCSpecies.HUMAN),1.0f);
+			this.toleranceLabel.setText("Tolerance: "+PopulationModel.populationPercentStringFormat.format(isolationFactor));
+		}
 
-		setText(this.getDemoString(pos));
+		setText(this.getDemoString(pos,demographics));
 	}
 
 	public void setText(String string) {
@@ -69,10 +82,9 @@ public class DemographicsPanel extends JPanel {
 		this.demoLabel.setText(string);
 	}
 
-	private String getDemoString(Point pos) {
+	private String getDemoString(Point pos,LinkedHashMap<NPCSpecies,Integer> demographics) {
 		PopulationModel population = info.getPanel().getController().getPopulation();
 		int pop = population.getTransformedUniversalPopulation(pos);
-		LinkedHashMap<NPCSpecies,Integer> demographics = population.getTransformedDemographics(pos);
 		String demoString = "";
 		for(NPCSpecies s:demographics.keySet()) {
 			if(demographics.get(s)!=null&&demographics.get(s)>0) {

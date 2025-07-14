@@ -4,7 +4,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import controllers.DataController;
+import data.HexData;
 import data.Indexible;
+import data.Reference;
 import names.FactionType;
 
 public class Settlement extends Indexible {
@@ -66,7 +68,10 @@ public class Settlement extends Indexible {
 	public String toString() {
 		StringBuilder c1Text = new StringBuilder();
 		c1Text.append("City Theme: "+this.getTheme()+"\r\n");
-		c1Text.append("City Leadership: "+this.getReputation()+" "+this.getLeadership().toString()+"\r\n");
+		Reference factionref = new Reference(HexData.FACTION,controller.getRecord().normalizePOS(pos),0);
+		factionref.setText(this.getLeadership().toString());
+		c1Text.append("City Leadership: "+this.getReputation()+" "+factionref+"\r\n");
+		c1Text.append("   Leader: "+new Reference(HexData.FACTION_NPC,controller.getRecord().normalizePOS(pos),0)+"\r\n");
 		if(this.getEvent()!=null) c1Text.append("City Event: "+this.getEvent()+"\r\n");
 		c1Text.append("~~~~~ Districts ~~~~~\r\n");
 		for(String s:districts) {

@@ -255,7 +255,9 @@ public class DataController {
 		case MISSION: return record.getMission(p,i);
 		case CITYHISTORY: {
 			Point capital = population.getAbsoluteFealty(p);
-			return record.getCityHistory(settlements.getCityPair(capital, i));
+			Pair<Point, Point> cityPair = settlements.getCityPair(capital, i);
+			if(cityPair!=null) return record.getCityHistory(cityPair);
+			else return null;
 		}
 		case HISTORY: {
 			Point region = monsters.getTerritoryRef(p,i);
@@ -318,7 +320,9 @@ public class DataController {
 		case MISSION: return record.removeMission(p, i);
 		case CITYHISTORY: {
 			Point capital = population.getAbsoluteFealty(p);
-			return record.removeCityHistory(settlements.getCityPair(capital, i));
+			Pair<Point, Point> cityPair = settlements.getCityPair(capital, i);
+			if(cityPair!=null) return record.removeCityHistory(cityPair);
+			else return null;
 		}
 		case HISTORY: {
 			Point region = monsters.getTerritoryRef(p,i);
@@ -381,7 +385,9 @@ public class DataController {
 		case MISSION: return record.putMission(p, i, s);
 		case CITYHISTORY: {
 			Point capital = population.getAbsoluteFealty(p);
-			return record.putCityHistory(settlements.getCityPair(capital, i),s);
+			Pair<Point, Point> cityPair = settlements.getCityPair(capital, i);
+			if(cityPair!=null) return record.putCityHistory(cityPair,s);
+			else return null;
 		}
 		case HISTORY: {
 			Point region = monsters.getTerritoryRef(p,i);
@@ -454,14 +460,8 @@ public class DataController {
 	}
 
 	public String getLinkText(String link) {
-		Matcher matcher = Reference.PATTERN.matcher(link);
-		if(matcher.matches()) {
-			link = getLinkText(
-					matcher.group(1),
-					Integer.valueOf(matcher.group(2)),
-					Integer.valueOf(matcher.group(3)),
-					Integer.valueOf(matcher.group(4))-1);
-		}
+		Reference ref = new Reference(link);
+		link = getLinkText(ref);
 		return link;
 	}
 	public String getRawLinkText(HexData type, Point pos,int index) {
@@ -476,6 +476,26 @@ public class DataController {
 		}else if(fullText.length()>=50) {
 			return fullText.substring(0,50);
 		}else return fullText;
+	}
+
+	public String getLinkText(Reference link) {
+		if(link.getText()!=null) return link.getText();
+		Point displayPos = link.getPoint();
+		Point actualPos = Util.denormalizePos(displayPos, record.getZero());
+		HexData type = HexData.get(link.getType().getText());
+		String linkText = getRawLinkText(type, actualPos, link.getIndex());
+		if(linkText==null) {
+			//System.err.println("null link text: {"+type+":"+displayPos+","+index+"}");
+			return null;
+		}
+		Matcher matcher = Reference.PATTERN.matcher(linkText);
+		if(matcher.find()) {
+			linkText = linkText.substring(0,matcher.start())+
+					getLinkText(linkText.substring(matcher.start(), matcher.end()))+
+					linkText.substring(matcher.end());
+		}
+		return linkText;
+
 	}
 	public String getLinkText(String tab, int x, int y, int index) {
 		Point displayPos = new Point(x,y);

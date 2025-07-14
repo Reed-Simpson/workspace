@@ -7,14 +7,15 @@ import java.util.regex.Pattern;
 
 public class Reference implements Serializable{
 	private static final long serialVersionUID = 3816076390422175045L;
-	public static String PARTIAL = "\\{(\\w+):(-?\\d+),(-?\\d+),(\\d+)";
+	public static String PARTIAL = "\\{(\\w+):(-?\\d+),(-?\\d+),(\\d+)(?:\\|(.+))?";
 	public static String FULL = PARTIAL+"\\}\\$";
 	public static Pattern PATTERN = Pattern.compile(FULL);
-	public static Pattern LINKDETECT = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+\\}\\$)");
+	public static Pattern LINKDETECT = Pattern.compile("(\\{\\w+\\:\\d+,\\d+,\\d+(?:\\|.+)?}\\$)");
 	
 	HexData type;
 	Point point;
 	int index;
+	String text;
 	
 	public Reference(HexData type,Point point,int index) {
 		this.type = type;
@@ -27,6 +28,7 @@ public class Reference implements Serializable{
 			this.type = HexData.get(matcher.group(1));
 			this.point = new Point(Integer.valueOf(matcher.group(2)),Integer.valueOf(matcher.group(3)));
 			this.index = Integer.valueOf(matcher.group(4))-1;
+			this.text = matcher.group(5);
 		}else {
 			throw new IllegalArgumentException("Unrecognized reference text: "+s);
 		}
@@ -55,8 +57,16 @@ public class Reference implements Serializable{
 		this.index = index;
 	}
 	
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
 	public String toString() {
-		return "{"+type.getText()+":"+point.x+","+point.y+","+(index+1)+"}$";
+		String text = "";
+		if(this.text!=null) text = "|"+this.text;
+		return "{"+type.getText()+":"+point.x+","+point.y+","+(index+1)+text+"}$";
 	}
 
 

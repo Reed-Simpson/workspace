@@ -50,7 +50,6 @@ public class MyTextPane extends JTextPane {
 	private HexData type;
 	private HashMap<Interval,Interval> links;
 	private Reference ref;
-	private int offset;
 	private Point pos;
 	private boolean custom;
 
@@ -59,7 +58,6 @@ public class MyTextPane extends JTextPane {
 		this.controller = info.getPanel().getController();
 		this.index = index;
 		this.type = type;
-		this.offset = 0;
 		this.pos = getPoint();
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setCaret(new NoScrollCaret());
@@ -85,8 +83,8 @@ public class MyTextPane extends JTextPane {
 	}
 	public void doPaint() {
 		if(getIndex()>-1) {
+			controller.updateData(getType(), this.getRawText(), pos, getIndex());
 			if(!this.pos.equals(getPoint())) {
-				controller.updateData(getType(), this.getRawText(), pos, getIndex());
 				this.pos = getPoint();
 			}
 			String text = controller.getText(getType(), getPoint(), getIndex());
@@ -118,9 +116,10 @@ public class MyTextPane extends JTextPane {
 	}
 
 	private Interval insertLink(String link) throws BadLocationException {
+		Reference ref = new Reference(link);
 		StyledDocument doc = this.getStyledDocument();
-		Style regularBlue = getLinkStyle(link, doc);
-		String linkText = controller.getLinkText(link);
+		Style regularBlue = getLinkStyle(ref, doc);
+		String linkText = controller.getLinkText(ref);
 		if(linkText==null) {
 			doc.insertString(doc.getLength(), "none", basic);
 			return new Interval(doc.getLength(),doc.getLength()+4);
@@ -136,7 +135,7 @@ public class MyTextPane extends JTextPane {
 		return basic;
 	}
 
-	private Style getLinkStyle(String link, StyledDocument doc) {
+	private Style getLinkStyle(Reference link, StyledDocument doc) {
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
 		StyleConstants.setUnderline(regularBlue, true);
@@ -154,10 +153,28 @@ public class MyTextPane extends JTextPane {
 		for(Entry<Interval,Interval> e:links.entrySet()) {
 			Interval rawInterval = e.getValue();
 			Interval formattedInterval = e.getKey();
-			if(formattedInterval.getB()<=formatted) raw+=rawInterval.size()-formattedInterval.size();
-			else if(formattedInterval.getA()<formatted) raw+=formattedInterval.getA()-formatted+rawInterval.size()-1;
+			if(formattedInterval.getB()<=formatted) {
+				raw+=rawInterval.size()-formattedInterval.size();
+			}
+			else if(formattedInterval.getA()<formatted) {
+				raw+=formattedInterval.getA()-formatted+rawInterval.size()-1;
+			}
 		}
 		return raw;
+	}
+	private int rawIndexToFormatted(int raw) {
+		int formatted = raw;
+		for(Entry<Interval,Interval> e:links.entrySet()) {
+			Interval rawInterval = e.getValue();
+			Interval formattedInterval = e.getKey();
+			if(rawInterval.getB()<=formatted) {
+				formatted+=formattedInterval.size()-rawInterval.size();
+			}
+			else if(rawInterval.getA()<formatted) {
+				formatted+=rawInterval.getA()-formatted+formattedInterval.size()-1;
+			}
+		}
+		return formatted;
 	}
 	public void insertRawText(String string, int a) {
 		rawText = rawText.substring(0, a)+string+rawText.substring(a);
@@ -235,10 +252,10 @@ public class MyTextPane extends JTextPane {
 		}
 	}
 	private class MouseoverAction extends AbstractAction    {
-		private String textLink;
+		private Reference textLink;
 		private final JTextPane textPane;
 
-		public MouseoverAction(String textLink,JTextPane textPane,InfoPanel info){
+		public MouseoverAction(Reference textLink,JTextPane textPane,InfoPanel info){
 			this.textLink = textLink;
 			this.textPane = textPane;
 		}
@@ -248,7 +265,7 @@ public class MyTextPane extends JTextPane {
 				textPane.setToolTipText(null);
 				info.getPanel().setHighlightedHex(controller.getOriginPoint(getType(), getPoint(), getIndex()));
 			} else {
-				Matcher matcher = Reference.PATTERN.matcher(textLink);
+				Matcher matcher = Reference.PATTERN.matcher(textLink.toString());
 				if(matcher.matches()) {
 					HexData type = HexData.get(matcher.group(1));
 					Point displayPos = new Point(
@@ -435,12 +452,11 @@ public class MyTextPane extends JTextPane {
 		@Override
 		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
 			if(info.isChangeSelected()) {
-				MyTextPane.this.offset = offset;
 				int a = formattedIndexToRaw(offset);
 				int b = formattedIndexToRaw(offset+length);
 				deleteRawText(a,b);
 				writeStringToDocument(fb, rawText);
-				MyTextPane.this.setCaretPosition(MyTextPane.this.offset);
+				MyTextPane.this.setCaretPosition(rawIndexToFormatted(a));
 			}else {
 				super.remove(fb, offset, length); // Allow the removal
 			}
@@ -449,7 +465,6 @@ public class MyTextPane extends JTextPane {
 		@Override
 		public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 			if(info.isChangeSelected()) {
-				MyTextPane.this.offset = offset+text.length()-length;
 				int a = formattedIndexToRaw(offset);
 				int b = formattedIndexToRaw(offset+length);
 				String substring = rawText.substring(0, a);
@@ -463,7 +478,7 @@ public class MyTextPane extends JTextPane {
 				}
 				replaceRawText(text,a,b);
 				writeStringToDocument(fb, rawText);
-				MyTextPane.this.setCaretPosition(MyTextPane.this.offset);
+				MyTextPane.this.setCaretPosition(rawIndexToFormatted(a+text.length()));
 			}else {
 				super.replace(fb, offset, length, text, attrs); // Allow the replacement with modified text
 			}
@@ -480,7 +495,8 @@ public class MyTextPane extends JTextPane {
 				while(matcher.find()) {
 					super.insertString(fb, doc.getLength(), string.substring(closebrace+1,matcher.start()), basic);
 					closebrace = matcher.end()-1;
-					Interval linkInterval = insertLink(fb,string.substring(matcher.start(), matcher.end()));
+					String substring = string.substring(matcher.start(), matcher.end());
+					Interval linkInterval = insertLink(fb,new Reference(substring));
 					if(linkInterval!=null) links.put(linkInterval, new Interval(matcher.start(), matcher.end()));
 				}
 				super.insertString(fb, doc.getLength(), string.substring(closebrace+1), basic);
@@ -489,7 +505,7 @@ public class MyTextPane extends JTextPane {
 			}
 		}
 
-		private Interval insertLink(FilterBypass fb, String link) throws BadLocationException {
+		private Interval insertLink(FilterBypass fb, Reference link) throws BadLocationException {
 			StyledDocument doc = MyTextPane.this.getStyledDocument();
 			Style regularBlue = getLinkStyle(link, doc);
 			String linkText = controller.getLinkText(link);

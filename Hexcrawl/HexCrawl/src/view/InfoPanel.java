@@ -952,6 +952,9 @@ public class InfoPanel extends JTabbedPane{
 		separator.setMaximumSize(new Dimension(9999,1));
 		return separator;
 	}
+	public void selectTabAndIndex(Reference ref) {
+		selectTabAndIndex(ref.getType().toString(), ref.getPoint().x, ref.getPoint().y, ref.getIndex());
+	}
 
 	public void selectTabAndIndex(String tab, int x, int y, int index) {
 		HexData type = HexData.get(tab);

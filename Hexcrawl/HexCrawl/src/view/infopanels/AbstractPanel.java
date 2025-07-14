@@ -10,6 +10,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import data.Reference;
 import view.InfoPanel;
 
 @SuppressWarnings("serial")
@@ -49,7 +50,7 @@ public abstract class AbstractPanel extends JPanel{
 		Style regularBlue = doc.addStyle("regularBlue", DEFAULT);
 		StyleConstants.setForeground(regularBlue, Color.BLUE);
 		StyleConstants.setUnderline(regularBlue, true);
-		regularBlue.addAttribute("linkact", new TextLinkAction(textLink, info));
+		regularBlue.addAttribute("linkact", new TextLinkAction(new Reference(textLink), info));
 		doc.insertString(doc.getLength(), textLink, regularBlue);
 
 	}

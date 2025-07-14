@@ -5,9 +5,11 @@ import java.util.ArrayList;
 
 import controllers.DataController;
 import data.Indexible;
+import names.FactionType;
 
 public class Settlement extends Indexible {
-	private String leadership;
+	private String reputation;
+	private FactionType leadership;
 	private String theme;
 	private String event;
 	private Point pos;
@@ -22,13 +24,22 @@ public class Settlement extends Indexible {
 	public Settlement(int[] vals) {
 		super(vals);
 	}
+	public String getReputation() {
+		return reputation;
+	}
 
-	public String getLeadership() {
+	public void setReputation(String reputation) {
+		this.reputation = reputation;
+	}
+
+	public FactionType getLeadership() {
 		return leadership;
 	}
-	public void setLeadership(String leadership) {
+
+	public void setLeadership(FactionType leadership) {
 		this.leadership = leadership;
 	}
+
 	public String getTheme() {
 		return theme;
 	}
@@ -55,7 +66,7 @@ public class Settlement extends Indexible {
 	public String toString() {
 		StringBuilder c1Text = new StringBuilder();
 		c1Text.append("City Theme: "+this.getTheme()+"\r\n");
-		c1Text.append("City Leadership: "+this.getLeadership()+"\r\n");
+		c1Text.append("City Leadership: "+this.getReputation()+" "+this.getLeadership().toString()+"\r\n");
 		if(this.getEvent()!=null) c1Text.append("City Event: "+this.getEvent()+"\r\n");
 		c1Text.append("~~~~~ Districts ~~~~~\r\n");
 		for(String s:districts) {

@@ -56,8 +56,8 @@ public class SettlementModel extends DataModel{
 			"echoing marble,hanging chains,huge fireplace,narrow ledges,open windows,ornate weapons,overgrown,patrols,piles of trash,pillars,rotting ceiling,rotting floors,"+
 			"rotting walls,screens,servant passages,sewer access,shadowy alcoves,skylights,spyholes,staircases,tall bookshelves,unlit,watchdogs,window drapes";
 	private static WeightedTable<String> features;
-	public static final String LEADER = "Respected,Feared,Easily manipulated,Illigitimate,Monsterous,Contested,Indecisive,Incompetent,Declining,Iron-willed,Puppet";
-	private static WeightedTable<String> leader;
+	public static final String LEADER_REP = "Respected,Feared,Easily manipulated,Illigitimate,Monsterous,Contested,Indecisive,Incompetent,Declining,Iron-willed,Puppet";
+	private static WeightedTable<String> leader_rep;
 	public static final String RELATIONSHIP = "${A} proposed a bad trade deal and was accepted.,"
 			+ "${A} proposed a fair-trade deal with ${B} and was accepted.,"
 			+ "${A} proposed a great trade deal with ${B} and was accepted.,"
@@ -168,7 +168,7 @@ public class SettlementModel extends DataModel{
 		rooms = new WeightedTable<String>().populate(ROOMS,",");
 		streets = new WeightedTable<String>().populate(STREETS,",");
 		features = new WeightedTable<String>().populate(FEATURES,",");
-		leader = new WeightedTable<String>().populate(LEADER,",");
+		leader_rep = new WeightedTable<String>().populate(LEADER_REP,",");
 		relationship = new WeightedTable<String>().populate(RELATIONSHIP,",");
 	}
 
@@ -205,10 +205,12 @@ public class SettlementModel extends DataModel{
 		if(features==null) populateAllTables();
 		return getFeature(obj);
 	}
-	public static String getLeadership(Indexible obj) {
-		if(leader==null) populateAllTables();
-		FactionType government = (FactionType) Util.getElementFromArray(FactionType.CITY_LEADERSHIP, obj);
-		return leader.getByWeight(obj)+" "+government.toString();
+	public static String getReputation(Indexible obj) {
+		if(leader_rep==null) populateAllTables();
+		return leader_rep.getByWeight(obj);
+	}
+	public static FactionType getLeadership(Indexible obj) {
+		return (FactionType) Util.getElementFromArray(FactionType.CITY_LEADERSHIP, obj);
 	}
 	public static String getRelationship(Indexible obj) {
 		if(relationship==null) populateAllTables();
@@ -255,6 +257,7 @@ public class SettlementModel extends DataModel{
 	private void populateSettlementDetails(Settlement result, Point p) {
 		result.setPos(p);
 		result.setTheme(Util.formatTableResultPOS(getTheme(result), result, p, record.getZero()));
+		result.setReputation(getReputation(result));
 		result.setLeadership(getLeadership(result));
 		result.setEvent(new Reference(HexData.EVENT, record.normalizePOS(p), 0).toString());
 		result.setNeighbors(controller.getEconomy().getNeighboringCities(p));

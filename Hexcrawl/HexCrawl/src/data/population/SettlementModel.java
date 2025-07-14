@@ -23,6 +23,8 @@ import util.Util;
 import view.InfoPanel;
 
 public class SettlementModel extends DataModel{
+	public static final int THREAT_FACTION_INDEX = InfoPanel.FACTIONCOUNT+InfoPanel.FAITHCOUNT+1;
+	public static final int LEADERSHIP_FACTION_INDEX = 0;
 	private static final int MEDIAN_RECENT_EVENT_YEARS = 5;
 	private static final int SEED_OFFSET = 10*Util.getOffsetX();
 	private static final int FACTIONTABLES = 20;
@@ -301,13 +303,14 @@ public class SettlementModel extends DataModel{
 		boolean isFaith = result.getType().isFaith();
 		if(isFaith) result.setDomain(NPCModel.getDomain(result));
 		String name = FactionNameGenerator.getName(result.getType(),result);
+		if(name.contains("${last name}")) name = Util.replace(name,"${last name}",controller.getNpcs().getFactionNPCLastName(i, p));
 		result.setName(name);
 		result.setTrait(FactionNameGenerator.getTrait(result));
 		String goal = formatGoal(FactionNameGenerator.getGoal(result),result,isFaith);
-		if(i<InfoPanel.FACTIONCOUNT*2) {
-			populateFactionNPCs(result, p, i*2,HexData.FACTION_NPC);
-		}else {
+		if(i==THREAT_FACTION_INDEX) {
 			populateFactionNPCs(result, p, 1,HexData.MINION);
+		} else {
+			populateFactionNPCs(result, p, i*2,HexData.FACTION_NPC);
 		}
 		result.setGoal(Util.formatTableResultPOS(goal,result,p,record.getZero()));
 	}
@@ -317,48 +320,46 @@ public class SettlementModel extends DataModel{
 		result.setLeader(new Reference(type, record.normalizePOS(p), i));
 		result.setMember(new Reference(type, record.normalizePOS(p), i+1));
 	}
-	
-	public Faction getFaction(int i,Point p) {
-		Faction result = getIndexedFaction(i, p);
-		FactionType type = FactionType.getFaction(result);
-		result.setType(type);
-		populateFactionDetails(result, p,i);
-		return result;
-	}
-	public Faction getFaction(Random random,Point p,int i) {
-		Faction result = getRandomIndexedFaction(random);
-		FactionType type = FactionType.getFaction(result);
-		result.setType(type);
-		populateFactionDetails(result, p,i);
-		return result;
-	}
-	public Faction getFaith(int i,Point p) {
-		Faction result = getIndexedFaction(i+InfoPanel.FACTIONCOUNT, p);
-		FactionType type = FactionType.getFaith(result);
-		result.setType(type);
-		populateFactionDetails(result, p,i+InfoPanel.FACTIONCOUNT);
-		return result;
-	}
-	public Faction getFaith(Random random,Point p,int i) {
-		Faction result = getRandomIndexedFaction(random);
-		FactionType type = FactionType.getFaith(result);
-		result.setType(type);
-		populateFactionDetails(result, p,i+InfoPanel.FACTIONCOUNT);
-		return result;
-	}
+
 	public Faction getFaction(int i,Point p,FactionType... types) {
 		Faction result = getIndexedFaction(i, p);
 		FactionType type = (FactionType) Util.getElementFromArray(types, result);
 		result.setType(type);
-		populateFactionDetails(result, p,InfoPanel.FACTIONCOUNT*2);
+		populateFactionDetails(result, p,i);
 		return result;
 	}
-	public Faction getFaction(Random random,Point p,FactionType... types) {
+	public Faction getFaction(int i,Random random,Point p,FactionType... types) {
 		Faction result = getRandomIndexedFaction(random);
 		FactionType type = (FactionType) Util.getElementFromArray(types, result);
 		result.setType(type);
-		populateFactionDetails(result, p,InfoPanel.FACTIONCOUNT*2);
+		populateFactionDetails(result, p,i);
 		return result;
+	}
+	public Faction getFaction(int i,Point p) {
+		if(i==0) return getLeadershipFaction(p);
+		else return getFaction(i,p,FactionType.FACTIONS);
+	}
+	public Faction getFaction(Random random,Point p,int i) {
+		if(i==0) return getLeadershipFaction(random,p);
+		else return getFaction(i,random,p,FactionType.FACTIONS);
+	}
+	public Faction getFaith(int i,Point p) {
+		return getFaction(i+InfoPanel.FACTIONCOUNT,p,FactionType.FAITHS);
+	}
+	public Faction getFaith(Random random,Point p,int i) {
+		return getFaction(i+InfoPanel.FACTIONCOUNT,random,p,FactionType.FAITHS);
+	}
+	public Faction getLeadershipFaction(Point p) {
+		Settlement s = getSettlement(p);
+		FactionType[] factionTypes = s.getLeadership().getGovernmentFactions();
+		Faction faction = controller.getSettlements().getFaction(LEADERSHIP_FACTION_INDEX, p,factionTypes);
+		return faction;
+	}
+	public Faction getLeadershipFaction(Random random,Point p) {
+		Settlement s = getSettlement(p);
+		FactionType[] factionTypes = s.getLeadership().getGovernmentFactions();
+		Faction faction = controller.getSettlements().getFaction(LEADERSHIP_FACTION_INDEX,random, p,factionTypes);
+		return faction;
 	}
 
 	private String formatGoal(String goal, Faction result,boolean faith) {
@@ -444,6 +445,14 @@ public class SettlementModel extends DataModel{
 	public String getRelationship(Point p1,Point p2,boolean links,Random rand) {
 		Indexible obj = new Indexible(rand.nextInt());
 		return populateRelationship(p1, p2, links, obj);
+	}
+
+
+	public Faction getDisplayedFaction(int i, Point p) {
+		if(i==LEADERSHIP_FACTION_INDEX) return getLeadershipFaction(p);
+		else if(i==THREAT_FACTION_INDEX) return controller.getThreats().getFaction(controller, p, null);
+		else if(i<InfoPanel.FACTIONCOUNT) return getFaction(i, p);
+		else return getFaith((i-InfoPanel.FACTIONCOUNT), p);
 	}
 
 

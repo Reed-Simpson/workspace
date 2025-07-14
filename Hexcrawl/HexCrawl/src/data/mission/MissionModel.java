@@ -74,11 +74,11 @@ public class MissionModel  extends DataModel{
 		}else {
 			f=n1;
 		}
-		int index = mission.reduceTempId((InfoPanel.FACTIONCOUNT*2+1)*2);
+		int index = mission.reduceTempId((InfoPanel.FACTIONCOUNT+InfoPanel.FAITHCOUNT+1)*2);
 		if(index<InfoPanel.FACTIONCOUNT*2) {
 			mission.setRegional(new Reference(HexData.FACTION_NPC,f,(index)));
 			mission.setRegionalRef(new Reference(HexData.FACTION,f,(index/2)));
-		}else if(index<InfoPanel.FACTIONCOUNT*4) {
+		}else if(index<(InfoPanel.FACTIONCOUNT+InfoPanel.FAITHCOUNT)*2) {
 			mission.setRegional(new Reference(HexData.FACTION_NPC,f,(index)));
 			mission.setRegionalRef(new Reference(HexData.FAITH,f,((index-InfoPanel.FACTIONCOUNT*2)/2)));
 		}else {

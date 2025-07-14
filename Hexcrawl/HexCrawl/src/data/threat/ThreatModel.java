@@ -15,6 +15,7 @@ import data.npc.Faction;
 import data.npc.NPC;
 import data.npc.NPCJobType;
 import data.npc.NPCModel;
+import data.population.SettlementModel;
 import data.population.Species;
 import io.SaveRecord;
 import names.AdjectiveNounNameGenerator;
@@ -181,16 +182,17 @@ public class ThreatModel extends DataModel{
 		if(domain!=null) faction.setDomain(domain);
 	}
 	public Faction getFaction(DataController controller,Point p,Threat threat) {
-		if(threat==null) threat = getThreat(p);
+		Point center = getCenter(p);
+		if(threat==null) threat = getThreat(center);
 		FactionType[] factionTypes = threat.getType().getFactionList();
-		Faction faction = controller.getSettlements().getFaction(InfoPanel.FACTIONCOUNT*2+1, p,factionTypes);
+		Faction faction = controller.getSettlements().getFaction(SettlementModel.THREAT_FACTION_INDEX, center,factionTypes);
 		populateFactionDetails(threat, faction);
 		return faction;
 	}
 	public Faction getFaction(DataController controller, Random random,Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
 		FactionType[] factionTypes = threat.getType().getFactionList();
-		Faction faction = controller.getSettlements().getFaction(random, p,factionTypes);
+		Faction faction = controller.getSettlements().getFaction(SettlementModel.THREAT_FACTION_INDEX,random, p,factionTypes);
 		populateFactionDetails(threat, faction);
 		return faction;
 	}

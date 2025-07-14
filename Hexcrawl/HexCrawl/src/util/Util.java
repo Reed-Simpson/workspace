@@ -18,16 +18,15 @@ import data.mission.MissionModel;
 import data.monster.MonsterModel;
 import data.npc.NPCJobType;
 import data.npc.NPCModel;
+import data.population.NPCSpecies;
 import data.population.SettlementModel;
 import data.population.Species;
-import data.population.NPCSpecies;
 import data.threat.CreatureSubtype;
 import data.threat.subtype.DragonType;
 import data.threat.subtype.ElementalType;
 import names.FactionNameGenerator;
 import names.FactionType;
 import names.InnNameGenerator;
-import names.npc.HumanNameGenerator;
 import view.InfoPanel;
 
 public class Util {
@@ -149,7 +148,7 @@ public class Util {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, displayPos));
 			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
-			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",getIndexString(obj, "faith", InfoPanel.FACTIONCOUNT, displayPos));
+			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",getIndexString(obj, "faith", InfoPanel.FAITHCOUNT, displayPos));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos));
 			if(result.contains("${character index}")) {
 				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
@@ -176,7 +175,7 @@ public class Util {
 		if(string.contains("${location index}")) result = getRandomReference(obj, "location", InfoPanel.POICOUNT, displayPos);
 		if(string.contains("${npc index}")) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos);
 		if(string.contains("${faction index}")) result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos);
-		if(string.contains("${faith index}")) result = getRandomReference(obj, "faith", InfoPanel.FACTIONCOUNT, displayPos);
+		if(string.contains("${faith index}")) result = getRandomReference(obj, "faith", InfoPanel.FAITHCOUNT, displayPos);
 		if(string.contains("${district index}")) result = getRandomReference(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos);
 		if(string.contains("${character index}")) {
 			if(obj.reduceTempId(2)%2==0) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos);
@@ -224,7 +223,7 @@ public class Util {
 
 		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",MissionModel.getMissionVerb(obj));
 
-		if(result.contains("${last name}")) result = Util.replace(result,"${last name}",HumanNameGenerator.getLastName(obj));
+		//if(result.contains("${last name}")) result = Util.replace(result,"${last name}",HumanNameGenerator.getLastName(obj));
 		if(result.contains("${city name}")) result = Util.replace(result,"${city name}",NPCSpecies.HUMAN.getCityNameGen().getName(obj));
 
 		if(result.contains("${dungeon activity}")) result = Util.replace(result,"${dungeon activity}",DungeonModel.getActivity(obj));
@@ -301,7 +300,7 @@ public class Util {
 		if(!result.equals(string)) {
 			result = formatTableResult(result, obj);
 		}else {
-			String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index","job placeholder"};
+			String[] encode = {"location index","npc index","faction index","district index","subtype","town index","placeholder domain","faith index","job placeholder","last name"};
 			for(String s:encode) {if(result.contains("${"+s+"}")) result = Util.replace(result,"${"+s+"}",RANDOMSTRING+s);}//encode
 			if(result.contains("${")) {
 				throw new IllegalStateException("Unable to process tag: "+result);

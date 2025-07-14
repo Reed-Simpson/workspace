@@ -50,6 +50,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int POICOUNT = 14;
 	public static final int DUNGEONCOUNT = 6;
 	public static final int FACTIONCOUNT = 6;
+	public static final int FAITHCOUNT = 5;
 	public static final int DISTRICTCOUNT = 6;
 	public static final int MONSTERCOUNT = 8;
 
@@ -401,8 +402,13 @@ public class InfoPanel extends JTabbedPane{
 		JPanel factionPanel = new JPanel();
 		factionPanel.setLayout(new BoxLayout(factionPanel, BoxLayout.Y_AXIS));
 		factionTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<FACTIONCOUNT;i++) {
-			factionPanel.add(new JLabel("~~~~~ Faction #"+(i+1)+" ~~~~~"));
+		factionPanel.add(new JLabel("~~~~~ City Leadership ~~~~~"));
+		MyTextPane leadership = new MyTextPane(this, 0, HexData.FACTION);
+		leadership.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+		factionPanel.add(leadership);
+		factionTexts.add(leadership);
+		for(int i=1;i<FACTIONCOUNT;i++) {
+			factionPanel.add(new JLabel("~~~~~ Faction #"+(i)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FACTION);
 			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
 			factionPanel.add(factioni);
@@ -417,7 +423,7 @@ public class InfoPanel extends JTabbedPane{
 		//JPanel faithsPanel = new JPanel();
 		//faithsPanel.setLayout(new BoxLayout(faithsPanel, BoxLayout.Y_AXIS));
 		faithsTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<FACTIONCOUNT;i++) {
+		for(int i=0;i<FAITHCOUNT;i++) {
 			factionPanel.add(new JLabel("~~~~~ Faith #"+(i+1)+" ~~~~~"));
 			MyTextPane factioni = new MyTextPane(this, i, HexData.FAITH);
 			factioni.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
@@ -434,7 +440,7 @@ public class InfoPanel extends JTabbedPane{
 		JPanel factionNPCPanel = new JPanel();
 		factionNPCPanel.setLayout(new BoxLayout(factionNPCPanel, BoxLayout.Y_AXIS));
 		factionNPCTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<(FACTIONCOUNT*2)*2;i++) {
+		for(int i=0;i<(FACTIONCOUNT+FAITHCOUNT)*2;i++) {
 			factionNPCPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
 			MyTextPane minion = new MyTextPane(this, i, HexData.FACTION_NPC);
 			minion.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));

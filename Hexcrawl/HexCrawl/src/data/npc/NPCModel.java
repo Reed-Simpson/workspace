@@ -218,7 +218,7 @@ public class NPCModel extends DataModel {
 		Point capital = population.getAbsoluteFealty(p);
 		NPC result = getIndexedNPC(i+InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT, capital);
 		populateNPCData(capital, result);
-		if(setFactionJob(capital, i, result)) return result;
+		if(setFactionJob(capital, i/2, result)) return result;
 		else return null;
 	}
 
@@ -379,7 +379,7 @@ public class NPCModel extends DataModel {
 	public NPC getFactionNPC(Point p, Random random, int i) {
 		Point capital = population.getAbsoluteFealty(p);
 		NPC result = getNPC(capital, random);
-		if(setFactionJob(capital, i, result)) return result;
+		if(setFactionJob(capital, i/2, result)) return result;
 		else return null;
 	}
 
@@ -394,7 +394,7 @@ public class NPCModel extends DataModel {
 		else return false;
 	}
 	private boolean setFactionJob(Point p, int i, NPC result) {
-		Faction f = cities.getFaction(i/2, p);
+		Faction f = cities.getDisplayedFaction(i, p);
 		NPCJobType[] jobs = f.getType().getFactionJobs();
 		result.setJob(Util.getElementFromArray(jobs, result).toString());
 		return true;
@@ -410,11 +410,11 @@ public class NPCModel extends DataModel {
 		return result;
 	}
 	public NPC getMinion(int i,Point p,Threat threat) {
-		i+=InfoPanel.NPCCOUNT; //minion offset
-		NPC result = getIndexedNPC(i, p);
+		NPC result = getIndexedNPC(i+InfoPanel.NPCCOUNT, p);//minion offset
 		setMinionSpecies(getMinionSpecies(threat,result),result,threat);
 
 		populateNPCData(p, result);
+		if(i<2)	setFactionJob(p, SettlementModel.THREAT_FACTION_INDEX, result);
 		return result;
 	}
 
@@ -486,6 +486,15 @@ public class NPCModel extends DataModel {
 		}
 
 		npc.setSpecies(minionSpecies);
+	}
+	
+
+	public String getFactionNPCLastName(int i, Point p) {
+		Point capital = population.getAbsoluteFealty(p);
+		NPC result = getIndexedNPC(i+InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT, capital);
+		populateNPCData(capital, result);
+		int split = result.getName().lastIndexOf(' ');
+		return Util.toCamelCase(result.getName().substring(split+1));
 	}
 
 }

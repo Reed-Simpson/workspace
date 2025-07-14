@@ -83,10 +83,10 @@ public class MyTextPane extends JTextPane {
 	}
 	public void doPaint() {
 		if(getIndex()>-1) {
-			controller.updateData(getType(), this.getRawText(), pos, getIndex());
-			if(!this.pos.equals(getPoint())) {
-				this.pos = getPoint();
+			if(this.getRawText()!=null&&!"".equals(this.getRawText())&&(!HexData.CITY.equals(type)||!this.pos.equals(getPoint()))) {
+				controller.updateData(getType(), this.getRawText(), pos, getIndex());
 			}
+			this.pos = getPoint();
 			String text = controller.getText(getType(), getPoint(), getIndex());
 			this.custom = (controller.getData(getType(), getPoint(), getIndex())!=null);
 			this.setText(text);

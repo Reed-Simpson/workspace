@@ -365,7 +365,9 @@ public class DataController {
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
-			return record.putCity(capital, s);
+			Pair<Point, Point> cityPair = settlements.getCityPair(capital, 0);
+			if(cityPair!=null) return record.putCity(capital, s);
+			else return null;
 		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);

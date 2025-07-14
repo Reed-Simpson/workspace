@@ -280,7 +280,7 @@ public class MapPanel  extends JPanel{
 		drawRegion(g2, displayScale);
 		if(HexData.EXPLORATION.equals(displayData)) drawVoid(g2, displayScale);
 		if(!this.printMode) drawCenterHex(g2, displayScale);
-		if(!isDragging)drawDistanceMarker(g2, step, displayScale, Color.RED);
+		if(!isDragging) drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
 
 		dialog.removeProgressUI();
@@ -363,7 +363,12 @@ public class MapPanel  extends JPanel{
 			if(type!=null) result = type.getIcons();
 		}else {
 			BiomeType biome = controller.getBiomes().getBiome(p);
-			result = biome.getIcons();
+			if(BiomeType.CITY.equals(biome)) {
+				NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
+				if(species!=null) result = species.getIcons();
+			}else {
+				result = biome.getIcons();
+			}
 		}
 		return result;
 	}
@@ -493,7 +498,7 @@ public class MapPanel  extends JPanel{
 	private void drawSymbol(Graphics2D g2, float height, Point p,boolean top) {
 		Pair<Color, Color> base = colorCache.get(p);
 		List<Icon> icons = iconCache.get(p);
-		if(icons!=null && ((scale>8&&showIcons)||(scale>2&&BiomeType.CITY.getCh().equals(icons.get(0).getCh())))) {
+		if(icons!=null && ((scale>8&&showIcons)||(scale>2&&controller.getPopulation().isCity(p)))) {
 			if(HexData.ALTITUDE.equals(displayData)) {
 				g2.setColor(Color.black);
 				float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p));

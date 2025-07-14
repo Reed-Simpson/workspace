@@ -7,7 +7,7 @@ import data.WeightedTable;
 import util.Util;
 
 public class FactionNameGenerator extends IndexibleNameGenerator{
-	private static LinkedHashMap<FactionType,AdjectiveNounNameGenerator> factionNameGenerators;
+	private static LinkedHashMap<FactionType,FactionTypeNameGenerator> factionNameGenerators;
 	//	private static final String FACTIONS = "art movement,beggar's guild,black market,brotherhood,city guard,conspiracy,craft guild,crime family,crime ring,dark cult,explorer's club,free company,"+
 	//			"gourmand club,heist crew,heretical sect,high council,hired killers,local militia,national church,noble house,outlander clan,outlaw gang,political party,religious order,"+
 	//			"religious sect,resistance,royal army,royal house,scholar's circle,secret society,spy network,street artists,street gang,street musicians,theater troupe,trade company";
@@ -21,12 +21,13 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static WeightedTable<String> goals;
 
 	public static final String CHURCH_ADJECTIVES = "Eldritch,Infernal,Abyssal,Draconic,Elemental,Celestial,Humanist";
-	public static final String CHURCH_NOUNS = "Church of ${placeholder domain},Temple of ${placeholder domain},Servants of ${placeholder domain},Order of the ${spell},Children of the ${spell},Cult of the ${spell}";
+	public static final String CHURCH_NOUNS = "The Church of ${adj} ${placeholder domain},The Temple of ${adj} ${placeholder domain},The Servants of ${adj} ${placeholder domain},"
+			+ "Order of the ${spell},Children of the ${spell},Cult of the ${spell}";
 	public static final String CRIMINAL_ADJECTIVES= "${underworld npc},${color} Cloak,Hidden,Secret,Whispering,Masked,Shrouded,Midnight,Shadow,Veiled,Dusk,Twilight,Lurking,Hollow,Silent,Desperate";
 	public static final String CRIMINAL_NOUNS= "Veil,Cartel,Defiance,Syndicate,Brotherhood,Shadows,Network,Ring,Hands,Gang,Clan";
 	public static final String UNDERCLASS_ADJECTIVES= "Shattered,Ragged,Forgotten,Lost,Tattered,Hollow,Gutter,Shivering,Silent,Desperate,${misfortune}";
 	public static final String UNDERCLASS_NOUNS= "Rags,Plea,Dregs,Lurks,Children,Beggars,Watchers";
-	public static final String MERCHANT_ADJECTIVES= "${color} Lotus,${last name},Gilded,Wandering,Exotic,Mirage,${material} Caravan";
+	public static final String MERCHANT_ADJECTIVES= "${color} Lotus,${last name},${fancy color},Wandering,Exotic,Mirage,${material} Caravan";
 	public static final String MERCHANT_NOUNS= "Guild,Consortium,Syndicate,Merchant Alliance,Brokers,Market,Auctionhouse,Traders,League";
 	public static final String ESOTERIC_ADJECTIVES= "Occult,Celestial,Starlit,${weirdness},Mystic,Illumnated,Enigmatic,Arcane,Esoteric,Divine,${effect},Shadowed";
 	public static final String ESOTERIC_NOUNS= "Brotherhood of the ${material} ${physical form},Sons of the ${structure},Covenant of ${dungeon room},Order of the ${color} ${element},"+
@@ -122,7 +123,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static WeightedTable<String> nationalchurch_adjectives;
 	private static WeightedTable<String> nationalchurch_nouns;
 	public static final String NOBLEHOUSE_ADJECTIVES = "${last name}";
-	public static final String NOBLEHOUSE_NOUNS = "House,Lineage,Clan,Line,Lordship";
+	public static final String NOBLEHOUSE_NOUNS = "House,Lineage,Clan,Line,Lord ${adj}";
 	private static WeightedTable<String> noblehouse_adjectives;
 	private static WeightedTable<String> noblehouse_nouns;
 	public static final String OUTLANDERCLAN_ADJECTIVES = "${city name},${last name},${material}blood,${landmark}warden,${elemental type}${landmark},${basic color}${form},${animal}-lord";
@@ -354,7 +355,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 	private static void populateFaiths() {
 	}
 	private static void populateFaction() {
-		factionNameGenerators = new LinkedHashMap<FactionType, AdjectiveNounNameGenerator>();
+		factionNameGenerators = new LinkedHashMap<FactionType, FactionTypeNameGenerator>();
 		factionNameGenerators.put(FactionType.DARK_CULT,new DarkCultNameGen());
 		factionNameGenerators.put(FactionType.HERETICAL_SECT,new HereticalSectNameGen());
 		factionNameGenerators.put(FactionType.NATIONAL_CHURCH,new NationalChurchNameGen());
@@ -405,293 +406,6 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		if(goals==null) populateAllTables();
 		return Util.formatTableResult(goals.getByWeight(obj),obj);
 	}
-	public static String getArtMovement(Indexible obj) {
-		if(art_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+art_nouns.getByWeight(obj);
-		if(index<3) result = "The "+art_adjectives.getByWeight(obj)+" "+art_nouns.getByWeight(obj);
-		else result = "The "+art_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getBeggarGuild(Indexible obj) {
-		if(beggar_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+beggar_nouns.getByWeight(obj);
-		if(index<3) result = "The "+beggar_adjectives.getByWeight(obj)+" "+beggar_nouns.getByWeight(obj);
-		else result = "The "+beggar_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getBlackMarket(Indexible obj) {
-		if(blackmarket_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+blackmarket_nouns.getByWeight(obj);
-		if(index<3) result = "The "+blackmarket_adjectives.getByWeight(obj)+" "+blackmarket_nouns.getByWeight(obj);
-		else result = "The "+blackmarket_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getBrotherhood(Indexible obj) {
-		if(brotherhood_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+brotherhood_nouns.getByWeight(obj);
-		if(index<3) result = "The "+brotherhood_adjectives.getByWeight(obj)+" "+brotherhood_nouns.getByWeight(obj);
-		else result = "The "+brotherhood_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getCityGuard(Indexible obj) {
-		if(guard_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+guard_nouns.getByWeight(obj);
-		if(index<3) result = "The "+guard_adjectives.getByWeight(obj)+" "+guard_nouns.getByWeight(obj);
-		else result = "The "+guard_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}        public static String getConspiracy(Indexible obj) {
-		if(conspiracy_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+conspiracy_nouns.getByWeight(obj);
-		if(index<3) result = "The "+conspiracy_adjectives.getByWeight(obj)+" "+conspiracy_nouns.getByWeight(obj);
-		else result = "The "+conspiracy_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getCraftGuild(Indexible obj) {
-		if(craftguild_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+craftguild_nouns.getByWeight(obj);
-		if(index<3) result = "The "+craftguild_adjectives.getByWeight(obj)+" "+craftguild_nouns.getByWeight(obj);
-		else result = "The "+craftguild_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getCrimeFamily(Indexible obj) {
-		if(crimefamily_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+crimefamily_nouns.getByWeight(obj);
-		if(index<3) result = "The "+crimefamily_adjectives.getByWeight(obj)+" "+crimefamily_nouns.getByWeight(obj);
-		else result = "The "+crimefamily_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getCrimeRing(Indexible obj) {
-		if(crimering_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+crimering_nouns.getByWeight(obj);
-		if(index<3) result = "The "+crimering_adjectives.getByWeight(obj)+" "+crimering_nouns.getByWeight(obj);
-		else result = "The "+crimering_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getDarkCult(Indexible obj) {
-		if(darkcult_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+darkcult_nouns.getByWeight(obj);
-		if(index<3) result = "The "+darkcult_adjectives.getByWeight(obj)+" "+darkcult_nouns.getByWeight(obj);
-		else result = "The "+darkcult_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getExplorerClub(Indexible obj) {
-		if(explorerclub_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+explorerclub_nouns.getByWeight(obj);
-		if(index<3) result = "The "+explorerclub_adjectives.getByWeight(obj)+" "+explorerclub_nouns.getByWeight(obj);
-		else result = "The "+explorerclub_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getFreeCompany(Indexible obj) {
-		if(freecompany_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+freecompany_nouns.getByWeight(obj);
-		if(index<3) result = "The "+freecompany_adjectives.getByWeight(obj)+" "+freecompany_nouns.getByWeight(obj);
-		else result = "The "+freecompany_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getGourmandClub(Indexible obj) {
-		if(gourmandclub_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+gourmandclub_nouns.getByWeight(obj);
-		if(index<3) result = "The "+gourmandclub_adjectives.getByWeight(obj)+" "+gourmandclub_nouns.getByWeight(obj);
-		else result = "The "+gourmandclub_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getHeistCrew(Indexible obj) {
-		if(heistcrew_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+heistcrew_nouns.getByWeight(obj);
-		if(index<3) result = "The "+heistcrew_adjectives.getByWeight(obj)+" "+heistcrew_nouns.getByWeight(obj);
-		else result = "The "+heistcrew_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getHereticalSect(Indexible obj) {
-		if(hereticalsect_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+hereticalsect_nouns.getByWeight(obj);
-		if(index<3) result = "The "+hereticalsect_adjectives.getByWeight(obj)+" "+hereticalsect_nouns.getByWeight(obj);
-		else result = "The "+hereticalsect_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getHighCouncil(Indexible obj) {
-		if(highcouncil_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+highcouncil_nouns.getByWeight(obj);
-		if(index<3) result = "The "+highcouncil_adjectives.getByWeight(obj)+" "+highcouncil_nouns.getByWeight(obj);
-		else result = "The "+highcouncil_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getHiredKillers(Indexible obj) {
-		if(hiredkillers_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+hiredkillers_nouns.getByWeight(obj);
-		if(index<3) result = "The "+hiredkillers_adjectives.getByWeight(obj)+" "+hiredkillers_nouns.getByWeight(obj);
-		else result = "The "+hiredkillers_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getLocalMilitia(Indexible obj) {
-		if(localmilitia_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+localmilitia_nouns.getByWeight(obj);
-		if(index<3) result = "The "+localmilitia_adjectives.getByWeight(obj)+" "+localmilitia_nouns.getByWeight(obj);
-		else result = "The "+localmilitia_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getNationalChurch(Indexible obj) {
-		if(nationalchurch_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+nationalchurch_nouns.getByWeight(obj);
-		if(index<3) result = "The "+nationalchurch_adjectives.getByWeight(obj)+" "+nationalchurch_nouns.getByWeight(obj);
-		else result = "The "+nationalchurch_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getNobleHouse(Indexible obj) {
-		if(noblehouse_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+noblehouse_nouns.getByWeight(obj);
-		if(index<3) result = "The "+noblehouse_adjectives.getByWeight(obj)+" "+noblehouse_nouns.getByWeight(obj);
-		else result = "The "+noblehouse_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getOutlanderClan(Indexible obj) {
-		if(outlanderclan_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+outlanderclan_nouns.getByWeight(obj);
-		if(index<3) result = "The "+outlanderclan_adjectives.getByWeight(obj)+" "+outlanderclan_nouns.getByWeight(obj);
-		else result = "The "+outlanderclan_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getOutlawGang(Indexible obj) {
-		if(outlawgang_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+outlawgang_nouns.getByWeight(obj);
-		if(index<3) result = "The "+outlawgang_adjectives.getByWeight(obj)+" "+outlawgang_nouns.getByWeight(obj);
-		else result = "The "+outlawgang_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getPoliticalParty(Indexible obj) {
-		if(politicalparty_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+politicalparty_nouns.getByWeight(obj);
-		if(index<3) result = "The "+politicalparty_adjectives.getByWeight(obj)+" "+politicalparty_nouns.getByWeight(obj);
-		else result = "The "+politicalparty_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getReligiousOrder(Indexible obj) {
-		if(religiousorder_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+religiousorder_nouns.getByWeight(obj);
-		if(index<3) result = "The "+religiousorder_adjectives.getByWeight(obj)+" "+religiousorder_nouns.getByWeight(obj);
-		else result = "The "+religiousorder_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getReligiousSect(Indexible obj) {
-		if(religioussect_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+religioussect_nouns.getByWeight(obj);
-		if(index<3) result = "The "+religioussect_adjectives.getByWeight(obj)+" "+religioussect_nouns.getByWeight(obj);
-		else result = "The "+religioussect_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getResistance(Indexible obj) {
-		if(resistance_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+resistance_nouns.getByWeight(obj);
-		if(index<3) result = "The "+resistance_adjectives.getByWeight(obj)+" "+resistance_nouns.getByWeight(obj);
-		else result = "The "+resistance_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getRoyalArmy(Indexible obj) {
-		if(royalarmy_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+royalarmy_nouns.getByWeight(obj);
-		if(index<3) result = "The "+royalarmy_adjectives.getByWeight(obj)+" "+royalarmy_nouns.getByWeight(obj);
-		else result = "The "+royalarmy_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getRoyalHouse(Indexible obj) {
-		if(royalhouse_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+royalhouse_nouns.getByWeight(obj);
-		if(index<3) result = "The "+royalhouse_adjectives.getByWeight(obj)+" "+royalhouse_nouns.getByWeight(obj);
-		else result = "The "+royalhouse_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getScholarCircle(Indexible obj) {
-		if(scholarcircle_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+scholarcircle_nouns.getByWeight(obj);
-		if(index<3) result = "The "+scholarcircle_adjectives.getByWeight(obj)+" "+scholarcircle_nouns.getByWeight(obj);
-		else result = "The "+scholarcircle_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getSecretSociety(Indexible obj) {
-		if(secretsociety_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+secretsociety_nouns.getByWeight(obj);
-		if(index<3) result = "The "+secretsociety_adjectives.getByWeight(obj)+" "+secretsociety_nouns.getByWeight(obj);
-		else result = "The "+secretsociety_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getSpyNetwork(Indexible obj) {
-		if(spynetwork_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+spynetwork_nouns.getByWeight(obj);
-		if(index<3) result = "The "+spynetwork_adjectives.getByWeight(obj)+" "+spynetwork_nouns.getByWeight(obj);
-		else result = "The "+spynetwork_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getStreetArtists(Indexible obj) {
-		if(streetartists_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+streetartists_nouns.getByWeight(obj);
-		if(index<3) result = "The "+streetartists_adjectives.getByWeight(obj)+" "+streetartists_nouns.getByWeight(obj);
-		else result = "The "+streetartists_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getStreetGang(Indexible obj) {
-		if(streetgang_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+streetgang_nouns.getByWeight(obj);
-		if(index<3) result = "The "+streetgang_adjectives.getByWeight(obj)+" "+streetgang_nouns.getByWeight(obj);
-		else result = "The "+streetgang_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getStreetMusicians(Indexible obj) {
-		if(streetmusicians_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+streetmusicians_nouns.getByWeight(obj);
-		if(index<3) result = "The "+streetmusicians_adjectives.getByWeight(obj)+" "+streetmusicians_nouns.getByWeight(obj);
-		else result = "The "+streetmusicians_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getTheaterTroupe(Indexible obj) {
-		if(theatertroupe_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+theatertroupe_nouns.getByWeight(obj);
-		if(index<3) result = "The "+theatertroupe_adjectives.getByWeight(obj)+" "+theatertroupe_nouns.getByWeight(obj);
-		else result = "The "+theatertroupe_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
-	public static String getTradeCompany(Indexible obj) {
-		if(tradecompany_adjectives==null) populateAllTables();
-		String result;int index = obj.reduceTempId(4);
-		if(index==0) result = "The "+adjectives.getByWeight(obj)+" "+tradecompany_nouns.getByWeight(obj);
-		if(index<3) result = "The "+tradecompany_adjectives.getByWeight(obj)+" "+tradecompany_nouns.getByWeight(obj);
-		else result = "The "+tradecompany_adjectives.getByWeight(obj)+" "+nouns.getByWeight(obj);
-		return result;
-	}
 
 	public static String getAdj(Indexible obj) {
 		if(adjectives==null) populateAllTables();
@@ -716,15 +430,11 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		name = Util.formatTableResult(name,obj);
 		return name;
 	}
-	public static AdjectiveNounNameGenerator getNameGenerator(FactionType type) {
+	public static FactionTypeNameGenerator getNameGenerator(FactionType type) {
 		return factionNameGenerators.get(type);
 	}
 	
-	private static class ArtMovementNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getArtMovement(obj);
-		}
+	private static class ArtMovementNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return art_adjectives.getByWeight(obj);
@@ -733,11 +443,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return art_nouns.getByWeight(obj);
 		}
-	}private static class BeggarGuildNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getBeggarGuild(obj);
-		}
+	}private static class BeggarGuildNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return beggar_adjectives.getByWeight(obj);
@@ -746,11 +452,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return beggar_nouns.getByWeight(obj);
 		}
-	}private static class BlackMarketNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getBlackMarket(obj);
-		}
+	}private static class BlackMarketNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return blackmarket_adjectives.getByWeight(obj);
@@ -759,11 +461,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return blackmarket_nouns.getByWeight(obj);
 		}
-	}private static class BrotherhoodNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getBrotherhood(obj);
-		}
+	}private static class BrotherhoodNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return brotherhood_adjectives.getByWeight(obj);
@@ -772,11 +470,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return brotherhood_nouns.getByWeight(obj);
 		}
-	}private static class CityGuardNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getCityGuard(obj);
-		}
+	}private static class CityGuardNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return guard_adjectives.getByWeight(obj);
@@ -785,11 +479,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return guard_nouns.getByWeight(obj);
 		}
-	}private static class ConspiracyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getConspiracy(obj);
-		}
+	}private static class ConspiracyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return conspiracy_adjectives.getByWeight(obj);
@@ -798,11 +488,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return conspiracy_nouns.getByWeight(obj);
 		}
-	}private static class CraftGuildNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getCraftGuild(obj);
-		}
+	}private static class CraftGuildNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return craftguild_adjectives.getByWeight(obj);
@@ -811,11 +497,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return craftguild_nouns.getByWeight(obj);
 		}
-	}private static class CrimeFamilyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getCrimeFamily(obj);
-		}
+	}private static class CrimeFamilyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return crimefamily_adjectives.getByWeight(obj);
@@ -824,11 +506,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return crimefamily_nouns.getByWeight(obj);
 		}
-	}private static class CrimeRingNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getCrimeRing(obj);
-		}
+	}private static class CrimeRingNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return crimering_adjectives.getByWeight(obj);
@@ -837,11 +515,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return crimering_nouns.getByWeight(obj);
 		}
-	}private static class DarkCultNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getDarkCult(obj);
-		}
+	}private static class DarkCultNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return darkcult_adjectives.getByWeight(obj);
@@ -850,11 +524,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return darkcult_nouns.getByWeight(obj);
 		}
-	}private static class ExplorerClubNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getExplorerClub(obj);
-		}
+	}private static class ExplorerClubNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return explorerclub_adjectives.getByWeight(obj);
@@ -863,11 +533,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return explorerclub_nouns.getByWeight(obj);
 		}
-	}private static class FreeCompanyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getFreeCompany(obj);
-		}
+	}private static class FreeCompanyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return freecompany_adjectives.getByWeight(obj);
@@ -876,11 +542,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return freecompany_nouns.getByWeight(obj);
 		}
-	}private static class GourmandClubNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getGourmandClub(obj);
-		}
+	}private static class GourmandClubNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return gourmandclub_adjectives.getByWeight(obj);
@@ -889,11 +551,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return gourmandclub_nouns.getByWeight(obj);
 		}
-	}private static class HeistCrewNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getHeistCrew(obj);
-		}
+	}private static class HeistCrewNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return heistcrew_adjectives.getByWeight(obj);
@@ -902,11 +560,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return heistcrew_nouns.getByWeight(obj);
 		}
-	}private static class HereticalSectNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getHereticalSect(obj);
-		}
+	}private static class HereticalSectNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return hereticalsect_adjectives.getByWeight(obj);
@@ -915,11 +569,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return hereticalsect_nouns.getByWeight(obj);
 		}
-	}private static class HighCouncilNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getHighCouncil(obj);
-		}
+	}private static class HighCouncilNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return highcouncil_adjectives.getByWeight(obj);
@@ -928,11 +578,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return highcouncil_nouns.getByWeight(obj);
 		}
-	}private static class HiredKillersNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getHiredKillers(obj);
-		}
+	}private static class HiredKillersNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return hiredkillers_adjectives.getByWeight(obj);
@@ -941,11 +587,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return hiredkillers_nouns.getByWeight(obj);
 		}
-	}private static class LocalMilitiaNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getLocalMilitia(obj);
-		}
+	}private static class LocalMilitiaNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return localmilitia_adjectives.getByWeight(obj);
@@ -954,11 +596,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return localmilitia_nouns.getByWeight(obj);
 		}
-	}private static class NationalChurchNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getNationalChurch(obj);
-		}
+	}private static class NationalChurchNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return nationalchurch_adjectives.getByWeight(obj);
@@ -967,11 +605,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return nationalchurch_nouns.getByWeight(obj);
 		}
-	}private static class NobleHouseNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getNobleHouse(obj);
-		}
+	}private static class NobleHouseNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return noblehouse_adjectives.getByWeight(obj);
@@ -980,11 +614,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return noblehouse_nouns.getByWeight(obj);
 		}
-	}private static class OutlanderClanNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getOutlanderClan(obj);
-		}
+	}private static class OutlanderClanNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return outlanderclan_adjectives.getByWeight(obj);
@@ -993,11 +623,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return outlanderclan_nouns.getByWeight(obj);
 		}
-	}private static class OutlawGangNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getOutlawGang(obj);
-		}
+	}private static class OutlawGangNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return outlawgang_adjectives.getByWeight(obj);
@@ -1006,11 +632,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return outlawgang_nouns.getByWeight(obj);
 		}
-	}private static class PoliticalPartyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getPoliticalParty(obj);
-		}
+	}private static class PoliticalPartyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return politicalparty_adjectives.getByWeight(obj);
@@ -1019,11 +641,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return politicalparty_nouns.getByWeight(obj);
 		}
-	}private static class ReligiousOrderNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getReligiousOrder(obj);
-		}
+	}private static class ReligiousOrderNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return religiousorder_adjectives.getByWeight(obj);
@@ -1032,11 +650,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return religiousorder_nouns.getByWeight(obj);
 		}
-	}private static class ReligiousSectNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getReligiousSect(obj);
-		}
+	}private static class ReligiousSectNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return religioussect_adjectives.getByWeight(obj);
@@ -1045,11 +659,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return religioussect_nouns.getByWeight(obj);
 		}
-	}private static class ResistanceNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getResistance(obj);
-		}
+	}private static class ResistanceNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return resistance_adjectives.getByWeight(obj);
@@ -1058,11 +668,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return resistance_nouns.getByWeight(obj);
 		}
-	}private static class RoyalArmyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getRoyalArmy(obj);
-		}
+	}private static class RoyalArmyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return royalarmy_adjectives.getByWeight(obj);
@@ -1071,11 +677,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return royalarmy_nouns.getByWeight(obj);
 		}
-	}private static class RoyalHouseNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getRoyalHouse(obj);
-		}
+	}private static class RoyalHouseNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return royalhouse_adjectives.getByWeight(obj);
@@ -1084,11 +686,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return royalhouse_nouns.getByWeight(obj);
 		}
-	}private static class ScholarCircleNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getScholarCircle(obj);
-		}
+	}private static class ScholarCircleNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return scholarcircle_adjectives.getByWeight(obj);
@@ -1097,11 +695,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return scholarcircle_nouns.getByWeight(obj);
 		}
-	}private static class SecretSocietyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getSecretSociety(obj);
-		}
+	}private static class SecretSocietyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return secretsociety_adjectives.getByWeight(obj);
@@ -1110,11 +704,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return secretsociety_nouns.getByWeight(obj);
 		}
-	}private static class SpyNetworkNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getSpyNetwork(obj);
-		}
+	}private static class SpyNetworkNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return spynetwork_adjectives.getByWeight(obj);
@@ -1123,11 +713,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return spynetwork_nouns.getByWeight(obj);
 		}
-	}private static class StreetArtistsNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getStreetArtists(obj);
-		}
+	}private static class StreetArtistsNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return streetartists_adjectives.getByWeight(obj);
@@ -1136,11 +722,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return streetartists_nouns.getByWeight(obj);
 		}
-	}private static class StreetGangNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getStreetGang(obj);
-		}
+	}private static class StreetGangNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return streetgang_adjectives.getByWeight(obj);
@@ -1149,11 +731,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return streetgang_nouns.getByWeight(obj);
 		}
-	}private static class StreetMusiciansNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getStreetMusicians(obj);
-		}
+	}private static class StreetMusiciansNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return streetmusicians_adjectives.getByWeight(obj);
@@ -1162,11 +740,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return streetmusicians_nouns.getByWeight(obj);
 		}
-	}private static class TheaterTroupeNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getTheaterTroupe(obj);
-		}
+	}private static class TheaterTroupeNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return theatertroupe_adjectives.getByWeight(obj);
@@ -1175,11 +749,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 		public String getNoun(Indexible obj) {
 			return theatertroupe_nouns.getByWeight(obj);
 		}
-	}private static class TradeCompanyNameGen extends AdjectiveNounNameGenerator{
-		@Override
-		public String getName(Indexible obj) {
-			return getTradeCompany(obj);
-		}
+	}private static class TradeCompanyNameGen extends FactionTypeNameGenerator{
 		@Override
 		public String getAdj(Indexible obj) {
 			return tradecompany_adjectives.getByWeight(obj);

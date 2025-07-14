@@ -18,7 +18,7 @@ import data.npc.NPCModel;
 import data.population.SettlementModel;
 import data.population.Species;
 import io.SaveRecord;
-import names.AdjectiveNounNameGenerator;
+import names.FactionTypeNameGenerator;
 import names.FactionNameGenerator;
 import names.FactionType;
 import names.threat.ThreatNameGenerator;
@@ -164,7 +164,7 @@ public class ThreatModel extends DataModel{
 
 
 	private void populateFactionDetails(Threat threat, Faction faction) {
-		AdjectiveNounNameGenerator factionGen = FactionNameGenerator.getNameGenerator(faction.getType());
+		FactionTypeNameGenerator factionGen = FactionNameGenerator.getNameGenerator(faction.getType());
 		ThreatNameGenerator threatGen = threat.getType().getNameGen();
 		int index = faction.reduceTempId(6);
 		String adj = threatGen.getFactionAdjective(faction);

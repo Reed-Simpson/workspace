@@ -13,6 +13,7 @@ import data.location.LocationModel;
 import data.magic.MagicModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
+import data.population.SettlementModel;
 import data.population.Species;
 import data.threat.CreatureType;
 import data.threat.Threat;
@@ -181,11 +182,13 @@ public class NPCModel extends DataModel {
 	//NON_STATIC CODE
 	private PopulationModel population;
 	private LocationModel location;
+	private SettlementModel cities;
 
-	public NPCModel(SaveRecord record,PopulationModel population,LocationModel location) {
+	public NPCModel(SaveRecord record,PopulationModel population,LocationModel location,SettlementModel cities) {
 		super(record);
 		this.population = population;
 		this.location = location;
+		this.cities = cities;
 	}
 
 	public NPC getNPC(int i,Point p) {
@@ -391,7 +394,9 @@ public class NPCModel extends DataModel {
 		else return false;
 	}
 	private boolean setFactionJob(Point p, int i, NPC result) {
-		//TODO faction jobs
+		Faction f = cities.getFaction(i/2, p);
+		NPCJobType[] jobs = f.getType().getFactionJobs();
+		result.setJob(Util.getElementFromArray(jobs, result).toString());
 		return true;
 	}
 	public NPC getNPC(Point p,Random random) {

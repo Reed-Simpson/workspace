@@ -58,8 +58,6 @@ public class SettlementModel extends DataModel{
 	private static WeightedTable<String> features;
 	public static final String LEADER = "Respected,Feared,Easily manipulated,Illigitimate,Monsterous,Contested,Indecisive,Incompetent,Declining,Iron-willed,Puppet";
 	private static WeightedTable<String> leader;
-	public static final String GOVERNMENT = "Autocrat,Elected Official,Monarch,Plutocrats,Aristocracy,Theocracy,Tribes,Commune,Elected Council";
-	private static WeightedTable<String> government;
 	public static final String RELATIONSHIP = "${A} proposed a bad trade deal and was accepted.,"
 			+ "${A} proposed a fair-trade deal with ${B} and was accepted.,"
 			+ "${A} proposed a great trade deal with ${B} and was accepted.,"
@@ -171,7 +169,6 @@ public class SettlementModel extends DataModel{
 		streets = new WeightedTable<String>().populate(STREETS,",");
 		features = new WeightedTable<String>().populate(FEATURES,",");
 		leader = new WeightedTable<String>().populate(LEADER,",");
-		government = new WeightedTable<String>().populate(GOVERNMENT,",");
 		relationship = new WeightedTable<String>().populate(RELATIONSHIP,",");
 	}
 
@@ -210,7 +207,8 @@ public class SettlementModel extends DataModel{
 	}
 	public static String getLeadership(Indexible obj) {
 		if(leader==null) populateAllTables();
-		return leader.getByWeight(obj)+" "+government.getByWeight(obj).toLowerCase();
+		FactionType government = (FactionType) Util.getElementFromArray(FactionType.CITY_LEADERSHIP, obj);
+		return leader.getByWeight(obj)+" "+government.toString();
 	}
 	public static String getRelationship(Indexible obj) {
 		if(relationship==null) populateAllTables();

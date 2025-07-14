@@ -60,9 +60,9 @@ public class DataController {
 		this.economy = new EconomicModel(record,population,biomes,precipitation,grid);
 		this.names = new LocationNameModel(record);
 		this.pois = new LocationModel(record,this);
-		this.npcs = new NPCModel(record, population,pois);
-		this.threats = new ThreatModel(record,npcs);
 		this.settlements = new SettlementModel(record,this);
+		this.npcs = new NPCModel(record, population,pois,settlements);
+		this.threats = new ThreatModel(record,npcs);
 		this.dungeons = new DungeonModel(record);
 		this.encounters = new EncounterModel(record,population);
 		this.monsters = new MonsterModel(this);

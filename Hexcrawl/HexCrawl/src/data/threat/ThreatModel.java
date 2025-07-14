@@ -182,14 +182,14 @@ public class ThreatModel extends DataModel{
 	}
 	public Faction getFaction(DataController controller,Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
-		FactionType[] factionTypes = FactionType.getFactionList(threat.getType());
+		FactionType[] factionTypes = threat.getType().getFactionList();
 		Faction faction = controller.getSettlements().getFaction(InfoPanel.FACTIONCOUNT*2+1, p,factionTypes);
 		populateFactionDetails(threat, faction);
 		return faction;
 	}
 	public Faction getFaction(DataController controller, Random random,Point p,Threat threat) {
 		if(threat==null) threat = getThreat(p);
-		FactionType[] factionTypes = FactionType.getFactionList(threat.getType());
+		FactionType[] factionTypes = threat.getType().getFactionList();
 		Faction faction = controller.getSettlements().getFaction(random, p,factionTypes);
 		populateFactionDetails(threat, faction);
 		return faction;

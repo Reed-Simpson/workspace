@@ -37,6 +37,7 @@ import data.threat.subtype.MonstrosityType;
 import data.threat.subtype.OozeType;
 import data.threat.subtype.PlantType;
 import data.threat.subtype.UndeadType;
+import names.FactionType;
 import names.threat.AberrationNameGenerator;
 import names.threat.BeastNameGenerator;
 import names.threat.CelestialNameGenerator;
@@ -232,6 +233,25 @@ public enum CreatureType implements Species{
 		
 		}
 		return result;
+	}
+	public FactionType[] getFactionList() {
+		switch(this) {
+		case ABERRATION: return FactionType.ABERRATION;
+		case BEAST: return FactionType.BEAST;
+		case CELESTIAL:return FactionType.CELESTIAL;
+		case CONSTRUCT:return FactionType.CONSTRUCT;
+		case DRAGON:return FactionType.DRAGON;
+		case ELEMENTAL:return FactionType.ELEMENTAL;
+		case FEY:return FactionType.FEY;
+		case FIEND:return FactionType.FIEND;
+		case GIANT:return FactionType.GIANT;
+		case HUMANOID:return FactionType.HUMANOID;
+		case MONSTROSITY:return FactionType.MONSTROSITY;
+		case OOZE:return FactionType.OOZE;
+		case PLANT:return FactionType.PLANT;
+		case UNDEAD:return FactionType.UNDEAD;
+		default: throw new UnsupportedOperationException("faction list not implemented for type: "+this.toString());
+		}
 	}
 
 }

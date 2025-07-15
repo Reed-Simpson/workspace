@@ -61,8 +61,8 @@ public class MapPanel  extends JPanel{
 	public static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
-	private static final int LOG_THRESHOLD = 200;
-	private static final float RIVERRENDERGRANULARITY = 0.4f;
+	private static final int LOG_THRESHOLD = 20;
+	private static final float RIVERRENDERGRANULARITY = 0.2f;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
 	private Point center; //center represents the pixel offset from 0,0
@@ -78,7 +78,6 @@ public class MapPanel  extends JPanel{
 	private boolean initializing;
 	private boolean showDistance;
 	private double distance;
-	private long time;
 	private HexData displayRegion;
 	private ArrayList<Point> previous;
 	int previousIndex;
@@ -90,6 +89,8 @@ public class MapPanel  extends JPanel{
 	private boolean showIcons;
 	private boolean printMode;
 	private Point highlightedHex;
+	private BufferedImage bufferImage;
+	private Point dragAnchor;
 
 	public MapPanel(MapFrame frame, SaveRecord record) {
 		this.frame = frame;
@@ -104,11 +105,13 @@ public class MapPanel  extends JPanel{
 		this.addMouseWheelListener(new MouseWheelAdapter());
 		this.setDisplayData(HexData.ALTITUDE);
 		this.setPreferredSize(new Dimension(800, 800));
+		bufferImage = new BufferedImage(100,100,BufferedImage.TYPE_INT_RGB);
 		this.printLoadingInfo = new AtomicBoolean(true);
 		previousIndex = 0;
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
+				bufferImage = new BufferedImage(getWidth()*3,getHeight()*3,BufferedImage.TYPE_INT_RGB);
 				preprocessThenRepaint();
 			}
 		});
@@ -253,8 +256,20 @@ public class MapPanel  extends JPanel{
 
 	@Override
 	public void paintComponent(Graphics g){
-		time = System.currentTimeMillis();
 		Graphics2D g2 = (Graphics2D) g;
+		int step = getStep();
+		int displayScale = getDisplayScale();
+		if(!isDragging) drawBackgroundImage(bufferImage.createGraphics());
+		if(!isDragging) g2.drawImage(bufferImage, 0, 0, this);
+		else g2.drawImage(bufferImage, dragAnchor.x-center.x, dragAnchor.y-center.y, this);
+		if(!this.printMode) drawCenterHex(g2, displayScale);
+		if(!isDragging) drawDistanceMarker(g2, step, displayScale, Color.RED);
+		drawLegend(g2, step, displayScale);
+
+		dialog.removeProgressUI();
+	}
+
+	private void drawBackgroundImage(Graphics2D g2) {
 		int step = getStep();
 		int displayScale = getDisplayScale();
 		boolean wideview = scale<WIDEVIEW;
@@ -279,11 +294,6 @@ public class MapPanel  extends JPanel{
 		}
 		drawRegion(g2, displayScale);
 		if(HexData.EXPLORATION.equals(displayData)) drawVoid(g2, displayScale);
-		if(!this.printMode) drawCenterHex(g2, displayScale);
-		if(!isDragging) drawDistanceMarker(g2, step, displayScale, Color.RED);
-		drawLegend(g2, step, displayScale);
-
-		dialog.removeProgressUI();
 	}
 
 	private int getDisplayScale() {
@@ -301,6 +311,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private synchronized void calculateHexColors() {
+		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
 		int step = getStep();
@@ -375,6 +386,7 @@ public class MapPanel  extends JPanel{
 
 
 	private void drawHexes(Graphics2D g2, int step, int displayScale, Color borderColor) {
+		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -418,6 +430,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawOceans(Graphics2D g2, int step, int displayScale, Color borderColor) {
+		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -474,6 +487,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawSymbols(Graphics2D g2, int step, int displayScale, Color borderColor) {
+		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -534,7 +548,6 @@ public class MapPanel  extends JPanel{
 
 	private void drawDistanceMarker(Graphics2D g2, int step, int displayScale, Color c) {
 		if(showDistance&&mouseover!=null) {
-			time = System.currentTimeMillis();
 			Stroke defaultStroke = g2.getStroke();
 			g2.setColor(c);
 			g2.setStroke(new BasicStroke(1+displayScale/2));
@@ -596,7 +609,7 @@ public class MapPanel  extends JPanel{
 		r.y = r.y-100;
 		r.width = r.width + 200;
 		r.height = r.height + 200;
-		time = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 		int sum = (r.width-r.x);
 		int loadingFactor = (r.height-r.y);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -706,6 +719,7 @@ public class MapPanel  extends JPanel{
 		}
 	}
 	private void drawRivers(Graphics2D g2, int step, int displayScale, Color borderColor) {
+		long time = System.currentTimeMillis();
 		int sum = splineCache.size();
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
@@ -749,15 +763,15 @@ public class MapPanel  extends JPanel{
 		Point p1 = controller.getPrecipitation().getRiver(p0);
 		double distance = calcDistance(p0, p1);
 		g2.setColor(color);
-		g2.setStroke(new BasicStroke(Math.max(width-1,0)));
+		g2.setStroke(new BasicStroke(Math.max(width-1,0),BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
 		Point anchor = getScreenPos(p0);
 		Point pointBefore = null;
 		float step = (float) (1f/3/scale)/RIVERRENDERGRANULARITY;
 		for(float f = 0; f<=1f/3+step/distance-width/12/scale/distance; f+=step/distance) {
 			Point p = spline.getPoint(f);
 			Point pnt = new Point((int)(anchor.x+p.x*scale/WIGGLERADIUS), (int)(anchor.y+p.y*scale/WIGGLERADIUS));
-			g2.fillOval(pnt.x-(int)width/2, pnt.y-(int)width/2, (int)width, (int)width);
-			if(pointBefore != null && width < 30*step*scale) {
+			//g2.fillOval(pnt.x-(int)width/2, pnt.y-(int)width/2, (int)width, (int)width);
+			if(pointBefore != null) {// && width < 30*step*scale
 				g2.drawLine(pnt.x, pnt.y, pointBefore.x, pointBefore.y);
 			}
 			pointBefore = pnt;
@@ -791,6 +805,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawRegion(Graphics2D g2, int displayScale) {
+		long time = System.currentTimeMillis();
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(100, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -946,6 +961,7 @@ public class MapPanel  extends JPanel{
 		this.drawHex(g2, p.x, p.y,borderColor,background,center,scale,crosshatch);
 	}
 	public void highlightTowns(Graphics2D g2, int step, int displayScale, Color borderColor) {
+		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -970,6 +986,7 @@ public class MapPanel  extends JPanel{
 	}
 	private synchronized void loadRoads(boolean wideview) {
 		if(HexData.ECONOMY.equals(displayData)&&!wideview) {
+			long time = System.currentTimeMillis();
 			Rectangle r = getRenderArea();
 			int sum = (r.width-r.x);
 			int step = getStep();
@@ -999,6 +1016,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawRoads(Graphics2D g2, int step, int displayScale, Color roadColor) {
+		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
@@ -1147,6 +1165,7 @@ public class MapPanel  extends JPanel{
 				isDragging = true;
 				dragOffsetX = e.getX();
 				dragOffsetY = e.getY();
+				dragAnchor = center;
 			}
 		}
 		@Override
@@ -1162,11 +1181,9 @@ public class MapPanel  extends JPanel{
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			if (isDragging) {
-				int x1 = center.x-e.getX()+dragOffsetX;
-				int y1 = center.y-e.getY()+dragOffsetY;
+				int x1 = dragAnchor.x-e.getX()+dragOffsetX;
+				int y1 = dragAnchor.y-e.getY()+dragOffsetY;
 				center = new Point(x1,y1);
-				dragOffsetX = e.getX();
-				dragOffsetY = e.getY();
 				frame.repaint();
 			}
 		}

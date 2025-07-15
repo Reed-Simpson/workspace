@@ -42,7 +42,7 @@ public class FactionNameGenerator extends IndexibleNameGenerator{
 
 
 	public static final String GENERIC_ADJECTIVES= "${material},${animal},Lost,Forgotten,Aetheric,Fateful,Illumnated,Shadowed,Esoteric,Gilded,${fancy color},${effect}";
-	public static final String GENERIC_NOUNS= "Collective,Society,Circle,Enclave,Accord,Assembly,Covenant,Brotherhood,Masquerade,Group,Faction";
+	public static final String GENERIC_NOUNS= "Collective,Society,Circle,Enclave,Accord,Assembly,Covenant,Brotherhood,Group";
 	private static WeightedTable<String> adjectives;
 	private static WeightedTable<String> nouns;
 	public static final String ARTMOVEMENT_ADJECTIVES= "Claybound,Marble,Quillbound,Brushbound,Prismatic,Chromatic,Canvas,Mosaic,Echoing,Inkbound,Theatric";

@@ -268,14 +268,14 @@ public class MapPanel  extends JPanel{
 		Graphics2D g2 = (Graphics2D) g;
 		int step = getStep();
 		int displayScale = getDisplayScale();
+		BufferedImage subimage;
 		if(!isDragging) {
 			drawBackgroundImage(bufferImage.createGraphics());
-			BufferedImage subimage = bufferImage.getSubimage(this.getWidth(), this.getHeight(), this.getWidth(), this.getHeight());
-			g2.drawImage(subimage, 0, 0, this);
+			subimage = bufferImage.getSubimage((bufferImage.getWidth()-this.getWidth())/2, (bufferImage.getHeight()-this.getHeight())/2, this.getWidth(), this.getHeight());
 		} else {
-			BufferedImage subimage = bufferImage.getSubimage(this.getWidth()-dragAnchor.x+center.x, this.getHeight()-dragAnchor.y+center.y, this.getWidth(), this.getHeight());
-			g2.drawImage(subimage, 0, 0, this);
+			subimage = bufferImage.getSubimage(this.getWidth()-dragAnchor.x+center.x, this.getHeight()-dragAnchor.y+center.y, this.getWidth(), this.getHeight());
 		}
+		g2.drawImage(subimage, 0, 0, this);
 		if(!this.printMode) drawCenterHex(g2, displayScale);
 		if(!isDragging) drawDistanceMarker(g2, step, displayScale, Color.RED);
 		drawLegend(g2, step, displayScale);
@@ -428,12 +428,7 @@ public class MapPanel  extends JPanel{
 						if(controller.getPopulation().isCity(p)) {
 							this.drawHex(g2, getImagePos(i,j),borderColor,BiomeType.CITY.getColor(),null,displayScale,null,BORDER_OPACITY);
 						}
-						Point offset = new Point(-35,35);
-						g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
-						g2.setColor(Color.RED);
-						g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-						g2.drawString("\u23F3", getImagePos(i,j).x+(int)((offset.x*scale)/100), getImagePos(i,j).y+(int)((offset.y*scale)/100));
-						g2.setComposite(AlphaComposite.SrcOver);
+						drawLoadingIcon(g2, displayScale, i, j);
 					}
 					drawSymbol(g2, height, p,false);
 				}
@@ -441,6 +436,15 @@ public class MapPanel  extends JPanel{
 			counter.increment();
 		}
 		logger.logln("Hexes drawn "+(System.currentTimeMillis()-time)+" ms");
+	}
+
+	private void drawLoadingIcon(Graphics2D g2, int displayScale, int i, int j) {
+		Point offset = new Point(-35,35);
+		g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
+		g2.setColor(Color.RED);
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+		g2.drawString("\u23F3", getImagePos(i,j).x+(int)((offset.x*scale)/100), getImagePos(i,j).y+(int)((offset.y*scale)/100));
+		g2.setComposite(AlphaComposite.SrcOver);
 	}
 
 	private void drawOceans(Graphics2D g2, int step, int displayScale, Color borderColor) {
@@ -526,7 +530,9 @@ public class MapPanel  extends JPanel{
 	private void drawSymbol(Graphics2D g2, float height, Point p,boolean top) {
 		Pair<Color, Color> base = colorCache.get(p);
 		List<Icon> icons = iconCache.get(p);
-		if(icons!=null && ((scale>8&&showIcons)||(scale>2&&controller.getPopulation().isCity(p)))) {
+		if(icons==null) {
+			drawLoadingIcon(g2, (int)scale, p.x, p.y);
+		}else if((scale>8&&showIcons)||(scale>2&&controller.getPopulation().isCity(p))) {
 			if(HexData.ALTITUDE.equals(displayData)) {
 				g2.setColor(Color.black);
 				float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p));

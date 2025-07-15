@@ -132,10 +132,10 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			this.setRoads("Roads: none");
-			this.crossing.setText("Crossing: None");
+			this.crossing.setText("River Crossing: None");
 		}else {
 			this.setRoads("Roads: "+controller.getEconomy().getRoadDescription(pos));
-			this.crossing.setText("Crossing: "+controller.getEconomy().getCrossingDescription(pos));
+			this.crossing.setText("River Crossing: "+controller.getEconomy().getCrossingDescription(pos));
 		}
 		
 	}

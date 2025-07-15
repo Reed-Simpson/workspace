@@ -166,7 +166,7 @@ public enum NPCSpecies implements Species{
 			result.add(new Icon('\u260d', new Point(-70,70), Color.black, 2.0, 1.0f, true));
 			break;
 		case HALFLING:
-			result.add(new Icon('\u273F', new Point(-60,50), Color.black, 1.5, 1.0f, true));
+			result.add(new Icon('\u273F', new Point(-66,50), Color.black, 1.5, 1.0f, true));
 			break;
 		case ORC:
 			result.add(new Icon('\u2694', new Point(-70,60), Color.black, 1.8, 1.0f, true));

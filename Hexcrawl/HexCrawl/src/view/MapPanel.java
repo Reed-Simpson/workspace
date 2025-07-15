@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
@@ -56,13 +55,14 @@ public class MapPanel  extends JPanel{
 	public static final int WIGGLERADIUS = 100;
 	private static final int WIDEVIEW = 5;
 	private static final long serialVersionUID = 6922738675563657970L;
-	private static final Color LINE_COLOR = null;
+	private static final Color LINE_COLOR = Color.BLACK;
 	private static final double sqrt3 = Math.sqrt(3.0);
 	public static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
 	private static final int LOG_THRESHOLD = 20;
 	private static final float RIVERRENDERGRANULARITY = 0.2f;
+	private static final float BORDER_OPACITY = 0.05f;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
 	private Point center; //center represents the pixel offset from 0,0
@@ -423,10 +423,10 @@ public class MapPanel  extends JPanel{
 						color1 = cached.key1;
 						color2 = cached.key2;
 					}
-					this.drawHex(g2, getImagePos(i,j),borderColor,color1,color2,displayScale,null);
+					this.drawHex(g2, getImagePos(i,j),borderColor,color1,color2,displayScale,null,BORDER_OPACITY);
 					if(cached==null) {
 						if(controller.getPopulation().isCity(p)) {
-							this.drawHex(g2, getImagePos(i,j),borderColor,BiomeType.CITY.getColor(),null,displayScale,null);
+							this.drawHex(g2, getImagePos(i,j),borderColor,BiomeType.CITY.getColor(),null,displayScale,null,BORDER_OPACITY);
 						}
 						Point offset = new Point(-35,35);
 						g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
@@ -463,7 +463,7 @@ public class MapPanel  extends JPanel{
 						color1 = color2;
 						color2 = null;
 					}
-					this.drawHex(g2, getImagePos(i,j),borderColor,color1,color2,displayScale,null);
+					this.drawHex(g2, getImagePos(i,j),borderColor,color1,color2,displayScale,null,BORDER_OPACITY);
 				}
 			}
 			counter.increment();
@@ -481,7 +481,7 @@ public class MapPanel  extends JPanel{
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
 				Color borderColor = record.getHighlight(p);
-				if(borderColor!=null) this.drawHex(g2, getImagePos(i,j),borderColor,null,null,Math.max((int)scale,1),null);
+				if(borderColor!=null) this.drawHex(g2, getImagePos(i,j),borderColor,null,null,Math.max((int)scale,1),null,1f);
 			}
 		}
 		g2.setStroke(defaultStroke);
@@ -492,10 +492,10 @@ public class MapPanel  extends JPanel{
 		Stroke defaultStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		Point p = this.getMiddleGridPoint();
-		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null);
+		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null,1f);
 		if(highlightedHex!=null) {
 			g2.setStroke(new BasicStroke(Math.max(strokeSize,1)+1));
-			this.drawHex(g2, getScreenPos(highlightedHex),Color.MAGENTA,null,null,Math.max((int)scale,1),null);
+			this.drawHex(g2, getScreenPos(highlightedHex),Color.MAGENTA,null,null,Math.max((int)scale,1),null,1f);
 		}
 		g2.setStroke(defaultStroke);
 	}
@@ -849,7 +849,7 @@ public class MapPanel  extends JPanel{
 		if(region!=null) {
 			counter.resetCounter(region.size());
 			for(Point p1:region) {
-				this.drawHex(g2, getImagePos(p1),Color.WHITE,null,null,displayScale,Color.WHITE);
+				this.drawHex(g2, getImagePos(p1),Color.WHITE,null,null,displayScale,Color.WHITE,1f);
 				counter.increment();
 			}
 		}
@@ -864,10 +864,10 @@ public class MapPanel  extends JPanel{
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
 				if(!record.isExplored(p)) {
-					this.drawHex(g2, getImagePos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
+					this.drawHex(g2, getImagePos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null,0f);
 				}else if(!visible.contains(p)) {
 					g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-					this.drawHex(g2, getImagePos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null);
+					this.drawHex(g2, getImagePos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null,0f);
 					g2.setComposite(AlphaComposite.SrcOver);
 				}
 				if(p.equals(record.getHero())) {
@@ -935,18 +935,22 @@ public class MapPanel  extends JPanel{
 		}
 	}
 
-	public void drawHex(Graphics2D g2,int x,int y,Color borderColor,Color background,Color center,int scale,Color crosshatch) {
+	public void drawHex(Graphics2D g2, Point p,Color borderColor,Color background,Color center,int scale,Color crosshatch,float borderOpacity) {
+		int x = p.x;
+		int y = p.y;
 		int[] xs = new int[] {x,						x+scale,				x+scale,				x,						x-scale,				x-scale};
 		int[] ys = new int[] {(int)(y+scale*2/sqrt3),	(int)(y+scale/sqrt3+1),	(int)(y-scale/sqrt3),	(int)(y-scale*2/sqrt3),	(int)(y-scale/sqrt3),	(int)(y+scale/sqrt3)};
-		Polygon p = new Polygon(xs,ys,6);
+		Polygon p1 = new Polygon(xs,ys,6);
 		if(background!=null) {
 			g2.setColor(background);
-			g2.fillPolygon(p);
-			g2.drawPolygon(p);
+			g2.fillPolygon(p1);
+			g2.drawPolygon(p1);
 		}
-		if(borderColor!=null && (background!=null||center==null)) {
+		if(borderColor!=null && (background!=null||center==null) && borderOpacity>0) {
+			g2.setComposite(AlphaComposite.SrcOver.derive(borderOpacity));
 			g2.setColor(borderColor);
-			g2.drawPolygon(p);
+			g2.drawPolygon(p1);
+			g2.setComposite(AlphaComposite.SrcOver);
 		}
 		if(center!=null) {
 			int[] xs2 = new int[] {x		,				x+scale/3,				x+scale/3,				x,						x-scale/3,				x-scale/3};
@@ -971,9 +975,6 @@ public class MapPanel  extends JPanel{
 			g2.setStroke(defaultStroke);
 		}
 	}
-	public void drawHex(Graphics2D g2, Point p,Color borderColor,Color background,Color center,int scale,Color crosshatch) {
-		this.drawHex(g2, p.x, p.y,borderColor,background,center,scale,crosshatch);
-	}
 	public void highlightTowns(Graphics2D g2, int step, int displayScale, Color borderColor) {
 		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
@@ -988,10 +989,10 @@ public class MapPanel  extends JPanel{
 				Point p = new Point(i,j);
 				BiomeType t = controller.getPopulation().getSettlementType(p);
 				if(BiomeType.CITY.equals(t)) {
-					this.drawHex(g2, getImagePos(i,j),borderColor,null,null,displayScale,null);
+					this.drawHex(g2, getImagePos(i,j),borderColor,null,null,displayScale,null,1f);
 					drawSymbol(g2, height, p,true);
 				}else if(BiomeType.TOWN.equals(t)) {
-					this.drawHex(g2, getImagePos(i,j),borderColor,null,BiomeType.TOWN.getColor(),displayScale,null);
+					this.drawHex(g2, getImagePos(i,j),borderColor,null,BiomeType.TOWN.getColor(),displayScale,null,1f);
 				}
 			}
 			counter.increment();
@@ -1366,22 +1367,10 @@ public class MapPanel  extends JPanel{
 		return this.showCities;
 	}
 
-	public boolean print(BufferedImage image,Point viewCorner) {
-		Point realCenter = center;
-		center= new Point(viewCorner.x, viewCorner.y);
-		this.printMode = true;
-		this.repaint();
-		int result = JOptionPane.showConfirmDialog(this.frame,
-				"Print this area?",
-				"Confirm",
-				JOptionPane.YES_NO_OPTION);
-		if(result==JOptionPane.YES_OPTION) {
-			this.paint(image.getGraphics());
-		}
-		center = realCenter;
-		this.printMode = false;
-		this.repaint();
-		return result==JOptionPane.YES_OPTION;
+	public boolean print(BufferedImage image) {
+		BufferedImage subimage = bufferImage.getSubimage((bufferImage.getWidth()-image.getWidth())/2, (bufferImage.getHeight()-image.getHeight())/2, image.getWidth(), image.getHeight());
+		image.createGraphics().drawImage(subimage, 0, 0, this);
+		return true;
 	}
 
 	public void setHighlightedHex(Point p) {

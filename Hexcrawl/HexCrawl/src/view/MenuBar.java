@@ -137,7 +137,7 @@ public class MenuBar extends JMenuBar {
 		print.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				printer.print(panel);
+				printer.screenshot(panel);
 			}
 		});
 		print.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,InputEvent.CTRL_DOWN_MASK ));

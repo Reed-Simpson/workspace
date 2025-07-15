@@ -953,7 +953,7 @@ public class InfoPanel extends JTabbedPane{
 		return separator;
 	}
 	public void selectTabAndIndex(Reference ref) {
-		selectTabAndIndex(ref.getType().toString(), ref.getPoint().x, ref.getPoint().y, ref.getIndex());
+		selectTabAndIndex(ref.getType().getText(), ref.getPoint().x, ref.getPoint().y, ref.getIndex());
 	}
 
 	public void selectTabAndIndex(String tab, int x, int y, int index) {

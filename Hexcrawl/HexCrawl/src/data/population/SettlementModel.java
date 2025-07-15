@@ -312,7 +312,8 @@ public class SettlementModel extends DataModel{
 		} else {
 			populateFactionNPCs(result, p, i*2,HexData.FACTION_NPC);
 		}
-		result.setGoal(Util.formatTableResultPOS(goal,result,p,record.getZero()));
+		Point capital = controller.getPopulation().getAbsoluteFealty(p);
+		result.setGoal(Util.formatTableResultPOS(goal,result,capital,record.getZero()));
 	}
 
 

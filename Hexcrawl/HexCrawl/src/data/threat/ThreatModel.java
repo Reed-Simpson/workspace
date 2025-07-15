@@ -166,18 +166,9 @@ public class ThreatModel extends DataModel{
 	private void populateFactionDetails(Threat threat, Faction faction) {
 		FactionTypeNameGenerator factionGen = FactionNameGenerator.getNameGenerator(faction.getType());
 		ThreatNameGenerator threatGen = threat.getType().getNameGen();
-		int index = faction.reduceTempId(6);
-		String adj = threatGen.getFactionAdjective(faction);
-		if("".equals(adj)) adj = factionGen.getAdj(faction);
-		String noun = threatGen.getFactionNoun(faction);
-		if("".equals(noun)) noun = factionGen.getNoun(faction);
-		if(index==0) adj = FactionNameGenerator.getAdj(faction);
-		else if(index==1) adj = factionGen.getAdj(faction);
-		else if(index==2) noun = FactionNameGenerator.getNoun(faction);
-		else if(index==3) noun = factionGen.getNoun(faction);
-		String name = Util.formatTableResult("The "+adj+" "+noun,faction);
+		String name = factionGen.getThreatFactionName(faction,threatGen);
 		if(name.contains("${subtype}")) name = Util.replace(name, "${subtype}", threat.getSubtype().getSpeciesName());
-		faction.setName(name);
+		faction.setName(Util.formatTableResult(name,faction));
 		String domain = threat.getDomain();
 		if(domain!=null) faction.setDomain(domain);
 	}

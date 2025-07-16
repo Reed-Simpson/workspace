@@ -8,7 +8,7 @@ public enum NPCJobType {
 	Locksmith,Mason,Miller,Musician,Noble,Painter,Priest,Scholar,Scribe,Sculptor,Shipwright,Soldier,Tailor,Taxidermist,Wigmaker,Artificer,Bard,Cleric,Monk,Paladin,Wizard,
 	
 	Alchemist,Animal_Breeder,Assassin,Acrobat,Beggar,Burglar,Chimneysweep,Charlatan,Cultist,Cutpurse,Deserter,Ditchdigger,Fence,Forger,Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,
-	Informant,Jailer,Laborer,Lamplighter,Mercenary,Poet,Poisoner,Privateer,Ratcatcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,Vagabond,Gutter_Mage,Rogue,Sorcerer,Warlock,
+	Informant,Jailer,Laborer,Lamplighter,Mercenary,Poet,Poisoner,Privateer,Ratcatcher,Sailor,Servant,Smuggler,Spy,Urchin,Loan_Shark,Vagabond,Gutter_Mage,Rogue,Sorcerer,Warlock,
 	
 	Apiarist,Bandit,Caravan_Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisher,Forager,Fugative,Hedge_Wizard,Hermit,Hunter,Messenger,Minstrel,Monster_Hunter,Outlander,
 	Tinker,Pilgrim,Poacher,Raider,Ranger,Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tomb_Raider,Trader,Trapper,Witch,Woodcutter,Barbarian,
@@ -19,7 +19,7 @@ public enum NPCJobType {
 			Guard,Haberdasher,Innkeeper,Item_Seller,Jeweler,Knight,Locksmith,Mason,Miller,Musician,Noble,Painter,Priest,Scholar,Scribe,Sculptor,Shipwright,Soldier,Tailor,Taxidermist,Wigmaker,
 			Artificer,Bard,Cleric,Monk,Paladin,Wizard,Lawyer,Chef};
 	public static final NPCJobType[] underworld = new NPCJobType[] {Alchemist,Animal_Breeder,Assassin,Acrobat,Beggar,Burglar,Chimneysweep,Charlatan,Cultist,Cutpurse,Deserter,Ditchdigger,Fence,Forger,
-			Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Laborer,Lamplighter,Mercenary,Poet,Poisoner,Privateer,Ratcatcher,Sailor,Servant,Smuggler,Spy,Urchin,Userer,
+			Fortuneseller,Gambler,Gladiator,Gravedigger,Headsman,Informant,Jailer,Laborer,Lamplighter,Mercenary,Poet,Poisoner,Privateer,Ratcatcher,Sailor,Servant,Smuggler,Spy,Urchin,Loan_Shark,
 			Vagabond,Gutter_Mage,Rogue,Sorcerer,Warlock,Ruffian};
 	public static final NPCJobType[] wilderness = new NPCJobType[] {Apiarist,Bandit,Caravan_Guard,Caravaneer,Druid,Exile,Explorer,Farmer,Fisher,Forager,Fugative,Hedge_Wizard,Hermit,Hunter,Messenger,
 			Minstrel,Monk,Monster_Hunter,Outlander,Tinker,Pilgrim,Poacher,Raider,Ranger,Sage,Scavenger,Scout,Shepherd,Seer,Surveyor,Tomb_Raider,Trader,Trapper,Witch,Woodcutter,Barbarian};
@@ -103,12 +103,12 @@ public enum NPCJobType {
 	public static final NPCJobType[] Fighting_Pit_jobs = new NPCJobType[] {Gambler,Gladiator};
 	public static final NPCJobType[] Forge_jobs = new NPCJobType[] {Blacksmith};
 	public static final NPCJobType[] Fortuneteller_jobs = new NPCJobType[] {Fortuneseller,Charlatan,Seer};
-	public static final NPCJobType[] Gambling_Hall_jobs = new NPCJobType[] {Gambler,Userer,Ruffian};
+	public static final NPCJobType[] Gambling_Hall_jobs = new NPCJobType[] {Gambler,Loan_Shark,Ruffian};
 	public static final NPCJobType[] Leatherworks_jobs = new NPCJobType[] {Hunter,Outlander,Poacher,Shepherd,Trapper,Butcher};
 	public static final NPCJobType[] Marketplace_jobs = new NPCJobType[] {Item_Seller,Smuggler,Fence,Caravaneer,Farmer,Tinker};
 	public static final NPCJobType[] Mason_jobs = new NPCJobType[] {Mason};
 	public static final NPCJobType[] Mill_jobs = new NPCJobType[] {Miller};
-	public static final NPCJobType[] Moneylender_jobs = new NPCJobType[] {Userer,Noble,Trader};
+	public static final NPCJobType[] Moneylender_jobs = new NPCJobType[] {Loan_Shark,Noble,Trader};
 	public static final NPCJobType[] Orphanage_jobs = new NPCJobType[] {Noble,Priest,Servant};
 	public static final NPCJobType[] Outfitter_jobs = new NPCJobType[] {Caravaneer,Explorer,Fisher,Forager,Hunter,Monster_Hunter,Surveyor,Tomb_Raider};
 	public static final NPCJobType[] Prison_jobs = new NPCJobType[] {Jailer};
@@ -136,19 +136,19 @@ public enum NPCJobType {
 	public static final NPCJobType[] ART_MOVEMENT_JOBS = new NPCJobType[] {Painter,Sculptor};
 	public static final NPCJobType[] BARD_COLLEGE_JOBS = new NPCJobType[] {Musician,Poet,Acrobat,Actor,Minstrel,Bard};
 	public static final NPCJobType[] BEGGAR_GUILD_JOBS = new NPCJobType[] {Beggar,Burglar,Chimneysweep,Charlatan,Cutpurse,Fence,Gambler,Informant,Laborer,Lamplighter,Ratcatcher,Servant,
-			Spy,Urchin,Userer,Vagabond,Gutter_Mage,Ruffian};
+			Spy,Urchin,Loan_Shark,Vagabond,Gutter_Mage,Ruffian};
 	public static final NPCJobType[] BLACK_MARKET_JOBS = new NPCJobType[] {Smuggler,Fence,Caravaneer,Farmer,Tinker};
 	public static final NPCJobType[] BROTHERHOOD_JOBS = new NPCJobType[] {Actor,Apothacary,Baker,Barber,Blacksmith,Brewer,Bureaucrat,Butcher,Carpenter,Clockmaker,Courier,Courtier,Guard,Haberdasher,
 			Innkeeper,Item_Seller,Jeweler,Knight,Locksmith,Mason,Miller,Musician,Noble,Scholar,Scribe,Shipwright,Tailor,Artificer,Bard,Wizard,Alchemist,Animal_Breeder,Assassin,Acrobat,
-			Chimneysweep,Ditchdigger,Fortuneseller,Gladiator,Gravedigger,Jailer,Laborer,Lamplighter,Mercenary,Privateer,Ratcatcher,Sailor,Servant,Userer,Gutter_Mage,Rogue,Sorcerer,Warlock,
+			Chimneysweep,Ditchdigger,Fortuneseller,Gladiator,Gravedigger,Jailer,Laborer,Lamplighter,Mercenary,Privateer,Ratcatcher,Sailor,Servant,Loan_Shark,Gutter_Mage,Rogue,Sorcerer,Warlock,
 			Apiarist,Caravan_Guard,Caravaneer,Druid,Explorer,Farmer,Fisher,Forager,Hedge_Wizard,Hermit,Hunter,Messenger,Minstrel,Monster_Hunter,Outlander,
 			Tinker,Pilgrim,Ranger,Sage,Scout,Shepherd,Seer,Surveyor,Tomb_Raider,Trader,Trapper,Witch,Woodcutter,Lawyer,Chef,Artisan};
 	public static final NPCJobType[] CITY_GUARD_JOBS = new NPCJobType[] {Guard};
 	public static final NPCJobType[] CONSPIRACY_JOBS = NPCJobType.values();
 	public static final NPCJobType[] CRAFT_GUILD_JOBS = new NPCJobType[] {Apothacary,Baker,Blacksmith,Brewer,Carpenter,Clockmaker,Haberdasher,Jeweler,Locksmith,Mason,Miller,Scribe,Shipwright,
 			Tailor,Artificer,Alchemist,Tinker,Chef,Artisan};
-	public static final NPCJobType[] CRIME_FAMILY_JOBS = new NPCJobType[] {Assassin,Burglar,Charlatan,Cutpurse,Fence,Forger,Gambler,Poisoner,Privateer,Smuggler,Spy,Userer,Ruffian};
-	public static final NPCJobType[] CRIME_RING_JOBS = new NPCJobType[] {Assassin,Burglar,Charlatan,Cutpurse,Fence,Forger,Gambler,Poisoner,Privateer,Smuggler,Spy,Userer,Ruffian};
+	public static final NPCJobType[] CRIME_FAMILY_JOBS = new NPCJobType[] {Assassin,Burglar,Charlatan,Cutpurse,Fence,Forger,Gambler,Poisoner,Privateer,Smuggler,Spy,Loan_Shark,Ruffian};
+	public static final NPCJobType[] CRIME_RING_JOBS = new NPCJobType[] {Assassin,Burglar,Charlatan,Cutpurse,Fence,Forger,Gambler,Poisoner,Privateer,Smuggler,Spy,Loan_Shark,Ruffian};
 	public static final NPCJobType[] EXPLORER_CLUB_JOBS = new NPCJobType[] {Explorer,Monster_Hunter,Outlander,Ranger,Scout,Surveyor,Tomb_Raider,Trader};
 	public static final NPCJobType[] FREE_COMPANY_JOBS = new NPCJobType[] {Knight,Mercenary,Privateer};
 	public static final NPCJobType[] GOURMAND_CLUB_JOBS = new NPCJobType[] {Baker,Brewer,Chef,Noble,Trader};

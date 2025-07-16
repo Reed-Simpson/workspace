@@ -21,6 +21,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +54,7 @@ import io.SaveRecord;
 import util.Counter;
 import util.Pair;
 
-public class MapPanel  extends JPanel{
+public class MapPanel  extends JPanel implements Printable{
 	public static final int WIGGLERADIUS = 100;
 	private static final int WIDEVIEW = 5;
 	private static final long serialVersionUID = 6922738675563657970L;
@@ -61,7 +64,7 @@ public class MapPanel  extends JPanel{
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
 	private static final int LOG_THRESHOLD = 20;
-	private static final float RIVERRENDERGRANULARITY = 0.2f;
+	private static final float RIVERRENDERGRANULARITY = 1f;
 	private static final float BORDER_OPACITY = 0.05f;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
@@ -161,35 +164,35 @@ public class MapPanel  extends JPanel{
 		this.preprocessThenRepaint();
 	}
 
-	public Point getScreenPos(Point p) {
-		return getScreenPos(p.x, p.y);
+	public Point getScreenPosFromGrid(Point p,double displayScale) {
+		return getScreenPosFromGrid(p.x, p.y,displayScale);
 	}
-	public Point getScreenPos(int x0,int y0) {
-		int x1=(int) (this.getWidth()/2+(x0)*scale*2+(y0)*scale-center.x);
-		int y1=this.getHeight()/2+(int)((y0)*scale*3/sqrt3)-center.y;
+	public Point getScreenPosFromGrid(int x0,int y0,double displayScale) {
+		int x1=(int) (this.getWidth()/2+(x0)*displayScale*2+(y0)*displayScale-center.x*(displayScale/this.scale));
+		int y1=(int) (this.getHeight()/2+(int)((y0)*displayScale*3/sqrt3)-center.y*(displayScale/this.scale));
 		return new Point(x1,y1);
 	}
 
-	public Point getImagePos(Point p) {
-		return getImagePos(p.x, p.y);
+	public Point getImagePosFromGrid(Point p,double displayScale) {
+		return getImagePosFromGrid(p.x, p.y,displayScale);
 	}
-	public Point getImagePos(int x0,int y0) {
-		int x1=(int) (bufferImage.getWidth()/2+(x0)*scale*2+(y0)*scale-center.x);
-		int y1=bufferImage.getHeight()/2+(int)((y0)*scale*3/sqrt3)-center.y;
+	public Point getImagePosFromGrid(int x0,int y0,double displayScale) {
+		int x1=(int) (bufferImage.getWidth()/2+(x0)*displayScale*2+(y0)*displayScale-center.x*(displayScale/this.scale));
+		int y1=(int) (bufferImage.getHeight()/2+(int)((y0)*displayScale*3/sqrt3)-center.y*(displayScale/this.scale));
 		return new Point(x1,y1);
 	}
-	public Point getAbsolutePos(Point p) {
-		return getAbsolutePos(p.x, p.y);
+	public Point getAbsolutePosFromGrid(Point p,double scale) {
+		return getAbsolutePosFromGrid(p.x, p.y,scale);
 	}
-	public Point getAbsolutePos(int x0,int y0) {
+	public Point getAbsolutePosFromGrid(int x0,int y0,double scale) {
 		int x1=(int) (this.getWidth()/2+(x0)*scale*2+(y0)*scale);
 		int y1=this.getHeight()/2+(int)((y0)*scale*3/sqrt3);
 		return new Point(x1,y1);
 	}
-	public Point getGridPoint(Point p) {
-		return this.getGridPoint(p.x, p.y);
+	public Point getGridPointFromScreen(Point p,double scale) {
+		return this.getGridPointFromScreen(p.x, p.y,scale);
 	}
-	public Point getGridPoint(int x1, int y1) {
+	public Point getGridPointFromScreen(int x1, int y1,double scale) {
 		double yn = (y1+center.y-(double)this.getHeight()/2.0)/scale;
 		if(yn<0) yn-=1;
 		else yn+=1;
@@ -203,10 +206,10 @@ public class MapPanel  extends JPanel{
 	}
 	public Point getSelectedGridPoint() {
 		if(showDistance) return getMouseoverGridPoint();
-		return getGridPoint(getMiddleOfScreen());
+		return getGridPointFromScreen(getMiddleOfScreen(),scale);
 	}
 	public Point getMiddleGridPoint() {
-		return getGridPoint(getMiddleOfScreen());
+		return getGridPointFromScreen(getMiddleOfScreen(),scale);
 	}
 	public Point getMouseoverGridPoint() {
 		return mouseover;
@@ -223,7 +226,7 @@ public class MapPanel  extends JPanel{
 				previous.remove(i);
 			}
 		}
-		Point targetHexPos = getAbsolutePos(p);
+		Point targetHexPos = getAbsolutePosFromGrid(p,scale);
 		Point middle = getMiddleOfScreen();
 		center= new Point(targetHexPos.x-middle.x, targetHexPos.y-middle.y);
 		if(updatePrevious) {
@@ -255,7 +258,7 @@ public class MapPanel  extends JPanel{
 		this.displayRegion = selectedItem;
 	}
 
-	public int getStep() {
+	public int getStep(double scale) {
 		int step = 1;
 		if(scale<MIN_SCALE) {
 			step = (int) (MIN_SCALE/scale);
@@ -266,11 +269,11 @@ public class MapPanel  extends JPanel{
 	@Override
 	public void paintComponent(Graphics g){
 		Graphics2D g2 = (Graphics2D) g;
-		int step = getStep();
-		int displayScale = getDisplayScale();
+		int step = getStep(scale);
+		int displayScale = getDisplayScale(scale);
 		BufferedImage subimage;
 		if(!isDragging) {
-			drawBackgroundImage(bufferImage.createGraphics());
+			drawBackgroundImage(bufferImage.createGraphics(),scale);
 			subimage = bufferImage.getSubimage((bufferImage.getWidth()-this.getWidth())/2, (bufferImage.getHeight()-this.getHeight())/2, this.getWidth(), this.getHeight());
 		} else {
 			subimage = bufferImage.getSubimage(this.getWidth()-dragAnchor.x+center.x, this.getHeight()-dragAnchor.y+center.y, this.getWidth(), this.getHeight());
@@ -283,9 +286,9 @@ public class MapPanel  extends JPanel{
 		dialog.removeProgressUI();
 	}
 
-	private void drawBackgroundImage(Graphics2D g2) {
-		int step = getStep();
-		int displayScale = getDisplayScale();
+	private void drawBackgroundImage(Graphics2D g2,double scale) {
+		int step = getStep(scale);
+		int displayScale = getDisplayScale(scale);
 		boolean wideview = scale<WIDEVIEW;
 		Color borderColor = LINE_COLOR;
 		if(scale<HIDE_BORDERS_SCALE||!showIcons) {
@@ -310,7 +313,7 @@ public class MapPanel  extends JPanel{
 		if(HexData.EXPLORATION.equals(displayData)) drawVoid(g2, displayScale);
 	}
 
-	private int getDisplayScale() {
+	private int getDisplayScale(double scale) {
 		int displayScale = (int)scale;
 		if(scale<MIN_SCALE) {
 			displayScale = MIN_SCALE;
@@ -328,7 +331,7 @@ public class MapPanel  extends JPanel{
 		long time = System.currentTimeMillis();
 		Rectangle r = getRenderArea();
 		int sum = (r.width-r.x);
-		int step = getStep();
+		int step = getStep(scale);
 		MyLogger logger = new MyLogger(LOG_THRESHOLD);
 		Counter counter = new Counter(sum, dialog.getProgressBar());
 		counter.setLog(logger);
@@ -372,8 +375,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private Rectangle getRenderArea() {
-		Point p1 = getGridPoint(-20-(int)scale-this.getWidth(),bufferImage.getHeight()-this.getHeight()+60+(int)scale);
-		Point p2 = getGridPoint(bufferImage.getWidth()-this.getWidth()+20+(int)scale,-20-(int)scale-this.getHeight());
+		Point p1 = getGridPointFromScreen(-20-(int)scale-this.getWidth(),bufferImage.getHeight()-this.getHeight()+60+(int)scale,scale);
+		Point p2 = getGridPointFromScreen(bufferImage.getWidth()-this.getWidth()+20+(int)scale,-20-(int)scale-this.getHeight(),scale);
 		Rectangle r = new Rectangle(p1.x,p2.y,p2.x,p1.y);
 		return r;
 	}
@@ -423,14 +426,14 @@ public class MapPanel  extends JPanel{
 						color1 = cached.key1;
 						color2 = cached.key2;
 					}
-					this.drawHex(g2, getImagePos(i,j),borderColor,color1,color2,displayScale,null,BORDER_OPACITY);
+					this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),borderColor,color1,color2,displayScale,null,BORDER_OPACITY);
 					if(cached==null) {
 						if(controller.getPopulation().isCity(p)) {
-							this.drawHex(g2, getImagePos(i,j),borderColor,BiomeType.CITY.getColor(),null,displayScale,null,BORDER_OPACITY);
+							this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),borderColor,BiomeType.CITY.getColor(),null,displayScale,null,BORDER_OPACITY);
 						}
 						drawLoadingIcon(g2, displayScale, i, j);
 					}
-					drawSymbol(g2, height, p,false);
+					drawSymbol(g2, height, p,false,displayScale);
 				}
 			}
 			counter.increment();
@@ -443,7 +446,7 @@ public class MapPanel  extends JPanel{
 		g2.setFont(g2.getFont().deriveFont((float) (displayScale)));
 		g2.setColor(Color.RED);
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-		g2.drawString("\u23F3", getImagePos(i,j).x+(int)((offset.x*scale)/100), getImagePos(i,j).y+(int)((offset.y*scale)/100));
+		g2.drawString("\u23F3", getImagePosFromGrid(i,j,displayScale).x+(int)((offset.x*displayScale)/100), getImagePosFromGrid(i,j,displayScale).y+(int)((offset.y*displayScale)/100));
 		g2.setComposite(AlphaComposite.SrcOver);
 	}
 
@@ -467,7 +470,7 @@ public class MapPanel  extends JPanel{
 						color1 = color2;
 						color2 = null;
 					}
-					this.drawHex(g2, getImagePos(i,j),borderColor,color1,color2,displayScale,null,BORDER_OPACITY);
+					this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),borderColor,color1,color2,displayScale,null,BORDER_OPACITY);
 				}
 			}
 			counter.increment();
@@ -477,15 +480,15 @@ public class MapPanel  extends JPanel{
 
 	private void drawHighlights(Graphics2D g2, int step, int displayScale) {
 		int strokeSize = displayScale/4;
-		Point p1 = getGridPoint(-2*displayScale,this.getHeight()+4*displayScale);
-		Point p2 = getGridPoint(this.getWidth()+2*displayScale,-2*displayScale);
+		Point p1 = getGridPointFromScreen(-2*displayScale,this.getHeight()+4*displayScale,displayScale);
+		Point p2 = getGridPointFromScreen(this.getWidth()+2*displayScale,-2*displayScale,displayScale);
 		Stroke defaultStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
 				Color borderColor = record.getHighlight(p);
-				if(borderColor!=null) this.drawHex(g2, getImagePos(i,j),borderColor,null,null,Math.max((int)scale,1),null,1f);
+				if(borderColor!=null) this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),borderColor,null,null,displayScale,null,1f);
 			}
 		}
 		g2.setStroke(defaultStroke);
@@ -496,10 +499,10 @@ public class MapPanel  extends JPanel{
 		Stroke defaultStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(Math.max(strokeSize,1)));
 		Point p = this.getMiddleGridPoint();
-		this.drawHex(g2, getScreenPos(p),Color.CYAN,null,null,Math.max((int)scale,1),null,1f);
+		this.drawHex(g2, getScreenPosFromGrid(p,displayScale),Color.CYAN,null,null,displayScale,null,1f);
 		if(highlightedHex!=null) {
 			g2.setStroke(new BasicStroke(Math.max(strokeSize,1)+1));
-			this.drawHex(g2, getScreenPos(highlightedHex),Color.MAGENTA,null,null,Math.max((int)scale,1),null,1f);
+			this.drawHex(g2, getScreenPosFromGrid(highlightedHex,displayScale),Color.MAGENTA,null,null,displayScale,null,1f);
 		}
 		g2.setStroke(defaultStroke);
 	}
@@ -519,7 +522,7 @@ public class MapPanel  extends JPanel{
 		for(int i=r.x;i<r.width;i+=step) {
 			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
-				drawSymbol(g2, height, p,true);
+				drawSymbol(g2, height, p,true,displayScale);
 			}
 			counter.increment();
 		}
@@ -527,19 +530,22 @@ public class MapPanel  extends JPanel{
 		logger.logln("Symbols drawn "+(System.currentTimeMillis()-time)+" ms");
 	}
 
-	private void drawSymbol(Graphics2D g2, float height, Point p,boolean top) {
+	private void drawSymbol(Graphics2D g2, float height, Point p,boolean top,int displayScale) {
 		Pair<Color, Color> base = colorCache.get(p);
 		List<Icon> icons = iconCache.get(p);
 		if(icons==null) {
-			drawLoadingIcon(g2, (int)scale, p.x, p.y);
-		}else if((scale>8&&showIcons)||(scale>2&&controller.getPopulation().isCity(p))) {
+			drawLoadingIcon(g2, displayScale, p.x, p.y);
+		}else if((displayScale>8&&showIcons)||(displayScale>2&&controller.getPopulation().isCity(p))) {
 			if(HexData.ALTITUDE.equals(displayData)) {
 				g2.setColor(Color.black);
 				float height_x = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(p));
 				int dheight = (int)(height_x-height);
-				g2.setFont(g2.getFont().deriveFont((float) (scale/2)));
+				g2.setFont(g2.getFont().deriveFont((float) (displayScale/2)));
 				if(dheight<0) g2.setColor(Color.red);
-				g2.drawString(String.valueOf(dheight), (int) (getImagePos(p).x-scale/2) ,getImagePos(p).y );
+				g2.drawString(
+						String.valueOf(dheight), 
+						(int) (getImagePosFromGrid(p,displayScale).x-displayScale/2) ,
+						getImagePosFromGrid(p,displayScale).y );
 			}else {
 				for(Icon icon:icons) {
 					Character ch = icon.getCh();
@@ -548,17 +554,23 @@ public class MapPanel  extends JPanel{
 							Point offset = icon.offset;
 							double cScale = icon.getScale();
 							g2.setColor(base.key1);
-							g2.setFont(g2.getFont().deriveFont((float) (scale*cScale)));
-							g2.drawString(ch.toString(), getImagePos(p).x+(int)((offset.x*scale)/100), getImagePos(p).y+(int)((offset.y*scale)/100));
+							g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
+							g2.drawString(
+									ch.toString(), 
+									getImagePosFromGrid(p,displayScale).x+(int)((offset.x*displayScale)/100), 
+									getImagePosFromGrid(p,displayScale).y+(int)((offset.y*displayScale)/100));
 						}
 						g2.setComposite(AlphaComposite.SrcOver.derive(icon.getOpacity()));
 						Point offset = icon.offset;
 						Color c = icon.getC();
 						double cScale = icon.getScale();
-						g2.setFont(g2.getFont().deriveFont((float) (scale*cScale)));
+						g2.setFont(g2.getFont().deriveFont((float) (displayScale*cScale)));
 						if(c==null) c=LINE_COLOR;
 						g2.setColor(c);
-						g2.drawString(ch.toString(), getImagePos(p).x+(int)((offset.x*scale)/100), getImagePos(p).y+(int)((offset.y*scale)/100));
+						g2.drawString(
+								ch.toString(), 
+								getImagePosFromGrid(p,displayScale).x+(int)((offset.x*displayScale)/100), 
+								getImagePosFromGrid(p,displayScale).y+(int)((offset.y*displayScale)/100));
 						g2.setComposite(AlphaComposite.SrcOver);
 					}
 				}
@@ -582,8 +594,16 @@ public class MapPanel  extends JPanel{
 			}else {
 				midpoint = new Point(mouseover.x,center.y-dx);
 			}
-			g2.drawLine(getScreenPos(center).x, getScreenPos(center).y, getScreenPos(midpoint).x, getScreenPos(midpoint).y);
-			g2.drawLine(getScreenPos(midpoint).x, getScreenPos(midpoint).y, getScreenPos(mouseover).x, getScreenPos(mouseover).y);
+			g2.drawLine(
+					getScreenPosFromGrid(center,displayScale).x, 
+					getScreenPosFromGrid(center,displayScale).y, 
+					getScreenPosFromGrid(midpoint,displayScale).x, 
+					getScreenPosFromGrid(midpoint,displayScale).y);
+			g2.drawLine(
+					getScreenPosFromGrid(midpoint,displayScale).x, 
+					getScreenPosFromGrid(midpoint,displayScale).y, 
+					getScreenPosFromGrid(mouseover,displayScale).x, 
+					getScreenPosFromGrid(mouseover,displayScale).y);
 			g2.setStroke(defaultStroke);
 		}
 	}
@@ -598,7 +618,7 @@ public class MapPanel  extends JPanel{
 		} else {
 			int corneroffset = 50;
 			int inset = 20;
-			int lineDist = (int) (1000/scale);//(int) ((width-2*inset)*6.0/(scale*2));
+			int lineDist = (int) (1000/displayScale);//(int) ((width-2*inset)*6.0/(scale*2));
 			int width = 1000/3+2*inset;
 			int height = 50;
 			g2.setColor(Color.WHITE);
@@ -609,9 +629,9 @@ public class MapPanel  extends JPanel{
 			g2.drawLine(corneroffset+inset, this.getHeight()-corneroffset-height/3, corneroffset+inset, this.getHeight()-corneroffset-height/2);
 			g2.drawLine(corneroffset+width-inset, this.getHeight()-corneroffset-height/3, corneroffset+width-inset, this.getHeight()-corneroffset-height/2);
 			g2.setFont(g2.getFont().deriveFont(12f));
-			if(scale>2) {
-				g2.drawLine(corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height/3, corneroffset+inset+(int)(scale*2), this.getHeight()-corneroffset-height*5/12);
-				g2.drawString("6 miles", corneroffset+inset-22+(int)(scale*2), this.getHeight()-corneroffset-height*2/3);
+			if(displayScale>2) {
+				g2.drawLine(corneroffset+inset+(int)(displayScale*2), this.getHeight()-corneroffset-height/3, corneroffset+inset+(int)(displayScale*2), this.getHeight()-corneroffset-height*5/12);
+				g2.drawString("6 miles", corneroffset+inset-22+(int)(displayScale*2), this.getHeight()-corneroffset-height*2/3);
 			}
 			String str = lineDist+" miles";
 			int stringwidth = g2.getFontMetrics().stringWidth(str);
@@ -766,27 +786,27 @@ public class MapPanel  extends JPanel{
 	private void drawCurvedRiver(Graphics2D g2, int displayScale, Point p0,BasicSpline spline) {
 		Float volume = controller.getPrecipitation().getFlowVolume(p0);
 		if(spline!=null && volume!=null) {
-			float width = getRiverWidth(volume);
+			float width = getRiverWidth(volume,displayScale);
 			if(showRivers||volume>2.2) {
-				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0);
+				drawSpline(g2, spline, width,BiomeType.RIVER.getColor(),p0,displayScale);
 			}
 		}
 	}
 
-	private float getRiverWidth(Float volume) {
+	private float getRiverWidth(Float volume,int scale) {
 		float width = (float) (Math.sqrt(volume)/15.0f*scale);
 		if(width>scale) width = (float) scale;
 		return width;
 	}
 
-	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0) {
+	private void drawSpline(Graphics2D g2, BasicSpline spline, float width,Color color,Point p0,int scale) {
 		Point p1 = controller.getPrecipitation().getRiver(p0);
 		double distance = calcDistance(p0, p1);
 		g2.setColor(color);
 		g2.setStroke(new BasicStroke(Math.max(width-1,0),BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-		Point anchor = getImagePos(p0);
+		Point anchor = getImagePosFromGrid(p0,scale);
 		Point pointBefore = null;
-		float step = (float) (1f/3/scale)/RIVERRENDERGRANULARITY;
+		float step = (float) (1f/3/scale)*(5/RIVERRENDERGRANULARITY);
 		for(float f = 0; f<=1f/3+step/distance-width/12/scale/distance; f+=step/distance) {
 			Point p = spline.getPoint(f);
 			Point pnt = new Point((int)(anchor.x+p.x*scale/WIGGLERADIUS), (int)(anchor.y+p.y*scale/WIGGLERADIUS));
@@ -814,8 +834,8 @@ public class MapPanel  extends JPanel{
 	}
 
 	private Point wiggle(Point p,Point relativeTo) {
-		Point p_ = getImagePos(p);
-		Point relative_ = getImagePos(relativeTo);
+		Point p_ = getImagePosFromGrid(p,scale);
+		Point relative_ = getImagePosFromGrid(relativeTo,scale);
 		Point hexCenter = new Point((int)((p_.x-relative_.x)*WIGGLERADIUS/scale),(int)((p_.y-relative_.y)*WIGGLERADIUS/scale));
 		if(controller.getGrid().isWater(p)) return hexCenter;
 		else {
@@ -855,7 +875,7 @@ public class MapPanel  extends JPanel{
 		if(region!=null) {
 			counter.resetCounter(region.size());
 			for(Point p1:region) {
-				this.drawHex(g2, getImagePos(p1),Color.WHITE,null,null,displayScale,Color.WHITE,1f);
+				this.drawHex(g2, getImagePosFromGrid(p1,displayScale),Color.WHITE,null,null,displayScale,Color.WHITE,1f);
 				counter.increment();
 			}
 		}
@@ -863,17 +883,17 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawVoid(Graphics2D g2, int displayScale) {
-		Point p1 = getGridPoint(-40,this.getHeight()+80);
-		Point p2 = getGridPoint(this.getWidth()+40,-40);
+		Point p1 = getGridPointFromScreen(-40,this.getHeight()+80,displayScale);
+		Point p2 = getGridPointFromScreen(this.getWidth()+40,-40,displayScale);
 		HashSet<Point> visible = controller.getGrid().getLineOfSight(record.getHero());
 		for(int i=p1.x;i<p2.x;i+=1) {
 			for(int j=p2.y;j<p1.y;j+=1) {
 				Point p = new Point(i,j);
 				if(!record.isExplored(p)) {
-					this.drawHex(g2, getImagePos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null,0f);
+					this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),null,BiomeType.VOID.getColor(),null,displayScale,null,0f);
 				}else if(!visible.contains(p)) {
 					g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-					this.drawHex(g2, getImagePos(i,j),null,BiomeType.VOID.getColor(),null,displayScale,null,0f);
+					this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),null,BiomeType.VOID.getColor(),null,displayScale,null,0f);
 					g2.setComposite(AlphaComposite.SrcOver);
 				}
 				if(p.equals(record.getHero())) {
@@ -884,7 +904,7 @@ public class MapPanel  extends JPanel{
 	}
 
 	private void drawPawn(Graphics2D g2, Point p, Color color, int displayScale) {
-		Point p_ = getImagePos(p);
+		Point p_ = getImagePosFromGrid(p,displayScale);
 		int diameter = displayScale*2/3;
 		int[] xs1 = new int[] {p_.x,						p_.x+displayScale/2+1,				p_.x-displayScale/2-1};
 		int[] ys1 = new int[] {(int)(p_.y-displayScale/sqrt3-1),	(int)(p_.y+displayScale*3/4/sqrt3+1),	(int)(p_.y+displayScale*3/4/sqrt3+1)};
@@ -995,10 +1015,10 @@ public class MapPanel  extends JPanel{
 				Point p = new Point(i,j);
 				BiomeType t = controller.getPopulation().getSettlementType(p);
 				if(BiomeType.CITY.equals(t)) {
-					this.drawHex(g2, getImagePos(i,j),borderColor,null,null,displayScale,null,1f);
-					drawSymbol(g2, height, p,true);
+					this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),borderColor,null,null,displayScale,null,1f);
+					drawSymbol(g2, height, p,true,displayScale);
 				}else if(BiomeType.TOWN.equals(t)) {
-					this.drawHex(g2, getImagePos(i,j),borderColor,null,BiomeType.TOWN.getColor(),displayScale,null,1f);
+					this.drawHex(g2, getImagePosFromGrid(i,j,displayScale),borderColor,null,BiomeType.TOWN.getColor(),displayScale,null,1f);
 				}
 			}
 			counter.increment();
@@ -1010,7 +1030,7 @@ public class MapPanel  extends JPanel{
 			long time = System.currentTimeMillis();
 			Rectangle r = getRenderArea();
 			int sum = (r.width-r.x);
-			int step = getStep();
+			int step = getStep(scale);
 
 			MyLogger logger = new MyLogger(LOG_THRESHOLD);
 			Counter counter = new Counter(sum, dialog.getProgressBar());
@@ -1051,13 +1071,13 @@ public class MapPanel  extends JPanel{
 		for(int i=r.x;i<r.width;i+=step) {
 			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);
-				Point p_ = getImagePos(p);
+				Point p_ = getImagePosFromGrid(p,displayScale);
 				Point pWiggle = wiggle(p,p);
-				Point pStart = new Point((int)(p_.x+pWiggle.x*scale/WIGGLERADIUS), (int)(p_.y+pWiggle.y*scale/WIGGLERADIUS));
+				Point pStart = new Point((int)(p_.x+pWiggle.x*displayScale/WIGGLERADIUS), (int)(p_.y+pWiggle.y*displayScale/WIGGLERADIUS));
 				for(Point near:roads.getAdjacencyList(p)) {
-					Point near_ = getImagePos(near);
+					Point near_ = getImagePosFromGrid(near,displayScale);
 					Point nearWiggle = wiggle(near,near);
-					Point pEnd = new Point((int)(near_.x+nearWiggle.x*scale/WIGGLERADIUS), (int)(near_.y+nearWiggle.y*scale/WIGGLERADIUS));
+					Point pEnd = new Point((int)(near_.x+nearWiggle.x*displayScale/WIGGLERADIUS), (int)(near_.y+nearWiggle.y*displayScale/WIGGLERADIUS));
 					int weight = roads.getEdgeWeight(p, near);
 					Stroke defaultStroke = g2.getStroke();
 					g2.setStroke(new BasicStroke(displayScale/(14-weight*6)+1));
@@ -1121,7 +1141,7 @@ public class MapPanel  extends JPanel{
 	public class MouseAdapter implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			Point p = MapPanel.this.getGridPoint(e.getX(), e.getY());
+			Point p = MapPanel.this.getGridPointFromScreen(e.getX(), e.getY(),scale);
 			if(MouseEvent.BUTTON1==e.getButton()) {
 				if(showDistance) {
 					if(mouseoverHold&&p.equals(mouseover)) {
@@ -1140,7 +1160,7 @@ public class MapPanel  extends JPanel{
 			}
 		}
 		private void openMenu(MouseEvent e) {
-			Point gridPoint = getGridPoint(e.getPoint());
+			Point gridPoint = getGridPointFromScreen(e.getPoint(),scale);
 			JPopupMenu menu = new JPopupMenu();
 			JMenuItem hero = new JMenuItem("Move Hero Marker");
 			hero.addActionListener(new ActionListener() {
@@ -1210,7 +1230,7 @@ public class MapPanel  extends JPanel{
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			Point gridPoint = MapPanel.this.getGridPoint(e.getX(),e.getY());
+			Point gridPoint = MapPanel.this.getGridPointFromScreen(e.getX(),e.getY(),scale);
 			if(mouseover!=null&&!mouseoverHold&&!MapPanel.this.mouseover.equals(gridPoint)){
 				mouseover = gridPoint;
 				if(showDistance) {
@@ -1373,9 +1393,11 @@ public class MapPanel  extends JPanel{
 		return this.showCities;
 	}
 
-	public boolean print(BufferedImage image) {
-		BufferedImage subimage = bufferImage.getSubimage((bufferImage.getWidth()-image.getWidth())/2, (bufferImage.getHeight()-image.getHeight())/2, image.getWidth(), image.getHeight());
-		image.createGraphics().drawImage(subimage, 0, 0, this);
+	public boolean screenshot(BufferedImage image,double printscale) {
+		Graphics2D g2 = image.createGraphics();
+		g2.translate((bufferImage.getWidth()-image.getWidth())/-2, (bufferImage.getHeight()-image.getHeight())/-2);
+		drawBackgroundImage(g2, scale*printscale);
+		//getPrintImage(image.createGraphics(),image.getWidth(),image.getHeight());
 		return true;
 	}
 
@@ -1384,6 +1406,22 @@ public class MapPanel  extends JPanel{
 			this.highlightedHex = p;
 			this.repaint();
 		}
+	}
+
+	@Override
+	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+		if (pageIndex > 0) return NO_SUCH_PAGE;
+		getPrintImage(graphics,(int)pageFormat.getImageableWidth(),(int)pageFormat.getImageableHeight());
+		return PAGE_EXISTS;
+	}
+
+	private void getPrintImage(Graphics graphics, int width,int height) {
+		BufferedImage subimage = bufferImage.getSubimage(
+				(bufferImage.getWidth()-width)/2, 
+				(bufferImage.getHeight()-height)/2, 
+				width, 
+				height);
+		graphics.drawImage(subimage, 0, 0, this);
 	}
 
 }

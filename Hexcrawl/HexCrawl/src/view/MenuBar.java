@@ -132,12 +132,21 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		menuSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		JMenuItem screenshot = new JMenuItem("Screenshot");
+		fileMenu.add(screenshot);
+		screenshot.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				printer.screenshot(panel);
+			}
+		});
+		screenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN,0 ));
 		JMenuItem print = new JMenuItem("Print");
 		fileMenu.add(print);
 		print.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				printer.screenshot(panel);
+				printer.print(panel);
 			}
 		});
 		print.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,InputEvent.CTRL_DOWN_MASK ));

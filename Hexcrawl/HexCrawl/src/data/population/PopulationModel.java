@@ -156,7 +156,9 @@ public class PopulationModel extends DataModel{
 	public NPCSpecies getMajoritySpecies(int x,int y) {
 		return getMajorityPopAndSpecies(x, y).getKey();
 	}
-
+	private NPCSpecies getMajoritySpecies(Point p) {
+		return getMajoritySpecies(p.x,p.y);
+	}
 	public float getMajorityPop(int x,int y) {
 		return getMajorityPopAndSpecies(x, y).getValue();
 	}
@@ -189,28 +191,27 @@ public class PopulationModel extends DataModel{
 	}
 
 	public boolean isCity(Point p) {
-		if(p==null||getUniversalPopulation(p.x,p.y)<CITY_POP_THRESH) return false;
+		float territoryFactor = Math.min(getTerritory(p)*2,1);
+		if(territoryFactor<0||getUniversalPopulation(p.x,p.y)<CITY_POP_THRESH/territoryFactor) return false;
 		else {
 			return p.equals(getLocalFealty(p))&&p.equals(getParentCity(p));
 		}
 	}
 	private float getTownPopThresh(Point p) {
 		return TOWN_POP_THRESH;
-//		return Math.max(1-getHarshnessFactor(p.x, p.y),0)*2+0.01f;
+		//		return Math.max(1-getHarshnessFactor(p.x, p.y),0)*2+0.01f;
 	}
 	public boolean isTown(Point p) {
-		if(p==null||getUniversalPopulation(p.x,p.y)<getTownPopThresh(p)) return false;
+		if(getUniversalPopulation(p.x,p.y)<getTownPopThresh(p)) return false;
 		else {
 			return p.equals(getLocalFealty(p));
 		}
 	}
 	public BiomeType getSettlementType(Point p) {
-		float pop = getUniversalPopulation(p.x,p.y);
-		if(pop>=getTownPopThresh(p)) {
-			boolean isTown = p.equals(getLocalFealty(p));
-			if(pop>0.16f&&isTown&&p.equals(getParentCity(p))) {
+		if(isTown(p)) {
+			if(isCity(p)) {
 				return BiomeType.CITY;
-			}else if(isTown) {
+			}else {
 				return BiomeType.TOWN;
 			}
 		}
@@ -326,7 +327,7 @@ public class PopulationModel extends DataModel{
 		}
 		return p;
 	}
-	
+
 	public WeightedTable<Point> getWeightedNearbyPointsTable(Point p){
 		WeightedTable<Point> result = new WeightedTable<Point>();
 		result.put(p,getTransformedUniversalPopulation(p));
@@ -336,6 +337,21 @@ public class PopulationModel extends DataModel{
 			}
 		}
 		return result;
+	}
+
+	public float getTerritory(Point p) {
+		int range = 3;
+		float result = 1;
+		float sum = 1;
+		Species s = getMajoritySpecies(p);
+		if(s==null) return -1;
+		for(int i=1;i<=range;i++) {
+			for(Point p1:Util.getRing(p, i)) {
+				if(s.equals(getMajoritySpecies(p1))) result+=1f/i;
+				sum+=1f/i;
+			}
+		}
+		return result/sum;
 	}
 
 	@Override

@@ -142,7 +142,7 @@ public class MenuBar extends JMenuBar {
 		});
 		screenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN,0 ));
 		JMenuItem print = new JMenuItem("Print");
-		fileMenu.add(print);
+		//fileMenu.add(print);  //TODO finish implementation
 		print.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -423,6 +423,11 @@ public class MenuBar extends JMenuBar {
 
 	private void openFile() {
 		JFileChooser fileChooser = new JFileChooser();
+		AppData appData = panel.getFrame().getAppData();
+		File recentfile = appData.getMostRecent();
+		if(recentfile!=null) fileChooser.setCurrentDirectory(recentfile.getParentFile());
+		else fileChooser.setCurrentDirectory(AppData.getDirectory());
+		
 		if (fileChooser.showOpenDialog(panel.getFrame()) == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			SaveRecord newRecord = SaveRecord.load(file,panel.getFrame().getAppData());

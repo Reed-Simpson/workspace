@@ -218,13 +218,7 @@ public class SaveRecord implements Serializable {
 			} catch (Exception ex) {}
 		}
 		if(loadedRecord!=null) {
-			if(loadedRecord.proprietors==null) loadedRecord.proprietors = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.factionNPCs==null) loadedRecord.factionNPCs = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.missions==null) loadedRecord.missions = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.threatMonsters==null) loadedRecord.threatMonsters = new HashMap<Point,ArrayList<String>>();
-			if(loadedRecord.cityHistory==null) loadedRecord.cityHistory = new HashMap<Pair<Point,Point>,String>();
-			if(loadedRecord.history==null) loadedRecord.history = new HashMap<Point,String>();
-			if(loadedRecord.events==null) loadedRecord.events = new HashMap<Point,String>();
+			//backwards compatibility field initialization
 		}
 		return loadedRecord;
 	}

@@ -802,12 +802,6 @@ public class InfoPanel extends JTabbedPane{
 			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 
 			if(population.isCity(capital)) {
-				for(int i = 0;i<this.factionTexts.size();i++) {
-					MyTextPane pane = this.factionTexts.get(i);
-					pane.setHighlight(i==selectedFaction);
-					pane.doPaint();
-				}
-				if(selectedFaction>-1) this.factionTexts.get(selectedFaction).setCaretPosition(0);
 			}else {
 				enableCityTabs(false);
 			}
@@ -817,6 +811,11 @@ public class InfoPanel extends JTabbedPane{
 		}
 		for(int i=0;i<charactersList.size();i++) {
 			this.charactersList.get(i).doPaint();
+		}
+		for(int i = 0;i<this.factionTexts.size();i++) {
+			MyTextPane pane = this.factionTexts.get(i);
+			pane.setHighlight(i==selectedFaction);
+			pane.doPaint();
 		}
 
 		for(int i = 0;i<this.faithsTexts.size();i++) {
@@ -933,8 +932,8 @@ public class InfoPanel extends JTabbedPane{
 	}
 
 	private void enableCityTabs(boolean enabled) {
-		regionTabs.setEnabledAt(CITY_TAB_INDEX, enabled);
-		regionTabs.setEnabledAt(FACTION_TAB_INDEX, enabled);
+		//regionTabs.setEnabledAt(CITY_TAB_INDEX, enabled);
+		//regionTabs.setEnabledAt(FACTION_TAB_INDEX, enabled);
 		city1.setEnabled(enabled);
 		if(!enabled) {
 			this.city1.setText("None");

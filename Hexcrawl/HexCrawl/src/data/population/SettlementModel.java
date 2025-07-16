@@ -337,7 +337,8 @@ public class SettlementModel extends DataModel{
 		return result;
 	}
 	public Faction getFaction(int i,Point p) {
-		if(i==0) return getLeadershipFaction(p);
+		if(!controller.getPopulation().isCity(p)) return null;
+		else if(i==0) return getLeadershipFaction(p);
 		else return getFaction(i,p,FactionType.FACTIONS);
 	}
 	public Faction getFaction(Random random,Point p,int i) {
@@ -351,6 +352,7 @@ public class SettlementModel extends DataModel{
 		return getFaction(i+InfoPanel.FACTIONCOUNT,random,p,FactionType.FAITHS);
 	}
 	public Faction getLeadershipFaction(Point p) {
+		if(!controller.getPopulation().isCity(p)) return null;
 		Settlement s = getSettlement(p);
 		FactionType[] factionTypes = s.getLeadership().getGovernmentFactions();
 		Faction faction = controller.getSettlements().getFaction(LEADERSHIP_FACTION_INDEX, p,factionTypes);

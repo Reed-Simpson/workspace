@@ -101,41 +101,41 @@ public class DataController {
 		return recordText;
 	}
 	public String getDefaultText(HexData type,Point p,int i) {
-		String value;
+		Object value;
 		switch(type) {
 		case THREAT: {
 			Point center = threats.getCenter(p);
-			value = threats.getThreat(center).toString();break;
+			value = threats.getThreat(center);break;
 		}
 		case D_ENCOUNTER: value = "";break;
 		case ENCOUNTER: value = "";break;
 		case NPC:{
 			NPC npc = npcs.getNPC(i,p);
-			if(npc!=null) value =  npc.toString(); 
+			if(npc!=null) value =  npc; 
 			else value = null;
 			break;
 		}
-		case FACTION_NPC: value =  npcs.getFactionNPC(i,p).toString(); break;
+		case FACTION_NPC: value =  npcs.getFactionNPC(i,p); break;
 		case PROPRIETOR: {
 			NPC proprietor = npcs.getProprietor(i,p);
-			if(proprietor!=null) value =  proprietor.toString();
+			if(proprietor!=null) value =  proprietor;
 			else value = null;
 			break;
 		}
-		case LOCATION: value = pois.getPOI(i, p).toString();break;
-		case DUNGEON: value = dungeons.getDungeon(i, p).toString();break;
+		case LOCATION: value = pois.getPOI(i, p);break;
+		case DUNGEON: value = dungeons.getDungeon(i, p);break;
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
-			value = settlements.getFaction(i, capital).toString(); break;
+			value = settlements.getFaction(i, capital); break;
 		}
 		case FAITH: {
 			Point capital = population.getAbsoluteFealty(p);
-			value = settlements.getFaith(i, capital).toString(); break;
+			value = settlements.getFaith(i, capital); break;
 		}
 		case MINION: {
 			Point center = threats.getCenter(p);
-			if(i==0) value = threats.getFaction(this, center,null).toString();
-			else value = threats.getMinion(this, center, i-1,null).toString();break;
+			if(i==0) value = threats.getFaction(this, center,null);
+			else value = threats.getMinion(this, center, i-1,null);break;
 		}
 		case DISTRICT: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -154,7 +154,7 @@ public class DataController {
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
 			if(population.isCity(capital)) {
-				value = settlements.getSettlement(capital).toString();break;
+				value = settlements.getSettlement(capital);break;
 			}else {
 				value = "None";break;
 			}
@@ -170,7 +170,7 @@ public class DataController {
 			Point region = monsters.getTerritoryRef(p,i);
 			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
 			Monster monster = monsters.getWanderingMonster(region, i,habitats);
-			if(monster!=null) value = monster.toString();
+			if(monster!=null) value = monster;
 			else value = "None";
 			break;
 		}
@@ -178,11 +178,11 @@ public class DataController {
 			Point center = threats.getCenter(p);
 			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
 			Monster monster = monsters.getThreatMonster(center, i,habitats);
-			if(monster!=null) value = monster.toString();
+			if(monster!=null) value = monster;
 			else value = "None";
 			break;
 		}
-		case MISSION: value = missions.getMission(p, i).toString(); break;
+		case MISSION: value = missions.getMission(p, i); break;
 		case CITYHISTORY: {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getRelationship(capital, i); break;
@@ -195,7 +195,7 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			value = settlements.getEvent(capital); break;
 		}
-		default: value = getModel(type).getDefaultValue(p, i).toString();
+		default: value = getModel(type).getDefaultValue(p, i);
 		}
 		if(value==null) return null;
 		else return value.toString();

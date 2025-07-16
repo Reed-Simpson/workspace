@@ -395,6 +395,7 @@ public class NPCModel extends DataModel {
 	}
 	private boolean setFactionJob(Point p, int i, NPC result) {
 		Faction f = cities.getDisplayedFaction(i, p);
+		if(f==null) return false;
 		NPCJobType[] jobs = f.getType().getFactionJobs();
 		result.setJob(Util.getElementFromArray(jobs, result).toString());
 		return true;

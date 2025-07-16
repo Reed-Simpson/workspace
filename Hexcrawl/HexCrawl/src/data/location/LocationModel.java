@@ -122,8 +122,19 @@ public class LocationModel extends DataModel{
 	}
 	private Location populateLocationFields(boolean isCity, Location location,int i,Point p) {
 		LocationType type;
-		if(isCity) type = LocationType.getBuilding(location);
-		else type = LocationType.getStructure(location);
+		int landmarkCount;
+		if(isCity) {
+			type = LocationType.getBuilding(location);
+			landmarkCount = 7;
+		}
+		else if(controller.getPopulation().isTown(p)){
+			if(i==1) type = LocationType.Village;
+			else type = LocationType.getStructure(location);
+			landmarkCount = 3;
+		}else {
+			type = LocationType.getStructure(location);
+			landmarkCount = 2;
+		}
 		location.setType(type);
 		location.setDescriptors(new String[] {getDescriptor(location),getDescriptor(location)});
 		location.setProprietorJob(type.getRandomJobType(location));
@@ -131,13 +142,13 @@ public class LocationModel extends DataModel{
 //		if(isCity) {
 //			location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
 //		}
-		location.setVisibility(getVisibility(i));
+		location.setVisibility(getVisibility(i,landmarkCount));
 		location.setDungeons(getDungeons(p, i));
 		return location;
 	}
-	private String getVisibility(int i) {
-		if(i<2) return VISIBILITY[0];
-		else if(i<6) return VISIBILITY[1];
+	private String getVisibility(int i,int landmarkCount) {
+		if(i<landmarkCount) return VISIBILITY[0];
+		else if(i<landmarkCount*2) return VISIBILITY[1];
 		else return VISIBILITY[2];
 	}
 	@Override
@@ -163,7 +174,7 @@ public class LocationModel extends DataModel{
 		location.setProprietorJob(LocationType.Inn.getRandomJobType(location));
 		if(location.getProprietorJob()!=null) location.setProprietor(new Reference(HexData.PROPRIETOR, record.normalizePOS(p), 0));
 		//location.setProprietor(Util.getRandomReference(location, "npc", InfoPanel.NPCCOUNT, record.normalizePOS(p)));
-		location.setVisibility(getVisibility(0));
+		location.setVisibility(VISIBILITY[0]);
 		location.setQuirk(innNames.getQuirk(location));
 		location.setDungeons(getDungeons(p, 0));
 		return location.toString();

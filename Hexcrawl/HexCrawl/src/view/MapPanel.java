@@ -384,8 +384,11 @@ public class MapPanel  extends JPanel implements Printable{
 	private List<Icon> getIcons(Point p) {
 		List<Icon> result = null;
 		if(HexData.POPULATION.equals(displayData)) {
-			NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
-			if(species!=null) result = species.getIcons();
+			if(controller.getGrid().isWater(p)) result = BiomeType.WATER.getIcons();
+			else {
+				NPCSpecies species = controller.getPopulation().getMajoritySpecies(p.x, p.y);
+				if(species!=null) result = species.getIcons();
+			}
 		}else if(HexData.THREAT.equals(displayData)) {
 			CreatureType type = controller.getThreats().getThreatCreatureType(p);
 			if(type!=null) result = type.getIcons();

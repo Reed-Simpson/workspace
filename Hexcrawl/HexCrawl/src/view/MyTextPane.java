@@ -83,7 +83,7 @@ public class MyTextPane extends JTextPane {
 	}
 	
 	public void doPaint() {
-		if(getIndex()>-1) {
+		if(getIndex()>-1 && !HexData.NONE.equals(type)) {
 			if(this.getRawText()!=null&&!"".equals(this.getRawText())&&(!HexData.CITY.equals(type)||!this.pos.equals(getPoint()))) {
 				controller.updateData(getType(), this.getRawText(), pos, getIndex());
 			}

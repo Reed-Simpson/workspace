@@ -24,6 +24,7 @@ import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
+import data.population.SettlementModel;
 import data.population.SettlementSize;
 import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
@@ -76,6 +77,8 @@ public class RegionPanel extends JPanel{
 	private ArrayList<MyTextPane> districtTexts;
 
 	private int selectedDistrict;
+
+	private MyTextPane neighbors;
 
 	public RegionPanel(InfoPanel info) {
 		panel = info.getPanel();
@@ -145,12 +148,19 @@ public class RegionPanel extends JPanel{
 			cityPanel.add(new JLabel("~~~~~ District #"+(i+1)+" ~~~~~"));
 			MyTextPane districti = new MyTextPane(info, i, HexData.DISTRICT);
 			districti.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
+			districti.setPreferredSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,50));
 			cityPanel.add(districti);
 			districtTexts.add(districti);
 		}
 		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
 		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		regionTabs.addTab("Parent City", cityScrollPane);
+
+		cityPanel.add(new JLabel("~~~~~ Neighbors ~~~~~"));
+		neighbors = new MyTextPane(info, -1, HexData.NONE);
+		neighbors.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
+		neighbors.setEditable(false);
+		cityPanel.add(neighbors);
 
 		//Faction tab
 		JPanel factionPanel = new JPanel();
@@ -356,6 +366,9 @@ public class RegionPanel extends JPanel{
 
 		threatText.doPaint();
 		city1.doPaint();
+		
+		SettlementModel cities = panel.getController().getSettlements();
+		neighbors.setText(cities.getNeighborText(capital));
 
 		for(int i = 0;i<this.districtTexts.size();i++) {
 			MyTextPane pane = this.districtTexts.get(i);

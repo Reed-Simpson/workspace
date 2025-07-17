@@ -398,6 +398,23 @@ public class SettlementModel extends DataModel{
 		}
 		return populateRelationship(p1, p2, links, obj);
 	}
+	public String getNeighborText(Point p) {
+		StringBuilder c1Text = new StringBuilder();
+		ArrayList<Point> neighbors = controller.getEconomy().getNeighboringCities(p);
+		if(neighbors!=null) {
+			if(neighbors.isEmpty()) {
+				c1Text.append("None");
+			}
+			for(Point p1:neighbors) {
+				c1Text.append(controller.getTownInfotext(p,p1)+"\r\n");
+				String relationship = controller.getSettlements().getRelationship(p, p1,true);
+				c1Text.append("    "+relationship+"\r\n");
+			}
+		}else {
+			c1Text.append("...Loading...");
+		}
+		return c1Text.toString();
+	}
 
 
 	private String populateRelationship(Point p1, Point p2, boolean links, Indexible obj) {

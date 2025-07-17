@@ -139,7 +139,7 @@ public class HexPanel extends JPanel{
 		});
 		highlightPanel.add(highlightMenu);
 		hexNotePanel.add(highlightPanel,BorderLayout.NORTH);
-		hexNote1 = new MyTextPane(info, -1, HexData.NONE);
+		hexNote1 = new MyTextPane(info, -1, HexData.NOTE);
 		hexNotePanel.add(hexNote1,BorderLayout.CENTER);
 		JScrollPane hexNoteScrollPane = new JScrollPane(hexNotePanel);
 		detailsTabs.addTab("Notes", hexNoteScrollPane);

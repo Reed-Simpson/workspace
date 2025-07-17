@@ -1,6 +1,7 @@
 package data;
 
 public enum HexData {
+	NOTE("note"),
 	NONE("none"),
 	BIOME("biome"),
 	ALTITUDE("altitude"),

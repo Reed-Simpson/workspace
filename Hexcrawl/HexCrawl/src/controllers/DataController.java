@@ -171,6 +171,7 @@ public class DataController {
 			Point region = biomes.getAbsoluteRegion(p);
 			value =  biomes.getRegionName(region);break;
 		}
+		case NOTE: value = "";break;
 		case NONE: value = "";break;
 		case THREAD: value = "";break;
 		case CHARACTER: value = "";break;
@@ -252,7 +253,8 @@ public class DataController {
 			Point region = biomes.getAbsoluteRegion(p);
 			return record.getRegionName(region);
 		}
-		case NONE: return record.getNote(p);
+		case NOTE: return record.getNote(p);
+		case NONE: return null;
 		case THREAD: return record.getCampaignThread(i);
 		case CHARACTER: return record.getCampaignCharacter(i).toString();
 		case MONSTER: {
@@ -321,7 +323,8 @@ public class DataController {
 			Point region = biomes.getAbsoluteRegion(p);
 			return record.removeRegionName(region);
 		}
-		case NONE: return record.removeNote(p);
+		case NOTE: return record.removeNote(p);
+		case NONE: return null;
 		case THREAD: return record.removeCampaignThread(i);
 		case CHARACTER: return record.removeCampaignCharacter(i).toString();
 		case MONSTER: {
@@ -393,7 +396,8 @@ public class DataController {
 			Point region = biomes.getAbsoluteRegion(p);
 			return record.putRegionName(region, s);
 		}
-		case NONE: return record.putNote(p, s);
+		case NOTE: return record.putNote(p, s);
+		case NONE: return null;
 		case THREAD: return record.putCampaignThread(i,s);
 		case CHARACTER: return record.putCampaignCharacter(i,s);
 		case MONSTER: {
@@ -452,6 +456,7 @@ public class DataController {
 		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();
 		case DISTRICT: return DistrictType.getDistrict(new Indexible(record.getRandom().nextInt())).toString(); 
 		case BIOME: return biomes.getRegionName(record.getRandom());
+		case NOTE: return "";
 		case NONE: return "";
 		case THREAD: return "";
 		case CHARACTER: return "";
@@ -565,6 +570,7 @@ public class DataController {
 		case CITY: return population.getAbsoluteFealty(p);
 		case TOWN: return population.getLocalFealty(p);
 		case BIOME: return biomes.getAbsoluteRegion(p);
+		case NONE: 
 		case THREAD: 
 		case CHARACTER: return null;
 		case HISTORY:
@@ -575,7 +581,7 @@ public class DataController {
 		case PROPRIETOR: 
 		case LOCATION: 
 		case DUNGEON: 
-		case NONE: 
+		case NOTE: 
 		case MISSION: return p;
 		default: throw new IllegalArgumentException("Type not recognized: "+type.name());
 		}

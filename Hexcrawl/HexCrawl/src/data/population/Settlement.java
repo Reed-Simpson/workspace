@@ -74,19 +74,6 @@ public class Settlement extends Indexible {
 		c1Text.append("City Leadership: "+this.getReputation()+" "+factionref+"\r\n");
 		c1Text.append("   Leader: "+new Reference(HexData.FACTION_NPC,controller.getRecord().normalizePOS(pos),0)+"\r\n");
 		if(this.getEvent()!=null) c1Text.append("City Event: "+this.getEvent()+"\r\n");
-		c1Text.append("~~~~~ Neighbors ~~~~~\r\n");
-		if(neighbors!=null) {
-			if(neighbors.isEmpty()) {
-				c1Text.append("None");
-			}
-			for(Point p:neighbors) {
-				c1Text.append(controller.getTownInfotext(pos,p)+"\r\n");
-				String relationship = controller.getSettlements().getRelationship(pos, p,true);
-				c1Text.append("    "+relationship+"\r\n");
-			}
-		}else {
-			c1Text.append("...Loading...");
-		}
 		return c1Text.toString();
 	}
 

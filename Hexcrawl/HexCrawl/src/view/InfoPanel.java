@@ -63,7 +63,7 @@ public class InfoPanel extends JTabbedPane{
 		this.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		hexPanel = new HexPanel(this);
-		this.addTab(Util.pad("Hex", InfoPanel.TAB_TITLE_LENGTH), hexPanel);
+		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), hexPanel);
 
 		this.regionPanel = new RegionPanel(this);
 		this.addTab(Util.pad("Region", TAB_TITLE_LENGTH), regionPanel);

@@ -75,7 +75,7 @@ public class RegionPanel extends JPanel{
 
 	public RegionPanel(InfoPanel info) {
 		panel = info.getPanel();
-		this.setPreferredSize(new Dimension(300,300));
+		this.setPreferredSize(new Dimension(InfoPanel.INFOPANELWIDTH,InfoPanel.INFOPANELWIDTH));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 

@@ -63,6 +63,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Pair<Point,Point>,String> cityHistory;
 	private HashMap<Point,String> history;
 	private HashMap<Point,String> events;
+	private HashMap<Point,ArrayList<String>> districts;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -94,6 +95,7 @@ public class SaveRecord implements Serializable {
 		this.cityHistory = new HashMap<Pair<Point,Point>,String>();
 		this.history = new HashMap<Point,String>();
 		this.events = new HashMap<Point,String>();
+		this.districts = new HashMap<Point,ArrayList<String>>();
 
 		this.campaignCharacters = new ArrayList<Reference>();
 		this.campaignThreads = new ArrayList<String>();
@@ -218,6 +220,7 @@ public class SaveRecord implements Serializable {
 			} catch (Exception ex) {}
 		}
 		if(loadedRecord!=null) {
+			if(loadedRecord.districts==null) loadedRecord.districts = new HashMap<Point,ArrayList<String>>();
 			//backwards compatibility field initialization
 		}
 		return loadedRecord;
@@ -850,5 +853,31 @@ public class SaveRecord implements Serializable {
 			this.hasUnsavedData = true;
 		}
 		return remove;
+	}
+
+
+	public String putDistrict(Point p,int i,String s) {
+		if(!this.districts.containsKey(p)) this.districts.put(p, new ArrayList<String>());
+		ArrayList<String> districts = this.districts.get(p);
+		while(districts.size()<i+1) districts.add(null);
+		String set = districts.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getDistrict(Point p, int i) {
+		ArrayList<String> districts = this.districts.get(p);
+		if(districts==null||districts.size()<=i) return null;
+		return districts.get(i);
+	}
+	public String removeDistrict(Point p,int i) {
+		ArrayList<String> districts = this.districts.get(p);
+		if(districts==null||districts.size()<=i) return null;
+		String set = districts.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
 	}
 }

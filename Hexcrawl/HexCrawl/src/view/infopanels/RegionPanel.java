@@ -73,6 +73,10 @@ public class RegionPanel extends JPanel{
 	private int selectedCityHistory;
 	private int selectedHistory;
 
+	private ArrayList<MyTextPane> districtTexts;
+
+	private int selectedDistrict;
+
 	public RegionPanel(InfoPanel info) {
 		panel = info.getPanel();
 		this.setPreferredSize(new Dimension(InfoPanel.INFOPANELWIDTH,InfoPanel.INFOPANELWIDTH));
@@ -125,13 +129,28 @@ public class RegionPanel extends JPanel{
 		this.add(cityName);
 		
 
-
-		//City tab
 		regionTabs = new JTabbedPane();
+		
+		//City tab
+		JPanel cityPanel = new JPanel();
+		cityPanel.setLayout(new BoxLayout(cityPanel, BoxLayout.Y_AXIS));
+		
 		city1 = new MyTextPane(info, 0, HexData.CITY);
-		JScrollPane cityScrollPane = new JScrollPane(city1);
-		regionTabs.addTab("Parent City", cityScrollPane);
+		city1.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
+		cityPanel.add(city1);
 		this.CITY_TAB_INDEX = regionTabs.getTabCount()-1;
+		
+		districtTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<InfoPanel.DISTRICTCOUNT;i++) {
+			cityPanel.add(new JLabel("~~~~~ District #"+(i+1)+" ~~~~~"));
+			MyTextPane districti = new MyTextPane(info, i, HexData.DISTRICT);
+			districti.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
+			cityPanel.add(districti);
+			districtTexts.add(districti);
+		}
+		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
+		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		regionTabs.addTab("Parent City", cityScrollPane);
 
 		//Faction tab
 		JPanel factionPanel = new JPanel();
@@ -337,6 +356,12 @@ public class RegionPanel extends JPanel{
 
 		threatText.doPaint();
 		city1.doPaint();
+
+		for(int i = 0;i<this.districtTexts.size();i++) {
+			MyTextPane pane = this.districtTexts.get(i);
+			pane.setHighlight(i==selectedDistrict);
+			pane.doPaint();
+		}
 
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			enableCityTabs(false);

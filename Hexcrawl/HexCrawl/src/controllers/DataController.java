@@ -13,6 +13,7 @@ import data.biome.BiomeType;
 import data.dungeon.DungeonModel;
 import data.economy.EconomicModel;
 import data.encounters.EncounterModel;
+import data.location.DistrictType;
 import data.location.LocationModel;
 import data.magic.MagicModel;
 import data.mission.MissionModel;
@@ -140,10 +141,6 @@ public class DataController {
 			if(i==0) value = threats.getFaction(this, center,null);
 			else value = threats.getMinion(this, center, i-1,null);break;
 		}
-		case DISTRICT: {
-			Point capital = population.getAbsoluteFealty(p);
-			value = settlements.getDistrict(i, capital); break;
-		}
 		case TOWN: {
 			Point capital = population.getLocalFealty(p);
 			NPCSpecies species = population.getMajoritySpecies(capital.x,capital.y);
@@ -158,6 +155,14 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			if(population.isCity(capital)) {
 				value = settlements.getSettlement(capital);break;
+			}else {
+				value = "None";break;
+			}
+		}
+		case DISTRICT: {
+			Point capital = population.getAbsoluteFealty(p);
+			if(population.isCity(capital)) {
+				value = settlements.getDistrict(i, capital); break;
 			}else {
 				value = "None";break;
 			}
@@ -235,7 +240,10 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.getCity(capital);
 		}
-		case DISTRICT: return null;
+		case DISTRICT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getDistrict(capital,i);
+		}
 		case TOWN: {
 			Point capital = population.getLocalFealty(p);
 			return record.getRegionName(capital);
@@ -305,6 +313,10 @@ public class DataController {
 			Point capital = population.getAbsoluteFealty(p);
 			return record.removeCity(capital);
 		}
+		case DISTRICT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.removeDistrict(capital,i);
+		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);
 			return record.removeRegionName(region);
@@ -368,9 +380,14 @@ public class DataController {
 		}
 		case CITY: {
 			Point capital = population.getAbsoluteFealty(p);
+			//check if neighbor list is loaded before saving
 			Pair<Point, Point> cityPair = settlements.getCityPair(capital, 0);
 			if(cityPair!=null) return record.putCity(capital, s);
 			else return null;
+		}
+		case DISTRICT: {
+			Point capital = population.getAbsoluteFealty(p);
+			return record.getDistrict(capital,i);
 		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);
@@ -428,12 +445,12 @@ public class DataController {
 			if(i==0) return threats.getFaction(this, record.getRandom(), p, null).toString();
 			else return threats.getMinion(this,record.getRandom(),p,null).toString(); 
 		}
-		case DISTRICT: return SettlementModel.getDistrict(new Indexible(record.getRandom().nextInt())); 
 		case TOWN: {
 			NPCSpecies species = population.getMajoritySpecies(p.x,p.y);
 			return names.getName(species.getCityNameGen(), record.getRandom());
 		}
 		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();
+		case DISTRICT: return DistrictType.getDistrict(new Indexible(record.getRandom().nextInt())).toString(); 
 		case BIOME: return biomes.getRegionName(record.getRandom());
 		case NONE: return "";
 		case THREAD: return "";
@@ -544,6 +561,7 @@ public class DataController {
 		case FACTION_NPC: 
 		case FACTION: 
 		case FAITH: 
+		case DISTRICT:
 		case CITY: return population.getAbsoluteFealty(p);
 		case TOWN: return population.getLocalFealty(p);
 		case BIOME: return biomes.getAbsoluteRegion(p);
@@ -571,7 +589,7 @@ public class DataController {
 			ch = species.getIcons().get(0).getCh();
 		}
 		int dist = economy.getTravelTime(pos, town)*20/24;
-		String str = "("+Util.posString(town,record.getZero())+") "+ref.toString()+" "+ch+" distance:"+dist/20.0+" days"+"\r\n";
+		String str = "("+Util.posString(town,record.getZero())+") "+ref.toString()+" "+ch+" distance:"+dist/20.0+" days";
 		return str;
 	}
 

@@ -1,13 +1,11 @@
 package data.population;
 
 import java.awt.Point;
-import java.util.ArrayList;
 
 import controllers.DataController;
 import data.HexData;
 import data.Indexible;
 import data.Reference;
-import data.location.District;
 import names.FactionType;
 
 public class Settlement extends Indexible {
@@ -16,7 +14,6 @@ public class Settlement extends Indexible {
 	private String theme;
 	private String event;
 	private Point pos;
-	private ArrayList<District> districts;
 	private transient DataController controller;
 	
 	public Settlement(float... vals) {
@@ -53,16 +50,6 @@ public class Settlement extends Indexible {
 	}
 	public void setEvent(String event) {
 		this.event = event;
-	}
-	public ArrayList<District> getDistricts() {
-		return districts;
-	}
-	public void setDistricts(ArrayList<District> districts) {
-		this.districts = districts;
-	}
-	public void putDistrict(District district) {
-		if(this.districts==null) this.districts = new ArrayList<District>();
-		this.districts.add(district);
 	}
 	
 	public String toString() {

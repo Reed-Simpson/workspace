@@ -2,6 +2,7 @@ package data.population;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import controllers.DataController;
@@ -30,7 +31,8 @@ public class SettlementModel extends DataModel{
 	private static final int MEDIAN_RECENT_EVENT_YEARS = 5;
 	private static final int SEED_OFFSET = 10*Util.getOffsetX();
 	private static final int FACTIONTABLES = 20;
-	private static final int SETTLEMENTTABLES = 5;
+	private static final int SETTLEMENTTABLES = 3;
+	private static final int DISTRICTTABLES = 2;
 	//private static final int TABLECOUNT = FACTIONTABLES+5;
 	public static final String THEMES = "${animal},Aristocracy,Art,Bureaucracy,Castes,Catacombs,${city activity},${city event},Crime Families,Cruelty,${district index},${domain},"+
 			"${faction index},Festivals,Feuds,Intrigue,${lower class building},Martial Law,Meritocracy,${job},Opulence,${physical element},Pilgrimages,Piracy,"+
@@ -233,29 +235,27 @@ public class SettlementModel extends DataModel{
 	}
 
 	public Settlement getSettlement(Point p) {
-		float[] vals = new float[SETTLEMENTTABLES-1];
+		float[] vals = new float[SETTLEMENTTABLES];
 		for(int j=0;j<vals.length;j++) {
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+j), p.x, p.y);
 		}
 		Settlement result = new Settlement(vals);
 		result.setController(controller);
 		populateSettlementDetails(result,p);
-		populateDistricts(p, result);
 		return result;
 	}
 	public String getEvent(Point p) {
-		Indexible obj = new Indexible(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES-1), p.x, p.y));
+		Indexible obj = new Indexible(OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+1), p.x, p.y));
 		return getEvent(obj);
 	}
 	public Settlement getSettlement(Point p,Random random) {
-		int[] vals = new int[SETTLEMENTTABLES-1];
+		int[] vals = new int[SETTLEMENTTABLES];
 		for(int j=0;j<vals.length;j++) {
 			vals[j] = random.nextInt();
 		}
 		Settlement result = new Settlement(vals);
 		result.setController(controller);
 		populateSettlementDetails(result,p);
-		populateDistricts(p,random, result);
 		return result;
 	}
 	private void populateSettlementDetails(Settlement result, Point p) {
@@ -265,29 +265,12 @@ public class SettlementModel extends DataModel{
 		result.setLeadership(getLeadership(result));
 		result.setEvent(new Reference(HexData.EVENT, record.normalizePOS(p), 0).toString());
 	}
-	private void populateDistricts(Point p, Settlement result) {
-		MagicModel magic = controller.getMagic();
-		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
-			District district = new District(DistrictType.getDistrict(result));
-			if(magic.isWeird(p,k)) district.setWeirdness(magic.getAdjective(p, k));
-			result.putDistrict(district);
-		}
-	}
-	private void populateDistricts(Point p, Random random, Settlement result) {
-		MagicModel magic = controller.getMagic();
-		MagicType type = magic.getMagicType(p);
-		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
-			District district = new District(DistrictType.getDistrict(result));
-			if(magic.isWeird(type,random.nextInt())) district.setWeirdness(MagicModel.getAdjective(new Indexible(random.nextInt())));
-			result.putDistrict(district);
-		}
-	}
 	
 	//FACTION
 	private Faction getIndexedFaction(int i, Point p) {
 		float[] vals = new float[FACTIONTABLES];
 		for(int j=0;j<vals.length;j++) {
-			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j+i*FACTIONTABLES), p.x, p.y);
+			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+DISTRICTTABLES+j+i*FACTIONTABLES), p.x, p.y);
 		}
 		Faction result = new Faction(vals);
 		return result;
@@ -381,14 +364,37 @@ public class SettlementModel extends DataModel{
 
 
 	public District getDistrict(int i, Point capital) {
-		ArrayList<District> districts = getSettlement(capital).getDistricts();
-		if(i<districts.size()&&i>-1) return districts.get(i);
-		return null;
+		int r = 1;
+		int k=i;
+		List<Point> list = Util.getRing(capital, r);
+		while(k>=list.size()) {
+			r++;
+			k-=list.size();
+			list = Util.getRing(capital, r);
+		}
+		Point p = list.get(k);
+		float[] vals = new float[DISTRICTTABLES];
+		for(int j=0;j<vals.length;j++) {
+			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j), p.x, p.y);
+		}
+		Indexible obj = new Indexible(vals);
+		District district = new District(DistrictType.getDistrict(obj));
+		MagicModel magic = controller.getMagic();
+		if(magic.isWeird(capital,i)) district.setWeirdness(magic.getAdjective(capital, i));
+		return district;
+	}
+	public District getDistrict(int i, Point capital,Random random) {
+		Indexible obj = new Indexible(random.nextInt(),random.nextInt());
+		District district = new District(DistrictType.getDistrict(obj));
+		MagicModel magic = controller.getMagic();
+		MagicType type = magic.getMagicType(capital);
+		if(magic.isWeird(type,random.nextInt())) district.setWeirdness(MagicModel.getAdjective(new Indexible(random.nextInt())));
+		return district;
 	}
 	public String getRelationship(Point p1,Point p2,boolean links) {
 		if(p2==null) return null;
-		float f1 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES), p1.x, p1.y);
-		float f2 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES), p2.x, p2.y);
+		float f1 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+DISTRICTTABLES), p1.x, p1.y);
+		float f2 = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+DISTRICTTABLES), p2.x, p2.y);
 		Indexible obj = new Indexible(f1+f2);
 		if(f1<f2) {
 			Point p = p2;

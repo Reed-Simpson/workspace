@@ -18,7 +18,6 @@ import data.magic.MagicModel;
 import data.mission.MissionModel;
 import data.monster.Monster;
 import data.monster.MonsterModel;
-import data.npc.NPC;
 import data.npc.NPCModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
@@ -110,23 +109,27 @@ public class DataController {
 		case D_ENCOUNTER: value = "";break;
 		case ENCOUNTER: value = "";break;
 		case NPC:{
-			NPC npc = npcs.getNPC(i,p);
-			if(npc!=null) value =  npc; 
-			else value = null;
+			value = npcs.getNPC(i,p);
+			if(value==null) value="None";
 			break;
 		}
-		case FACTION_NPC: value =  npcs.getFactionNPC(i,p); break;
+		case FACTION_NPC: {
+			value =  npcs.getFactionNPC(i,p); 
+			if(value==null) value="None";
+			break;
+		}
 		case PROPRIETOR: {
-			NPC proprietor = npcs.getProprietor(i,p);
-			if(proprietor!=null) value =  proprietor;
-			else value = null;
+			value = npcs.getProprietor(i,p);
+			if(value==null) value="None";
 			break;
 		}
 		case LOCATION: value = pois.getPOI(i, p);break;
 		case DUNGEON: value = dungeons.getDungeon(i, p);break;
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);
-			value = settlements.getFaction(i, capital); break;
+			value = settlements.getFaction(i, capital); 
+			if(value==null) value="None";
+			break;
 		}
 		case FAITH: {
 			Point capital = population.getAbsoluteFealty(p);
@@ -197,7 +200,7 @@ public class DataController {
 		}
 		default: value = getModel(type).getDefaultValue(p, i);
 		}
-		if(value==null) return "None";
+		if(value==null) return null;
 		else return value.toString();
 	}
 	public String getData(HexData type,Point p, int i) {

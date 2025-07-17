@@ -317,11 +317,6 @@ public class InfoPanel extends JTabbedPane{
 		return changeSelected;
 	}
 
-	@Override
-	public void repaint() {
-		super.repaint();
-	}
-
 	public void removeCharacter(int index) {
 		panel.getController().removeData(HexData.CHARACTER, null, index);
 		charactersList.remove(index).setVisible(false);

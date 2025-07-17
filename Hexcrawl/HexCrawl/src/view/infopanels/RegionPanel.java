@@ -336,6 +336,7 @@ public class RegionPanel extends JPanel{
 		this.magic.setText("Magic Type: "+magics);
 
 		threatText.doPaint();
+		city1.doPaint();
 
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
 			enableCityTabs(false);
@@ -383,7 +384,7 @@ public class RegionPanel extends JPanel{
 			pane.doPaint();
 		}
 		
-		//event.doPaint();
+		event.doPaint();
 
 		for(int i = 0;i<this.cityHistoryTexts.size();i++) {
 			MyTextPane pane = this.cityHistoryTexts.get(i);

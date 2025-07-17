@@ -219,9 +219,6 @@ public class HexPanel extends JPanel{
 					pane.setHighlight(i==selectedNPC);
 					pane.doPaint();
 				}
-				if(selectedNPC>-1) {
-					this.npcTexts.get(selectedNPC).setCaretPosition(0);
-				}
 				
 				for(int i = 0;i<this.proprietorTexts.size();i++) {
 					MyTextPane pane = this.proprietorTexts.get(i);
@@ -236,14 +233,12 @@ public class HexPanel extends JPanel{
 				pane.setHighlight(i==selectedPOI);
 				pane.doPaint();
 			}
-			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
 
 			for(int i = 0;i<this.dEntranceTexts.size();i++) {
 				MyTextPane pane = this.dEntranceTexts.get(i);
 				pane.setHighlight(i==selectedDungeon);
 				pane.doPaint();
 			}
-			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
 		}
 
 		hexNote1.doPaint();

@@ -17,7 +17,6 @@ public class Settlement extends Indexible {
 	private String event;
 	private Point pos;
 	private ArrayList<District> districts;
-	private ArrayList<Point> neighbors;
 	private transient DataController controller;
 	
 	public Settlement(float... vals) {
@@ -75,14 +74,6 @@ public class Settlement extends Indexible {
 		c1Text.append("   Leader: "+new Reference(HexData.FACTION_NPC,controller.getRecord().normalizePOS(pos),0)+"\r\n");
 		if(this.getEvent()!=null) c1Text.append("City Event: "+this.getEvent()+"\r\n");
 		return c1Text.toString();
-	}
-
-	public ArrayList<Point> getNeighbors() {
-		return neighbors;
-	}
-
-	public void setNeighbors(ArrayList<Point> neighbors) {
-		this.neighbors = neighbors;
 	}
 
 	public DataController getController() {

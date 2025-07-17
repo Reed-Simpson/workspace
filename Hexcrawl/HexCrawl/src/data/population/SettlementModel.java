@@ -264,7 +264,6 @@ public class SettlementModel extends DataModel{
 		result.setReputation(getReputation(result));
 		result.setLeadership(getLeadership(result));
 		result.setEvent(new Reference(HexData.EVENT, record.normalizePOS(p), 0).toString());
-		result.setNeighbors(controller.getEconomy().getNeighboringCities(p));
 	}
 	private void populateDistricts(Point p, Settlement result) {
 		MagicModel magic = controller.getMagic();

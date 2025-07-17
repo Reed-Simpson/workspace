@@ -16,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,7 +28,6 @@ import data.HexData;
 import data.Reference;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
-import data.magic.MagicModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
@@ -37,13 +35,12 @@ import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
 import util.Util;
-import view.infopanels.DemographicsPanel;
-import view.infopanels.HexPanelGeneralStatPanel;
+import view.infopanels.HexPanel;
 
 @SuppressWarnings("serial")
 public class InfoPanel extends JTabbedPane{
 	private static final int RECENT_HISTORY_COUNT = 20;
-	private static final int TAB_TITLE_LENGTH = 34;
+	public static final int TAB_TITLE_LENGTH = 34;
 	public static final int INFOPANELWIDTH = 450;
 	public static final int ENCOUNTERCOUNT = 20;
 	public static final int NPCCOUNT = 20;
@@ -57,11 +54,6 @@ public class InfoPanel extends JTabbedPane{
 	private int FAITH_TAB_INDEX;
 	private int FACTION_TAB_INDEX;
 	private int CITY_TAB_INDEX;
-	private int DUNGEON_ENCOUNTER_TAB_INDEX;
-	private int DUNGEON_TAB_INDEX;
-	private int LOCATION_TAB_INDEX;
-	private int NPC_TAB_INDEX;
-	private int ENCOUNTER_TAB_INDEX;
 	private int MINIONS_TAB_INDEX;
 	private int BEASTS_TAB_INDEX;
 	private MapPanel panel;
@@ -73,31 +65,17 @@ public class InfoPanel extends JTabbedPane{
 	private MyTextPane threatText;
 	private JScrollPane threatScrollPane;
 	//ENCOUNTER
-	//	private JScrollPane npcScrollPane;
-	private JPanel hexPanel;
+	private HexPanel hexPanel;
 	private JPanel regionPanel;
 	private JLabel locationName2;
 	private MyTextPane city1;
-	//	private JScrollPane cityScrollPane;
-	//	private JScrollPane poiScrollPane;
-	//	private JScrollPane dungeonScrollPane;
-	private MyTextPane hexNote1;
-	//	private JScrollPane hexNoteScrollPane;
 	public boolean expandHexNotePane;
 	public boolean hideHexNotePane;
-	private JTabbedPane detailsTabs;
-	private int detailsSelectedIndex;
 	private JTabbedPane regionTabs;
 	private JTextField regionNameField;
 	private JLabel citySizeLabel;
 	private ArrayList<MyTextPane> encounterTexts;
-	private ArrayList<MyTextPane> npcTexts;
-	//private ArrayList<MyTextPane> dungeonTexts;
-	private ArrayList<MyTextPane> poiTexts;
-	private ArrayList<MyTextPane> dEntranceTexts;
-	//	private JScrollPane dEntranceScrollPane;
 	private ArrayList<MyTextPane> factionTexts;
-	//	private JScrollPane factionScrollPane;
 	int selectedNPC;
 	int selectedDungeon;
 	int selectedPOI;
@@ -108,26 +86,19 @@ public class InfoPanel extends JTabbedPane{
 	private int selectedMinion;
 	private int selectedBeast;
 	private int selectedFactionNPC;
-	private int selectedMission;
 	private int selectedMonster;
 	private int selectedHistory;
 	private int selectedCityHistory;
 	boolean changeSelected;
 
-	private HexPanelGeneralStatPanel hexGeneralPanel;
-	private DemographicsPanel demographicsPanel;
-	//	private JScrollPane encounterScrollPane;
 	private MyTextPane charactersEmpty;
 	private ArrayList<MyTextPane> charactersList;
 	private ArrayList<MyTextPane> threadsList;
 	private JPanel charactersPanel;
 	private ArrayList<MyTextPane> faithsTexts;
-	//	private JScrollPane faithsScrollPane;
 	private JPanel encounterPanel;
-	private JPanel dungeonPanel;
 	private ArrayList<MyTextPane> minionsTexts;
 	private ArrayList<MyTextPane> beastsTexts;
-	private ArrayList<MyTextPane> proprietorTexts;
 	private ArrayList<MyTextPane> factionNPCTexts;
 	private int FACTION_NPC_TAB_INDEX;
 	private Container missionsPanel;
@@ -145,7 +116,9 @@ public class InfoPanel extends JTabbedPane{
 		this.setMaximumSize(new Dimension(INFOPANELWIDTH,99999));
 		this.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-		createHexTab(panel);
+		//createHexTab(panel);
+		hexPanel = new HexPanel(this);
+		this.addTab(Util.pad("Hex", InfoPanel.TAB_TITLE_LENGTH), hexPanel);
 
 		createRegionTab(panel);
 
@@ -160,143 +133,143 @@ public class InfoPanel extends JTabbedPane{
 		toolTipManager.setInitialDelay(0);
 	}
 
-	private void createHexTab(MapPanel panel) {
-		this.hexPanel = new JPanel();
-		hexPanel.setPreferredSize(new Dimension(INFOPANELWIDTH,INFOPANELWIDTH));
-		hexPanel.setLayout(new BoxLayout(hexPanel, BoxLayout.Y_AXIS));
-
-
-		hexGeneralPanel = new HexPanelGeneralStatPanel(this);
-		hexPanel.add(hexGeneralPanel);
-
-		demographicsPanel = new DemographicsPanel(this);
-		hexPanel.add(demographicsPanel);
-
-		detailsTabs = new JTabbedPane();
-		detailsTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-
-		JPanel npcPanel = new JPanel();
-		npcPanel.setLayout(new BoxLayout(npcPanel, BoxLayout.Y_AXIS));
-		npcTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<NPCCOUNT;i++) {
-			npcPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
-			MyTextPane npci = new MyTextPane(this, i, HexData.NPC);
-			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
-			npcPanel.add(npci);
-			npcTexts.add(npci);
-		}
-		proprietorTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<POICOUNT;i++) {
-			npcPanel.add(new JLabel("~~~~~ Proprietor #"+(i+1)+" ~~~~~"));
-			MyTextPane npci = new MyTextPane(this, i, HexData.PROPRIETOR);
-			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
-			npcPanel.add(npci);
-			proprietorTexts.add(npci);
-		}
-		JScrollPane npcScrollPane = new JScrollPane(npcPanel);
-		npcScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("NPCs", npcScrollPane);
-		this.NPC_TAB_INDEX = detailsTabs.getTabCount()-1;
-
-
-		JPanel poiPanel = new JPanel();
-		poiPanel.setLayout(new BoxLayout(poiPanel, BoxLayout.Y_AXIS));
-		poiTexts = new ArrayList<MyTextPane>();
-		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
-		MyTextPane inn = new MyTextPane(this, 0, HexData.LOCATION);
-		inn.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
-		poiPanel.add(inn);
-		poiTexts.add(inn);
-		for(int i=1;i<POICOUNT;i++) {
-			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
-			MyTextPane poii = new MyTextPane(this, i, HexData.LOCATION);
-			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
-			poiPanel.add(poii);
-			poiTexts.add(poii);
-		}
-		JScrollPane poiScrollPane = new JScrollPane(poiPanel);
-		poiScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		detailsTabs.addTab("Locations", poiScrollPane);
-		this.LOCATION_TAB_INDEX = detailsTabs.getTabCount()-1;
-
-		//JPanel dEntrancePanel = new JPanel();
-		//dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
-		dEntranceTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<DUNGEONCOUNT;i++) {
-			poiPanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
-			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
-			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
-			poiPanel.add(poii);
-			dEntranceTexts.add(poii);
-		}
-		//JScrollPane dEntranceScrollPane = new JScrollPane(dEntrancePanel);
-		//dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		//detailsTabs.addTab("Dungeon", dEntranceScrollPane);
-		this.DUNGEON_TAB_INDEX = detailsTabs.getTabCount()-1;
-
-		JPanel hexNotePanel = new JPanel();
-		hexNotePanel.setLayout(new BorderLayout());
-		JPanel highlightPanel = new JPanel();
-		highlightPanel.add(new JLabel("highlight:"));
-		JComboBox<HighlightColor> highlightMenu = new JComboBox<HighlightColor>(HighlightColor.values());
-		highlightMenu.setMaximumSize(new Dimension(100,20));
-		highlightMenu.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				panel.setHighlight(((HighlightColor) highlightMenu.getSelectedItem()).getColor());
-			}
-		});
-		highlightPanel.add(highlightMenu);
-		hexNotePanel.add(highlightPanel,BorderLayout.NORTH);
-		hexNote1 = new MyTextPane(this, -1, HexData.NONE);
-		hexNotePanel.add(hexNote1,BorderLayout.CENTER);
-		JScrollPane hexNoteScrollPane = new JScrollPane(hexNotePanel);
-		detailsTabs.addTab("Notes", hexNoteScrollPane);
-
-
-		encounterPanel = new JPanel();
-		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
-		encounterTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<panel.getRecord().getEncounters(panel.getSelectedGridPoint()).size();i++) {
-			MyTextPane pane = createEncounter();
-			pane.doPaint();
-		}
-		JScrollPane encounterScrollPane = new JScrollPane(encounterPanel);
-		encounterScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		encounterScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		detailsTabs.addTab("Encounters", encounterScrollPane);
-		this.ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount()-1;
-
-		dungeonPanel = new JPanel();
-		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
-//		dungeonTexts = new ArrayList<MyTextPane>();
-//		for(int i=0;i<panel.getRecord().getDungeonEncounters(panel.getSelectedGridPoint()).size();i++) {
-//			MyTextPane pane = createDungeonEncounter();
+//	private void createHexTab(MapPanel panel) {
+//		this.hexPanel = new JPanel();
+//		hexPanel.setPreferredSize(new Dimension(INFOPANELWIDTH,INFOPANELWIDTH));
+//		hexPanel.setLayout(new BoxLayout(hexPanel, BoxLayout.Y_AXIS));
+//
+//
+//		hexGeneralPanel = new HexPanelGeneralStatPanel(panel.getController(),panel);
+//		hexPanel.add(hexGeneralPanel);
+//
+//		demographicsPanel = new DemographicsPanel(panel);
+//		hexPanel.add(demographicsPanel);
+//
+//		detailsTabs = new JTabbedPane();
+//		getDetailsTab().setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+//
+//		JPanel npcPanel = new JPanel();
+//		npcPanel.setLayout(new BoxLayout(npcPanel, BoxLayout.Y_AXIS));
+//		npcTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<NPCCOUNT;i++) {
+//			npcPanel.add(new JLabel("~~~~~ NPC #"+(i+1)+" ~~~~~"));
+//			MyTextPane npci = new MyTextPane(this, i, HexData.NPC);
+//			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+//			npcPanel.add(npci);
+//			npcTexts.add(npci);
+//		}
+//		proprietorTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<POICOUNT;i++) {
+//			npcPanel.add(new JLabel("~~~~~ Proprietor #"+(i+1)+" ~~~~~"));
+//			MyTextPane npci = new MyTextPane(this, i, HexData.PROPRIETOR);
+//			npci.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+//			npcPanel.add(npci);
+//			proprietorTexts.add(npci);
+//		}
+//		JScrollPane npcScrollPane = new JScrollPane(npcPanel);
+//		npcScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		getDetailsTab().addTab("NPCs", npcScrollPane);
+//		this.NPC_TAB_INDEX = getDetailsTab().getTabCount()-1;
+//
+//
+//		JPanel poiPanel = new JPanel();
+//		poiPanel.setLayout(new BoxLayout(poiPanel, BoxLayout.Y_AXIS));
+//		poiTexts = new ArrayList<MyTextPane>();
+//		poiPanel.add(new JLabel("~~~~~ Inn ~~~~~"));
+//		MyTextPane inn = new MyTextPane(this, 0, HexData.LOCATION);
+//		inn.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+//		poiPanel.add(inn);
+//		poiTexts.add(inn);
+//		for(int i=1;i<POICOUNT;i++) {
+//			poiPanel.add(new JLabel("~~~~~ Point of Interest #"+(i)+" ~~~~~"));
+//			MyTextPane poii = new MyTextPane(this, i, HexData.LOCATION);
+//			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+//			poiPanel.add(poii);
+//			poiTexts.add(poii);
+//		}
+//		JScrollPane poiScrollPane = new JScrollPane(poiPanel);
+//		poiScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		getDetailsTab().addTab("Locations", poiScrollPane);
+//		this.LOCATION_TAB_INDEX = getDetailsTab().getTabCount()-1;
+//
+//		//JPanel dEntrancePanel = new JPanel();
+//		//dEntrancePanel.setLayout(new BoxLayout(dEntrancePanel, BoxLayout.Y_AXIS));
+//		dEntranceTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<DUNGEONCOUNT;i++) {
+//			poiPanel.add(new JLabel("~~~~~ Dungeon #"+(i+1)+" ~~~~~"));
+//			MyTextPane poii = new MyTextPane(this, i, HexData.DUNGEON);
+//			poii.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
+//			poiPanel.add(poii);
+//			dEntranceTexts.add(poii);
+//		}
+//		//JScrollPane dEntranceScrollPane = new JScrollPane(dEntrancePanel);
+//		//dEntranceScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		//detailsTabs.addTab("Dungeon", dEntranceScrollPane);
+//		this.DUNGEON_TAB_INDEX = getDetailsTab().getTabCount()-1;
+//
+//		JPanel hexNotePanel = new JPanel();
+//		hexNotePanel.setLayout(new BorderLayout());
+//		JPanel highlightPanel = new JPanel();
+//		highlightPanel.add(new JLabel("highlight:"));
+//		JComboBox<HighlightColor> highlightMenu = new JComboBox<HighlightColor>(HighlightColor.values());
+//		highlightMenu.setMaximumSize(new Dimension(100,20));
+//		highlightMenu.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				panel.setHighlight(((HighlightColor) highlightMenu.getSelectedItem()).getColor());
+//			}
+//		});
+//		highlightPanel.add(highlightMenu);
+//		hexNotePanel.add(highlightPanel,BorderLayout.NORTH);
+//		hexNote1 = new MyTextPane(this, -1, HexData.NONE);
+//		hexNotePanel.add(hexNote1,BorderLayout.CENTER);
+//		JScrollPane hexNoteScrollPane = new JScrollPane(hexNotePanel);
+//		getDetailsTab().addTab("Notes", hexNoteScrollPane);
+//
+//
+//		encounterPanel = new JPanel();
+//		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
+//		encounterTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<panel.getRecord().getEncounters(panel.getSelectedGridPoint()).size();i++) {
+//			MyTextPane pane = createEncounter();
 //			pane.doPaint();
 //		}
-//		JScrollPane dungeonScrollPane = new JScrollPane(dungeonPanel);
-//		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		//detailsTabs.addTab("D.Encounters", dungeonScrollPane);
-		this.DUNGEON_ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount()-1;
-		
-
-		missionsPanel = new JPanel();
-		missionsPanel.setLayout(new BoxLayout(missionsPanel, BoxLayout.Y_AXIS));
-		missionsTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<panel.getRecord().getMissions(panel.getSelectedGridPoint()).size()||i<3;i++) {
-			MyTextPane pane = createMission();
-			pane.doPaint();
-		}
-		JScrollPane missionsScrollPane = new JScrollPane(missionsPanel);
-		missionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		missionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		detailsTabs.addTab("Missions", missionsScrollPane);
-		this.MISSIONS_TAB_INDEX = detailsTabs.getTabCount()-1;
-
-		hexPanel.add(detailsTabs);
-
-		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), hexPanel);
-	}
+//		JScrollPane encounterScrollPane = new JScrollPane(encounterPanel);
+//		encounterScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		encounterScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//		getDetailsTab().addTab("Encounters", encounterScrollPane);
+//		this.ENCOUNTER_TAB_INDEX = getDetailsTab().getTabCount()-1;
+//
+//		dungeonPanel = new JPanel();
+//		dungeonPanel.setLayout(new BoxLayout(dungeonPanel, BoxLayout.Y_AXIS));
+////		dungeonTexts = new ArrayList<MyTextPane>();
+////		for(int i=0;i<panel.getRecord().getDungeonEncounters(panel.getSelectedGridPoint()).size();i++) {
+////			MyTextPane pane = createDungeonEncounter();
+////			pane.doPaint();
+////		}
+////		JScrollPane dungeonScrollPane = new JScrollPane(dungeonPanel);
+////		dungeonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		//detailsTabs.addTab("D.Encounters", dungeonScrollPane);
+//		this.DUNGEON_ENCOUNTER_TAB_INDEX = getDetailsTab().getTabCount()-1;
+//		
+//
+//		missionsPanel = new JPanel();
+//		missionsPanel.setLayout(new BoxLayout(missionsPanel, BoxLayout.Y_AXIS));
+//		missionsTexts = new ArrayList<MyTextPane>();
+//		for(int i=0;i<panel.getRecord().getMissions(panel.getSelectedGridPoint()).size()||i<3;i++) {
+//			MyTextPane pane = createMission();
+//			pane.doPaint();
+//		}
+//		JScrollPane missionsScrollPane = new JScrollPane(missionsPanel);
+//		missionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		missionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//		getDetailsTab().addTab("Missions", missionsScrollPane);
+//		this.MISSIONS_TAB_INDEX = getDetailsTab().getTabCount()-1;
+//
+//		hexPanel.add(getDetailsTab());
+//
+//		this.addTab(Util.pad("Hex", TAB_TITLE_LENGTH), hexPanel);
+//	}
 
 	public MyTextPane createDungeonEncounter() {
 		int i = encounterTexts.size();
@@ -318,7 +291,7 @@ public class InfoPanel extends JTabbedPane{
 		return encounteri;
 	}
 
-	private MyTextPane createMission() {
+	public MyTextPane createMission() {
 		int i = missionsTexts.size();
 		MyTextPane encounteri = new MyTextPane(this, i, HexData.MISSION);
 		encounteri.setMaximumSize(new Dimension(INFOPANELWIDTH-30,9999));
@@ -673,7 +646,6 @@ public class InfoPanel extends JTabbedPane{
 		selectedMinion = -1;
 		selectedBeast = -1;
 		selectedFactionNPC = -1;
-		selectedMission = -1;
 		selectedMonster = -1;
 		selectedHistory = -1;
 		selectedCityHistory = -1;
@@ -689,9 +661,6 @@ public class InfoPanel extends JTabbedPane{
 		BiomeModel biomes = panel.getController().getBiomes();
 		PopulationModel population = panel.getController().getPopulation();
 		Point zero = panel.getRecord().getZero();
-
-		hexGeneralPanel.dopaint();
-		demographicsPanel.doPaint();
 
 		NPCSpecies species = population.getMajoritySpecies(pos.x, pos.y);
 		float pop = population.getUniversalPopulation(pos);
@@ -737,7 +706,7 @@ public class InfoPanel extends JTabbedPane{
 			this.cityName.setText(cityText);
 		}
 
-		String biome = getBiomeText(pos);
+		String biome = panel.getController().getBiomeText(pos);
 		this.biome.setText("Biome Type: "+biome);
 
 		String magics = panel.getController().getMagic().getMagicType(pos).getName();
@@ -746,62 +715,11 @@ public class InfoPanel extends JTabbedPane{
 		threatText.doPaint();
 		city1.doPaint();
 
-		int transformedUniversalPopulation = population.getTransformedUniversalPopulation(pos);
-
-
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
-			zeroPopComponents();
+			enableCityTabs(false);
 		}else {
-			positivePopComponents();
-
-			for(int i = 0;i<this.encounterTexts.size();i++) {
-				MyTextPane pane = this.encounterTexts.get(i);
-				pane.setHighlight(i==selectedEncounter);
-				pane.doPaint();
-
-			}
-			if(selectedEncounter>-1) this.encounterTexts.get(selectedEncounter).setCaretPosition(0);
-
-			for(int i = 0;i<this.missionsTexts.size();i++) {
-				MyTextPane pane = this.missionsTexts.get(i);
-				pane.setHighlight(i==selectedMission);
-				pane.doPaint();
-			}
-
-			if(transformedUniversalPopulation>0) {
-				detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
-				for(int i = 0;i<this.npcTexts.size();i++) {
-					MyTextPane pane = this.npcTexts.get(i);
-					pane.setHighlight(i==selectedNPC);
-					pane.doPaint();
-				}
-				if(selectedNPC>-1) {
-					this.npcTexts.get(selectedNPC).setCaretPosition(0);
-				}
-				
-				for(int i = 0;i<this.proprietorTexts.size();i++) {
-					MyTextPane pane = this.proprietorTexts.get(i);
-					pane.doPaint();
-				}
-			}else {
-				detailsTabs.setEnabledAt(NPC_TAB_INDEX, false);
-			}
-
-			for(int i = 0;i<this.poiTexts.size();i++) {
-				MyTextPane pane = this.poiTexts.get(i);
-				pane.setHighlight(i==selectedPOI);
-				pane.doPaint();
-			}
-			if(selectedPOI>-1) this.poiTexts.get(selectedPOI).setCaretPosition(0);
-
-			for(int i = 0;i<this.dEntranceTexts.size();i++) {
-				MyTextPane pane = this.dEntranceTexts.get(i);
-				pane.setHighlight(i==selectedDungeon);
-				pane.doPaint();
-			}
-			if(selectedDungeon>-1) this.dEntranceTexts.get(selectedDungeon).setCaretPosition(0);
-
 			if(population.isCity(capital)) {
+				enableCityTabs(true);
 			}else {
 				enableCityTabs(false);
 			}
@@ -866,8 +784,6 @@ public class InfoPanel extends JTabbedPane{
 			pane.setHighlight(i==selectedHistory);
 			pane.doPaint();
 		}
-
-		hexNote1.doPaint();
 		changeSelected = true;
 	}
 
@@ -892,43 +808,6 @@ public class InfoPanel extends JTabbedPane{
 			Point region = biomes.getAbsoluteRegion(pos);
 			return biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(pos));
 		}
-	}
-
-	public String getBiomeText(Point pos) {
-		BiomeModel biomes = panel.getController().getBiomes();
-		MagicModel magic = panel.getController().getMagic();
-		String biome = biomes.getBiome(pos).getName();
-		if(magic.isWeird(pos)) {
-			Point region = biomes.getAbsoluteRegion(pos);
-			biome = magic.getWeirdness(region).toLowerCase() + " "+biome;
-		}
-		return biome;
-	}
-
-	private void positivePopComponents() {
-		detailsTabs.setEnabledAt(ENCOUNTER_TAB_INDEX, true);
-		detailsTabs.setEnabledAt(NPC_TAB_INDEX, true);
-		detailsTabs.setEnabledAt(LOCATION_TAB_INDEX, true);
-		detailsTabs.setEnabledAt(DUNGEON_TAB_INDEX, true);
-		detailsTabs.setEnabledAt(DUNGEON_ENCOUNTER_TAB_INDEX, true);
-		if(detailsSelectedIndex>-1) {
-			detailsTabs.setSelectedIndex(detailsSelectedIndex);
-			detailsSelectedIndex = -1;
-		}
-
-		enableCityTabs(true);
-	}
-
-	private void zeroPopComponents() {
-		if(detailsSelectedIndex==-1) detailsSelectedIndex = detailsTabs.getSelectedIndex();
-		detailsTabs.setEnabledAt(ENCOUNTER_TAB_INDEX, false);
-		detailsTabs.setEnabledAt(NPC_TAB_INDEX, false);
-		detailsTabs.setEnabledAt(LOCATION_TAB_INDEX, false);
-		detailsTabs.setEnabledAt(DUNGEON_TAB_INDEX, false);
-		detailsTabs.setEnabledAt(DUNGEON_ENCOUNTER_TAB_INDEX, false);
-		//detailsTabs.setSelectedIndex(5);
-
-		enableCityTabs(false);
 	}
 
 	private void enableCityTabs(boolean enabled) {
@@ -961,19 +840,55 @@ public class InfoPanel extends JTabbedPane{
 		Point actualPos = Util.denormalizePos(displayPos, panel.getRecord().getZero());
 		panel.recenter(actualPos, true);
 		switch(type) {
-		case NPC: selectTab(0,NPC_TAB_INDEX,index);break;
-		case LOCATION: selectTab(0,LOCATION_TAB_INDEX,index);break;
-		case DUNGEON: selectTab(0,DUNGEON_TAB_INDEX,index);break;
-		case ENCOUNTER: selectTab(0,ENCOUNTER_TAB_INDEX,index);break;
-		case D_ENCOUNTER: selectTab(0,DUNGEON_ENCOUNTER_TAB_INDEX,index);break;
-		case MISSION: selectTab(0,MISSIONS_TAB_INDEX,index);break;
+		case NPC: {
+			hexPanel.setSelectedNPC(index);
+			selectTab(0,hexPanel.NPC_TAB_INDEX,index);break;
+		}
+		case LOCATION: {
+			hexPanel.setSelectedPOI(index);
+			selectTab(0,hexPanel.LOCATION_TAB_INDEX,index);break;
+		}
+		case DUNGEON: {
+			hexPanel.setSelectedDungeon(index);
+			selectTab(0,hexPanel.LOCATION_TAB_INDEX,index);break;
+		}
+		case ENCOUNTER: {
+			hexPanel.setSelectedEncounter(index);
+			selectTab(0,hexPanel.ENCOUNTER_TAB_INDEX,index);break;
+		}
+		case D_ENCOUNTER: {
+			hexPanel.setSelectedEncounter(index);
+			selectTab(0,hexPanel.ENCOUNTER_TAB_INDEX,index);break;
+		}
+		case MISSION: {
+			hexPanel.setSelectedMission(index);
+			selectTab(0,MISSIONS_TAB_INDEX,index);break;
+		}
 		case DISTRICT: selectTab(1,CITY_TAB_INDEX,index);break;
-		case FACTION: selectTab(1,FACTION_TAB_INDEX,index);break;
-		case FAITH: selectTab(1,FAITH_TAB_INDEX,index);break;
-		case FACTION_NPC: selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
-		case MINION: selectTab(1,MINIONS_TAB_INDEX,index);break;
-		case THREATMONSTER:
-		case MONSTER: selectTab(1,BEASTS_TAB_INDEX,index);break;
+		case FACTION: {
+			selectedFaction=index;
+			selectTab(1,FACTION_TAB_INDEX,index);break;
+		}
+		case FAITH: {
+			selectedFaith=index;
+			selectTab(1,FAITH_TAB_INDEX,index);break;
+		}
+		case FACTION_NPC: {
+			selectedFactionNPC=index;
+			selectTab(1,FACTION_NPC_TAB_INDEX,index);break;
+		}
+		case MINION: {
+			selectedMinion=index;
+			selectTab(1,MINIONS_TAB_INDEX,index);break;
+		}
+		case THREATMONSTER:{
+			selectedMonster=index;
+			selectTab(1,BEASTS_TAB_INDEX,index);break;
+		}
+		case MONSTER: {
+			selectedBeast=index;
+			selectTab(1,BEASTS_TAB_INDEX,index);break;
+		}
 		case CHARACTER: selectTab(2,0,index);break;
 		case TOWN: selectTab(1,CITY_TAB_INDEX,index);break;
 		default: throw new IllegalArgumentException("unrecognized tab name: "+tab);
@@ -984,45 +899,9 @@ public class InfoPanel extends JTabbedPane{
 	private void selectTab(int maintab, int subtab,int index) {
 		this.setSelectedIndex(maintab);
 		if(maintab==0) {
-			detailsTabs.setSelectedIndex(subtab);
-			if(ENCOUNTER_TAB_INDEX==subtab) {
-				selectedEncounter=index;
-				//				this.repaint();
-			}else if(NPC_TAB_INDEX==subtab) {
-				selectedNPC=index;
-				this.repaint();
-			}else if(LOCATION_TAB_INDEX==subtab) {
-				selectedPOI=index;
-				this.repaint();
-			}else if(DUNGEON_TAB_INDEX==subtab) {
-				selectedDungeon=index;
-				this.repaint();
-			}else if(DUNGEON_ENCOUNTER_TAB_INDEX==subtab) {
-				selectedDEncounter=index;
-				//				this.repaint();
-			}else if(MISSIONS_TAB_INDEX==subtab) {
-				selectedMission=index;
-				//				this.repaint();
-			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
+			hexPanel.setDetailsTab(subtab);
 		}else {
 			regionTabs.setSelectedIndex(subtab);
-			if(CITY_TAB_INDEX==subtab) {
-			}else if(FACTION_TAB_INDEX==subtab) {
-				selectedFaction=index;
-				this.repaint();
-			}else if(FAITH_TAB_INDEX==subtab) {
-				selectedFaith=index;
-				this.repaint();
-			}else if(FACTION_NPC_TAB_INDEX==subtab) {
-				selectedFaith=index;
-				this.repaint();
-			}else if(MINIONS_TAB_INDEX==subtab) {
-				//selectedMinion=index;
-				this.repaint();
-			}else if(BEASTS_TAB_INDEX==subtab) {
-				//selectedBeast=index;
-				this.repaint();
-			}else throw new IllegalArgumentException("unrecognized tab index: "+subtab);
 		}
 	}
 	public MapPanel getPanel() {

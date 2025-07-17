@@ -2,6 +2,7 @@ package view.infopanels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,19 +14,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import data.population.PopulationModel;
 import data.population.NPCSpecies;
-import view.InfoPanel;
+import data.population.PopulationModel;
+import view.MapPanel;
 
 @SuppressWarnings("serial")
 public class DemographicsPanel extends JPanel {
-	private InfoPanel info;
 	private JLabel demoLabel;
 	private JTextArea demographics;
 	private JLabel toleranceLabel;
+	private MapPanel panel;
 	
-	public DemographicsPanel(InfoPanel info) {
-		this.info = info;
+	public DemographicsPanel(MapPanel panel) {
+		this.panel = panel;
 		this.setLayout(new BorderLayout());
 		
 
@@ -52,12 +53,11 @@ public class DemographicsPanel extends JPanel {
 		p.setPreferredSize(new Dimension(9999,52));
 		this.add(p,BorderLayout.CENTER);
 	}
-	
-	public void doPaint() {
-		PopulationModel population = info.getPanel().getController().getPopulation();
-		Point pos;
-		if(info.getPanel().isShowDistance()) pos = info.getPanel().getMouseoverGridPoint();
-		else pos = info.getPanel().getSelectedGridPoint();
+
+	@Override
+	public void paintComponent(Graphics g){
+		PopulationModel population = panel.getController().getPopulation();
+		Point pos = panel.getSelectedGridPoint();
 
 		float pop = population.getUniversalPopulation(pos);
 		int popScale = population.getPopScale(pos) ;
@@ -83,7 +83,7 @@ public class DemographicsPanel extends JPanel {
 	}
 
 	private String getDemoString(Point pos,LinkedHashMap<NPCSpecies,Integer> demographics) {
-		PopulationModel population = info.getPanel().getController().getPopulation();
+		PopulationModel population = panel.getController().getPopulation();
 		int pop = population.getTransformedUniversalPopulation(pos);
 		String demoString = "";
 		for(NPCSpecies s:demographics.keySet()) {
@@ -101,7 +101,7 @@ public class DemographicsPanel extends JPanel {
 
 	private String getDemoLabelText(float pop, int popScale, int transformedUniversalPopulation) {
 		if(transformedUniversalPopulation>0) {
-			return info.getPanel().getController().getPopulation().demoTransformString(pop,pop, popScale);
+			return panel.getController().getPopulation().demoTransformString(pop,pop, popScale);
 		}else {
 			return "None";
 		}

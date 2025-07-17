@@ -2,6 +2,7 @@ package view.infopanels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.text.DecimalFormat;
 
@@ -14,20 +15,17 @@ import javax.swing.JSeparator;
 import controllers.DataController;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
+import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
-import data.population.NPCSpecies;
 import data.precipitation.PrecipitationModel;
 import names.LocationNameModel;
 import names.wilderness.WildernessNameGenerator;
 import util.Util;
-import view.InfoPanel;
 import view.MapPanel;
 
 @SuppressWarnings("serial")
 public class HexPanelGeneralStatPanel extends JPanel{
-	private InfoPanel info;
-	
 	private JLabel pos;
 	private JLabel locationName;
 	private JLabel biome2;
@@ -39,8 +37,12 @@ public class HexPanelGeneralStatPanel extends JPanel{
 
 	private JLabel crossing;
 
-	public HexPanelGeneralStatPanel(InfoPanel panel) {
-		this.info = panel;
+	private DataController controller;
+	private MapPanel panel;
+
+	public HexPanelGeneralStatPanel(DataController controller,MapPanel panel) {
+		this.controller = controller;
+		this.panel = panel;
 		this.setLayout(new BorderLayout());
 		JPanel posData = new JPanel();
 		posData.setLayout(new BorderLayout());
@@ -87,13 +89,10 @@ public class HexPanelGeneralStatPanel extends JPanel{
 
 	}
 
-	public void dopaint(){
-		MapPanel panel = info.getPanel();
-		DataController controller = panel.getController();
-		Point pos;
-		if(panel.isShowDistance()) pos = panel.getMouseoverGridPoint();
-		else pos = panel.getSelectedGridPoint();
-		Point zero = panel.getRecord().getZero();
+	@Override
+	public void paintComponent(Graphics g){
+		Point pos = panel.getSelectedGridPoint();
+		Point zero = controller.getRecord().getZero();
 		PopulationModel population = controller.getPopulation();
 		BiomeModel biomes = controller.getBiomes();
 		AltitudeModel grid = controller.getGrid();
@@ -127,7 +126,7 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		String precipitationString = new DecimalFormat ("#0.0").format(precipitationTransformation);
 		this.setPrecipitation("Annual Precipitation: "+precipitationString+" mm");
 
-		String biome = info.getBiomeText(pos);
+		String biome = controller.getBiomeText(pos);
 		this.setBiome("Biome Type: "+biome);
 		
 		if(grid.isWater(pos)||precipitation.isLake(pos)) {
@@ -175,13 +174,12 @@ public class HexPanelGeneralStatPanel extends JPanel{
 	
 
 	private String getRegionNameText(Point pos,boolean isCity) {
-		String regionNameText = info.getPanel().getRecord().getRegionName(pos);
+		String regionNameText = controller.getRecord().getRegionName(pos);
 		if(regionNameText==null) regionNameText = getDefaultRegionNameText(pos,isCity);
 		return regionNameText;
 	}
 
 	private String getDefaultRegionNameText(Point pos,boolean isCity) {
-		DataController controller = info.getPanel().getController();
 		if(isCity) {
 			NPCSpecies species = controller.getPopulation().getMajoritySpecies(pos.x, pos.y);
 			LocationNameModel names = controller.getNames();

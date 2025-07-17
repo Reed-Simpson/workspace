@@ -572,6 +572,15 @@ public class DataController {
 		return str;
 	}
 
+	public String getBiomeText(Point pos) {
+		String biome = biomes.getBiome(pos).getName();
+		if(magic.isWeird(pos)) {
+			Point region = biomes.getAbsoluteRegion(pos);
+			biome = magic.getWeirdness(region).toLowerCase() + " "+biome;
+		}
+		return biome;
+	}
+
 
 	public AltitudeModel getGrid() {
 		return this.grid;

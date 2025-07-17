@@ -177,13 +177,16 @@ public class MyTextPane extends JTextPane {
 		return formatted;
 	}
 	public void insertRawText(String string, int a) {
+		if(rawText==null) rawText = "";
 		rawText = rawText.substring(0, a)+string+rawText.substring(a);
 	}
 	public void replaceRawText(String string, int a,int b) {
+		if(rawText==null) rawText = "";
 		rawText = rawText.substring(0, a)+string+rawText.substring(b);
 	}
 
 	public void deleteRawText(int a, int b) {
+		if(rawText==null)return;
 		String end = "";
 		if(b<rawText.length()) end = rawText.substring(b);
 		rawText = rawText.substring(0, a)+end;
@@ -486,6 +489,7 @@ public class MyTextPane extends JTextPane {
 
 
 		private void writeStringToDocument(FilterBypass fb, String string) throws BadLocationException {
+			if(string==null) return;
 			StyledDocument doc = MyTextPane.this.getStyledDocument();
 			super.remove(fb, 0, doc.getLength());
 			links = new HashMap<Interval,Interval>();

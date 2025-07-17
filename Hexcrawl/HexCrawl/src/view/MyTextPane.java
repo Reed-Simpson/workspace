@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -81,6 +82,12 @@ public class MyTextPane extends JTextPane {
 		links = new HashMap<Interval,Interval>();
 		this.writeStringToDocument(t);
 	}
+
+	@Override
+	public void paintComponent(Graphics g){
+		this.doPaint();
+		super.paintComponent(g);
+	}
 	public void doPaint() {
 		if(getIndex()>-1) {
 			if(this.getRawText()!=null&&!"".equals(this.getRawText())&&(!HexData.CITY.equals(type)||!this.pos.equals(getPoint()))) {
@@ -97,7 +104,6 @@ public class MyTextPane extends JTextPane {
 		StyledDocument doc = this.getStyledDocument();
 		try {
 			if(string==null) {
-				doc.insertString(0, "None", basic);
 				return;
 			}
 			Matcher matcher = Reference.PATTERN.matcher(string);

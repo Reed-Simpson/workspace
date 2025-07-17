@@ -31,6 +31,7 @@ public class NPCModel extends DataModel {
 	//STATIC CONSTANTS
 	private static final int SEED_OFFSET = 9*Util.getOffsetX();
 	private static final int TABLECOUNT = 10;
+	public static final int THREAT_NPC_INDEX = InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT+InfoPanel.FACTIONCOUNT+InfoPanel.FAITHCOUNT+1;
 	private static final String ASSETS = "Has authority,Avoids detection,Calls in favors,Is charming,Cooks the books,Erases the evidence,Excellent liar,Extremely Rich,Leader of ${faction index},Member of ${faction index},Feared,Has a fortified base,"+
 			"Gorgeous,Hears rumors,Huge family,Huge library,Impersonator,Interrogator,Knows a guy,Knows a way in,Launders money,Learned,Local celebrity,Posesses local knowledge,"+
 			"Has loyal henchmen,Middling Oracle,Has nothing to lose,Owns the guards,Has a powerful spouse,Procures gear,Pulls the strings,Has a secret lab,Sells contraband,Smuggles goods,Has a spy network,War hero";
@@ -192,7 +193,8 @@ public class NPCModel extends DataModel {
 	}
 
 	public NPC getNPC(int i,Point p) {
-		if(i>=InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT) return getFactionNPC(i-(InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT), p);
+		if(i==THREAT_NPC_INDEX)  ;
+		else if(i>=InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT) return getFactionNPC(i-(InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT), p);
 		else if(i>=InfoPanel.NPCCOUNT*2) return getProprietor(i-InfoPanel.NPCCOUNT*2, p);
 		NPC result = getIndexedNPC(i, p);
 		populateNPCData(p, result);

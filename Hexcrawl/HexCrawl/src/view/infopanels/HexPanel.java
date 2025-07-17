@@ -292,6 +292,17 @@ public class HexPanel extends JPanel{
 		missionsTexts.add(encounteri);
 		return encounteri;
 	}
+	public void removeDungeonEncounter(int index) {
+		panel.getController().removeData(HexData.D_ENCOUNTER, panel.getSelectedGridPoint(), index);
+		encounterTexts.remove(encounterTexts.size()-1).setVisible(false);
+		repaint();
+	}
+
+	public void removeEncounter(int index) {
+		panel.getController().removeData(HexData.ENCOUNTER, panel.getSelectedGridPoint(), index);
+		encounterTexts.remove(encounterTexts.size()-1).setVisible(false);
+		repaint();
+	}
 
 	public boolean isChangeSelected() {
 		return changeSelected;

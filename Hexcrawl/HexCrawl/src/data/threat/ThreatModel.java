@@ -18,12 +18,11 @@ import data.npc.NPCModel;
 import data.population.SettlementModel;
 import data.population.Species;
 import io.SaveRecord;
-import names.FactionTypeNameGenerator;
 import names.FactionNameGenerator;
 import names.FactionType;
+import names.FactionTypeNameGenerator;
 import names.threat.ThreatNameGenerator;
 import util.Util;
-import view.InfoPanel;
 
 public class ThreatModel extends DataModel{
 	private static final int SEED_OFFSET = 7*Util.getOffsetX();
@@ -103,7 +102,7 @@ public class ThreatModel extends DataModel{
 	public Threat getThreat(Point p) {
 		Point threatSource = getCenter(p);
 		if(threatCache.get(threatSource)!=null) return threatCache.get(threatSource);
-		NPC npc = npcs.getNPC(InfoPanel.NPCCOUNT*2+InfoPanel.POICOUNT+1, threatSource);
+		NPC npc = npcs.getNPC(NPCModel.THREAT_NPC_INDEX, threatSource);
 		int[] indexes = new int[25];
 		for(int i=0;i<indexes.length;i++) {
 			indexes[i] = getThreatDetailIndex(p,i);

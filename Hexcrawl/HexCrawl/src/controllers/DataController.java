@@ -197,7 +197,7 @@ public class DataController {
 		}
 		default: value = getModel(type).getDefaultValue(p, i);
 		}
-		if(value==null) return null;
+		if(value==null) return "None";
 		else return value.toString();
 	}
 	public String getData(HexData type,Point p, int i) {

@@ -122,7 +122,7 @@ public class ThreatModel extends DataModel{
 		result.setPlan(ThreatDetails.getPlan(result));
 		result.setName(getThreatName(result ));
 		if(result.getName().contains("${job placeholder}")) {
-			result.setDomain(NPCJobType.getJob(result)+"s");
+			result.setDomain(NPCJobType.getJob(result).toString()+"s");
 		}else {
 			result.setDomain(CreatureType.getDomain(result));
 		}

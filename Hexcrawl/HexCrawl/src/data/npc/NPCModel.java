@@ -296,7 +296,7 @@ public class NPCModel extends DataModel {
 	}
 	private void setJob(Point p, NPC npc) {
 		if(npc.getJob()==null) {
-			npc.setJob(NPCJobType.getJob(npc,population.isCity(p), population.isTown(p)));
+			npc.setJob(NPCJobType.getJob(npc,population.isCity(p), population.isTown(p)).toString());
 		}
 	}
 	private void setAsset(Point p, NPC npc) {

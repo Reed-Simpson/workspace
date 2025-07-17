@@ -7,6 +7,7 @@ import controllers.DataController;
 import data.HexData;
 import data.Indexible;
 import data.Reference;
+import data.location.District;
 import names.FactionType;
 
 public class Settlement extends Indexible {
@@ -15,7 +16,7 @@ public class Settlement extends Indexible {
 	private String theme;
 	private String event;
 	private Point pos;
-	private ArrayList<String> districts;
+	private ArrayList<District> districts;
 	private ArrayList<Point> neighbors;
 	private transient DataController controller;
 	
@@ -54,14 +55,14 @@ public class Settlement extends Indexible {
 	public void setEvent(String event) {
 		this.event = event;
 	}
-	public ArrayList<String> getDistricts() {
+	public ArrayList<District> getDistricts() {
 		return districts;
 	}
-	public void setDistricts(ArrayList<String> districts) {
+	public void setDistricts(ArrayList<District> districts) {
 		this.districts = districts;
 	}
-	public void putDistrict(String district) {
-		if(this.districts==null) this.districts = new ArrayList<String>();
+	public void putDistrict(District district) {
+		if(this.districts==null) this.districts = new ArrayList<District>();
 		this.districts.add(district);
 	}
 	
@@ -74,8 +75,8 @@ public class Settlement extends Indexible {
 		c1Text.append("   Leader: "+new Reference(HexData.FACTION_NPC,controller.getRecord().normalizePOS(pos),0)+"\r\n");
 		if(this.getEvent()!=null) c1Text.append("City Event: "+this.getEvent()+"\r\n");
 		c1Text.append("~~~~~ Districts ~~~~~\r\n");
-		for(String s:districts) {
-			c1Text.append(s+"\r\n");
+		for(District s:districts) {
+			c1Text.append(s.toString()+"\r\n");
 		}
 		c1Text.append("~~~~~ Neighbors ~~~~~\r\n");
 		if(neighbors!=null) {

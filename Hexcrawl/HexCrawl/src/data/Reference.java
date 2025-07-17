@@ -22,6 +22,7 @@ public class Reference implements Serializable{
 		this.type = type;
 		this.point = point;
 		this.index = index;
+		this.active = true;
 	}
 	public Reference(String s) {
 		Matcher matcher = Reference.PATTERN.matcher(s);

@@ -11,6 +11,8 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.Reference;
 import data.WeightedTable;
+import data.location.District;
+import data.location.DistrictType;
 import data.magic.MagicModel;
 import data.magic.MagicType;
 import data.npc.Faction;
@@ -267,8 +269,8 @@ public class SettlementModel extends DataModel{
 	private void populateDistricts(Point p, Settlement result) {
 		MagicModel magic = controller.getMagic();
 		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
-			String district = getDistrict(result);
-			if(magic.isWeird(p,k)) district = magic.getAdjective(p, k)+" "+district;
+			District district = new District(DistrictType.getDistrict(result));
+			if(magic.isWeird(p,k)) district.setWeirdness(magic.getAdjective(p, k));
 			result.putDistrict(district);
 		}
 	}
@@ -276,8 +278,8 @@ public class SettlementModel extends DataModel{
 		MagicModel magic = controller.getMagic();
 		MagicType type = magic.getMagicType(p);
 		for(int k=0;k<InfoPanel.DISTRICTCOUNT;k++) {
-			String district = getDistrict(result);
-			if(magic.isWeird(type,random.nextInt())) district = MagicModel.getAdjective(new Indexible(random.nextInt()))+" "+district;
+			District district = new District(DistrictType.getDistrict(result));
+			if(magic.isWeird(type,random.nextInt())) district.setWeirdness(MagicModel.getAdjective(new Indexible(random.nextInt())));
 			result.putDistrict(district);
 		}
 	}
@@ -379,8 +381,8 @@ public class SettlementModel extends DataModel{
 	}
 
 
-	public String getDistrict(int i, Point capital) {
-		ArrayList<String> districts = getSettlement(capital).getDistricts();
+	public District getDistrict(int i, Point capital) {
+		ArrayList<District> districts = getSettlement(capital).getDistricts();
 		if(i<districts.size()&&i>-1) return districts.get(i);
 		return null;
 	}

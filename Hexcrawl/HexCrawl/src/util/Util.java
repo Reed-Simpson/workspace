@@ -136,7 +136,7 @@ public class Util {
 
 	public static String getTownIndex(Indexible obj,Point p,Point zero) {
 		Point displayPos = normalizePos(p, zero);
-		return getIndexString(obj, "town", 1, displayPos);
+		return getRandomReference(obj, "town", 1, displayPos,true).toString();
 	}
 
 	public static String formatTableResultPOS(String result,Indexible obj) {
@@ -145,24 +145,24 @@ public class Util {
 	public static String formatTableResultPOS(String result,Indexible obj,Point p,Point zero) {
 		if(p!=null) {
 			Point displayPos = normalizePos(p, zero);
-			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getIndexString(obj, "location", InfoPanel.POICOUNT, displayPos));
-			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
-			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
-			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",getIndexString(obj, "faith", InfoPanel.FAITHCOUNT, displayPos));
-			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getIndexString(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos));
+			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",getRandomReference(obj, "location", InfoPanel.POICOUNT, displayPos,true).toString());
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos,true).toString());
+			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos,true).toString());
+			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",getRandomReference(obj, "faith", InfoPanel.FAITHCOUNT, displayPos,true).toString());
+			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",getRandomReference(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos,true).toString());
 			if(result.contains("${character index}")) {
-				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getIndexString(obj, "npc", InfoPanel.NPCCOUNT, displayPos));
-				else result = Util.replace(result,"${character index}",getIndexString(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos));
+				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos,true).toString());
+				else result = Util.replace(result,"${character index}",getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos,true).toString());
 			}
-			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",getIndexString(obj, "town", 1, displayPos));
+			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",getRandomReference(obj, "town", 1, displayPos,false).toString());
 		}else {
 			if(result.contains("${location index}")) result = Util.replace(result,"${location index}",LocationType.getStructure(obj).toString());
-			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCJobType.getJob(obj));
+			if(result.contains("${npc index}")) result = Util.replace(result,"${npc index}",NPCJobType.getJob(obj).toString());
 			if(result.contains("${faction index}")) result = Util.replace(result,"${faction index}",FactionType.getFaction(obj).toString());
 			if(result.contains("${faith index}")) result = Util.replace(result,"${faith index}",NPCModel.getDomain(obj));
 			if(result.contains("${district index}")) result = Util.replace(result,"${district index}",SettlementModel.getDistrict(obj));
 			if(result.contains("${character index}")) {
-				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCJobType.getJob(obj));
+				if(obj.reduceTempId(2)%2==0) result = Util.replace(result,"${character index}",NPCJobType.getJob(obj).toString());
 				else result = Util.replace(result,"${character index}",FactionType.getFaction(obj).toString());
 			}
 			if(result.contains("${town index}")) result = Util.replace(result,"${town index}",NPCSpecies.GOLIATH.getCityNameGen().getName(obj));
@@ -172,16 +172,16 @@ public class Util {
 	public static Reference getReferenceForIndex(String string,Indexible obj,Point p,Point zero) {
 		Reference result = null;
 		Point displayPos = normalizePos(p, zero);
-		if(string.contains("${location index}")) result = getRandomReference(obj, "location", InfoPanel.POICOUNT, displayPos);
-		if(string.contains("${npc index}")) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos);
-		if(string.contains("${faction index}")) result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos);
-		if(string.contains("${faith index}")) result = getRandomReference(obj, "faith", InfoPanel.FAITHCOUNT, displayPos);
-		if(string.contains("${district index}")) result = getRandomReference(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos);
+		if(string.contains("${location index}")) result = getRandomReference(obj, "location", InfoPanel.POICOUNT, displayPos,true);
+		if(string.contains("${npc index}")) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos,true);
+		if(string.contains("${faction index}")) result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos,true);
+		if(string.contains("${faith index}")) result = getRandomReference(obj, "faith", InfoPanel.FAITHCOUNT, displayPos,true);
+		if(string.contains("${district index}")) result = getRandomReference(obj, "district", InfoPanel.DISTRICTCOUNT, displayPos,true);
 		if(string.contains("${character index}")) {
-			if(obj.reduceTempId(2)%2==0) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos);
-			else result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos);
+			if(obj.reduceTempId(2)%2==0) result = getRandomReference(obj, "npc", InfoPanel.NPCCOUNT, displayPos,true);
+			else result = getRandomReference(obj, "faction", InfoPanel.FACTIONCOUNT, displayPos,true);
 		}
-		if(string.contains("${town index}")) result = getRandomReference(obj, "town", 1, displayPos);
+		if(string.contains("${town index}")) result = getRandomReference(obj, "town", 1, displayPos,true);
 		return result;
 	}
 
@@ -208,10 +208,10 @@ public class Util {
 		if(result.contains("${faction}")) result = Util.replace(result,"${faction}",FactionType.getFaction(obj).toString());
 		if(result.contains("${faction trait}")) result = Util.replace(result,"${faction trait}",FactionNameGenerator.getTrait(obj));
 
-		if(result.contains("${job}")) result = Util.replace(result,"${job}",NPCJobType.getJob(obj));
-		if(result.contains("${civilized npc}")) result = Util.replace(result,"${civilized npc}",NPCJobType.getCivilized(obj));
-		if(result.contains("${underworld npc}")) result = Util.replace(result,"${underworld npc}",NPCJobType.getUnderworld(obj));
-		if(result.contains("${wilderness npc}")) result = Util.replace(result,"${wilderness npc}",NPCJobType.getWilderness(obj));
+		if(result.contains("${job}")) result = Util.replace(result,"${job}",NPCJobType.getJob(obj).toString());
+		if(result.contains("${civilized npc}")) result = Util.replace(result,"${civilized npc}",NPCJobType.getCivilized(obj).toString());
+		if(result.contains("${underworld npc}")) result = Util.replace(result,"${underworld npc}",NPCJobType.getUnderworld(obj).toString());
+		if(result.contains("${wilderness npc}")) result = Util.replace(result,"${wilderness npc}",NPCJobType.getWilderness(obj).toString());
 		if(result.contains("${domain}")) result = Util.replace(result,"${domain}",NPCModel.getDomain(obj));
 		if(result.contains("${personality}")) result = Util.replace(result,"${personality}",NPCModel.getPersonality(obj));
 		if(result.contains("${reputation}")) result = Util.replace(result,"${reputation}",NPCModel.getReputation(obj));
@@ -310,12 +310,11 @@ public class Util {
 		return result;
 	}
 
-	public static String getIndexString(Indexible obj,String type,int count,Point p) {
-		return getRandomReference(obj,type,count,p).toString();
-	}
-	public static Reference getRandomReference(Indexible obj,String type,int count,Point p) {
+	public static Reference getRandomReference(Indexible obj,String type,int count,Point p,boolean active) {
 		int index = obj.reduceTempId(count);
-		return new Reference("{"+type+":"+p.x+","+p.y+","+(index+1)+"}$");
+		Reference reference = new Reference("{"+type+":"+p.x+","+p.y+","+(index+1)+"}$");
+		reference.setActive(active);
+		return reference;
 	}
 
 	public static String formatSubtype(String string,CreatureSubtype type) {

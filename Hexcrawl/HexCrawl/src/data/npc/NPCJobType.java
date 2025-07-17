@@ -184,16 +184,16 @@ public enum NPCJobType {
 	public static final NPCJobType[] COMMUNE_JOBS = HIGH_COUNCIL_JOBS;
 	public static final NPCJobType[] ELECTED_COUNCIL_JOBS = HIGH_COUNCIL_JOBS;
 
-	public static String getCivilized(Indexible obj) {
-		return Util.getElementFromArray(civilized, obj).toString();
+	public static NPCJobType getCivilized(Indexible obj) {
+		return (NPCJobType) Util.getElementFromArray(civilized, obj);
 	}
-	public static String getUnderworld(Indexible obj) {
-		return Util.getElementFromArray(underworld, obj).toString();
+	public static NPCJobType getUnderworld(Indexible obj) {
+		return (NPCJobType) Util.getElementFromArray(underworld, obj);
 	}
-	public static String getWilderness(Indexible obj) {
-		return Util.getElementFromArray(wilderness, obj).toString();
+	public static NPCJobType getWilderness(Indexible obj) {
+		return (NPCJobType) Util.getElementFromArray(wilderness, obj);
 	}
-	public static String getJob(Indexible obj,boolean isCity,boolean isTown) {
+	public static NPCJobType getJob(Indexible obj,boolean isCity,boolean isTown) {
 		int id = obj.reduceTempId(10);
 		if(isCity) {
 			if(id<5) return getCivilized(obj);//50%
@@ -209,7 +209,7 @@ public enum NPCJobType {
 			else return getWilderness(obj);//80%
 		}
 	}
-	public static String getJob(Indexible obj) {
+	public static NPCJobType getJob(Indexible obj) {
 		int id = obj.reduceTempId(3);
 		if(id==0) return getCivilized(obj);
 		else if(id==1) return getUnderworld(obj);

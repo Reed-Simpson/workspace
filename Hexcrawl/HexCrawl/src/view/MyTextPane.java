@@ -118,14 +118,18 @@ public class MyTextPane extends JTextPane {
 	private Interval insertLink(String link) throws BadLocationException {
 		Reference ref = new Reference(link);
 		StyledDocument doc = this.getStyledDocument();
-		Style regularBlue = getLinkStyle(ref, doc);
 		String linkText = controller.getLinkText(ref);
 		if(linkText==null) {
 			doc.insertString(doc.getLength(), "none", basic);
 			return new Interval(doc.getLength(),doc.getLength()+4);
 		}
 		Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
-		doc.insertString(doc.getLength(), linkText, regularBlue);
+		if(link.endsWith("x")) {
+			doc.insertString(doc.getLength(), linkText, basic);
+		}else {
+			Style regularBlue = getLinkStyle(ref, doc);
+			doc.insertString(doc.getLength(), linkText, regularBlue);
+		}
 		return result;
 	}
 
@@ -274,7 +278,7 @@ public class MyTextPane extends JTextPane {
 					Point displayPos = new Point(
 							Integer.valueOf(matcher.group(2)),
 							Integer.valueOf(matcher.group(3))
-						);
+							);
 					int i = Integer.valueOf(matcher.group(4))-1;
 					String tooltipText = controller.getToolTipText(type,displayPos,i,getPoint());
 					if(tooltipText!=null) {
@@ -511,14 +515,18 @@ public class MyTextPane extends JTextPane {
 
 		private Interval insertLink(FilterBypass fb, Reference link) throws BadLocationException {
 			StyledDocument doc = MyTextPane.this.getStyledDocument();
-			Style regularBlue = getLinkStyle(link, doc);
 			String linkText = controller.getLinkText(link);
 			if(linkText==null) {
-				doc.insertString(doc.getLength(), "none", DEFAULT);
+				super.insertString(fb, doc.getLength(), "none", basic);
 				return new Interval(doc.getLength(),doc.getLength()+4);
 			}
 			Interval result = new Interval(doc.getLength(),doc.getLength()+linkText.length());
-			super.insertString(fb, doc.getLength(), linkText, regularBlue);
+			if(!link.isActive()) {
+				super.insertString(fb, doc.getLength(), linkText, basic);
+			}else {
+				Style regularBlue = getLinkStyle(link, doc);
+				super.insertString(fb, doc.getLength(), linkText, regularBlue);
+			}
 			return result;
 		}
 	}

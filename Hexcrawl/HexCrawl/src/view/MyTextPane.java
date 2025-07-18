@@ -52,6 +52,7 @@ public class MyTextPane extends JTextPane {
 	private Reference ref;
 	private Point pos;
 	private boolean custom;
+	private boolean highlight;
 
 	public MyTextPane(InfoPanel info,int index,HexData type) {
 		this.info = info;
@@ -92,6 +93,9 @@ public class MyTextPane extends JTextPane {
 			this.custom = (controller.getData(getType(), getPoint(), getIndex())!=null);
 			this.setText(text);
 		}
+		if(highlight) this.setBackground(YELLOW_HIGHLIGHTCOLOR);
+		else if(custom) this.setBackground(BLUE_HIGHLIGHTCOLOR);
+		else this.setBackground(TEXTBACKGROUNDCOLOR);
 	}
 
 	private void writeStringToDocument(String string) {
@@ -237,6 +241,12 @@ public class MyTextPane extends JTextPane {
 		setText(newData);
 		MyTextPane.this.doPaint();
 	}
+	private void save() {
+		if(getIndex()>-1) {
+			String text = this.getRawText();
+			controller.updateData(getType(), text, pos, getIndex());
+		}
+	}
 
 
 	private final class TextFocusListener implements FocusListener {
@@ -246,10 +256,7 @@ public class MyTextPane extends JTextPane {
 		public void focusGained(FocusEvent e) {
 		}
 		public void focusLost(FocusEvent e) {
-			if(getIndex()>-1) {
-				String text = MyTextPane.this.getRawText();
-				controller.updateData(getType(), text, pos, getIndex());
-			}
+			save();
 		}
 	}
 	private class NoScrollCaret extends DefaultCaret {
@@ -319,6 +326,7 @@ public class MyTextPane extends JTextPane {
 			AttributeSet as = ele.getAttributes();
 			TextLinkAction fla = (TextLinkAction)as.getAttribute("linkact");
 			if(fla != null){
+				save();
 				fla.execute();
 			}
 		}
@@ -531,9 +539,7 @@ public class MyTextPane extends JTextPane {
 		}
 	}
 	public void setHighlight(boolean b) {
-		if(b) this.setBackground(YELLOW_HIGHLIGHTCOLOR);
-		else if(custom) this.setBackground(BLUE_HIGHLIGHTCOLOR);
-		else this.setBackground(TEXTBACKGROUNDCOLOR);
+		this.highlight = b;
 	}
 	public void flicker() {
 		int on = 300;

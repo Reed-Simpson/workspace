@@ -967,7 +967,7 @@ public class MapPanel  extends JPanel implements Printable{
 		int x = p.x;
 		int y = p.y;
 		int[] xs = new int[] {x,						x+scale,				x+scale,				x,						x-scale,				x-scale};
-		int[] ys = new int[] {(int)(y+scale*2/sqrt3),	(int)(y+scale/sqrt3+1),	(int)(y-scale/sqrt3),	(int)(y-scale*2/sqrt3),	(int)(y-scale/sqrt3),	(int)(y+scale/sqrt3)};
+		int[] ys = new int[] {(int)(y+scale*2/sqrt3),	(int)(y+scale/sqrt3),	(int)(y-scale/sqrt3),	(int)(y-scale*2/sqrt3),	(int)(y-scale/sqrt3),	(int)(y+scale/sqrt3)};
 		Polygon p1 = new Polygon(xs,ys,6);
 		if(background!=null) {
 			g2.setColor(background);

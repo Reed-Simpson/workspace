@@ -5,6 +5,7 @@ import java.awt.Point;
 import data.HexData;
 import data.Reference;
 import data.npc.NPCJobType;
+import view.InfoPanel;
 
 public class District {
 	private DistrictType type;
@@ -47,6 +48,7 @@ public class District {
 		}
 		if(weirdness!=null) result = weirdness+" "+result;
 		result+="\r\n"+new Reference(HexData.LOCATION,pos,index+1);
+		result+="\r\n"+new Reference(HexData.LOCATION,pos,InfoPanel.DISTRICTCOUNT+index+1);
 		return result;
 	}
 

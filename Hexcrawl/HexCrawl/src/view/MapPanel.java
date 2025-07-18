@@ -1406,7 +1406,9 @@ public class MapPanel  extends JPanel implements Printable{
 	public void setHighlightedHex(Point p) {
 		if(this.highlightedHex!=p) {
 			this.highlightedHex = p;
-			this.repaint();
+			if(!printLoadingInfo.get()) {
+				this.repaint();
+			}
 		}
 	}
 

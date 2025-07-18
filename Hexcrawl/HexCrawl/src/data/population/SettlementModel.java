@@ -394,20 +394,27 @@ public class SettlementModel extends DataModel{
 		case lower_class_building: district.setBuilding(LocationType.getLCBuilding(obj));break;
 		case civilized_npc: {
 			district.setJob(NPCJobType.getCivilized(obj));
-			//TODO job locations
+			LocationType building = (LocationType) Util.getElementFromArray(district.getJob().getLocationTypes(),obj);
+			district.setBuilding(building);
 			break;
 		}
 		case underworld_npc: {
 			district.setJob(NPCJobType.getUnderworld(obj));
-			//TODO job locations
+			LocationType building = (LocationType) Util.getElementFromArray(district.getJob().getLocationTypes(),obj);
+			district.setBuilding(building);
 			break;
 		}
 		case wilderness_npc: {
 			district.setJob(NPCJobType.getWilderness(obj));
-			//TODO job locations
+			LocationType building = (LocationType) Util.getElementFromArray(district.getJob().getLocationTypes(),obj);
+			district.setBuilding(building);
 			break;
 		}
-		default: district.setBuilding((LocationType) Util.getElementFromArray(district.getType().getLocationTypes(),obj));break;
+		default:break;
+		}
+
+		if(district.getBuilding()==null) {
+			district.setBuilding((LocationType) Util.getElementFromArray(district.getType().getLocationTypes(),obj));
 		}
 	}
 	public District getDistrict(int i, Point capital,Random random) {

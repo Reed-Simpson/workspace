@@ -1,6 +1,7 @@
 package data.npc;
 
 import data.Indexible;
+import data.location.LocationType;
 import util.Util;
 
 public enum NPCJobType {
@@ -38,7 +39,7 @@ public enum NPCJobType {
 	public static final NPCJobType[] Fortress_jobs = new NPCJobType[] {Knight,Noble,Guard,Soldier,Jailer};
 	public static final NPCJobType[] Gallows_jobs = new NPCJobType[] {Headsman};
 	public static final NPCJobType[] Graveyard_jobs = new NPCJobType[] {Acolyte,Priest,Cleric,Paladin,Gravedigger,Necromancer,Cultist,null};
-	public static final NPCJobType[] Hedge_jobs = new NPCJobType[] {Druid,Hermit,Farmer,Shepherd,Miller,Apiarist,Witch};
+	public static final NPCJobType[] Hedge_jobs = new NPCJobType[] {Druid,Hermit,Farmer,Shepherd,Apiarist,Witch};
 	public static final NPCJobType[] Hunter_Camp_jobs = new NPCJobType[] {Fisher,Forager,Hunter,Poacher,Ranger,Scavenger,Scout,Surveyor,Trapper};
 	public static final NPCJobType[] Inn_jobs = new NPCJobType[] {Innkeeper};
 	public static final NPCJobType[] Lumber_Camp_jobs = new NPCJobType[] {Woodcutter};
@@ -68,7 +69,7 @@ public enum NPCJobType {
 	public static final NPCJobType[] Furrier_jobs = new NPCJobType[] {Hunter,Trapper,Poacher,Ranger,Shepherd};
 	public static final NPCJobType[] Gallery_jobs = new NPCJobType[] {Painter,Sculptor,Item_Seller};
 	public static final NPCJobType[] Garden_jobs = new NPCJobType[] {Apothacary,Farmer,Druid,Monk};
-	public static final NPCJobType[] Haberdashery_jobs = new NPCJobType[] {Haberdasher};
+	public static final NPCJobType[] Haberdashery_jobs = new NPCJobType[] {Haberdasher,Tailor};
 	public static final NPCJobType[] Jeweler_jobs = new NPCJobType[] {Jeweler};
 	public static final NPCJobType[] Law_Office_jobs = new NPCJobType[] {Lawyer};
 	public static final NPCJobType[] Locksmith_jobs = new NPCJobType[] {Locksmith,Rogue,Burglar};
@@ -81,7 +82,7 @@ public enum NPCJobType {
 	public static final NPCJobType[] Physician_jobs = new NPCJobType[] {Apothacary,Barber,Priest,Scholar};
 	public static final NPCJobType[] Printer_jobs = new NPCJobType[] {Scribe};
 	public static final NPCJobType[] Restaurant_jobs = new NPCJobType[] {Chef,Innkeeper,Fishmonger};
-	public static final NPCJobType[] Salon_jobs = new NPCJobType[] {Barber};
+	public static final NPCJobType[] Salon_jobs = new NPCJobType[] {Barber,Wigmaker};
 	public static final NPCJobType[] Stables_jobs = new NPCJobType[] {Ranger,Servant,Animal_Breeder};
 	public static final NPCJobType[] Taxidermist_jobs = new NPCJobType[] {Taxidermist};
 	public static final NPCJobType[] Tobacconist_jobs = new NPCJobType[] {Item_Seller,Smuggler};
@@ -220,5 +221,142 @@ public enum NPCJobType {
 	
 	public String toString() {
 		return Util.replace(this.name(), "_", " ");
+	}
+	
+	public LocationType[] getLocationTypes() {
+		switch(this) {
+		case Acolyte: return LocationType.Acolyte_locations;
+		case Actor: return LocationType.Actor_locations;
+		case Apothacary: return LocationType.Apothacary_locations;
+		case Baker: return LocationType.Baker_locations;
+		case Barber: return LocationType.Barber_locations;
+		case Blacksmith: return LocationType.Blacksmith_locations;
+		case Brewer: return LocationType.Brewer_locations;
+		case Bureaucrat: return LocationType.Bureaucrat_locations;
+		case Butcher: return LocationType.Butcher_locations;
+		case Carpenter: return LocationType.Carpenter_locations;
+		case Clockmaker: return LocationType.Clockmaker_locations;
+		case Courier: return LocationType.Courier_locations;
+		case Courtier: return LocationType.Courtier_locations;
+		case Diplomat: return LocationType.Diplomat_locations;
+		case Fishmonger: return LocationType.Fishmonger_locations;
+		case Guard: return LocationType.Guard_locations;
+		case Haberdasher: return LocationType.Haberdasher_locations;
+		case Innkeeper: return LocationType.Innkeeper_locations;
+		case Item_Seller: return LocationType.Item_Seller_locations;
+		case Jeweler: return LocationType.Jeweler_locations;
+		case Knight: return LocationType.Knight_locations;
+		case Locksmith: return LocationType.Locksmith_locations;
+		case Mason: return LocationType.Mason_locations;
+		case Miller: return LocationType.Miller_locations;
+		case Musician: return LocationType.Musician_locations;
+		case Noble: return LocationType.Noble_locations;
+		case Painter: return LocationType.Painter_locations;
+		case Priest: return LocationType.Priest_locations;
+		case Scholar: return LocationType.Scholar_locations;
+		case Scribe: return LocationType.Scribe_locations;
+		case Sculptor: return LocationType.Sculptor_locations;
+		case Shipwright: return LocationType.Shipwright_locations;
+		case Soldier: return LocationType.Soldier_locations;
+		case Tailor: return LocationType.Tailor_locations;
+		case Taxidermist: return LocationType.Taxidermist_locations;
+		case Wigmaker: return LocationType.Wigmaker_locations;
+		case Artificer: return LocationType.Artificer_locations;
+		case Bard: return LocationType.Bard_locations;
+		case Cleric: return LocationType.Cleric_locations;
+		case Monk: return LocationType.Monk_locations;
+		case Paladin: return LocationType.Paladin_locations;
+		case Wizard: return LocationType.Wizard_locations;
+		case Alchemist: return LocationType.Alchemist_locations;
+		case Animal_Breeder: return LocationType.Animal_Breeder_locations;
+		case Assassin: return LocationType.Assassin_locations;
+		case Acrobat: return LocationType.Acrobat_locations;
+		case Beggar: return LocationType.Beggar_locations;
+		case Burglar: return LocationType.Burglar_locations;
+		case Chimneysweep: return LocationType.Chimneysweep_locations;
+		case Charlatan: return LocationType.Charlatan_locations;
+		case Cultist: return LocationType.Cultist_locations;
+		case Cutpurse: return LocationType.Cutpurse_locations;
+		case Deserter: return LocationType.Deserter_locations;
+		case Ditchdigger: return LocationType.Ditchdigger_locations;
+		case Fence: return LocationType.Fence_locations;
+		case Forger: return LocationType.Forger_locations;
+		case Fortuneseller: return LocationType.Fortuneseller_locations;
+		case Gambler: return LocationType.Gambler_locations;
+		case Gladiator: return LocationType.Gladiator_locations;
+		case Gravedigger: return LocationType.Gravedigger_locations;
+		case Headsman: return LocationType.Headsman_locations;
+		case Informant: return LocationType.Informant_locations;
+		case Jailer: return LocationType.Jailer_locations;
+		case Laborer: return LocationType.Laborer_locations;
+		case Lamplighter: return LocationType.Lamplighter_locations;
+		case Mercenary: return LocationType.Mercenary_locations;
+		case Poet: return LocationType.Poet_locations;
+		case Poisoner: return LocationType.Poisoner_locations;
+		case Privateer: return LocationType.Privateer_locations;
+		case Ratcatcher: return LocationType.Ratcatcher_locations;
+		case Sailor: return LocationType.Sailor_locations;
+		case Servant: return LocationType.Servant_locations;
+		case Smuggler: return LocationType.Smuggler_locations;
+		case Spy: return LocationType.Spy_locations;
+		case Urchin: return LocationType.Urchin_locations;
+		case Loan_Shark: return LocationType.Loan_Shark_locations;
+		case Vagabond: return LocationType.Vagabond_locations;
+		case Gutter_Mage: return LocationType.Gutter_Mage_locations;
+		case Rogue: return LocationType.Rogue_locations;
+		case Sorcerer: return LocationType.Sorcerer_locations;
+		case Warlock: return LocationType.Warlock_locations;
+		case Apiarist: return LocationType.Apiarist_locations;
+		case Bandit: return LocationType.Bandit_locations;
+		case Caravan_Guard: return LocationType.Caravan_Guard_locations;
+		case Caravaneer: return LocationType.Caravaneer_locations;
+		case Druid: return LocationType.Druid_locations;
+		case Exile: return LocationType.Exile_locations;
+		case Explorer: return LocationType.Explorer_locations;
+		case Farmer: return LocationType.Farmer_locations;
+		case Fisher: return LocationType.Fisher_locations;
+		case Forager: return LocationType.Forager_locations;
+		case Fugative: return LocationType.Fugative_locations;
+		case Hedge_Wizard: return LocationType.Hedge_Wizard_locations;
+		case Hermit: return LocationType.Hermit_locations;
+		case Hunter: return LocationType.Hunter_locations;
+		case Messenger: return LocationType.Messenger_locations;
+		case Minstrel: return LocationType.Minstrel_locations;
+		case Monster_Hunter: return LocationType.Monster_Hunter_locations;
+		case Outlander: return LocationType.Outlander_locations;
+		case Tinker: return LocationType.Tinker_locations;
+		case Pilgrim: return LocationType.Pilgrim_locations;
+		case Poacher: return LocationType.Poacher_locations;
+		case Raider: return LocationType.Raider_locations;
+		case Ranger: return LocationType.Ranger_locations;
+		case Sage: return LocationType.Sage_locations;
+		case Scavenger: return LocationType.Scavenger_locations;
+		case Scout: return LocationType.Scout_locations;
+		case Shepherd: return LocationType.Shepherd_locations;
+		case Seer: return LocationType.Seer_locations;
+		case Surveyor: return LocationType.Surveyor_locations;
+		case Tomb_Raider: return LocationType.Tomb_Raider_locations;
+		case Trader: return LocationType.Trader_locations;
+		case Trapper: return LocationType.Trapper_locations;
+		case Witch: return LocationType.Witch_locations;
+		case Woodcutter: return LocationType.Woodcutter_locations;
+		case Barbarian: return LocationType.Barbarian_locations;
+		case Lawyer: return LocationType.Lawyer_locations;
+		case Ruffian: return LocationType.Ruffian_locations;
+		case Chef: return LocationType.Chef_locations;
+		case Artisan: return LocationType.Artisan_locations;
+		case Abjurer: return LocationType.Abjurer_locations;
+		case Swordmage: return LocationType.Swordmage_locations;
+		case Conjurer: return LocationType.Conjurer_locations;
+		case Diviner: return LocationType.Diviner_locations;
+		case Enchanter: return LocationType.Enchanter_locations;
+		case Evoker: return LocationType.Evoker_locations;
+		case Illusionist: return LocationType.Illusionist_locations;
+		case Necromancer: return LocationType.Necromancer_locations;
+		case Scrivener: return LocationType.Scrivener_locations;
+		case Transmuter: return LocationType.Transmuter_locations;
+		case Warmage: return LocationType.Warmage_locations;
+		default: return null;
+		}
 	}
 }

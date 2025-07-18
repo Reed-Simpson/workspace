@@ -104,8 +104,7 @@ public class DataController {
 		Object value;
 		switch(type) {
 		case THREAT: {
-			Point center = threats.getCenter(p);
-			value = threats.getThreat(center);break;
+			value = threats.getThreat(p);break;
 		}
 		case D_ENCOUNTER: value = "";break;
 		case ENCOUNTER: value = "";break;

@@ -105,7 +105,7 @@ public class ThreatModel extends DataModel{
 		NPC npc = npcs.getNPC(NPCModel.THREAT_NPC_INDEX, threatSource);
 		int[] indexes = new int[25];
 		for(int i=0;i<indexes.length;i++) {
-			indexes[i] = getThreatDetailIndex(p,i);
+			indexes[i] = getThreatDetailIndex(threatSource,i);
 		}
 		Threat result = new Threat(indexes);
 		result.setNPC(npc);

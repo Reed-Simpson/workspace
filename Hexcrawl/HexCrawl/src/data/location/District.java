@@ -38,9 +38,13 @@ public class District {
 
 	public String toString() {
 		String result;
-		if(building!=null) result = building.toString();
-		else if(job!=null) result = job.toString();
-		else result = type.toString();
+		switch(getType()) {
+		case upper_class_building: case lower_class_building: 
+			result = building.toString();break;
+		case civilized_npc: case underworld_npc: case wilderness_npc: 
+			result = job.toString();break;
+		default: result = type.toString();break;
+		}
 		if(weirdness!=null) result = weirdness+" "+result;
 		result+="\r\n"+new Reference(HexData.LOCATION,pos,index+1);
 		return result;

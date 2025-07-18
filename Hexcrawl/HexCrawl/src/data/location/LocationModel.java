@@ -14,6 +14,7 @@ import data.WeightedTable;
 import io.SaveRecord;
 import names.InnNameGenerator;
 import util.Util;
+import view.InfoPanel;
 
 public class LocationModel extends DataModel{
 	private static final int SEED_OFFSET = 11*Util.getOffsetX();
@@ -124,15 +125,26 @@ public class LocationModel extends DataModel{
 		LocationType type;
 		int landmarkCount;
 		if(isCity) {
-			type = LocationType.getBuilding(location);
+			if(i-1<InfoPanel.DISTRICTCOUNT) {
+				District d = controller.getSettlements().getDistrict(i-1, p);
+				type = d.getBuilding();
+				if(type == null) type = LocationType.getBuilding(location);
+			}else {
+				type = LocationType.getBuilding(location);
+			}
 			landmarkCount = 7;
 		}
 		else if(controller.getPopulation().isTown(p)){
 			if(i==1) type = LocationType.Village;
-			else type = LocationType.getStructure(location);
-			landmarkCount = 3;
+			else if(i==2||i==4) type = LocationType.getBuilding(location);
+			else {
+				if(location.reduceTempId(10)==0) type = LocationType.getBuilding(location);
+				else type = LocationType.getStructure(location);
+			}
+			landmarkCount = 4;
 		}else {
-			type = LocationType.getStructure(location);
+			if(location.reduceTempId(10)==0) type = LocationType.getBuilding(location);
+			else type = LocationType.getStructure(location);
 			landmarkCount = 2;
 		}
 		location.setType(type);

@@ -956,8 +956,7 @@ public class MapPanel  extends JPanel implements Printable{
 		}else if(HexData.ECONOMY.equals(data)) {
 			return controller.getEconomy().getColor(i, j);
 		}else if(HexData.THREAT.equals(data)) {
-			Point threatSource = controller.getThreats().getCenter(p);
-			return controller.getThreats().getThreatCreatureType(threatSource).getColor();
+			return controller.getThreats().getThreatCreatureType(p).getColor();
 		}else {
 			float height = controller.getGrid().getHeight(i, j);
 			return controller.getGrid().getColor(height);

@@ -380,7 +380,7 @@ public class SettlementModel extends DataModel{
 			vals[j] = OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+SETTLEMENTTABLES+j), p.x, p.y);
 		}
 		Indexible obj = new Indexible(vals);
-		District district = new District(DistrictType.getDistrict(obj));
+		District district = new District(DistrictType.getDistrict(obj),i,record.normalizePOS(capital));
 		populateDistrict(obj, district);
 		MagicModel magic = controller.getMagic();
 		if(magic.isWeird(capital,i)) district.setWeirdness(magic.getAdjective(capital, i));
@@ -419,7 +419,7 @@ public class SettlementModel extends DataModel{
 	}
 	public District getDistrict(int i, Point capital,Random random) {
 		Indexible obj = new Indexible(random.nextInt(),random.nextInt());
-		District district = new District(DistrictType.getDistrict(obj));
+		District district = new District(DistrictType.getDistrict(obj),i,record.normalizePOS(capital));
 		populateDistrict(obj, district);
 		MagicModel magic = controller.getMagic();
 		MagicType type = magic.getMagicType(capital);

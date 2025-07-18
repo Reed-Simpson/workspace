@@ -123,6 +123,8 @@ public enum NPCJobType {
 	public static final NPCJobType[] Warehouse_jobs = new NPCJobType[] {Smuggler,Laborer,Item_Seller};
 	public static final NPCJobType[] Weaver_jobs = new NPCJobType[] {Artisan};
 	public static final NPCJobType[] Workshop_jobs = new NPCJobType[] {Carpenter,Artificer,Tinker};
+	public static final NPCJobType[] Slum_jobs = new NPCJobType[] {null,Loan_Shark,Carpenter,Ruffian,Charlatan,Acolyte,Servant};
+	public static final NPCJobType[] Auction_House_jobs = new NPCJobType[] {Item_Seller,Smuggler,Fence,Caravaneer};
 	
 	//Faction Job Lists
 	public static final NPCJobType[] DARK_CULT_JOBS = new NPCJobType[] {Acolyte,Priest,Cleric,Cultist,Warlock,Witch,Charlatan};

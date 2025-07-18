@@ -14,9 +14,11 @@ import data.Reference;
 import data.WeightedTable;
 import data.location.District;
 import data.location.DistrictType;
+import data.location.LocationType;
 import data.magic.MagicModel;
 import data.magic.MagicType;
 import data.npc.Faction;
+import data.npc.NPCJobType;
 import data.npc.NPCModel;
 import io.SaveRecord;
 import names.FactionNameGenerator;
@@ -379,13 +381,39 @@ public class SettlementModel extends DataModel{
 		}
 		Indexible obj = new Indexible(vals);
 		District district = new District(DistrictType.getDistrict(obj));
+		populateDistrict(obj, district);
 		MagicModel magic = controller.getMagic();
 		if(magic.isWeird(capital,i)) district.setWeirdness(magic.getAdjective(capital, i));
 		return district;
 	}
+
+
+	private void populateDistrict(Indexible obj, District district) {
+		switch(district.getType()) {
+		case upper_class_building: district.setBuilding(LocationType.getUCBuilding(obj));break;
+		case lower_class_building: district.setBuilding(LocationType.getLCBuilding(obj));break;
+		case civilized_npc: {
+			district.setJob(NPCJobType.getCivilized(obj));
+			//TODO job locations
+			break;
+		}
+		case underworld_npc: {
+			district.setJob(NPCJobType.getUnderworld(obj));
+			//TODO job locations
+			break;
+		}
+		case wilderness_npc: {
+			district.setJob(NPCJobType.getWilderness(obj));
+			//TODO job locations
+			break;
+		}
+		default: district.setBuilding((LocationType) Util.getElementFromArray(district.getType().getLocationTypes(),obj));break;
+		}
+	}
 	public District getDistrict(int i, Point capital,Random random) {
 		Indexible obj = new Indexible(random.nextInt(),random.nextInt());
 		District district = new District(DistrictType.getDistrict(obj));
+		populateDistrict(obj, district);
 		MagicModel magic = controller.getMagic();
 		MagicType type = magic.getMagicType(capital);
 		if(magic.isWeird(type,random.nextInt())) district.setWeirdness(MagicModel.getAdjective(new Indexible(random.nextInt())));

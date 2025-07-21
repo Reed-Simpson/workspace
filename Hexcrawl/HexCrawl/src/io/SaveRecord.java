@@ -628,7 +628,8 @@ public class SaveRecord implements Serializable {
 		return set;
 	}
 	public String removeCampaignThread(int index) {
-		return this.campaignThreads.remove(index);
+		if(this.campaignThreads.size()>index) return this.campaignThreads.remove(index);
+		else return null;
 	}
 
 	

@@ -307,6 +307,7 @@ public class RegionPanel extends JPanel{
 
 	@Override
 	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		PopulationModel population = panel.getController().getPopulation();
 		BiomeModel biomes = panel.getController().getBiomes();
 		AltitudeModel grid = panel.getController().getGrid();

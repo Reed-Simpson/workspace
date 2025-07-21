@@ -124,7 +124,11 @@ public class DataController {
 			if(value==null) value="None";
 			break;
 		}
-		case LOCATION: value = pois.getPOI(i, p);break;
+		case LOCATION: {
+			value = pois.getPOI(i, p);
+			if(value==null) value = "None";
+			break;
+		}
 		case DUNGEON: value = dungeons.getDungeon(i, p);break;
 		case FACTION: {
 			Point capital = population.getAbsoluteFealty(p);

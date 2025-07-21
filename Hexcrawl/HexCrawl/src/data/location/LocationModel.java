@@ -171,6 +171,10 @@ public class LocationModel extends DataModel{
 
 	public Location getInnText(Point p) {
 		Location obj = new Location(getLocationDetailIndex(0, p),getLocationDetailIndex(1, p),getLocationDetailIndex(2, p),getLocationDetailIndex(3, p));
+		System.out.println("Inn probability:"+getInnProbability(controller.getPopulation().getTransformedUniversalPopulation(p))+"%");
+		if(obj.reduceTempId(100)>getInnProbability(controller.getPopulation().getTransformedUniversalPopulation(p))) {
+			return null;
+		}
 		populateInnFields(obj,p);
 		return obj;
 	}
@@ -190,6 +194,13 @@ public class LocationModel extends DataModel{
 		location.setQuirk(innNames.getQuirk(location));
 		location.setDungeons(getDungeons(p, 0));
 		return location.toString();
+	}
+	private int getInnProbability(int pop) {
+		System.out.println(pop);
+		float ratio = pop/2000f;
+		if(ratio<=0) return 0;
+		float percent = (float) (1-Math.pow(100, ratio*-1)*1.0001f)+0.0001f;
+		return (int) (percent*100);
 	}
 
 }

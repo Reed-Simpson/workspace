@@ -388,8 +388,8 @@ public class NPCModel extends DataModel {
 
 	private boolean setProprietorJob(Point p, int i, NPC result) {
 		Location l = location.getPOI(i, p);
-		NPCJobType jobType = l.getProprietorJob();
-		if(jobType!=null) {
+		NPCJobType jobType;
+		if(l!=null&&(jobType = l.getProprietorJob())!=null) {
 			result.setJob(jobType.toString());
 			return true;
 		}

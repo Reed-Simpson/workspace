@@ -15,12 +15,9 @@ import javax.swing.JSeparator;
 import controllers.DataController;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
-import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
 import data.precipitation.PrecipitationModel;
-import names.LocationNameModel;
-import names.wilderness.WildernessNameGenerator;
 import util.Util;
 import view.MapPanel;
 
@@ -106,15 +103,15 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		Point capital = population.getAbsoluteFealty(pos);
 		Point region = biomes.getAbsoluteRegion(pos);
 		if(population.isCity(pos)) {
-			String cityname = getRegionNameText(capital,true);
+			String cityname = controller.getRegionNameText(capital,true);
 			SettlementSize size = SettlementSize.getSettlementSize(popValue);
 			this.setLocation("CITY NAME: ★ "+cityname+" ("+size.getName()+")");
 		}else if(population.isTown(pos)) {
 			SettlementSize size = SettlementSize.getSettlementSize(popValue);
-			String townname = getRegionNameText(pos,true);
+			String townname = controller.getRegionNameText(pos,true);
 			this.setLocation("Town Name: ⬤ "+townname+" ("+size.getName()+")");
 		}else {
-			String locationname = getRegionNameText(region,false);
+			String locationname = controller.getRegionNameText(region,false);
 			this.setLocation("Region Name: "+locationname);
 		}
 
@@ -173,22 +170,5 @@ public class HexPanelGeneralStatPanel extends JPanel{
 	}
 	
 
-	private String getRegionNameText(Point pos,boolean isCity) {
-		String regionNameText = controller.getRecord().getRegionName(pos);
-		if(regionNameText==null) regionNameText = getDefaultRegionNameText(pos,isCity);
-		return regionNameText;
-	}
-
-	private String getDefaultRegionNameText(Point pos,boolean isCity) {
-		if(isCity) {
-			NPCSpecies species = controller.getPopulation().getMajoritySpecies(pos.x, pos.y);
-			LocationNameModel names = controller.getNames();
-			return names.getName(species.getCityNameGen(), pos);
-		}else {
-			BiomeModel biomes = controller.getBiomes();
-			Point region = biomes.getAbsoluteRegion(pos);
-			return biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(pos));
-		}
-	}
 
 }

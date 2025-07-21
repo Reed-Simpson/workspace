@@ -200,20 +200,6 @@ public class MyTextPane extends JTextPane {
 		rawText = rawText.substring(0, a)+end;
 	}
 
-	private String removeLinks(String string) {
-		StringBuilder sb = new StringBuilder();
-		Matcher matcher = Reference.PATTERN.matcher(string);
-		int closebrace = -1;
-		while(matcher.find()) {
-			sb.append(string.substring(closebrace+1,matcher.start()));
-			closebrace = matcher.end()-1;
-			String link = string.substring(matcher.start(), matcher.end());
-			sb.append(controller.getLinkText(link));
-		}
-		sb.append(string.substring(closebrace+1));
-		return sb.toString();
-	}
-
 	private Point getPoint() {
 		if(this.ref!=null) return Util.denormalizePos(this.ref.getPoint(),controller.getRecord().getZero());
 		else return info.getPanel().getSelectedGridPoint();
@@ -289,7 +275,7 @@ public class MyTextPane extends JTextPane {
 					int i = Integer.valueOf(matcher.group(4))-1;
 					String tooltipText = controller.getToolTipText(type,displayPos,i,getPoint());
 					if(tooltipText!=null) {
-						tooltipText = removeLinks(tooltipText.replaceAll("\n", "<br>"));
+						tooltipText = controller.removeLinks(tooltipText.replaceAll("\n", "<br>"));
 						textPane.setToolTipText("<html><div style=\"width:300px\">"+tooltipText+"</div>");
 					}else {
 						textPane.setToolTipText(null);

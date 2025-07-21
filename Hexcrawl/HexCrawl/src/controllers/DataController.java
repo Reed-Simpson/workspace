@@ -28,6 +28,7 @@ import data.threat.Threat;
 import data.threat.ThreatModel;
 import io.SaveRecord;
 import names.LocationNameModel;
+import names.wilderness.WildernessNameGenerator;
 import util.Pair;
 import util.Util;
 
@@ -141,7 +142,7 @@ public class DataController {
 			else value = threats.getMinion(this, center, i-1,null);break;
 		}
 		case TOWN: {
-			Point capital = population.getLocalFealty(p);
+			Point capital = population.getTown(p);
 			NPCSpecies species = population.getMajoritySpecies(capital.x,capital.y);
 			if(species==null) {
 				System.err.println("getDefaultText null species "+record.normalizePOS(capital));
@@ -245,7 +246,7 @@ public class DataController {
 			return record.getDistrict(capital,i);
 		}
 		case TOWN: {
-			Point capital = population.getLocalFealty(p);
+			Point capital = population.getTown(p);
 			return record.getRegionName(capital);
 		}
 		case BIOME: {
@@ -454,7 +455,7 @@ public class DataController {
 		}
 		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();
 		case DISTRICT: return DistrictType.getDistrict(new Indexible(record.getRandom().nextInt())).toString(); 
-		case BIOME: return biomes.getRegionName(record.getRandom());
+		case BIOME: return biomes.getRegionName(p,record.getRandom());
 		case NOTE: return "";
 		case NONE: return "";
 		case THREAD: return "";
@@ -567,7 +568,7 @@ public class DataController {
 		case FAITH: 
 		case DISTRICT:
 		case CITY: return population.getAbsoluteFealty(p);
-		case TOWN: return population.getLocalFealty(p);
+		case TOWN: return population.getTown(p);
 		case BIOME: return biomes.getAbsoluteRegion(p);
 		case NONE: 
 		case THREAD: 
@@ -605,6 +606,38 @@ public class DataController {
 			biome = magic.getWeirdness(region).toLowerCase() + " "+biome;
 		}
 		return biome;
+	}
+
+	public String removeLinks(String string) {
+		StringBuilder sb = new StringBuilder();
+		Matcher matcher = Reference.PATTERN.matcher(string);
+		int closebrace = -1;
+		while(matcher.find()) {
+			sb.append(string.substring(closebrace+1,matcher.start()));
+			closebrace = matcher.end()-1;
+			String link = string.substring(matcher.start(), matcher.end());
+			sb.append(this.getLinkText(link));
+		}
+		sb.append(string.substring(closebrace+1));
+		return sb.toString();
+	}
+	
+	public String getRegionNameText(Point pos,boolean isCity) {
+		String regionNameText = record.getRegionName(pos);
+		if(regionNameText==null) regionNameText = getDefaultRegionNameText(pos,isCity);
+		return regionNameText;
+	}
+
+	public String getDefaultRegionNameText(Point pos,boolean isCity) {
+		String result;
+		if(isCity) {
+			NPCSpecies species = population.getMajoritySpecies(pos.x, pos.y);
+			result = names.getName(species.getCityNameGen(), pos);
+		}else {
+			Point region = biomes.getAbsoluteRegion(pos);
+			result = biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(pos));
+		}
+		return removeLinks(result);
 	}
 
 

@@ -9,7 +9,7 @@ import util.Util;
 public class WildernessNameGenerator extends IndexibleNameGenerator{
 
 	private static final String NAMES = "${color}${landmark},${animal}${monster feature},${wilderness npc}'s Doom,${misfortune} Man's,${personality} Man's,${domain},"+
-			"Old ${structure},${hazard},${edible plant},${poisonous plant},${inn prefix} ${inn suffix}";
+			"Old ${structure},${hazard},${edible plant},${poisonous plant},${inn prefix} ${inn suffix},${town index}";
 	private static WeightedTable<String> names;
 
 	public static String getRegionName(Indexible obj) {

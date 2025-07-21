@@ -19,6 +19,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
+import controllers.DataController;
 import data.HexData;
 import data.altitude.AltitudeModel;
 import data.biome.BiomeModel;
@@ -27,8 +28,6 @@ import data.population.PopulationModel;
 import data.population.SettlementModel;
 import data.population.SettlementSize;
 import data.precipitation.PrecipitationModel;
-import names.LocationNameModel;
-import names.wilderness.WildernessNameGenerator;
 import util.Util;
 import view.InfoPanel;
 import view.MapPanel;
@@ -97,9 +96,10 @@ public class RegionPanel extends JPanel{
 		regionNameField.addFocusListener(new FocusListener() {
 			public void focusLost(FocusEvent e) {
 				String text = regionNameField.getText();
-				Point pos = panel.getController().getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
-				PopulationModel pop = panel.getController().getPopulation();
-				String defaultText = getDefaultRegionNameText(pos,pop.isTown(pos));
+				DataController controller = panel.getController();
+				Point pos = controller.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
+				PopulationModel pop = controller.getPopulation();
+				String defaultText = controller.getDefaultRegionNameText(pos,pop.isTown(pos));
 				if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeRegionName(pos);
 				else panel.getRecord().putRegionName(pos, text);
 			}
@@ -308,10 +308,11 @@ public class RegionPanel extends JPanel{
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		PopulationModel population = panel.getController().getPopulation();
-		BiomeModel biomes = panel.getController().getBiomes();
-		AltitudeModel grid = panel.getController().getGrid();
-		PrecipitationModel precipitation = panel.getController().getPrecipitation();
+		DataController controller = panel.getController();
+		PopulationModel population = controller.getPopulation();
+		BiomeModel biomes = controller.getBiomes();
+		AltitudeModel grid = controller.getGrid();
+		PrecipitationModel precipitation = controller.getPrecipitation();
 
 		Point pos = panel.getSelectedGridPoint();
 		Point capital = population.getAbsoluteFealty(pos);
@@ -323,7 +324,7 @@ public class RegionPanel extends JPanel{
 		int popValue = population.demoTransformInt(pop, popScale);
 		if(species!=null) {
 			if(population.isCity(pos)) {
-				String cityname = getRegionNameText(capital,true);
+				String cityname = controller.getRegionNameText(capital,true);
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
 				String cityText = "Parent City: here!";
 				this.locationName2.setText("CITY NAME: ★ ");
@@ -331,19 +332,19 @@ public class RegionPanel extends JPanel{
 				this.citySizeLabel.setText(" ("+size.getName()+")");
 				this.cityName.setText(cityText);
 			}else if(population.isTown(pos)){
-				String cityname = getRegionNameText(capital,true)+" ("+Util.posString(capital,zero)+")";
+				String cityname = controller.getRegionNameText(capital,true)+" ("+Util.posString(capital,zero)+")";
 				if(!population.isCity(capital))cityname = "None";
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
-				String townname = getRegionNameText(pos,true);
+				String townname = controller.getRegionNameText(pos,true);
 				String cityText = "Parent City: "+cityname;
 				this.locationName2.setText("Town Name: ⬤ ");
 				this.regionNameField.setText(townname);
 				this.citySizeLabel.setText(" ("+size.getName()+")");
 				this.cityName.setText(cityText);
 			}else {
-				String cityname = getRegionNameText(capital,true)+" ("+Util.posString(capital,zero)+")";
+				String cityname = controller.getRegionNameText(capital,true)+" ("+Util.posString(capital,zero)+")";
 				if(!population.isCity(capital))cityname = "None";
-				String locationname = getRegionNameText(region,false);
+				String locationname = controller.getRegionNameText(region,false);
 				String cityText = "Parent City: "+cityname;
 				this.locationName2.setText("Region Name: ");
 				this.regionNameField.setText(locationname);
@@ -351,7 +352,7 @@ public class RegionPanel extends JPanel{
 				this.cityName.setText(cityText);
 			}
 		}else {
-			String locationname = getRegionNameText(region,false);
+			String locationname = controller.getRegionNameText(region,false);
 			String cityText = "Parent City: none";
 			this.locationName2.setText("Region Name: ");
 			this.regionNameField.setText(locationname);
@@ -359,16 +360,16 @@ public class RegionPanel extends JPanel{
 			this.cityName.setText(cityText);
 		}
 
-		String biome = panel.getController().getBiomeText(pos);
+		String biome = controller.getBiomeText(pos);
 		this.biome.setText("Biome Type: "+biome);
 
-		String magics = panel.getController().getMagic().getMagicType(pos).getName();
+		String magics = controller.getMagic().getMagicType(pos).getName();
 		this.magic.setText("Magic Type: "+magics);
 
 		threatText.doPaint();
 		city1.doPaint();
 		
-		SettlementModel cities = panel.getController().getSettlements();
+		SettlementModel cities = controller.getSettlements();
 		neighbors.setText(cities.getNeighborText(capital));
 
 		for(int i = 0;i<this.districtTexts.size();i++) {
@@ -443,28 +444,6 @@ public class RegionPanel extends JPanel{
 		}
 	}
 
-
-	private String getRegionNameText(Point pos,boolean isCity) {
-		String regionNameText = panel.getRecord().getRegionName(pos);
-		if(regionNameText==null) regionNameText = getDefaultRegionNameText(pos,isCity);
-		return regionNameText;
-	}
-	private String getDefaultRegionNameText(Point pos,boolean isCity) {
-		if(isCity) {
-			NPCSpecies species = panel.getController().getPopulation().getMajoritySpecies(pos.x, pos.y);
-			try {
-				LocationNameModel names = panel.getController().getNames();
-				return names.getName(species.getCityNameGen(), pos);
-			}catch (NullPointerException e) {
-				System.err.println("population not found:"+panel.getRecord().normalizePOS(pos));
-				return "None";
-			}
-		}else {
-			BiomeModel biomes = panel.getController().getBiomes();
-			Point region = biomes.getAbsoluteRegion(pos);
-			return biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(pos));
-		}
-	}
 	private JSeparator getSeparator() {
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		separator.setMaximumSize(new Dimension(9999,1));

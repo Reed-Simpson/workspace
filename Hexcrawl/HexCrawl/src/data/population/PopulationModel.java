@@ -231,6 +231,18 @@ public class PopulationModel extends DataModel{
 		return p0;
 	}
 
+	public Point getTown(Point p) {
+		Point p0 = p;
+		short count = 0;
+		Point p1 = p;
+		do {
+			p0=p1;
+			p1 = getLocalFealty(p0);
+			count++;
+		} while(!p0.equals(p1) && count<100);
+		return p0;
+	}
+
 	public Point getParentCity(Point p) {
 		float pop = getMajorityPop(p.x, p.y);
 		NPCSpecies s = getMajoritySpecies(p.x, p.y);

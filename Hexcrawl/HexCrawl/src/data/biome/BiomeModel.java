@@ -84,15 +84,21 @@ public class BiomeModel extends DataModel {
 		for(int i=0;i<vals.length;i++) {
 			vals[i] = Util.getIndexFromSimplex((OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+Util.getOffsetX()-1-i), p.x, p.y)));
 		}
-		return Util.toCamelCase(WildernessNameGenerator.getRegionName(new Indexible(vals)));
+		Indexible obj = new Indexible(vals);
+		String regionName = WildernessNameGenerator.getRegionName(obj);
+		regionName = Util.formatTableResultPOS(regionName, obj, p, record.getZero());
+		return Util.toCamelCase(regionName);
 	}
 
-	public String getRegionName(Random random) {
+	public String getRegionName(Point p,Random random) {
 		int[] vals = new int[NAMEINDEXES];
 		for(int i=0;i<vals.length;i++) {
 			vals[i] = random.nextInt();
 		}
-		return Util.toCamelCase(WildernessNameGenerator.getRegionName(new Indexible(vals)));
+		Indexible obj = new Indexible(vals);
+		String regionName = WildernessNameGenerator.getRegionName(obj);
+		regionName = Util.formatTableResultPOS(regionName, obj, p, record.getZero());
+		return Util.toCamelCase(regionName);
 	}
 
 	private Pair<BiomeType, Float> getBiomePair(int x, int y) {

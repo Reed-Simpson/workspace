@@ -184,9 +184,8 @@ public class DataController {
 			break;
 		}
 		case THREATMONSTER: {
-			Point center = threats.getCenter(p);
 			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
-			Monster monster = monsters.getThreatMonster(center, i,habitats);
+			Monster monster = monsters.getThreatMonster(p, i,habitats);
 			if(monster!=null) value = monster;
 			else value = "None";
 			break;
@@ -262,8 +261,7 @@ public class DataController {
 			return record.getBeast(region, i/4);
 		}
 		case THREATMONSTER: {
-			Point center = threats.getCenter(p);
-			return record.getThreatMonster(center, i);
+			return record.getThreatMonster(p, i);
 		}
 		case MISSION: return record.getMission(p,i);
 		case CITYHISTORY: {
@@ -332,8 +330,7 @@ public class DataController {
 			return record.removeBeast(region,i/4);
 		}
 		case THREATMONSTER: {
-			Point center = threats.getCenter(p);
-			return record.removeThreatMonster(center,i);
+			return record.removeThreatMonster(p,i);
 		}
 		case MISSION: return record.removeMission(p, i);
 		case CITYHISTORY: {
@@ -405,8 +402,7 @@ public class DataController {
 			return record.putBeast(region, i/4, s);
 		}
 		case THREATMONSTER: {
-			Point center = threats.getCenter(p);
-			return record.putThreatMonster(center, i, s);
+			return record.putThreatMonster(p, i, s);
 		}
 		case MISSION: return record.putMission(p, i, s);
 		case CITYHISTORY: {
@@ -559,7 +555,6 @@ public class DataController {
 	public Point getOriginPoint(HexData type,Point p,int i) {
 		switch(type) {
 		case THREAT: 
-		case THREATMONSTER: 
 		case MINION: return threats.getCenter(p);
 		case CITYHISTORY:
 		case EVENT:
@@ -575,6 +570,7 @@ public class DataController {
 		case CHARACTER: return null;
 		case HISTORY:
 		case MONSTER: return monsters.getTerritoryRef(p,i);
+		case THREATMONSTER: 
 		case D_ENCOUNTER: 
 		case ENCOUNTER: 
 		case NPC: 

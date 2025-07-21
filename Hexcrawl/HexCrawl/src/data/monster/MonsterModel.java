@@ -193,20 +193,20 @@ public class MonsterModel {
 		return result;
 	}
 
-	public Monster getThreatMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
+	public Monster getThreatMonster(Point p,int i,Pair<BiomeType,BiomeType> habitats) {
 		WeightedTable<Species> species;
 		if(i<BEASTCOUNT) {
-			Threat threat = controller.getThreats().getThreat(territoryRef);
+			Threat threat = controller.getThreats().getThreat(p);
 			species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key1, threat);
 		}else {
 			if(habitats.key2!=null) {
-				Threat threat = controller.getThreats().getThreat(territoryRef);
+				Threat threat = controller.getThreats().getThreat(p);
 				species = CreatureType.getMonsterByWeight(threat.getType(), habitats.key2, threat);
 			} else {
 				return null;
 			}
 		}
-		Indexible obj = getIndexible(territoryRef, i+BiomeType.count()*2);
+		Indexible obj = getIndexible(p, i+BiomeType.count()*2);
 		Monster result = new Monster(species.getByWeight(obj));
 		if(result.getSpecies()==null) return null;
 		result.setPersonality(getPersonality(obj));

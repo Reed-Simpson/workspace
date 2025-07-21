@@ -63,7 +63,7 @@ public class MapPanel  extends JPanel implements Printable{
 	public static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 500;
 	private static final int HIDE_BORDERS_SCALE = 9;
-	private static final int LOG_THRESHOLD = 20;
+	private static final int LOG_THRESHOLD = 200;
 	private static final float RIVERRENDERGRANULARITY = 1f;
 	private static final float BORDER_OPACITY = 0.15f;
 	private MapFrame frame;

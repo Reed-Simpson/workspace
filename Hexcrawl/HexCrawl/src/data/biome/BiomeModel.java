@@ -32,6 +32,14 @@ public class BiomeModel extends DataModel {
 	public static final float DESERT_HUMIDITY = 0.2f;
 	public static final float TREE_HUMIDITY = 0.40f;
 	public static final float TROPICS_HUMIDITY = 0.65f;
+	//chars
+	public static final char WAVES = '\u2652';
+	public static final char GRASS = '\u22ce';
+	public static final char TREE = '\u26b2';
+	public static final char SAND = '\u2056';
+	public static final char CLIFF = '\u2E81';
+	public static final char HILL = '\u23dc';
+	public static final char ROCK = '\u26F0';
 
 
 	public static final int SEED_OFFSET = 6*Util.getOffsetX();

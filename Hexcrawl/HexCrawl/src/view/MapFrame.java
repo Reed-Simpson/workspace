@@ -102,6 +102,8 @@ public class MapFrame extends JFrame{
 
 
 	public static void main(String[] args) throws SecurityException, IOException, InterruptedException{
+		//float[] hsb = Color.RGBtoHSB(Color.MAGENTA.getRed(), Color.MAGENTA.getGreen(), Color.MAGENTA.getBlue(), null);
+		//System.out.println("hue:"+hsb[0]+", s:"+hsb[1]+", b:"+hsb[2]);
 		Logger logger = Logger.getLogger("HexCrawlGenerator");
 		File file = new File(System.getenv("APPDATA")+"/ReedsHexcrawl/logs/");
 		file.mkdirs();

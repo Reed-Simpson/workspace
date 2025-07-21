@@ -65,7 +65,7 @@ public class MapPanel  extends JPanel implements Printable{
 	private static final int HIDE_BORDERS_SCALE = 9;
 	private static final int LOG_THRESHOLD = 20;
 	private static final float RIVERRENDERGRANULARITY = 1f;
-	private static final float BORDER_OPACITY = 0.05f;
+	private static final float BORDER_OPACITY = 0.15f;
 	private MapFrame frame;
 	private ProgressBarDialog dialog;
 	private Point center; //center represents the pixel offset from 0,0
@@ -417,6 +417,7 @@ public class MapPanel  extends JPanel implements Printable{
 			dialog.createProgressUI("Drawing hexes: ");
 		}
 		float height = AltitudeModel.altitudeTransformation(controller.getPrecipitation().getLakeAltitude(getMiddleGridPoint()));
+		g2.setStroke(new BasicStroke(Math.max(displayScale/34,1)));
 		for(int i=r.x;i<r.width;i+=step) {
 			for(int j=r.y;j<r.height;j+=step) {
 				Point p = new Point(i,j);

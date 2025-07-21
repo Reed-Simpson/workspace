@@ -64,6 +64,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,String> history;
 	private HashMap<Point,String> events;
 	private HashMap<Point,ArrayList<String>> districts;
+	private HashMap<Point, ArrayList<String>> monsters;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -90,6 +91,7 @@ public class SaveRecord implements Serializable {
 		this.highlights = new HashMap<Point,Color>();
 		this.minions = new HashMap<Point,ArrayList<String>>();
 		this.beasts = new HashMap<Point,ArrayList<String>>();
+		this.monsters = new HashMap<Point,ArrayList<String>>();
 		this.threatMonsters = new HashMap<Point,ArrayList<String>>();
 		this.missions = new HashMap<Point,ArrayList<String>>();
 		this.cityHistory = new HashMap<Pair<Point,Point>,String>();
@@ -221,6 +223,7 @@ public class SaveRecord implements Serializable {
 		}
 		if(loadedRecord!=null) {
 			if(loadedRecord.districts==null) loadedRecord.districts = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.monsters==null) loadedRecord.monsters = new HashMap<Point,ArrayList<String>>();
 			//backwards compatibility field initialization
 		}
 		return loadedRecord;
@@ -715,6 +718,31 @@ public class SaveRecord implements Serializable {
 	}
 	public String removeBeast(Point p,int i) {
 		ArrayList<String> beast = this.beasts.get(p);
+		if(beast==null||beast.size()<=i) return null;
+		String set = beast.set(i, null);
+		if(set!=null) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+
+	public String putMonster(Point p,int i,String s) {
+		if(!this.monsters.containsKey(p)) this.monsters.put(p, new ArrayList<String>());
+		ArrayList<String> beast = this.monsters.get(p);
+		while(beast.size()<i+1) beast.add(null);
+		String set = beast.set(i, s);
+		if(set!=null&&!set.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return set;
+	}
+	public String getMonster(Point p,int i) {
+		ArrayList<String> beast = this.monsters.get(p);
+		if(beast==null||beast.size()<=i) return null;
+		return beast.get(i);
+	}
+	public String removeMonster(Point p,int i) {
+		ArrayList<String> beast = this.monsters.get(p);
 		if(beast==null||beast.size()<=i) return null;
 		String set = beast.set(i, null);
 		if(set!=null) {

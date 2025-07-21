@@ -26,6 +26,7 @@ public enum HexData {
 	CHARACTER("character"),
 	THREAD("thread"), 
 	MINION("minion"), 
+	BEAST("beast"), 
 	MONSTER("monster"), 
 	THREATMONSTER("tmonster"), 
 	PROPRIETOR("proprietor"), 

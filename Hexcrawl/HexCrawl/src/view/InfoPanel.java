@@ -145,12 +145,16 @@ public class InfoPanel extends JTabbedPane{
 			regionPanel.setSelectedMinion(index);
 			selectTab(1,regionPanel.MINIONS_TAB_INDEX,index);break;
 		}
-		case THREATMONSTER:{
-			regionPanel.setSelectedMonster(index);
+		case BEAST: {
+			regionPanel.setSelectedBeast(index);
 			selectTab(1,regionPanel.BEASTS_TAB_INDEX,index);break;
 		}
 		case MONSTER: {
-			regionPanel.setSelectedBeast(index);
+			regionPanel.setSelectedMonster(index);
+			selectTab(1,regionPanel.BEASTS_TAB_INDEX,index);break;
+		}
+		case THREATMONSTER:{
+			regionPanel.setSelectedThreatMonster(index);
 			selectTab(1,regionPanel.BEASTS_TAB_INDEX,index);break;
 		}
 		case CHARACTER: selectTab(2,0,index);break;

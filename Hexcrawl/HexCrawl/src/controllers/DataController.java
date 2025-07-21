@@ -175,6 +175,14 @@ public class DataController {
 		case NONE: value = "";break;
 		case THREAD: value = "";break;
 		case CHARACTER: value = "";break;
+		case BEAST: {
+			Point region = monsters.getTerritoryRef(p,i);
+			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
+			Monster monster = monsters.getWanderingBeast(region, i,habitats);
+			if(monster!=null) value = monster;
+			else value = "None";
+			break;
+		}
 		case MONSTER: {
 			Point region = monsters.getTerritoryRef(p,i);
 			Pair<BiomeType,BiomeType> habitats = this.biomes.getHabitatBiomes(p);
@@ -256,9 +264,13 @@ public class DataController {
 		case NONE: return null;
 		case THREAD: return record.getCampaignThread(i);
 		case CHARACTER: return record.getCampaignCharacter(i).toString();
-		case MONSTER: {
+		case BEAST: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.getBeast(region, i/4);
+		}
+		case MONSTER: {
+			Point region = monsters.getTerritoryRef(p,i);
+			return record.getMonster(region, i/4);
 		}
 		case THREATMONSTER: {
 			return record.getThreatMonster(p, i);
@@ -325,9 +337,13 @@ public class DataController {
 		case NONE: return null;
 		case THREAD: return record.removeCampaignThread(i);
 		case CHARACTER: return record.removeCampaignCharacter(i).toString();
-		case MONSTER: {
+		case BEAST: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.removeBeast(region,i/4);
+		}
+		case MONSTER: {
+			Point region = monsters.getTerritoryRef(p,i);
+			return record.removeMonster(region,i/4);
 		}
 		case THREATMONSTER: {
 			return record.removeThreatMonster(p,i);
@@ -397,9 +413,13 @@ public class DataController {
 		case NONE: return null;
 		case THREAD: return record.putCampaignThread(i,s);
 		case CHARACTER: return record.putCampaignCharacter(i,s);
-		case MONSTER: {
+		case BEAST: {
 			Point region = monsters.getTerritoryRef(p,i);
 			return record.putBeast(region, i/4, s);
+		}
+		case MONSTER: {
+			Point region = monsters.getTerritoryRef(p,i);
+			return record.putMonster(region, i/4, s);
 		}
 		case THREATMONSTER: {
 			return record.putThreatMonster(p, i, s);
@@ -456,10 +476,18 @@ public class DataController {
 		case NONE: return "";
 		case THREAD: return "";
 		case CHARACTER: return "";
-		case MONSTER:{
+		case BEAST:{
+			Point region = monsters.getTerritoryRef(p,i);
 			Pair<BiomeType,BiomeType> biomes = this.biomes.getHabitatBiomes(p);
 			Threat threat = this.getThreats().getThreat(p);
-			Monster monster = monsters.getWanderingMonster(record.getRandom(),i,biomes,threat);
+			Monster monster = monsters.getWanderingBeast(region,record.getRandom(),i,biomes,threat);
+			return monster.toString(); 
+		}
+		case MONSTER:{
+			Point region = monsters.getTerritoryRef(p,i);
+			Pair<BiomeType,BiomeType> biomes = this.biomes.getHabitatBiomes(p);
+			Threat threat = this.getThreats().getThreat(p);
+			Monster monster = monsters.getWanderingMonster(region,record.getRandom(),i,biomes,threat);
 			return monster.toString(); 
 		}
 		case THREATMONSTER:{
@@ -569,6 +597,7 @@ public class DataController {
 		case THREAD: 
 		case CHARACTER: return null;
 		case HISTORY:
+		case BEAST:
 		case MONSTER: return monsters.getTerritoryRef(p,i);
 		case THREATMONSTER: 
 		case D_ENCOUNTER: 

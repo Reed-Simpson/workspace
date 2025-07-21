@@ -171,7 +171,7 @@ public class MonsterModel {
 		return new Indexible(floats);
 	}
 
-	public Monster getWanderingMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
+	public Monster getWanderingBeast(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
 		WeightedTable<Species> species;
 		int index;
 		if(i<BEASTCOUNT) {
@@ -180,8 +180,36 @@ public class MonsterModel {
 		}else {
 			if(habitats.key2!=null) {
 				species = BeastMonsterType.getSpecies(habitats.key2);
-				if(habitats.key1==habitats.key2) index = habitats.key2.getID(1);
-				else index = habitats.key2.getID(0);
+				if(habitats.key1==habitats.key2) {
+					index = habitats.key2.getID(1);
+				} else {
+					index = habitats.key2.getID(0);
+				}
+			} else {
+				return null;
+			}
+		}
+		Indexible obj = getIndexible(territoryRef, index);
+		Monster result = new Monster(species.getByWeight(obj));
+		if(result.getSpecies()==null) return null;
+		populateBeastTrait(obj, result);
+		return result;
+	}
+
+	public Monster getWanderingMonster(Point territoryRef,int i,Pair<BiomeType,BiomeType> habitats) {
+		WeightedTable<Species> species;
+		int index;
+		if(i<BEASTCOUNT) {
+			species = BeastMonsterType.getSpecies(habitats.key1);
+			index = habitats.key1.getID(2);
+		}else {
+			if(habitats.key2!=null) {
+				species = BeastMonsterType.getSpecies(habitats.key2);
+				if(habitats.key1==habitats.key2) {
+					index = habitats.key2.getID(3);
+				} else {
+					index = habitats.key2.getID(2);
+				}
 			} else {
 				return null;
 			}
@@ -212,6 +240,12 @@ public class MonsterModel {
 		result.setPersonality(getPersonality(obj));
 		return result;
 	}
+	private void populateBeastTrait(Indexible obj, Monster result) {
+		int branch = obj.reduceTempId(9);
+		if(branch==0||branch==1) result.setTrait("Dire");
+		else if(branch==2) result.setTrait("Dwarf");
+		else if(branch==3||branch==4||branch==5) result.setPersonality(getPersonality(obj));
+	}
 	private void populateMonsterTrait(Indexible obj, Monster result) {
 		int branch = obj.reduceTempId(3);
 		if(branch==0) result.setTrait(getTrait(obj));
@@ -219,12 +253,33 @@ public class MonsterModel {
 		else result.setAbility(getAbility(obj));
 	}
 
-	public Monster getWanderingMonster(Random rand,int i,Pair<BiomeType,BiomeType> habitats,Threat threat) {
+	public Monster getWanderingBeast(Point territoryRef,Random rand,int i,Pair<BiomeType,BiomeType> habitats,Threat threat) {
 		WeightedTable<Species> species;
 		if(i<BEASTCOUNT) {
 			species = BeastMonsterType.getSpecies(habitats.key1);
 		}else {
-			species = BeastMonsterType.getSpecies(habitats.key2);
+			if(habitats.key2!=null) {
+				species = BeastMonsterType.getSpecies(habitats.key2);
+			}else {
+				species = BeastMonsterType.getSpecies(habitats.key1);
+			}
+		}
+		Indexible obj = getIndexible(rand);
+		Monster result = new Monster(species.getByWeight(obj));
+		populateBeastTrait(obj, result);
+		return result;
+	}
+
+	public Monster getWanderingMonster(Point territoryRef,Random rand,int i,Pair<BiomeType,BiomeType> habitats,Threat threat) {
+		WeightedTable<Species> species;
+		if(i<BEASTCOUNT) {
+			species = BeastMonsterType.getSpecies(habitats.key1);
+		}else {
+			if(habitats.key2!=null) {
+				species = BeastMonsterType.getSpecies(habitats.key2);
+			}else {
+				species = BeastMonsterType.getSpecies(habitats.key1);
+			}
 		}
 		Indexible obj = getIndexible(rand);
 		Monster result = new Monster(species.getByWeight(obj));
@@ -245,7 +300,7 @@ public class MonsterModel {
 		}
 		Indexible obj = getIndexible(rand);
 		Monster result = new Monster(species.getByWeight(obj));
-		populateMonsterTrait(obj, result);
+		result.setPersonality(getPersonality(obj));
 		return result;
 	}
 	public Point getTerritoryRef(Point p,int i) {

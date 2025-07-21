@@ -79,6 +79,10 @@ public class RegionPanel extends JPanel{
 
 	private MyTextPane neighbors;
 
+	private ArrayList<MyTextPane> monstersTexts;
+
+	private int selectedThreatMonster;
+
 	public RegionPanel(InfoPanel info) {
 		panel = info.getPanel();
 		this.setPreferredSize(new Dimension(InfoPanel.INFOPANELWIDTH,InfoPanel.INFOPANELWIDTH));
@@ -238,11 +242,19 @@ public class RegionPanel extends JPanel{
 		beastsPanel.setLayout(new BoxLayout(beastsPanel, BoxLayout.Y_AXIS));
 		beastsTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<InfoPanel.MONSTERCOUNT;i++) {
+			beastsPanel.add(new JLabel("~~~~~ Regional Beast #"+(i+1)+" ~~~~~"));
+			MyTextPane beast = new MyTextPane(info, i, HexData.BEAST);
+			beast.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
+			beastsPanel.add(beast);
+			beastsTexts.add(beast);
+		}
+		monstersTexts = new ArrayList<MyTextPane>();
+		for(int i=0;i<InfoPanel.MONSTERCOUNT;i++) {
 			beastsPanel.add(new JLabel("~~~~~ Regional Monster #"+(i+1)+" ~~~~~"));
 			MyTextPane beast = new MyTextPane(info, i, HexData.MONSTER);
 			beast.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
 			beastsPanel.add(beast);
-			beastsTexts.add(beast);
+			monstersTexts.add(beast);
 		}
 		threatMonsterTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<InfoPanel.MONSTERCOUNT;i++) {
@@ -299,6 +311,7 @@ public class RegionPanel extends JPanel{
 		selectedMinion = -1;
 		selectedBeast = -1;
 		selectedMonster = -1;
+		selectedThreatMonster = -1;
 		selectedCityHistory = -1;
 		selectedHistory = -1;
 
@@ -418,9 +431,15 @@ public class RegionPanel extends JPanel{
 			pane.doPaint();
 		}
 
+		for(int i = 0;i<this.monstersTexts.size();i++) {
+			MyTextPane pane = this.monstersTexts.get(i);
+			pane.setHighlight(i==selectedMonster);
+			pane.doPaint();
+		}
+
 		for(int i = 0;i<this.threatMonsterTexts.size();i++) {
 			MyTextPane pane = this.threatMonsterTexts.get(i);
-			pane.setHighlight(i==selectedMonster);
+			pane.setHighlight(i==selectedThreatMonster);
 			pane.doPaint();
 		}
 		
@@ -509,6 +528,14 @@ public class RegionPanel extends JPanel{
 
 	public void setSelectedMonster(int selectedMonster) {
 		this.selectedMonster = selectedMonster;
+	}
+
+	public int getSelectedThreatMonster() {
+		return selectedThreatMonster;
+	}
+
+	public void setSelectedThreatMonster(int selectedThreatMonster) {
+		this.selectedThreatMonster = selectedThreatMonster;
 	}
 
 	public int getSelectedCityHistory() {

@@ -221,6 +221,7 @@ public class MapPanel  extends JPanel implements Printable{
 		recenter(getMiddleGridPoint(),true);
 	}
 	public void recenter(Point p,boolean updatePrevious) {
+		frame.requestFocusInWindow();
 		if(updatePrevious&&previousIndex>-1) {
 			for(int i=previous.size()-1;i>previousIndex;i--) {
 				previous.remove(i);

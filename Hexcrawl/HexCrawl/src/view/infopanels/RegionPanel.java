@@ -49,6 +49,8 @@ public class RegionPanel extends JPanel{
 	private JLabel biome;
 	private JLabel magic;
 	private JLabel cityName;
+	private JTextField regionNameField;
+	private Point pos;
 
 	private MyTextPane threatText;
 	private JTabbedPane regionTabs;
@@ -62,6 +64,9 @@ public class RegionPanel extends JPanel{
 	private MyTextPane event;
 	private ArrayList<MyTextPane> cityHistoryTexts;
 	private ArrayList<MyTextPane> historyTexts;
+	private ArrayList<MyTextPane> districtTexts;
+	private ArrayList<MyTextPane> monstersTexts;
+	private MyTextPane neighbors;
 
 	private int selectedFaction;
 	private int selectedFaith;
@@ -71,18 +76,11 @@ public class RegionPanel extends JPanel{
 	private int selectedMonster;
 	private int selectedCityHistory;
 	private int selectedHistory;
-
-	private ArrayList<MyTextPane> districtTexts;
-
 	private int selectedDistrict;
-
-	private MyTextPane neighbors;
-
-	private ArrayList<MyTextPane> monstersTexts;
-
 	private int selectedThreatMonster;
 
-	private JTextField regionNameField;
+
+
 
 	public RegionPanel(InfoPanel info) {
 		panel = info.getPanel();
@@ -102,10 +100,12 @@ public class RegionPanel extends JPanel{
 			public void focusLost(FocusEvent e) {
 				String text = biomeNameField.getText();
 				DataController controller = panel.getController();
-				Point pos = controller.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
-				controller.updateData(HexData.BIOME, text, pos, 0);
+				Point region = controller.getBiomes().getAbsoluteRegion(pos);
+				controller.updateData(HexData.BIOME, text, region, 0);
 			}
-			public void focusGained(FocusEvent e) {}
+			public void focusGained(FocusEvent e) {
+				pos = panel.getSelectedGridPoint();
+			}
 		});
 		citySizeLabel = new JLabel();
 		biomeNamePanel.add(citySizeLabel);
@@ -133,10 +133,12 @@ public class RegionPanel extends JPanel{
 			public void focusLost(FocusEvent e) {
 				String text = regionNameField.getText();
 				DataController controller = panel.getController();
-				Point pos = controller.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
-				controller.updateData(HexData.BIOME, text, pos, 1);
+				Point region = controller.getBiomes().getAbsoluteRegion(pos);
+				controller.updateData(HexData.BIOME, text, region, 1);
 			}
-			public void focusGained(FocusEvent e) {}
+			public void focusGained(FocusEvent e) {
+				pos = panel.getSelectedGridPoint();
+			}
 		});
 		this.add(regionNamePanel);
 		

@@ -314,7 +314,7 @@ public class BiomeModel extends DataModel {
 		return p0;
 	}
 
-	private Point getOcean(Point p) {
+	public Point getOcean(Point p) {
 		int oceanSize = 300;
 		return new Point((p.x/oceanSize)*oceanSize,(p.y/oceanSize)*oceanSize);
 	}

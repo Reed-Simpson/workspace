@@ -172,7 +172,10 @@ public class DataController {
 			}
 		}
 		case BIOME: {
-			if(population.isTown(p)) {
+			if(i==1) {
+				Point region = biomes.getOcean(p);
+				value = biomes.getRegionName(region)+" Land";
+			}else if(population.isTown(p)) {
 				NPCSpecies species = population.getMajoritySpecies(p.x, p.y);
 				value = names.getName(species.getCityNameGen(), p);
 			}else {
@@ -267,11 +270,15 @@ public class DataController {
 			return record.getRegionName(capital);
 		}
 		case BIOME: {
+			if(i==1) {
+				Point region = biomes.getOcean(p);
+				return record.getRegionName(region);
+			}
 			Point region = biomes.getAbsoluteRegion(p);
 			if(grid.isOcean(p)) {
 				return record.getOceanName(region);
 			}else {
-				return record.getRegionName(region);
+				return record.getBiomeName(region);
 			}
 		}
 		case NOTE: return record.getNote(p);
@@ -344,11 +351,15 @@ public class DataController {
 			return record.removeDistrict(capital,i);
 		}
 		case BIOME: {
+			if(i==1) {
+				Point region = biomes.getOcean(p);
+				return record.removeRegionName(region);
+			}
 			Point region = biomes.getAbsoluteRegion(p);
 			if(grid.isOcean(p)) {
 				return record.removeOceanName(region);
 			}else {
-				return record.removeRegionName(region);
+				return record.removeBiomeName(region);
 			}
 		}
 		case NOTE: return record.removeNote(p);
@@ -424,11 +435,15 @@ public class DataController {
 			return record.getDistrict(capital,i);
 		}
 		case BIOME: {
+			if(i==1) {
+				Point region = biomes.getOcean(p);
+				return record.putRegionName(region,s);
+			}
 			Point region = biomes.getAbsoluteRegion(p);
 			if(grid.isOcean(p)) {
 				return record.putOceanName(region, s);
 			}else {
-				return record.putRegionName(region, s);
+				return record.putBiomeName(region, s);
 			}
 		}
 		case NOTE: return record.putNote(p, s);
@@ -494,7 +509,9 @@ public class DataController {
 		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();
 		case DISTRICT: return DistrictType.getDistrict(new Indexible(record.getRandom().nextInt())).toString(); 
 		case BIOME: {
-			if(population.isTown(p)) {
+			if(i==1) {
+				return biomes.getRegionName(p,record.getRandom())+" Land";
+			}else if(population.isTown(p)) {
 				NPCSpecies species = population.getMajoritySpecies(p.x, p.y);
 				return names.getName(species.getCityNameGen(), record.getRandom());
 			}else {

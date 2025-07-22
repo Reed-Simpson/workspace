@@ -41,6 +41,7 @@ public class SaveRecord implements Serializable {
 	private LinkedHashMap<Point,String> notes;
 	private HashMap<Point,String> threats;
 	private HashMap<Point,String> cities;
+	private HashMap<Point,String> biomeNames;
 	private HashMap<Point,String> regionNames;
 	private HashMap<Point,ArrayList<String>> npcs2;
 	private HashMap<Point,ArrayList<String>> factionNPCs;
@@ -77,6 +78,7 @@ public class SaveRecord implements Serializable {
 		this.notes = new LinkedHashMap<Point,String>();
 		this.threats = new HashMap<Point,String>();
 		this.cities = new HashMap<Point,String>();
+		this.biomeNames = new HashMap<Point,String>();
 		this.regionNames = new HashMap<Point,String>();
 		this.oceanNames = new HashMap<Point,String>();
 
@@ -227,6 +229,7 @@ public class SaveRecord implements Serializable {
 			if(loadedRecord.districts==null) loadedRecord.districts = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.monsters==null) loadedRecord.monsters = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.oceanNames==null) loadedRecord.oceanNames = new HashMap<Point,String>();
+			if(loadedRecord.biomeNames==null) loadedRecord.biomeNames = new HashMap<Point,String>();
 			//backwards compatibility field initialization
 		}
 		return loadedRecord;
@@ -556,7 +559,26 @@ public class SaveRecord implements Serializable {
 		return set;
 	}
 
+	public String putBiomeName(Point p,String s) {
+		String put = this.biomeNames.put(p, s);
+		if(put!=null&&!put.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
+	}
+	public String getBiomeName(Point p) {
+		return this.biomeNames.get(p);
+	}
+	public String removeBiomeName(Point p) {
+		String put = this.biomeNames.remove(p);
+		if(put!=null) {
+			this.hasUnsavedData = true;
+		}
+		return this.biomeNames.remove(p);
+	}
+
 	public String putRegionName(Point p,String s) {
+		System.out.println("focusLost "+s+" - "+p.toString());
 		String put = this.regionNames.put(p, s);
 		if(put!=null&&!put.equals(s)) {
 			this.hasUnsavedData = true;

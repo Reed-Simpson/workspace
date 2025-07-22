@@ -43,8 +43,8 @@ public class RegionPanel extends JPanel{
 	public final int MINIONS_TAB_INDEX;
 	public final int BEASTS_TAB_INDEX;
 	
-	private JLabel locationName2;
-	private JTextField regionNameField;
+	private JLabel biomeName;
+	private JTextField biomeNameField;
 	private JLabel citySizeLabel;
 	private JLabel biome;
 	private JLabel magic;
@@ -82,6 +82,8 @@ public class RegionPanel extends JPanel{
 
 	private int selectedThreatMonster;
 
+	private JTextField regionNameField;
+
 	public RegionPanel(InfoPanel info) {
 		panel = info.getPanel();
 		this.setPreferredSize(new Dimension(InfoPanel.INFOPANELWIDTH,InfoPanel.INFOPANELWIDTH));
@@ -89,27 +91,25 @@ public class RegionPanel extends JPanel{
 
 
 		JPanel dummy4 = new JPanel(new BorderLayout());
-		JPanel regionNamePanel = new JPanel();
-		regionNamePanel.setLayout(new BoxLayout(regionNamePanel, BoxLayout.X_AXIS));
-		locationName2 = new JLabel("Region Name: ");
-		regionNamePanel.add(locationName2);
-		regionNameField = new JTextField();
-		regionNameField.setMaximumSize(new Dimension(300,20));
-		regionNamePanel.add(regionNameField);
-		regionNameField.addFocusListener(new FocusListener() {
+		JPanel biomeNamePanel = new JPanel();
+		biomeNamePanel.setLayout(new BoxLayout(biomeNamePanel, BoxLayout.X_AXIS));
+		biomeName = new JLabel("Biome Name: ");
+		biomeNamePanel.add(biomeName);
+		biomeNameField = new JTextField();
+		biomeNameField.setMaximumSize(new Dimension(300,20));
+		biomeNamePanel.add(biomeNameField);
+		biomeNameField.addFocusListener(new FocusListener() {
 			public void focusLost(FocusEvent e) {
-				String text = regionNameField.getText();
+				String text = biomeNameField.getText();
 				DataController controller = panel.getController();
 				Point pos = controller.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
-				String defaultText = controller.getDefaultText(HexData.BIOME,pos,0);
-				if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeRegionName(pos);
-				else panel.getRecord().putRegionName(pos, text);
+				controller.updateData(HexData.BIOME, text, pos, 0);
 			}
 			public void focusGained(FocusEvent e) {}
 		});
 		citySizeLabel = new JLabel();
-		regionNamePanel.add(citySizeLabel);
-		dummy4.add(regionNamePanel,BorderLayout.NORTH);
+		biomeNamePanel.add(citySizeLabel);
+		dummy4.add(biomeNamePanel,BorderLayout.NORTH);
 
 		biome = new JLabel("Biome Type: ");
 		biome.setMaximumSize(new Dimension(400,20));
@@ -120,6 +120,27 @@ public class RegionPanel extends JPanel{
 
 		dummy4.setMaximumSize(new Dimension(400,65));
 		this.add(dummy4);
+		
+
+		JPanel regionNamePanel = new JPanel();
+		regionNamePanel.setLayout(new BoxLayout(regionNamePanel, BoxLayout.X_AXIS));
+		JLabel regionName = new JLabel("Region Name: ");
+		regionNamePanel.add(regionName);
+		regionNameField = new JTextField();
+		regionNameField.setMaximumSize(new Dimension(300,20));
+		regionNamePanel.add(regionNameField);
+		regionNameField.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {
+				String text = regionNameField.getText();
+				DataController controller = panel.getController();
+				Point pos = controller.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
+				controller.updateData(HexData.BIOME, text, pos, 1);
+			}
+			public void focusGained(FocusEvent e) {}
+		});
+		this.add(regionNamePanel);
+		
+		
 		this.add(getSeparator());
 
 		threatText = new MyTextPane(info, 0, HexData.THREAT);
@@ -336,8 +357,8 @@ public class RegionPanel extends JPanel{
 				String cityname = controller.getText(HexData.BIOME,capital,0);
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
 				String cityText = "Parent City: here!";
-				this.locationName2.setText("CITY NAME: ★ ");
-				this.regionNameField.setText(cityname);
+				this.biomeName.setText("CITY NAME: ★ ");
+				this.biomeNameField.setText(cityname);
 				this.citySizeLabel.setText(" ("+size.getName()+")");
 				this.cityName.setText(cityText);
 			}else if(population.isTown(pos)){
@@ -346,8 +367,8 @@ public class RegionPanel extends JPanel{
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
 				String townname =  controller.getText(HexData.BIOME,pos,0);
 				String cityText = "Parent City: "+cityname;
-				this.locationName2.setText("Town Name: ⬤ ");
-				this.regionNameField.setText(townname);
+				this.biomeName.setText("Town Name: ⬤ ");
+				this.biomeNameField.setText(townname);
 				this.citySizeLabel.setText(" ("+size.getName()+")");
 				this.cityName.setText(cityText);
 			}else {
@@ -355,19 +376,21 @@ public class RegionPanel extends JPanel{
 				if(!population.isCity(capital))cityname = "None";
 				String locationname =  controller.getText(HexData.BIOME,pos,0);
 				String cityText = "Parent City: "+cityname;
-				this.locationName2.setText("Biome Name: ");
-				this.regionNameField.setText(locationname);
+				this.biomeName.setText("Biome Name: ");
+				this.biomeNameField.setText(locationname);
 				this.citySizeLabel.setText(null);
 				this.cityName.setText(cityText);
 			}
 		}else {
 			String locationname =  controller.getText(HexData.BIOME,pos,0);
 			String cityText = "Parent City: none";
-			this.locationName2.setText("Biome Name: ");
-			this.regionNameField.setText(locationname);
+			this.biomeName.setText("Biome Name: ");
+			this.biomeNameField.setText(locationname);
 			this.citySizeLabel.setText(null);
 			this.cityName.setText(cityText);
 		}
+		
+		this.regionNameField.setText(controller.getText(HexData.BIOME, pos, 1));
 
 		String biome = controller.getBiomeText(pos);
 		this.biome.setText("Biome Type: "+biome);

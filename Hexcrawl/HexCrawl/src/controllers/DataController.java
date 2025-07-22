@@ -172,8 +172,14 @@ public class DataController {
 			}
 		}
 		case BIOME: {
-			Point region = biomes.getAbsoluteRegion(p);
-			value =  biomes.getRegionName(region);break;
+			if(population.isTown(p)) {
+				NPCSpecies species = population.getMajoritySpecies(p.x, p.y);
+				value = names.getName(species.getCityNameGen(), p);
+			}else {
+				Point region = biomes.getAbsoluteRegion(p);
+				value = biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(p));
+			}
+			break;
 		}
 		case NOTE: value = "";break;
 		case NONE: value = "";break;
@@ -262,7 +268,11 @@ public class DataController {
 		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);
-			return record.getRegionName(region);
+			if(grid.isOcean(p)) {
+				return record.getOceanName(region);
+			}else {
+				return record.getRegionName(region);
+			}
 		}
 		case NOTE: return record.getNote(p);
 		case NONE: return null;
@@ -335,7 +345,11 @@ public class DataController {
 		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);
-			return record.removeRegionName(region);
+			if(grid.isOcean(p)) {
+				return record.removeOceanName(region);
+			}else {
+				return record.removeRegionName(region);
+			}
 		}
 		case NOTE: return record.removeNote(p);
 		case NONE: return null;
@@ -411,7 +425,11 @@ public class DataController {
 		}
 		case BIOME: {
 			Point region = biomes.getAbsoluteRegion(p);
-			return record.putRegionName(region, s);
+			if(grid.isOcean(p)) {
+				return record.putOceanName(region, s);
+			}else {
+				return record.putRegionName(region, s);
+			}
 		}
 		case NOTE: return record.putNote(p, s);
 		case NONE: return null;
@@ -475,7 +493,14 @@ public class DataController {
 		}
 		case CITY: return settlements.getSettlement(p,record.getRandom()).toString();
 		case DISTRICT: return DistrictType.getDistrict(new Indexible(record.getRandom().nextInt())).toString(); 
-		case BIOME: return biomes.getRegionName(p,record.getRandom());
+		case BIOME: {
+			if(population.isTown(p)) {
+				NPCSpecies species = population.getMajoritySpecies(p.x, p.y);
+				return names.getName(species.getCityNameGen(), record.getRandom());
+			}else {
+				return biomes.getRegionName(p,record.getRandom())+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(p));
+			}
+		}
 		case NOTE: return "";
 		case NONE: return "";
 		case THREAD: return "";
@@ -649,24 +674,6 @@ public class DataController {
 		}
 		sb.append(string.substring(closebrace+1));
 		return sb.toString();
-	}
-	
-	public String getRegionNameText(Point pos,boolean isCity) {
-		String regionNameText = record.getRegionName(pos);
-		if(regionNameText==null) regionNameText = getDefaultRegionNameText(pos,isCity);
-		return regionNameText;
-	}
-
-	public String getDefaultRegionNameText(Point pos,boolean isCity) {
-		String result;
-		if(isCity) {
-			NPCSpecies species = population.getMajoritySpecies(pos.x, pos.y);
-			result = names.getName(species.getCityNameGen(), pos);
-		}else {
-			Point region = biomes.getAbsoluteRegion(pos);
-			result = biomes.getRegionName(region)+" " + WildernessNameGenerator.getBiomeName(biomes.getBiome(pos));
-		}
-		return removeLinks(result);
 	}
 
 

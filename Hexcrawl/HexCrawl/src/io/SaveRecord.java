@@ -65,6 +65,7 @@ public class SaveRecord implements Serializable {
 	private HashMap<Point,String> events;
 	private HashMap<Point,ArrayList<String>> districts;
 	private HashMap<Point, ArrayList<String>> monsters;
+	private HashMap<Point, String> oceanNames;
 
 	public SaveRecord() {
 		this.setRandomSeed();
@@ -77,6 +78,7 @@ public class SaveRecord implements Serializable {
 		this.threats = new HashMap<Point,String>();
 		this.cities = new HashMap<Point,String>();
 		this.regionNames = new HashMap<Point,String>();
+		this.oceanNames = new HashMap<Point,String>();
 
 
 		this.npcs2 = new HashMap<Point,ArrayList<String>>();
@@ -224,6 +226,7 @@ public class SaveRecord implements Serializable {
 		if(loadedRecord!=null) {
 			if(loadedRecord.districts==null) loadedRecord.districts = new HashMap<Point,ArrayList<String>>();
 			if(loadedRecord.monsters==null) loadedRecord.monsters = new HashMap<Point,ArrayList<String>>();
+			if(loadedRecord.oceanNames==null) loadedRecord.oceanNames = new HashMap<Point,String>();
 			//backwards compatibility field initialization
 		}
 		return loadedRecord;
@@ -569,6 +572,24 @@ public class SaveRecord implements Serializable {
 			this.hasUnsavedData = true;
 		}
 		return this.regionNames.remove(p);
+	}
+
+	public String putOceanName(Point p,String s) {
+		String put = this.oceanNames.put(p, s);
+		if(put!=null&&!put.equals(s)) {
+			this.hasUnsavedData = true;
+		}
+		return put;
+	}
+	public String getOceanName(Point p) {
+		return this.oceanNames.get(p);
+	}
+	public String removeOceanName(Point p) {
+		String put = this.oceanNames.remove(p);
+		if(put!=null) {
+			this.hasUnsavedData = true;
+		}
+		return this.oceanNames.remove(p);
 	}
 
 	public DiceRoller getRoller() {

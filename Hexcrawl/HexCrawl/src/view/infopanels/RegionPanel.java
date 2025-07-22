@@ -22,7 +22,6 @@ import javax.swing.JTextField;
 import controllers.DataController;
 import data.HexData;
 import data.altitude.AltitudeModel;
-import data.biome.BiomeModel;
 import data.population.NPCSpecies;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
@@ -102,8 +101,7 @@ public class RegionPanel extends JPanel{
 				String text = regionNameField.getText();
 				DataController controller = panel.getController();
 				Point pos = controller.getBiomes().getAbsoluteRegion(panel.getSelectedGridPoint());
-				PopulationModel pop = controller.getPopulation();
-				String defaultText = controller.getDefaultRegionNameText(pos,pop.isTown(pos));
+				String defaultText = controller.getDefaultText(HexData.BIOME,pos,0);
 				if(text==null||"".equals(text)||text.equals(defaultText)) panel.getRecord().removeRegionName(pos);
 				else panel.getRecord().putRegionName(pos, text);
 			}
@@ -323,21 +321,19 @@ public class RegionPanel extends JPanel{
 		super.paintComponent(g);
 		DataController controller = panel.getController();
 		PopulationModel population = controller.getPopulation();
-		BiomeModel biomes = controller.getBiomes();
 		AltitudeModel grid = controller.getGrid();
 		PrecipitationModel precipitation = controller.getPrecipitation();
 
 		Point pos = panel.getSelectedGridPoint();
 		Point capital = population.getAbsoluteFealty(pos);
 		Point zero = panel.getRecord().getZero();
-		Point region = biomes.getAbsoluteRegion(pos);
 		NPCSpecies species = population.getMajoritySpecies(pos.x, pos.y);
 		float pop = population.getUniversalPopulation(pos);
 		int popScale = population.getPopScale(pos) ;
 		int popValue = population.demoTransformInt(pop, popScale);
 		if(species!=null) {
 			if(population.isCity(pos)) {
-				String cityname = controller.getRegionNameText(capital,true);
+				String cityname = controller.getText(HexData.BIOME,capital,0);
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
 				String cityText = "Parent City: here!";
 				this.locationName2.setText("CITY NAME: ★ ");
@@ -345,29 +341,29 @@ public class RegionPanel extends JPanel{
 				this.citySizeLabel.setText(" ("+size.getName()+")");
 				this.cityName.setText(cityText);
 			}else if(population.isTown(pos)){
-				String cityname = controller.getRegionNameText(capital,true)+" ("+Util.posString(capital,zero)+")";
+				String cityname =  controller.getText(HexData.BIOME,capital,0)+" ("+Util.posString(capital,zero)+")";
 				if(!population.isCity(capital))cityname = "None";
 				SettlementSize size = SettlementSize.getSettlementSize(popValue);
-				String townname = controller.getRegionNameText(pos,true);
+				String townname =  controller.getText(HexData.BIOME,pos,0);
 				String cityText = "Parent City: "+cityname;
 				this.locationName2.setText("Town Name: ⬤ ");
 				this.regionNameField.setText(townname);
 				this.citySizeLabel.setText(" ("+size.getName()+")");
 				this.cityName.setText(cityText);
 			}else {
-				String cityname = controller.getRegionNameText(capital,true)+" ("+Util.posString(capital,zero)+")";
+				String cityname =  controller.getText(HexData.BIOME,capital,0)+" ("+Util.posString(capital,zero)+")";
 				if(!population.isCity(capital))cityname = "None";
-				String locationname = controller.getRegionNameText(region,false);
+				String locationname =  controller.getText(HexData.BIOME,pos,0);
 				String cityText = "Parent City: "+cityname;
-				this.locationName2.setText("Region Name: ");
+				this.locationName2.setText("Biome Name: ");
 				this.regionNameField.setText(locationname);
 				this.citySizeLabel.setText(null);
 				this.cityName.setText(cityText);
 			}
 		}else {
-			String locationname = controller.getRegionNameText(region,false);
+			String locationname =  controller.getText(HexData.BIOME,pos,0);
 			String cityText = "Parent City: none";
-			this.locationName2.setText("Region Name: ");
+			this.locationName2.setText("Biome Name: ");
 			this.regionNameField.setText(locationname);
 			this.citySizeLabel.setText(null);
 			this.cityName.setText(cityText);

@@ -21,10 +21,6 @@ public class WildernessNameGenerator extends IndexibleNameGenerator{
 		return Util.formatTableResult(name, obj);
 	}
 	
-	public static String getName(BiomeType b,Indexible obj) {
-		return Util.toCamelCase(getRegionName(obj) + " " + getBiomeName(b));
-	}
-	
 	public static String getBiomeName(BiomeType b) {
 		switch(b) {
 		case VOID: return "abyss";

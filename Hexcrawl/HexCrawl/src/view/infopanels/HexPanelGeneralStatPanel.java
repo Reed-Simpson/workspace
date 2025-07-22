@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import controllers.DataController;
+import data.HexData;
 import data.altitude.AltitudeModel;
-import data.biome.BiomeModel;
 import data.population.PopulationModel;
 import data.population.SettlementSize;
 import data.precipitation.PrecipitationModel;
@@ -91,7 +91,6 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		Point pos = panel.getSelectedGridPoint();
 		Point zero = controller.getRecord().getZero();
 		PopulationModel population = controller.getPopulation();
-		BiomeModel biomes = controller.getBiomes();
 		AltitudeModel grid = controller.getGrid();
 		PrecipitationModel precipitation = controller.getPrecipitation();
 
@@ -100,19 +99,17 @@ public class HexPanelGeneralStatPanel extends JPanel{
 		float pop = population.getUniversalPopulation(pos);
 		int popScale = population.getPopScale(pos) ;
 		int popValue = population.demoTransformInt(pop, popScale);
-		Point capital = population.getAbsoluteFealty(pos);
-		Point region = biomes.getAbsoluteRegion(pos);
 		if(population.isCity(pos)) {
-			String cityname = controller.getRegionNameText(capital,true);
+			String cityname = controller.getText(HexData.BIOME,pos,0);
 			SettlementSize size = SettlementSize.getSettlementSize(popValue);
 			this.setLocation("CITY NAME: ★ "+cityname+" ("+size.getName()+")");
 		}else if(population.isTown(pos)) {
 			SettlementSize size = SettlementSize.getSettlementSize(popValue);
-			String townname = controller.getRegionNameText(pos,true);
+			String townname = controller.getText(HexData.BIOME,pos,0);
 			this.setLocation("Town Name: ⬤ "+townname+" ("+size.getName()+")");
 		}else {
-			String locationname = controller.getRegionNameText(region,false);
-			this.setLocation("Region Name: "+locationname);
+			String locationname = controller.getText(HexData.BIOME,pos,0);
+			this.setLocation("Biome Name: "+locationname);
 		}
 
 		float altitudeTransformation = AltitudeModel.altitudeTransformation(grid.getHeight(pos));

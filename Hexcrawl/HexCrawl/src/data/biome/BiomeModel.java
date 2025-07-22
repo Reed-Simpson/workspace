@@ -88,9 +88,12 @@ public class BiomeModel extends DataModel {
 	}
 	
 	public String getRegionName(Point p) {
+		int offset = 1;
+		if(grid.isOcean(p)) offset = 2;
+		Point region = this.getAbsoluteRegion(p);
 		int[] vals = new int[NAMEINDEXES];
 		for(int i=0;i<vals.length;i++) {
-			vals[i] = Util.getIndexFromSimplex((OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+Util.getOffsetX()-1-i), p.x, p.y)));
+			vals[i] = Util.getIndexFromSimplex((OpenSimplex2S.noise2(record.getSeed(SEED_OFFSET+Util.getOffsetX()-offset-i), region.x, region.y)));
 		}
 		Indexible obj = new Indexible(vals);
 		String regionName = WildernessNameGenerator.getRegionName(obj);

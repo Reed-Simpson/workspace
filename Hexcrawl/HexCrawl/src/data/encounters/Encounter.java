@@ -10,8 +10,9 @@ public class Encounter extends Indexible {
 	private String[] descriptor;
 	private String[] location;
 	private String[] character;
-	private String[] object;
+	private String[] object; 
 	private String[] hazard;
+	private String[] spice;
 	
 
 	public Encounter(float... floats) {
@@ -68,17 +69,23 @@ public class Encounter extends Indexible {
 	public void setDescriptor(String[] descriptor) {
 		this.descriptor = descriptor;
 	}
+	public String[] getSpice() {
+		return spice;
+	}
+	public void setSpice(String[] spice) {
+		this.spice = spice;
+	}
 	
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ "+this.getType()+" Encounter #"+(i)+" ~~~~~\r\n");
-		e1Text.append("Focus: "+this.getFocus() +"\r\n");
-		e1Text.append("Action: "+Util.parseArray(this.getAction()) + "\r\n");
-		e1Text.append("Descriptor: "+Util.parseArray(this.getDescriptor()) + "\r\n");
-		e1Text.append("Location: "+Util.parseArray(this.getLocation(),"and/or") + "\r\n");
-		e1Text.append("Character: "+Util.parseArray(this.getCharacter(),"and/or") + "\r\n");
-		e1Text.append("Object: "+Util.parseArray(this.getObject()));
-		if(hazard!=null) e1Text.append( "\r\nHazard: "+Util.parseArray(this.getHazard()) );
+		e1Text.append("Focus: "+this.getFocus());
+		if(this.getAction()!=null) e1Text.append("\r\nAction: "+Util.parseArray(this.getAction()) +" for "+Util.parseArray(this.getDescriptor()));
+		if(this.getLocation()!=null) e1Text.append("\r\nLocation: "+Util.parseArray(this.getLocation(),"and/or"));
+		if(this.getCharacter()!=null) e1Text.append("\r\nCharacter: "+Util.parseArray(this.getCharacter(),"and/or"));
+		if(this.getObject()!=null) e1Text.append("\r\nObject: "+Util.parseArray(this.getObject()));
+		if(this.getHazard()!=null) e1Text.append( "\r\nHazard: "+Util.parseArray(this.getHazard()) );
+		if(this.getSpice()!=null) e1Text.append( "\r\nSpice: "+Util.parseArray(this.getSpice()) );
 		return e1Text.toString();
 	}
 

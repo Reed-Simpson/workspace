@@ -210,7 +210,6 @@ public class SettlementModel extends DataModel{
 		return Util.formatTableResult(features.getByWeight(obj),obj);
 	}
 	public static String getDiscovery(Indexible obj) {
-		if(features==null) populateAllTables();
 		return getFeature(obj);
 	}
 	public static String getReputation(Indexible obj) {

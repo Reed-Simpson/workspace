@@ -65,7 +65,7 @@ public class DataController {
 		this.npcs = new NPCModel(record, population,pois,settlements);
 		this.threats = new ThreatModel(record,npcs);
 		this.dungeons = new DungeonModel(record);
-		this.encounters = new EncounterModel(record,population);
+		this.encounters = new EncounterModel(record,population,this);
 		this.monsters = new MonsterModel(this);
 		this.missions = new MissionModel(record, population);
 	}
@@ -592,7 +592,6 @@ public class DataController {
 					linkText.substring(matcher.end());
 		}
 		return linkText;
-
 	}
 	public String getLinkText(String tab, int x, int y, int index) {
 		Point displayPos = new Point(x,y);

@@ -3,6 +3,7 @@ package data.encounters;
 import java.awt.Point;
 import java.util.Random;
 
+import controllers.DataController;
 import data.DataModel;
 import data.HexData;
 import data.Indexible;
@@ -10,8 +11,10 @@ import data.OpenSimplex2S;
 import data.Reference;
 import data.WeightedTable;
 import data.dungeon.DungeonModel;
+import data.item.EquipmentModel;
 import data.location.LocationModel;
 import data.location.LocationType;
+import data.npc.NPCModel;
 import data.population.PopulationModel;
 import data.population.SettlementModel;
 import io.SaveRecord;
@@ -40,17 +43,7 @@ public class EncounterModel extends DataModel{
 			"Hard,Harsh,Healthy,Heavy,Historical,Horrible,Important,Interesting,Juvenile,Lacking,Large,Lavish,Lean,Less,Lethal,Lively,Lonely,Lovely,Magnificent,Mature,"+
 			"Messy,Mighty,Military,Modern,Mundane,Mysterious,Natural,Normal,Odd,Old,Pale,Peaceful,Petite,Plain,Poor,Powerful,Protective,Quaint,Rare,Reassuring,"+
 			"Remarkable,Rotten,Rough,Ruined,Rustic,Scary,Shocking,Simple,Small,Smooth,Soft,Strong,Stylish,Unpleasant,Valuable,Vibrant,Warm,Watery,Weak,Young";
-	public static final String CHARACTER_ADJECTIVES = "Accompanied,Active,Aggressive,Ambush,Animal,Anxious,Armed,Beautiful,Bold,Busy,Calm,Careless,Casual,Cautious,Classy,Colorful,Combative,Crazy,Creepy,Curious,Dangerous,Deceitful,Defeated,"+
-			"Defiant,Delightful,Emotional,Energetic,Equipped,Excited,Expected,Familiar,Fast,Feeble,Feminine,Ferocious,Foe,Foolish,Fortunate,Fragrant,Frantic,Friend,Frightened,Frightening,Generous,Glad,Happy,Harmful,Helpful,Helpless,Hurt,"+
-			"Important,Inactive,Influential,Innocent,Intense,Knowledgeable,Large,Lonely,Loud,Loyal,Masculine,Mighty,Miserable,Multiple,Mundane,Mysterious,Natural,Odd,Official,Old,Passive,Peaceful,Playful,Powerful,Professional,"+
-			"Protected,Protecting,Questioning,Quiet,Reassuring,Resourceful,Seeking,Skilled,Slow,Small,Stealthy,Strange,Strong,Tall,Thieving,Threatening,Triumphant,Unexpected,Unnatural,Unusual,Violent,Vocal,Weak,Wild,Young";
-	public static final String OBJECT_ADJECTIVES = "Active,Artistic,Average,Beautiful,Bizarre,Bright,Clothing,Clue,Cold,Colorful,Communication,Complicated,Confusing,Consumable,Container,Creepy,Crude,Cute,Damaged,Dangerous,Deactivated,Deliberate,Delightful,"+
-			"Desired,Domestic,Empty,Energy,Enormous,Equipment,Expected,Expended,Extravagant,Faded,Familiar,Fancy,Flora,Fortunate,Fragile,Fragrant,Frightening,Garbage,Guidance,Hard,Harmful,Healing,Heavy,Helpful,Horrible,Important,Inactive,"+
-			"Information,Intriguing,Large,Lethal,Light,Liquid,Loud,Majestic,Meaningful,Mechanical,Modern,Moving,Multiple,Mundane,Mysterious,Natural,New,Odd,Official,Old,Ornate,Personal,Powerful,Prized,"+
-			"Protection,Rare,Ready,Reassuring,Resource,Ruined,Small,Soft,Solitary,Stolen,Strange,Stylish,Threatening,Tool,Travel,Unexpected,Unpleasant,Unusual,Useful,Useless,Valuable,Warm,Weapon,Wet,Worn";
 	private static final int TABLECOUNT = 14;
-	private static WeightedTable<String> encounterChar;
-	private static WeightedTable<String> encounterObj;
 	private static WeightedTable<String> encounterAdverb;
 	private static WeightedTable<String> encounterAdj;
 	private static WeightedTable<String> encounterFocus;
@@ -82,8 +75,6 @@ public class EncounterModel extends DataModel{
 		encounterNoun = new WeightedTable<String>().populate(NOUNS,",");
 		encounterAdverb = new WeightedTable<String>().populate(ADVERB,",");
 		encounterAdj = new WeightedTable<String>().populate(ADJECTIVE,",");
-		encounterChar = new WeightedTable<String>().populate(CHARACTER_ADJECTIVES,",");
-		encounterObj = new WeightedTable<String>().populate(OBJECT_ADJECTIVES,",");
 	}
 	public static String getVerb(Indexible e) {
 		if(encounterVerb==null) populateAllTables();
@@ -101,21 +92,15 @@ public class EncounterModel extends DataModel{
 		if(encounterAdj==null) populateAllTables();
 		return encounterAdj.getByWeight(e);
 	}
-	public static String getChar(Indexible e) {
-		if(encounterChar==null) populateAllTables();
-		return encounterChar.getByWeight(e);
-	}
-	public static String getObj(Indexible e) {
-		if(encounterObj==null) populateAllTables();
-		return encounterObj.getByWeight(e);
-	}
 
 	//NON_STATIC CODE
 	private PopulationModel pop;
+	private DataController controller;
 
-	public EncounterModel(SaveRecord record,PopulationModel pop) {
+	public EncounterModel(SaveRecord record,PopulationModel pop,DataController controller) {
 		super(record);
 		this.pop = pop;
+		this.controller = controller;
 	}
 
 	public String getLocation(Indexible e,boolean isCity) {
@@ -131,40 +116,9 @@ public class EncounterModel extends DataModel{
 	public String getFactionReference(Indexible e,Point p) {
 		return Util.formatTableResultPOS("${faction index}", e,p,record.getZero());
 	}
-	private String getCityRoom( Indexible e) {
-		return SettlementModel.getRoom(e);
-	}
-	private String getDungeonRoom( Indexible e) {
-		return DungeonModel.getRoom(e);
-	}
 	public String getActivity(Indexible e,boolean isCity) {
 		if(isCity) return SettlementModel.getActivity(e);
 		else return LocationModel.getActivity(e);
-	}
-	private String getDungeonActivity( Indexible e) {
-		return DungeonModel.getActivity(e);
-	}
-	public String getDiscovery(Indexible e,boolean isCity) {
-		if(isCity) return SettlementModel.getDiscovery(e);
-		else return LocationModel.getDiscovery(e);
-	}
-	private String getStreet(Encounter e) {
-		return SettlementModel.getStreet(e);
-	}
-	private String getDungeonDetail( Indexible e) {
-		return DungeonModel.getDetail(e);
-	}
-	public String getWildernessHazard( Indexible e) {
-		return LocationModel.getHazard(e);
-	}
-	public String getCityEvent( Indexible e) {
-		return SettlementModel.getEvent(e);
-	}
-	public String getDungeonHazard( Indexible e) {
-		return DungeonModel.getHazard(e);
-	}
-	public String getTrap(Indexible e) {
-		return DungeonModel.getTrap(e);
 	}
 	public Encounter getEncounter(int i,Point p) {
 		boolean isCity = pop.isCity(p);
@@ -187,38 +141,128 @@ public class EncounterModel extends DataModel{
 		return e;
 	}
 	private void populateEncounterDetail(Point p, boolean isCity, Encounter e,Reference ref) {
-		HexData refType = null;
-		if(ref!=null) {
-			switch(ref.getType()) {
-			case LOCATION: refType = HexData.LOCATION;break;
-			case NPC:case THREAT:case FACTION:case FAITH:
-				refType = HexData.CHARACTER; break;
-			default: break;
+		if(ref==null) ref = getRandomEncounterRef(p,isCity,e);
+
+		e.setFocus(getFocus(e));
+		if(e.reduceTempId(2)==0) {
+			e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"'});
+		}else {
+			e.setAction(new String[] {'"'+getActivity(e,isCity)+'"'});
+		}
+		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
+
+		populateEncounterCharacterAndLocation(e, ref);
+		if(e.getCharacter()==null) e.setCharacter(new String[] {new Reference(HexData.NPC, ref.getPoint(), e, null).toString()});
+		if(e.getLocation()==null) {
+			if(isCity||e.reduceTempId(2)==0) {
+				e.setLocation(new String[] {new Reference(HexData.LOCATION, ref.getPoint(), e, null).toString()});
+			}else {
+				String landmark = Util.getElementFromArray(LocationType.landmarks, e).toString();
+				e.setLocation(new String[] {landmark});
 			}
 		}
-		if(isCity) e.setType("City");
-		else e.setType("Wilderness");
-		e.setFocus(getFocus(e));
-		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getActivity(e,isCity)+'"'});
-		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
-		if(HexData.CHARACTER.equals(refType)) {
-			e.setCharacter(new String[] {ref.toString()});
-		}else {
-			e.setCharacter(new String[] {getNPCReference(e, p),getFactionReference(e, p)});
-		}
-		e.setObject(new String[] {getObj(e),getObj(e)});
-		String locationRef;
-		if(HexData.LOCATION.equals(refType)) {
-			locationRef = ref.toString();
-		}else {
-			locationRef = getLocationReference(e, p);
-		}
+
+		e.setObject(new String[] {EquipmentModel.getObj(e),EquipmentModel.getObj(e)});
 		if(isCity) {
-			e.setLocation(new String[] {locationRef,getCityRoom(e),getStreet(e),SettlementModel.getDiscovery(e)});
+			e.setSpice(new String[] {SettlementModel.getRoom(e),SettlementModel.getStreet(e),SettlementModel.getDiscovery(e)});
 		}else {
-			e.setLocation(new String[] {locationRef,LocationModel.getDiscovery(e)});
+			e.setSpice(new String[] {LocationModel.getDiscovery(e)});
 		}
-		e.setHazard(new String[] {getWildernessHazard(e)});
+		//e.setHazard(new String[] {getWildernessHazard(e)});
+	}
+	private void populateEncounterCharacterAndLocation(Encounter e, Reference ref) {
+		switch(ref.getType()) {
+		case LOCATION:{
+			String[] character = null;
+			Reference proprietor = new Reference(HexData.PROPRIETOR, ref.getPoint(), ref.getIndex());
+			if("None".equals(proprietor.getLinkText(controller))) {
+				character = new String[] {new Reference(HexData.NPC, ref.getPoint(), e, null).toString()};
+			}else {
+				character = new String[] {proprietor.toString()};
+			}
+			e.setLocation(new String[] {ref.toString()});
+			e.setCharacter(character);
+			break;
+		}case DUNGEON:{
+			Reference location = new Reference(HexData.LOCATION, ref.getPoint(), controller.getDungeon().getLocationOfDungeon(record.denormalizePOS(ref.getPoint()), ref.getIndex()));
+			e.setLocation(new String[] {location.toString(),ref.toString()});
+			HexData beast = (HexData) Util.getElementFromArray(new HexData[]{HexData.BEAST,HexData.MONSTER,HexData.THREATMONSTER}, e);
+			e.setCharacter(new String[] {new Reference(beast, ref.getPoint(), e, null).toString()});
+			break;
+		}case DISTRICT: {
+			String[] character = null;
+			int i = e.reduceTempId(2);
+			Reference loc = new Reference(HexData.LOCATION, ref.getPoint(), ref.getIndex()+i*HexData.DISTRICT.getCount());
+			Reference proprietor = new Reference(HexData.PROPRIETOR, loc.getPoint(), loc.getIndex());
+			if("None".equals(proprietor.getLinkText(controller))) {
+				character = new String[] {new Reference(HexData.NPC, ref.getPoint(), e, null).toString()};
+			}else {
+				character = new String[] {proprietor.toString()};
+			}
+			e.setLocation(new String[] {ref.toString(),loc.toString()});
+			e.setCharacter(character);
+			break;
+		}case FACTION:{
+			if("None".equals(ref.getLinkText(controller))) {
+				e.setCharacter(new String[] {new Reference(HexData.NPC, ref.getPoint(), e, null).toString()});
+			}else {
+				int i = (e.reduceTempId(4)==0?0:1);
+				Reference proprietor = new Reference(HexData.FACTION_NPC, ref.getPoint(), ref.getIndex()*2+i);
+				e.setCharacter(new String[] {ref.toString(),proprietor.toString()});
+			}
+			break;
+		}case FAITH:{
+			int i = (e.reduceTempId(4)==0?0:1);
+			Reference proprietor = new Reference(HexData.FACTION_NPC, ref.getPoint(), (ref.getIndex()+HexData.FACTION.getCount())*2+i);
+			e.setCharacter(new String[] {ref.toString(),proprietor.toString()});
+			break;
+		}case MINION:{
+			Reference faction = new Reference(HexData.MINION, ref.getPoint(), 0);
+			Reference proprietor;
+			if(ref.getIndex()==0) {
+				proprietor = new Reference(HexData.MINION, ref.getPoint(), 2);
+			}else {
+				proprietor = ref;
+			}
+			e.setCharacter(new String[] {faction.toString(),proprietor.toString()});
+			break;
+		}case THREAT:{
+			HexData secondary = getRandomEncounterType(e);
+			populateEncounterCharacterAndLocation(e, new Reference(secondary, ref.getPoint(), e,null));
+			String[] chars = new String[e.getCharacter().length+1];
+			chars[0] = ref.toString();
+			for(int i=0;i<e.getCharacter().length;i++) {
+				chars[i+1] = e.getCharacter()[i];
+			}
+			e.setCharacter(chars);
+			break;
+		}case NPC:case BEAST:case MONSTER:case THREATMONSTER:{
+			e.setCharacter(new String[] {ref.toString()});
+			break;
+		}default: break;
+		}
+	}
+	private Reference getRandomEncounterRef(Point p, boolean isCity, Indexible obj) {
+		HexData refType = getRandomEncounterType(obj);
+		if(isCity&&HexData.LOCATION.equals(refType)) refType = HexData.DISTRICT;
+		return new Reference(refType,p,obj,record);
+	}
+	private HexData getRandomEncounterType(Indexible obj) {
+		if(obj.reduceTempId(2)==0) {
+			int branch = obj.reduceTempId(5);
+			if(branch==0) return HexData.LOCATION;
+			else if(branch==1) return HexData.NPC;
+			else if(branch==2) return HexData.FACTION;
+			else if(branch==3) return HexData.FAITH;
+			else return HexData.BEAST;
+		}else {
+			int branch = obj.reduceTempId(5);
+			if(branch==0) return HexData.DUNGEON;
+			else if(branch==1) return HexData.THREAT;
+			else if(branch==2) return HexData.MINION;
+			else if(branch==3) return HexData.MONSTER;
+			else return HexData.THREATMONSTER;
+		}
 	}
 	public String getDefaultValue(Point p,int i) {
 		return getEncounter(i,p).toString();
@@ -244,11 +288,11 @@ public class EncounterModel extends DataModel{
 	private void populateDungeonEncounterDetail(Encounter e) {
 		e.setType("Dungeon");
 		e.setFocus(getFocus(e));
-		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+getDungeonActivity(e)+'"'});
+		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+DungeonModel.getActivity(e)+'"'});
 		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
-		e.setLocation(new String[] {LocationModel.getDescriptor(e)+" and "+LocationModel.getDescriptor(e)+" "+getDungeonRoom(e)+" with "+getDungeonDetail(e)});
-		e.setCharacter(new String[] {getChar(e),getChar(e)});
-		e.setObject(new String[] {getObj(e),getObj(e)});
-		e.setHazard(new String[] {getDungeonHazard(e),getTrap(e)});
+		e.setLocation(new String[] {LocationModel.getDescriptor(e)+" and "+LocationModel.getDescriptor(e)+" "+DungeonModel.getRoom(e)+" with "+DungeonModel.getDetail(e)});
+		e.setCharacter(new String[] {NPCModel.getChar(e),NPCModel.getChar(e)});
+		e.setObject(new String[] {EquipmentModel.getObj(e),EquipmentModel.getObj(e)});
+		e.setHazard(new String[] {DungeonModel.getHazard(e),DungeonModel.getTrap(e)});
 	}
 }

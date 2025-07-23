@@ -28,6 +28,7 @@ public class InfoPanel extends JTabbedPane{
 	public static final int FAITHCOUNT = 5;
 	public static final int DISTRICTCOUNT = 6;
 	public static final int MONSTERCOUNT = 8;
+	public static final int HISTORY_COUNT = 4;
 
 
 	private MapPanel panel;

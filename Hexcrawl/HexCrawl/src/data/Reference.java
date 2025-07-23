@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import controllers.DataController;
+import io.SaveRecord;
+
 public class Reference implements Serializable{
 	private static final long serialVersionUID = 3816076390422175045L;
 	public static String PARTIAL = "\\{(\\w+):(-?\\d+),(-?\\d+),(\\d+)(?:\\|(.+))?";
@@ -40,6 +43,14 @@ public class Reference implements Serializable{
 			throw new IllegalArgumentException("Unrecognized reference text: "+s);
 		}
 	}
+	public Reference(HexData type,Point point,Indexible obj,SaveRecord record) {
+		this.type = type;
+		if(record!=null) this.point = record.normalizePOS(point);
+		else this.point = point;
+		this.index = obj.reduceTempId(type.getCount());
+		this.active = true;
+	}
+	
 	public HexData getType() {
 		return type;
 	}
@@ -82,6 +93,10 @@ public class Reference implements Serializable{
 		String suffix = "x";
 		if(active) suffix = "$";
 		return "{"+type.getText()+":"+point.x+","+point.y+","+(index+1)+text+"}"+suffix;
+	}
+	
+	public String getLinkText(DataController controller) {
+		return controller.getLinkText(this);
 	}
 
 

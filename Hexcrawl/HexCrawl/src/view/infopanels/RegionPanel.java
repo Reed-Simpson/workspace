@@ -34,6 +34,7 @@ import view.MyTextPane;
 
 @SuppressWarnings("serial")
 public class RegionPanel extends JPanel{
+
 	private MapPanel panel;
 
 	public final int CITY_TAB_INDEX;
@@ -312,7 +313,7 @@ public class RegionPanel extends JPanel{
 		}
 		historyTexts = new ArrayList<MyTextPane>();
 		historyPanel.add(new JLabel("~~~~~ Ancient History ~~~~~"));
-		for(int i=0;i<4;i++) {
+		for(int i=0;i<InfoPanel.HISTORY_COUNT;i++) {
 			MyTextPane history = new MyTextPane(info, i, HexData.HISTORY);
 			history.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
 			history.setPreferredSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,5));

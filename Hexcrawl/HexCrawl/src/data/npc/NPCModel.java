@@ -7,7 +7,6 @@ import data.DataModel;
 import data.Indexible;
 import data.OpenSimplex2S;
 import data.WeightedTable;
-import data.encounters.EncounterModel;
 import data.location.Location;
 import data.location.LocationModel;
 import data.magic.MagicModel;
@@ -92,6 +91,11 @@ public class NPCModel extends DataModel {
 			"judgement,love,memory,monsters,moon,motherhood,${job}s,oaths,order,plague,purification,reason,"+
 			"schemes,secrets,storms,summer,sun,forge,sea,wild,time,underworld,wealth,winter";
 	private static WeightedTable<String> domains;
+	public static final String CHARACTER_ADJECTIVES = "Accompanied,Active,Aggressive,Ambush,Animal,Anxious,Armed,Beautiful,Bold,Busy,Calm,Careless,Casual,Cautious,Classy,Colorful,Combative,Crazy,Creepy,Curious,Dangerous,Deceitful,Defeated,"+
+			"Defiant,Delightful,Emotional,Energetic,Equipped,Excited,Expected,Familiar,Fast,Feeble,Feminine,Ferocious,Foe,Foolish,Fortunate,Fragrant,Frantic,Friend,Frightened,Frightening,Generous,Glad,Happy,Harmful,Helpful,Helpless,Hurt,"+
+			"Important,Inactive,Influential,Innocent,Intense,Knowledgeable,Large,Lonely,Loud,Loyal,Masculine,Mighty,Miserable,Multiple,Mundane,Mysterious,Natural,Odd,Official,Old,Passive,Peaceful,Playful,Powerful,Professional,"+
+			"Protected,Protecting,Questioning,Quiet,Reassuring,Resourceful,Seeking,Skilled,Slow,Small,Stealthy,Strange,Strong,Tall,Thieving,Threatening,Triumphant,Unexpected,Unnatural,Unusual,Violent,Vocal,Weak,Wild,Young";
+	private static WeightedTable<String> encounterChar;
 	public static final String BODYPART = "Hair,Horn,Skull,Face,Eye,Ear,Nose,Tongue,Jaw,Fang,Tooth,Chin,Beard,Neck,Spine,Shoulder,Heart,Blood,Arm,Hand,Fist,Claw,Finger,Thumb,Back,Leg,Foot,Toe";
 	private static WeightedTable<String> bodypart;
 
@@ -111,6 +115,7 @@ public class NPCModel extends DataModel {
 		hobbies = new WeightedTable<String>().populate(HOBBY_NOUNS,",");
 		relationships = new WeightedTable<String>().populate(RELATIONSHIP_NOUNS,",");
 		domains = new WeightedTable<String>().populate(DOMAIN_NOUNS,",");
+		encounterChar = new WeightedTable<String>().populate(CHARACTER_ADJECTIVES,",");
 		bodypart = new WeightedTable<String>().populate(BODYPART,",");
 	}
 
@@ -174,6 +179,10 @@ public class NPCModel extends DataModel {
 	public static String getDomain(Indexible obj) {
 		if(domains==null) populateAllTables();
 		return Util.formatTableResult(domains.getByWeight(obj),obj);
+	}
+	public static String getChar(Indexible e) {
+		if(encounterChar==null) populateAllTables();
+		return encounterChar.getByWeight(e);
 	}
 	public static String getBodypart(Indexible obj) {
 		if(bodypart==null) populateAllTables();
@@ -356,8 +365,8 @@ public class NPCModel extends DataModel {
 		npc.setFaction(Util.formatTableResultPOS("${faction index}", npc, p, record.getZero()));
 	}
 	private void setDescriptors(Point p, NPC npc) {
-		String desc1 = EncounterModel.getChar(npc);
-		String desc2 = EncounterModel.getChar(npc);
+		String desc1 = getChar(npc);
+		String desc2 = getChar(npc);
 		npc.setDescriptors(new String[]{desc1,desc2});
 	}
 	public NPCSpecies getRandomNPCSpecies(Indexible obj) {

@@ -9,7 +9,6 @@ import data.Indexible;
 import data.Reference;
 import data.biome.BiomeType;
 import data.dungeon.DungeonModel;
-import data.encounters.EncounterModel;
 import data.item.EquipmentModel;
 import data.location.LocationModel;
 import data.location.LocationType;
@@ -219,6 +218,7 @@ public class Util {
 		if(result.contains("${relationship}")) result = Util.replace(result,"${relationship}",NPCModel.getRelationship(obj));
 		if(result.contains("${misfortune}")) result = Util.replace(result,"${misfortune}",NPCModel.getMisfortune(obj));
 		if(result.contains("${hobby}")) result = Util.replace(result,"${hobby}",NPCModel.getHobby(obj));
+		if(result.contains("${character element}")) result = Util.replace(result,"${character element}",NPCModel.getChar(obj));
 		if(result.contains("${bodypart}")) result = Util.replace(result,"${bodypart}",NPCModel.getBodypart(obj));
 
 		if(result.contains("${mission}")) result = Util.replace(result,"${mission}",MissionModel.getMissionVerb(obj));
@@ -257,6 +257,7 @@ public class Util {
 		if(result.contains("${stone}")) result = Util.replace(result,"${stone}",EquipmentModel.getStone(obj));
 		if(result.contains("${fabric}")) result = Util.replace(result,"${fabric}",EquipmentModel.getFabric(obj));
 		if(result.contains("${item trait}")) result = Util.replace(result,"${item trait}",EquipmentModel.getTrait(obj));
+		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EquipmentModel.getObj(obj));
 
 		if(result.contains("${spell}")) result = Util.replace(result,"${spell}",MagicModel.getSpell(obj));
 		if(result.contains("${physical element}")) result = Util.replace(result,"${physical element}",MagicModel.getPhysicalElement(obj));
@@ -290,9 +291,6 @@ public class Util {
 
 		if(result.contains("${inn prefix}")) result = Util.replace(result,"${inn prefix}",InnNameGenerator.getPrefix(obj));
 		if(result.contains("${inn suffix}")) result = Util.replace(result,"${inn suffix}",InnNameGenerator.getSuffix(obj));
-
-		if(result.contains("${object element}")) result = Util.replace(result,"${object element}",EncounterModel.getObj(obj));
-		if(result.contains("${character element}")) result = Util.replace(result,"${character element}",EncounterModel.getChar(obj));
 
 		if(result.contains("${elemental type}")) result = Util.replace(result,"${elemental type}",ElementalType.getByWeight(obj).toString());
 		if(result.contains("${dragon type}")) result = Util.replace(result,"${dragon type}",DragonType.getByWeight(obj).toString());

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -45,7 +46,7 @@ public class HexPanel extends JPanel{
 	private ArrayList<MyTextPane> dEntranceTexts;
 	private MyTextPane hexNote1;
 	private ArrayList<MyTextPane> encounterTexts;
-	private JPanel encounterPanel;
+	private JPanel encounterListPanel;
 	private ArrayList<MyTextPane> missionsTexts;
 	private JPanel missionsPanel;
 	
@@ -144,18 +145,41 @@ public class HexPanel extends JPanel{
 		JScrollPane hexNoteScrollPane = new JScrollPane(hexNotePanel);
 		detailsTabs.addTab("Notes", hexNoteScrollPane);
 
-
-		encounterPanel = new JPanel();
+		JPanel encounterPanel = new JPanel();
 		encounterPanel.setLayout(new BoxLayout(encounterPanel, BoxLayout.Y_AXIS));
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		JButton encounterButton = new JButton("New Encounter");
+		encounterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MyTextPane pane = createEncounter();
+				pane.genNewData(null);
+				repaint();
+			}
+		});
+		buttonPanel.add(encounterButton);
+		JButton rumorButton = new JButton("New Rumor");
+		rumorButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MyTextPane pane = createEncounter();
+				pane.genNewData(null);
+				repaint();
+			}
+		});
+		buttonPanel.add(rumorButton);
+		encounterPanel.add(buttonPanel);
+		encounterListPanel = new JPanel();
+		encounterListPanel.setLayout(new BoxLayout(encounterListPanel, BoxLayout.Y_AXIS));
 		encounterTexts = new ArrayList<MyTextPane>();
 		for(int i=0;i<info.getPanel().getRecord().getEncounters(info.getPanel().getSelectedGridPoint()).size();i++) {
 			MyTextPane pane = createEncounter();
 			pane.doPaint();
 		}
-		JScrollPane encounterScrollPane = new JScrollPane(encounterPanel);
+		JScrollPane encounterScrollPane = new JScrollPane(encounterListPanel);
 		encounterScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		encounterScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		detailsTabs.addTab("Encounters", encounterScrollPane);
+		encounterPanel.add(encounterScrollPane);
+		detailsTabs.addTab("Encounters", encounterPanel);
 		this.ENCOUNTER_TAB_INDEX = detailsTabs.getTabCount()-1;
 		
 
@@ -263,7 +287,7 @@ public class HexPanel extends JPanel{
 		MyTextPane encounteri = new MyTextPane(info, i, HexData.D_ENCOUNTER);
 		encounteri.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
-		encounterPanel.add(encounteri,0);
+		encounterListPanel.add(encounteri,0);
 		encounterTexts.add(encounteri);
 		return encounteri;
 	}
@@ -273,7 +297,7 @@ public class HexPanel extends JPanel{
 		MyTextPane encounteri = new MyTextPane(info, i, HexData.ENCOUNTER);
 		encounteri.setMaximumSize(new Dimension(InfoPanel.INFOPANELWIDTH-30,9999));
 		encounteri.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
-		encounterPanel.add(encounteri,0);
+		encounterListPanel.add(encounteri,0);
 		encounterTexts.add(encounteri);
 		return encounteri;
 	}

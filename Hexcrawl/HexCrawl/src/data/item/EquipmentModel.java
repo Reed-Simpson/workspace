@@ -43,6 +43,11 @@ public class EquipmentModel {
 			"${element},Embellished,Encoded,Exotic,Extra-planar,Famous,Forbidden,Fragile,Heavy,Immovable,Impractical,Indestructible,"+
 			"Intelligent,Masterwork,Militarily valuable,Non-human,Owned,Partial,Politically valuable,Religiously valuable,Repaired,Royal,Toxic,Vile";
 	private static WeightedTable<String> traits;
+	public static final String OBJECT_ADJECTIVES = "Active,Artistic,Average,Beautiful,Bizarre,Bright,Clothing,Clue,Cold,Colorful,Communication,Complicated,Confusing,Consumable,Container,Creepy,Crude,Cute,Damaged,Dangerous,Deactivated,Deliberate,Delightful,"+
+			"Desired,Domestic,Empty,Energy,Enormous,Equipment,Expected,Expended,Extravagant,Faded,Familiar,Fancy,Flora,Fortunate,Fragile,Fragrant,Frightening,Garbage,Guidance,Hard,Harmful,Healing,Heavy,Helpful,Horrible,Important,Inactive,"+
+			"Information,Intriguing,Large,Lethal,Light,Liquid,Loud,Majestic,Meaningful,Mechanical,Modern,Moving,Multiple,Mundane,Mysterious,Natural,New,Odd,Official,Old,Ornate,Personal,Powerful,Prized,"+
+			"Protection,Rare,Ready,Reassuring,Resource,Ruined,Small,Soft,Solitary,Stolen,Strange,Stylish,Threatening,Tool,Travel,Unexpected,Unpleasant,Unusual,Useful,Useless,Valuable,Warm,Weapon,Wet,Worn";
+	private static WeightedTable<String> encounterObj;
 	private static final String METALS = "Iron,Bronze,Copper,Brass,Steel,Lead";
 	private static WeightedTable<String> metals;
 	private static final String WOODS = "Oak,Bamboo,Ironwood,Ash,Rosewood,Ebony,Pine,Birch";
@@ -58,42 +63,23 @@ public class EquipmentModel {
 			"Onyx,Opal,Pearl,Platinum,Porcelain,Ruby,Sapphire,Serpentine,Silver,Spidersilk,Starmetal,Topaz,Turquoise";
 	private static WeightedTable<String> rare;
 	
-	private static void populate(WeightedTable<String> table,String values,String regex) {
-		for(String s:values.split(regex)) {
-			table.put(s);
-		}
-	}
 	private static void populateAllTables() {
-		misc = new WeightedTable<String>();
-		populate(misc,MISC,",");
-		apparel = new WeightedTable<String>();
-		populate(apparel,APPAREL,",");
-		weapons = new WeightedTable<String>();
-		populate(weapons,WEAPONS,",");
-		books = new WeightedTable<String>();
-		populate(books,BOOKS,",");
-		tools = new WeightedTable<String>();
-		populate(tools,TOOLS,",");
-		potions = new WeightedTable<String>();
-		populate(potions,POTIONS,",");
-		ingredients = new WeightedTable<String>();
-		populate(ingredients,INGREDIENTS,",");
-		treasures = new WeightedTable<String>();
-		populate(treasures,TREASURES,",");
-		traits = new WeightedTable<String>();
-		populate(traits,TRAITS,",");
-		rare = new WeightedTable<String>();
-		populate(rare,RARE,",");
-		metals = new WeightedTable<String>();
-		populate(metals,METALS,",");
-		woods = new WeightedTable<String>();
-		populate(woods,WOODS,",");
-		minerals = new WeightedTable<String>();
-		populate(minerals,MINERALS,",");
-		fabrics = new WeightedTable<String>();
-		populate(fabrics,FABRICS,",");
-		other = new WeightedTable<String>();
-		populate(other,OTHER,",");
+		misc = new WeightedTable<String>().populate(MISC,",");
+		apparel = new WeightedTable<String>().populate(APPAREL,",");
+		weapons = new WeightedTable<String>().populate(WEAPONS,",");
+		books = new WeightedTable<String>().populate(BOOKS,",");
+		tools = new WeightedTable<String>().populate(TOOLS,",");
+		potions = new WeightedTable<String>().populate(POTIONS,",");
+		ingredients = new WeightedTable<String>().populate(INGREDIENTS,",");
+		treasures = new WeightedTable<String>().populate(TREASURES,",");
+		traits = new WeightedTable<String>().populate(TRAITS,",");
+		rare = new WeightedTable<String>().populate(RARE,",");
+		metals = new WeightedTable<String>().populate(METALS,",");
+		woods = new WeightedTable<String>().populate(WOODS,",");
+		minerals = new WeightedTable<String>().populate(MINERALS,",");
+		fabrics = new WeightedTable<String>().populate(FABRICS,",");
+		other = new WeightedTable<String>().populate(OTHER,",");
+		encounterObj = new WeightedTable<String>().populate(OBJECT_ADJECTIVES,",");
 	}
 
 	
@@ -143,6 +129,10 @@ public class EquipmentModel {
 		if(traits==null) populateAllTables();
 		return Util.formatTableResult(traits.getByWeight(obj),obj);
 	}
+	public static String getObj(Indexible e) {
+		if(encounterObj==null) populateAllTables();
+		return encounterObj.getByWeight(e);
+	}
 	public static String getRareMaterial(Indexible obj) {
 		if(rare==null) populateAllTables();
 		return rare.getByWeight(obj);
@@ -170,6 +160,10 @@ public class EquipmentModel {
 	public static String getFabric(Indexible obj) {
 		if(fabrics==null) populateAllTables();
 		return fabrics.getByWeight(obj);
+	}
+	public static String getOtherMaterial(Indexible obj) {
+		if(other==null) populateAllTables();
+		return other.getByWeight(obj);
 	}
 	public static String getMaterial(Indexible obj) {
 		if(metals==null) populateAllTables();

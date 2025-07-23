@@ -9,7 +9,6 @@ import data.Indexible;
 import data.OpenSimplex2S;
 import data.Reference;
 import data.WeightedTable;
-import data.encounters.EncounterModel;
 import data.item.EquipmentModel;
 import data.population.PopulationModel;
 import io.SaveRecord;
@@ -52,7 +51,7 @@ public class MissionModel  extends DataModel{
 	private void populateMission(Point p, Mission mission) {
 		Point p1 = pop.getWeightedNearbyPointsTable(p).getByWeight(mission);
 		mission.setVerb(getMissionVerb(mission));
-		mission.setObject(new String[]{EquipmentModel.getTrait(mission),EncounterModel.getObj(mission)});
+		mission.setObject(new String[]{EquipmentModel.getTrait(mission),EquipmentModel.getObj(mission)});
 		Point n = record.normalizePOS(p);
 		Point n1 = record.normalizePOS(p1);
 		if(mission.reduceTempId(2)==0) {

@@ -153,6 +153,14 @@ public class DungeonModel extends DataModel {
 		}
 		return result;
 	}
+	public int getLocationOfDungeon(Point p, int i) {
+		int[] dungeons = getDungeonPositions(p);
+		for(int n=0;n<dungeons.length;n++) {
+			i-=dungeons[n];
+			if(i<0)return n;
+		}
+		return -1;
+	}
 
 	public Dungeon getDungeon(int i,Point p) {
 		float[] floats = new float[TABLECOUNT];

@@ -2,7 +2,7 @@ package names.threat;
 
 import data.Indexible;
 import data.WeightedTable;
-import data.encounters.EncounterModel;
+import data.item.EquipmentModel;
 import data.magic.MagicModel;
 import data.mission.MissionModel;
 import data.npc.Creature;
@@ -128,7 +128,7 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		return Util.toCamelCase(Util.formatTableResult(name+", "+title,threat));
 	}
 	private String getGolemTitle(Indexible threat) {
-		String titleDescriptor = EncounterModel.getObj(threat);
+		String titleDescriptor = EquipmentModel.getObj(threat);
 		String titleNoun;
 		if(threat.reduceTempId(2)%2==0) titleNoun = getJobNoun(threat);
 		else titleNoun = getMissionNoun(threat);
@@ -147,7 +147,7 @@ public class ConstructNameGenerator extends ThreatNameGenerator {
 		return Util.toCamelCase(Util.formatTableResult(name+", "+title,threat));
 	}
 	private String getInevitableTitle(Indexible threat) {
-		String titleDescriptor = EncounterModel.getObj(threat);
+		String titleDescriptor = EquipmentModel.getObj(threat);
 		String titleNoun = getInevitableNoun(threat);
 		String title = titleDescriptor+" "+titleNoun;
 		return "The "+title;

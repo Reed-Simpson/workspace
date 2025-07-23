@@ -1,5 +1,7 @@
 package data;
 
+import view.InfoPanel;
+
 public enum HexData {
 	NOTE("note"),
 	NONE("none"),
@@ -59,6 +61,39 @@ public enum HexData {
 	
 	public String getText() {
 		return this.text;
+	}
+	public int getCount() {
+		switch(this) {
+		case BEAST:
+		case MONSTER:
+		case THREATMONSTER:
+			return InfoPanel.MONSTERCOUNT;
+		case CITY:
+		case EVENT:
+		case THREAT:
+		case TOWN:
+			return 1;
+		case DISTRICT:
+			return InfoPanel.DISTRICTCOUNT;
+		case DUNGEON:
+			return InfoPanel.DUNGEONCOUNT;
+		case FACTION:
+			return InfoPanel.FACTIONCOUNT;
+		case FACTION_NPC:
+			return InfoPanel.FACTIONCOUNT+InfoPanel.FAITHCOUNT;
+		case FAITH:
+			return InfoPanel.FAITHCOUNT;
+		case HISTORY:
+			return InfoPanel.HISTORY_COUNT;
+		case LOCATION:
+		case PROPRIETOR:
+			return InfoPanel.POICOUNT;
+		case MINION:
+		case NPC:
+			return InfoPanel.NPCCOUNT;
+		default:
+			return 0;
+		}
 	}
 
 	

@@ -12,9 +12,9 @@ import view.Icon;
 
 public enum BiomeType {
 	VOID(Color.BLACK,null,"void",9999),
-	WATER(Color.getHSBColor(240f/360f, 0.7f, 1f),BiomeModel.WAVES,"ocean",4), 
-	SHALLOWS(Color.getHSBColor(220f/360f, 0.7f, 1f), BiomeModel.WAVES,"shallows",3), 
-	GRASSLAND(Color.getHSBColor(100f/360f, 0.7f, 1f), BiomeModel.GRASS,"grassland",6), 
+	WATER(Color.getHSBColor(240f/360f, 0.5f, 1f),BiomeModel.WAVES,"ocean",4), 
+	SHALLOWS(Color.getHSBColor(230f/360f, 0.5f, 1f), BiomeModel.WAVES,"shallows",3), 
+	GRASSLAND(Color.getHSBColor(100f/360f, 0.6f, 1f), BiomeModel.GRASS,"grassland",6), 
 	FOREST(Color.getHSBColor(100f/360f, 1f, 0.7f), BiomeModel.TREE,"forest",8), 
 	HIGHLAND(Color.getHSBColor(100f/360f, 0.7f, 0.9f), BiomeModel.GRASS,"highland",6), 
 	HIGHLANDFOREST(Color.getHSBColor(100f/360f, 0.7f, 0.7f), BiomeModel.TREE,"highland forest",8), 
@@ -161,11 +161,11 @@ public enum BiomeType {
 			result.add( new Icon(c, offset, Color.black,2,1f,true));
 		}else if(BiomeType.WATER.getCh().equals(c)) {
 			offset = new Point(-80,10);
-			result.add( new Icon(c, offset, Color.darkGray,0.7,0.5f,true));
+			result.add( new Icon(c, offset, Color.black,0.7,0.5f,true));
 			offset = new Point(-30,60);
-			result.add( new Icon(c, offset, Color.darkGray,0.7,0.5f,true));
+			result.add( new Icon(c, offset, Color.black,0.7,0.5f,true));
 			offset = new Point(10,-10);
-			result.add( new Icon(c, offset, Color.darkGray,0.7,0.5f,true));
+			result.add( new Icon(c, offset, Color.black,0.7,0.5f,true));
 		}else if(BiomeType.ROCKYHILLS.getCh().equals(c)) {
 			offset = new Point(-20,20);
 			result.add( new Icon(c, offset, Color.darkGray,1,0.8f,false));

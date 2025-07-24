@@ -264,6 +264,19 @@ public class EncounterModel extends DataModel{
 			else return HexData.THREATMONSTER;
 		}
 	}
+	@SuppressWarnings("deprecation")
+	public Point getRumorLocation(Point p,Random rand) {
+		WeightedTable<Point> points = new WeightedTable<Point>();
+		points.put(p, 60);
+		for(int r=1;r<6;r++) {
+			for(Point p1:Util.getRing(p, r)) {
+				if(!controller.getGrid().isWater(p1)) {
+					points.put(p1, 60/r);
+				}
+			}
+		}
+		return points.getByWeight(rand.nextInt());
+	}
 	public String getDefaultValue(Point p,int i) {
 		return getEncounter(i,p).toString();
 	}

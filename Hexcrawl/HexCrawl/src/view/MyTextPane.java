@@ -216,8 +216,9 @@ public class MyTextPane extends JTextPane {
 		this.ref = reference;
 	}
 
-	public void genNewData(Reference ref) {
-		String newData = controller.genNewData(getType(), getPoint(), getIndex(),ref);
+	public void genNewData(Reference ref,Point p) {
+		if(p==null) p = getPoint();
+		String newData = controller.genNewData(getType(), p, getIndex(),ref);
 		saveData(newData);
 	}
 	private void saveData(String newData) {
@@ -360,7 +361,7 @@ public class MyTextPane extends JTextPane {
 			gen.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					genNewData(null);
+					genNewData(null,null);
 					flicker();
 				}
 			});
@@ -402,7 +403,7 @@ public class MyTextPane extends JTextPane {
 						Reference ref = new Reference(getType(), point, getIndex());
 						if(HexData.DUNGEON.equals(getType())) {
 							MyTextPane pane = info.createDungeonEncounter();
-							pane.genNewData(ref);
+							pane.genNewData(ref,null);
 							info.selectTabAndIndex(HexData.D_ENCOUNTER.getText(),point.x,point.y,-1);
 							pane.flicker();
 						}else if(HexData.ENCOUNTER.equals(getType())) {
@@ -417,7 +418,7 @@ public class MyTextPane extends JTextPane {
 							pane.flicker();
 						}else {
 							MyTextPane pane = info.createEncounter();
-							pane.genNewData(ref);
+							pane.genNewData(ref,null);
 							info.selectTabAndIndex(HexData.ENCOUNTER.getText(),point.x,point.y,-1);
 							pane.flicker();
 						}

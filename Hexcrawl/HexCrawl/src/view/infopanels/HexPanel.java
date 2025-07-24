@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import controllers.DataController;
 import data.HexData;
 import data.altitude.AltitudeModel;
 import data.population.PopulationModel;
@@ -153,7 +154,10 @@ public class HexPanel extends JPanel{
 		encounterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MyTextPane pane = createEncounter();
-				pane.genNewData(null);
+				Point selectedGridPoint = info.getPanel().getSelectedGridPoint();
+				DataController controller = panel.getController();
+				Point p = controller.getEncounters().getRumorLocation(selectedGridPoint, controller.getRecord().getRandom());
+				pane.genNewData(null,p);
 				repaint();
 			}
 		});
@@ -162,7 +166,11 @@ public class HexPanel extends JPanel{
 		rumorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MyTextPane pane = createEncounter();
-				pane.genNewData(null);
+				Point selectedGridPoint = info.getPanel().getSelectedGridPoint();
+				DataController controller = panel.getController();
+				Point p = controller.getEncounters().getRumorLocation(selectedGridPoint, controller.getRecord().getRandom());
+				pane.genNewData(null,p);
+				pane.insertRawText("(Rumor) ", 7);
 				repaint();
 			}
 		});
@@ -171,7 +179,8 @@ public class HexPanel extends JPanel{
 		encounterListPanel = new JPanel();
 		encounterListPanel.setLayout(new BoxLayout(encounterListPanel, BoxLayout.Y_AXIS));
 		encounterTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<info.getPanel().getRecord().getEncounters(info.getPanel().getSelectedGridPoint()).size();i++) {
+		Point selectedGridPoint = info.getPanel().getSelectedGridPoint();
+		for(int i=0;i<info.getPanel().getRecord().getEncounters(selectedGridPoint).size();i++) {
 			MyTextPane pane = createEncounter();
 			pane.doPaint();
 		}
@@ -186,7 +195,7 @@ public class HexPanel extends JPanel{
 		missionsPanel = new JPanel();
 		missionsPanel.setLayout(new BoxLayout(missionsPanel, BoxLayout.Y_AXIS));
 		missionsTexts = new ArrayList<MyTextPane>();
-		for(int i=0;i<info.getPanel().getRecord().getMissions(info.getPanel().getSelectedGridPoint()).size()||i<3;i++) {
+		for(int i=0;i<info.getPanel().getRecord().getMissions(selectedGridPoint).size()||i<3;i++) {
 			MyTextPane pane = createMission();
 			pane.doPaint();
 		}

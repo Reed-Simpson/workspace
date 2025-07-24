@@ -110,7 +110,7 @@ public class MythicFateRoller {
 					int roll = getRand().nextInt(100)+1;
 					String message = getOutcome(roll, obj);
 					if(isDoubles(roll)<record.getChaosFactor()) {
-						field.genNewData(null);
+						field.genNewData(null,null);
 					}else {
 						field.setText(message);
 					}
@@ -157,7 +157,7 @@ public class MythicFateRoller {
 				public void actionPerformed(ActionEvent e) {
 					int roll = getRand().nextInt(10)+1;
 					if(isExpectedScene(roll)) field.setText("Expected Scene");
-					else if(isInterrupScene(roll)) field.genNewData(null);
+					else if(isInterrupScene(roll)) field.genNewData(null,null);
 					else {
 						String message = "Altered Scene: ";
 						int roll1 = getRand().nextInt(10);

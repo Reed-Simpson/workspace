@@ -9,26 +9,13 @@ import names.threat.ThreatNameGenerator;
 
 public enum MonstrosityType implements CreatureSubtype {
 	SPHINX(),
-	MANTICORE(),
 	MEDUSA(),
 	MIMIC(),
 	MINOTAUR(),
-	BASILISK(),
-	BULETTE(),
-	OWLBEAR(),
 	NAGA(),
-	PURPLE_WORM(),
-	PHASE_SPIDER(),
-	CHIMERA(),
-	COCKATRICE(),
-	RUST_MONSTER(),
-	REMORHAZ(),
-	DISPLACER_BEAST(),
 	DOPPELGANGER(),
 	TERRASQUE(),
-	GRIFFON(),
 	HARPY(),
-	HYDRA(),
 	LAMIA(),
 	YUANTI();
 	
@@ -42,22 +29,9 @@ public enum MonstrosityType implements CreatureSubtype {
 		weights.put(MIMIC, 100);
 		weights.put(MINOTAUR, 100);
 		weights.put(NAGA, 100);
-		weights.put(PURPLE_WORM, 100);
-		weights.put(PHASE_SPIDER, 100);
-		weights.put(RUST_MONSTER, 100);
 		weights.put(DOPPELGANGER, 100);
 		weights.put(HARPY, 100);
-		weights.put(HYDRA, 100);
 		weights.put(YUANTI, 100);
-		weights.put(BASILISK, 10);
-		weights.put(MANTICORE, 10);
-		weights.put(GRIFFON, 10);
-		weights.put(REMORHAZ, 10);
-		weights.put(DISPLACER_BEAST, 10);
-		weights.put(CHIMERA, 10);
-		weights.put(COCKATRICE, 10);
-		weights.put(BULETTE, 10);
-		weights.put(OWLBEAR, 10);
 		weights.put(LAMIA, 10);
 		weights.put(TERRASQUE, 1);
 	}

@@ -63,26 +63,13 @@ public class MonstrosityNameGenerator extends ThreatNameGenerator {
 		}
 		MonstrosityType type = (MonstrosityType) threat.getSpecies();
 		switch (type) {
-		case BASILISK: return BeastNameGenerator.getBeastName(threat);
-		case BULETTE:return BeastNameGenerator.getBeastName(threat);
-		case CHIMERA:return BeastNameGenerator.getBeastName(threat);
-		case COCKATRICE:return BeastNameGenerator.getBeastName(threat);
-		case DISPLACER_BEAST:return BeastNameGenerator.getBeastName(threat);
 		case DOPPELGANGER: return npc.getName();
-		case GRIFFON:return BeastNameGenerator.getBeastName(threat);
 		case HARPY:return BeastNameGenerator.getBeastName(threat);
-		case HYDRA:return BeastNameGenerator.getBeastName(threat);
 		case LAMIA:return getEgyptianName(threat);
-		case MANTICORE:return BeastNameGenerator.getBeastName(threat);
 		case MEDUSA:return getGreekName(threat);
 		case MIMIC:return getMimicName(threat);
 		case MINOTAUR:return getGreekName(threat);
 		case NAGA:return getSnakeName(threat);
-		case OWLBEAR:return BeastNameGenerator.getBeastName(threat);
-		case PHASE_SPIDER:return BeastNameGenerator.getBeastName(threat);
-		case PURPLE_WORM:return BeastNameGenerator.getBeastName(threat);
-		case REMORHAZ:return BeastNameGenerator.getBeastName(threat);
-		case RUST_MONSTER:return BeastNameGenerator.getBeastName(threat);
 		case SPHINX:return getEgyptianName(threat);
 		case TERRASQUE:return "The Terrasque";
 		case YUANTI:return getSnakeName(threat);

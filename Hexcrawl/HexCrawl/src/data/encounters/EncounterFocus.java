@@ -1,26 +1,29 @@
 package data.encounters;
 
+import data.HexData;
 import data.Indexible;
 import data.WeightedTable;
 
 public enum EncounterFocus {
-	Remote_Event("Learn a rumor"),
-	Ambiguous_Event("Ambiguous Event"),
-	New_NPC("Meet a new NPC"),
-	NPC_Action("Known npc acts"),
-	NPC_Negative("Negative impact on known NPC"),
-	NPC_Positive("Positive impact on known NPC"),
-	Move_Toward_A_Thread("Progress existing thread"),
-	Move_Away_From_A_Thread("Obstacle to existing thread"),
-	Close_A_Thread("Resolve existing thread"),
-	PC_Negative("Negative impact on PC"),
-	PC_Positive("Positive impact on PC"),
-	Current_Context("Current Context");
+	Remote_Event("Learn a rumor",null),
+	Ambiguous_Event("Ambiguous Event",null),
+	New_NPC("Meet a new NPC",HexData.NPC),
+	NPC_Action("Known npc acts",HexData.CHARACTER),
+	NPC_Negative("Negative impact on known NPC",HexData.CHARACTER),
+	NPC_Positive("Positive impact on known NPC",HexData.CHARACTER),
+	Move_Toward_A_Thread("Progress existing thread",HexData.THREAD),
+	Move_Away_From_A_Thread("Obstacle to existing thread",HexData.THREAD),
+	Close_A_Thread("Resolve existing thread",HexData.THREAD),
+	PC_Negative("Negative impact on PC",null),
+	PC_Positive("Positive impact on PC",null),
+	Current_Context("Current Context",null);
 	
 	private String text;
+	private HexData linkType;
 	
-	private EncounterFocus(String text) {
+	private EncounterFocus(String text,HexData linkType) {
 		this.text = text;
+		this.linkType = linkType;
 	}
 	
 	
@@ -48,5 +51,8 @@ public enum EncounterFocus {
 	}
 	public String toString() {
 		return text;
+	}
+	public HexData getLinkType() {
+		return linkType;
 	}
 }

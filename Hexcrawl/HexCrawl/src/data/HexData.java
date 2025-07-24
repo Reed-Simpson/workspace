@@ -44,6 +44,15 @@ public enum HexData {
 	public static HexData[] getRegionTypes() {
 		return new HexData[] {NONE,BIOME,POPULATION,THREAT};
 	}
+	public static HexData[] getCombatEncounterTypes() {
+		return new HexData[] {DUNGEON,THREAT,MINION,MONSTER,THREATMONSTER};
+	}
+	public static HexData[] getRPEncounterTypes() {
+		return new HexData[] {LOCATION,NPC,FACTION,FAITH,BEAST};
+	}
+	public static HexData[] getCharacterTypes() {
+		return new HexData[] {THREAT,MINION,THREATMONSTER,NPC,FACTION,FAITH};
+	}
 	public static HexData get(String text) {
 		for(HexData t:HexData.values()) {
 			if(t.text.equals(text)) return t;

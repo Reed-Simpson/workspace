@@ -47,7 +47,11 @@ public class Reference implements Serializable{
 		this.type = type;
 		if(record!=null) this.point = record.normalizePOS(point);
 		else this.point = point;
-		this.index = obj.reduceTempId(type.getCount());
+		int count = type.getCount();
+		if(HexData.CHARACTER.equals(type)) count = record.getCampaignCharacterCount();
+		else if(HexData.THREAD.equals(type)) count = record.getCampaignThreadCount();
+		if(count<=0) this.index = -1;
+		else this.index = obj.reduceTempId(count);
 		this.active = true;
 	}
 	

@@ -1,11 +1,13 @@
 package data.encounters;
 
 import data.Indexible;
+import data.Reference;
 import util.Util;
 
 public class Encounter extends Indexible {
 	private String type;
 	private EncounterFocus focus;
+	private Reference focusRef;
 	private String[] action;
 	private String[] descriptor;
 	private String[] location;
@@ -80,6 +82,10 @@ public class Encounter extends Indexible {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ "+this.getType()+" Encounter #"+(i)+" ~~~~~\r\n");
 		e1Text.append("Focus: "+this.getFocus().toString());
+		if(this.getFocusRef()!=null) {
+			if(this.getFocusRef().getIndex()<0) e1Text.append("\r\n    \u21B3 No "+this.getFocusRef().getType()+" reference available");
+			else e1Text.append("\r\n    \u21B3 "+this.getFocusRef().toString());
+		}
 		if(this.getAction()!=null) e1Text.append("\r\nAction: "+Util.parseArray(this.getAction()) +" for "+Util.parseArray(this.getDescriptor()));
 		if(this.getLocation()!=null) e1Text.append("\r\nLocation: "+Util.parseArray(this.getLocation(),"and/or"));
 		if(this.getCharacter()!=null) e1Text.append("\r\nCharacter: "+Util.parseArray(this.getCharacter(),"and/or"));
@@ -87,6 +93,12 @@ public class Encounter extends Indexible {
 		if(this.getHazard()!=null) e1Text.append( "\r\nHazard: "+Util.parseArray(this.getHazard()) );
 		if(this.getSpice()!=null) e1Text.append( "\r\nSpice: "+Util.parseArray(this.getSpice()) );
 		return e1Text.toString();
+	}
+	public Reference getFocusRef() {
+		return focusRef;
+	}
+	public void setFocusRef(Reference focusRef) {
+		this.focusRef = focusRef;
 	}
 
 }

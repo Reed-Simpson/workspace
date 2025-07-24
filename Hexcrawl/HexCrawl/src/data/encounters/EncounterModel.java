@@ -123,6 +123,14 @@ public class EncounterModel extends DataModel{
 		if(ref==null) ref = getRandomEncounterRef(p,isCity,e);
 
 		e.setFocus(EncounterFocus.getFocus(e));
+		HexData linkType = e.getFocus().getLinkType();
+		if(linkType!=null) {
+			if(HexData.NPC.equals(linkType)) {
+				linkType = (HexData) Util.getElementFromArray(HexData.getCharacterTypes(), e);
+			}
+			Reference focusRef = new Reference(linkType, p, e, record);
+			e.setFocusRef(focusRef);
+		}
 		if(e.reduceTempId(2)==0) {
 			e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"'});
 		}else {
@@ -228,19 +236,11 @@ public class EncounterModel extends DataModel{
 	}
 	private HexData getRandomEncounterType(Indexible obj) {
 		if(obj.reduceTempId(2)==0) {
-			int branch = obj.reduceTempId(5);
-			if(branch==0) return HexData.LOCATION;
-			else if(branch==1) return HexData.NPC;
-			else if(branch==2) return HexData.FACTION;
-			else if(branch==3) return HexData.FAITH;
-			else return HexData.BEAST;
+			HexData result = (HexData) Util.getElementFromArray(HexData.getRPEncounterTypes(), obj);
+			return result;
 		}else {
-			int branch = obj.reduceTempId(5);
-			if(branch==0) return HexData.DUNGEON;
-			else if(branch==1) return HexData.THREAT;
-			else if(branch==2) return HexData.MINION;
-			else if(branch==3) return HexData.MONSTER;
-			else return HexData.THREATMONSTER;
+			HexData result = (HexData) Util.getElementFromArray(HexData.getCombatEncounterTypes(), obj);
+			return result;
 		}
 	}
 	@SuppressWarnings("deprecation")

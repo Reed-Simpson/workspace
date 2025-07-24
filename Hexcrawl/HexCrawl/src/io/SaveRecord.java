@@ -640,6 +640,9 @@ public class SaveRecord implements Serializable {
 	public ArrayList<Reference> getCampaignCharacters(){
 		return this.campaignCharacters;
 	}
+	public int getCampaignCharacterCount() {
+		return this.campaignCharacters.size();
+	}
 	public Reference getCampaignCharacter(int i) {
 		if(campaignCharacters.size()<=i) return null;
 		else return this.campaignCharacters.get(i);
@@ -660,6 +663,9 @@ public class SaveRecord implements Serializable {
 	
 	public ArrayList<String> getCampaignThreads(){
 		return this.campaignThreads;
+	}
+	public int getCampaignThreadCount() {
+		return this.campaignThreads.size();
 	}
 	public String getCampaignThread(int i) {
 		if(campaignThreads.size()<=i) return null;

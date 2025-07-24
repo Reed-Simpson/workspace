@@ -46,31 +46,10 @@ public class EncounterModel extends DataModel{
 	private static final int TABLECOUNT = 14;
 	private static WeightedTable<String> encounterAdverb;
 	private static WeightedTable<String> encounterAdj;
-	private static WeightedTable<String> encounterFocus;
 	private static WeightedTable<String> encounterVerb;
 	private static WeightedTable<String> encounterNoun;
 
-	private static void populateEncounterFocus() {
-		encounterFocus = new WeightedTable<String>();
-		encounterFocus.put("Remote Event",5);
-		encounterFocus.put("Ambiguous Event",5);
-		encounterFocus.put("New NPC",10);
-		encounterFocus.put("NPC Action",20);
-		encounterFocus.put("NPC Negative",5);
-		encounterFocus.put("NPC Positive",5);
-		encounterFocus.put("Move Toward A Thread",5);
-		encounterFocus.put("Move Away From A Thread",10);
-		encounterFocus.put("Close A Thread",5);
-		encounterFocus.put("PC Negative",10);
-		encounterFocus.put("PC Positive",5);
-		encounterFocus.put("Current Context",15);
-	}
-	public static String getFocus(Indexible e) {
-		if(encounterFocus==null) populateAllTables();
-		return encounterFocus.getByWeight(e);
-	}
 	private static void populateAllTables() {
-		populateEncounterFocus();
 		encounterVerb = new WeightedTable<String>().populate(VERBS,",");
 		encounterNoun = new WeightedTable<String>().populate(NOUNS,",");
 		encounterAdverb = new WeightedTable<String>().populate(ADVERB,",");
@@ -143,7 +122,7 @@ public class EncounterModel extends DataModel{
 	private void populateEncounterDetail(Point p, boolean isCity, Encounter e,Reference ref) {
 		if(ref==null) ref = getRandomEncounterRef(p,isCity,e);
 
-		e.setFocus(getFocus(e));
+		e.setFocus(EncounterFocus.getFocus(e));
 		if(e.reduceTempId(2)==0) {
 			e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"'});
 		}else {
@@ -300,7 +279,7 @@ public class EncounterModel extends DataModel{
 	}
 	private void populateDungeonEncounterDetail(Encounter e) {
 		e.setType("Dungeon");
-		e.setFocus(getFocus(e));
+		e.setFocus(EncounterFocus.getFocus(e));
 		e.setAction(new String[] {'"'+getVerb(e)+" "+getNoun(e)+'"','"'+DungeonModel.getActivity(e)+'"'});
 		e.setDescriptor(new String[] {'"'+getAdverb(e)+" "+getAdj(e)+'"'});
 		e.setLocation(new String[] {LocationModel.getDescriptor(e)+" and "+LocationModel.getDescriptor(e)+" "+DungeonModel.getRoom(e)+" with "+DungeonModel.getDetail(e)});

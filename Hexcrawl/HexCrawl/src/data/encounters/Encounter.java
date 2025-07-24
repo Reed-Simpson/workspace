@@ -5,7 +5,7 @@ import util.Util;
 
 public class Encounter extends Indexible {
 	private String type;
-	private String focus;
+	private EncounterFocus focus;
 	private String[] action;
 	private String[] descriptor;
 	private String[] location;
@@ -21,7 +21,7 @@ public class Encounter extends Indexible {
 	public Encounter(int[] ints) {
 		super(ints);
 	}
-	public String getFocus() {
+	public EncounterFocus getFocus() {
 		return focus;
 	}
 	public String[] getLocation() {
@@ -33,7 +33,7 @@ public class Encounter extends Indexible {
 	public String[] getObject() {
 		return object;
 	}
-	public void setFocus(String focus) {
+	public void setFocus(EncounterFocus focus) {
 		this.focus = focus;
 	}
 	public void setLocation(String[] location) {
@@ -79,7 +79,7 @@ public class Encounter extends Indexible {
 	public String toString() {
 		StringBuilder e1Text = new StringBuilder();
 		//e1Text.append("~~~~~ "+this.getType()+" Encounter #"+(i)+" ~~~~~\r\n");
-		e1Text.append("Focus: "+this.getFocus());
+		e1Text.append("Focus: "+this.getFocus().toString());
 		if(this.getAction()!=null) e1Text.append("\r\nAction: "+Util.parseArray(this.getAction()) +" for "+Util.parseArray(this.getDescriptor()));
 		if(this.getLocation()!=null) e1Text.append("\r\nLocation: "+Util.parseArray(this.getLocation(),"and/or"));
 		if(this.getCharacter()!=null) e1Text.append("\r\nCharacter: "+Util.parseArray(this.getCharacter(),"and/or"));

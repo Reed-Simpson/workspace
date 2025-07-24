@@ -141,9 +141,8 @@ public class DataController {
 			value = settlements.getFaith(i, capital); break;
 		}
 		case MINION: {
-			Point center = threats.getCenter(p);
-			if(i==0) value = threats.getFaction(this, center,null);
-			else value = threats.getMinion(this, center, i-1,null);break;
+			if(i==0) value = threats.getFaction(this, p,null);
+			else value = threats.getMinion(this, p, i-1,null);break;
 		}
 		case TOWN: {
 			Point capital = population.getTown(p);

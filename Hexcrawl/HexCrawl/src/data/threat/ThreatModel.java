@@ -173,7 +173,7 @@ public class ThreatModel extends DataModel{
 	}
 	public Faction getFaction(DataController controller,Point p,Threat threat) {
 		Point center = getCenter(p);
-		if(threat==null) threat = getThreat(center);
+		if(threat==null) threat = getThreat(p);
 		FactionType[] factionTypes = threat.getType().getFactionList();
 		Faction faction = controller.getSettlements().getFaction(SettlementModel.THREAT_FACTION_INDEX, center,factionTypes);
 		populateFactionDetails(threat, faction);
@@ -188,8 +188,9 @@ public class ThreatModel extends DataModel{
 	}
 	
 	public NPC getMinion(DataController controller,Point p,int i,Threat threat) {
+		Point center = getCenter(p);
 		if(threat==null) threat = getThreat(p);
-		NPC npc = controller.getNpcs().getMinion(i, p,threat);
+		NPC npc = controller.getNpcs().getMinion(i, center,threat);
 		return npc;
 	}
 	public NPC getMinion(DataController controller, Random random, Point p,Threat threat) {
